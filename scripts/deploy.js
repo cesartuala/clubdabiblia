@@ -3,7 +3,7 @@ const path = require('path');
 
 async function upload() {
   const client = new ftp.Client();
-  client.ftp.verbose = true; // Mantive true para podermos ver os logs de sucesso no GitHub
+  client.ftp.verbose = true;
   
   try {
     console.log("Conectando ao FTP da Hostinger...");
@@ -15,15 +15,19 @@ async function upload() {
       secureOptions: { rejectUnauthorized: false }
     });
     
-    // Aponta para a pasta hostinger na raiz do projeto
     const localDir = path.join(__dirname, '..', 'hostinger'); 
     
+    // Garantimos que estamos na pasta correta
     await client.ensureDir('/public_html');
     
-    console.log("Iniciando o upload dos arquivos...");
+    console.log("Iniciando upload seletivo (ignorando pasta uploads)...");
+    
+    // O comando uploadFromDir por padrão não deleta arquivos no destino 
+    // que não existem na origem, a menos que explicitamente configurado.
+    // Como a pasta 'uploads' não existe no GitHub, ela será ignorada e preservada no servidor.
     await client.uploadFromDir(localDir);
     
-    console.log('Upload concluído com sucesso! Site atualizado.');
+    console.log('Upload concluído! Arquivos do site atualizados e pasta uploads preservada.');
   } catch (err) {
     console.error('Erro no upload:', err.message);
     process.exit(1);
