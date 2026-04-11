@@ -150,7 +150,7 @@ A automação não utilizará âncoras ou marcadores de injeção. O fluxo de at
 
 ---
 
-## 5. Deploy (ANTIGRAVITY)
+## 5. Deploy
 
 * O deploy é feito via Node.js utilizando a biblioteca `basic-ftp`.
 * O script de upload lê a pasta local `/hostinger` e faz o espelhamento para a pasta `/public_html` no servidor FTP.
