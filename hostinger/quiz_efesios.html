@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Efésios | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        .glass-card { background: rgba(15, 15, 35, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(129, 140, 248, 0.2); transition: all 0.4s ease; }
+        .indigo-glow { text-shadow: 0 0 15px rgba(129, 140, 248, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); background-color: rgba(99, 102, 241, 0.15); border-color: #6366f1; }
+        .option-correct { background-color: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+        .option-wrong { background-color: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #f87171 !important; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="w-full z-50 p-6 flex justify-between items-center relative">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0a0a1a] border border-indigo-500/50 text-indigo-400 hover:bg-indigo-500 hover:text-black transition-all">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-church text-indigo-500 text-xl"></i>
+            <span class="font-serif text-white text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl w-full flex flex-col relative overflow-hidden shadow-[0_0_40px_rgba(129,140,248,0.15)]">
+            <div class="h-1 w-full bg-gradient-to-r from-indigo-600 via-purple-500 to-blue-500" id="progressBar"></div>
+            
+            <div class="p-6 md:p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b border-indigo-500/20 pb-4">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white indigo-glow">Quiz: Efésios</h1>
+                    <span id="questionCounter" class="bg-indigo-900/50 text-indigo-300 px-3 py-1 rounded-full text-xs font-bold tracking-widest border border-indigo-500/30">1 / 10</span>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="questionText" class="text-lg md:text-xl text-slate-200 mb-6 font-light leading-relaxed"></div>
+                    <div id="optionsContainer" class="space-y-3"></div>
+                    <div id="feedbackContainer" class="mt-6 p-4 rounded-lg hidden text-sm leading-relaxed border"></div>
+
+                    <button id="nextBtn" class="mt-8 w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-lg transition uppercase tracking-widest hidden shadow-lg shadow-indigo-900/50">
+                        Próxima Pergunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-col items-center text-center py-8">
+                    <i class="fa-solid fa-crown text-6xl text-indigo-400 mb-4 drop-shadow-[0_0_15px_rgba(129,140,248,0.6)]"></i>
+                    <h2 class="font-serif text-3xl text-white mb-2">Vitória em Cristo!</h2>
+                    <p class="text-slate-300 text-lg mb-6">Você acertou <span id="finalScore" class="text-indigo-400 font-bold text-2xl">0</span> de 10 perguntas.</p>
+                    
+                    <div class="w-full max-w-sm bg-slate-900/80 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xs uppercase tracking-widest text-indigo-400 mb-4 font-bold">Salvar no Ranking</h3>
+                        <form id="rankingForm" class="space-y-4">
+                            <input type="hidden" name="acao" value="salvar_quiz_efesios">
+                            <input type="hidden" name="pontos" id="inputPontos" value="0">
+                            <input type="hidden" name="acertos" id="inputAcertos" value="0">
+                            <input type="text" name="nome" required placeholder="Seu Nome..." class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white focus:border-indigo-500 focus:outline-none transition text-sm">
+                            <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-bold py-2 rounded transition uppercase tracking-widest text-xs shadow-lg">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                q: "Qual é o grande 'mistério' revelado por Paulo no capítulo 3 de Efésios?",
+                options: [
+                    { t: "A data exata da volta de Cristo.", c: false, r: "Paulo afirma que ninguém sabe o dia nem a hora." },
+                    { t: "Que gentios e judeus são agora co-herdeiros no mesmo corpo.", c: true, r: "Este é o 'mysterion': a união de povos outrora inimigos em um só corpo, a Igreja." },
+                    { t: "A identidade real do Anticristo.", c: false, r: "Esse tema é tratado em Tessalonicenses, não Efésios." },
+                    { t: "Que a salvação é obtida apenas através da Lei.", c: false, r: "Efésios enfatiza que a salvação é pela graça, não pelas obras." }
+                ]
+            },
+            {
+                q: "Onde o crente está posicionalmente 'assentado', segundo Efésios 1 e 2?",
+                options: [
+                    { t: "Nos tribunais da terra.", c: false, r: "Nossa cidadania não é deste mundo." },
+                    { t: "Apenas no átrio do templo.", c: false, r: "Cristo nos levou para muito além do átrio." },
+                    { t: "Nas regiões celestiais, em Cristo Jesus.", c: true, r: "Esta é a nossa posição legal e espiritual de vitória e autoridade." },
+                    { t: "Debaixo da condenação do pecado.", c: false, r: "Em Cristo, não há mais condenação." }
+                ]
+            },
+            {
+                q: "Qual destas NÃO é uma peça da Armadura de Deus (Capítulo 6)?",
+                options: [
+                    { t: "Cinto da Verdade", c: false, r: "O cinto é a primeira peça mencionada." },
+                    { t: "Escudo da Fé", c: false, r: "O escudo apaga os dardos inflamados do maligno." },
+                    { t: "Cajado da Autoridade", c: true, r: "O cajado não faz parte da lista da armadura descrita por Paulo." },
+                    { t: "Capacete da Salvação", c: false, r: "O capacete protege a mente contra dúvidas e heresias." }
+                ]
+            },
+            {
+                q: "Complete a frase de Efésios 2:8: 'Porque pela graça sois salvos, por meio da ___'.",
+                options: [
+                    { t: "Caridade", c: false, r: "A caridade é fruto da salvação, não a causa." },
+                    { t: "Fé", c: true, r: "A fé é a mão estendida que recebe o presente gratuito da salvação." },
+                    { t: "Obediência", c: false, r: "A obediência segue a salvação." },
+                    { t: "Circuncisão", c: false, r: "Paulo combateu a necessidade desse rito para a salvação." }
+                ]
+            },
+            {
+                q: "A quem Paulo chama de 'Príncipe das potestades do ar'?",
+                options: [
+                    { t: "César", c: false, r: "César era um imperador terreno." },
+                    { t: "O Arcanjo Miguel", c: false, r: "Miguel é um anjo de Deus." },
+                    { t: "Satanás", c: true, r: "Paulo identifica Satanás como aquele que governa a esfera espiritual caída do mundo." },
+                    { t: "O Sumo Sacerdote", c: false, r: "O sumo sacerdote era uma autoridade religiosa humana." }
+                ]
+            },
+            {
+                q: "Qual é o selo e garantia (penhor) da nossa herança, conforme o Capítulo 1?",
+                options: [
+                    { t: "O Batismo nas Águas", c: false, r: "O batismo é um testemunho público, mas não o selo interno." },
+                    { t: "O dízimo fiel", c: false, r: "A fidelidade financeira é uma prática, não o selo da salvação." },
+                    { t: "O Espírito Santo da promessa", c: true, r: "Ele é o 'carimbo' real de Deus que garante que pertencemos a Ele." },
+                    { t: "As boas obras", c: false, r: "Obras são resultados, não a garantia." }
+                ]
+            },
+            {
+                q: "Como o marido deve amar sua esposa, de acordo com Efésios 5?",
+                options: [
+                    { t: "Conforme ela merecer.", c: false, r: "O amor deve ser incondicional." },
+                    { t: "Como Cristo amou a Igreja e se entregou por ela.", c: true, r: "O padrão é o amor sacrificial e purificador de Jesus." },
+                    { t: "Apenas com palavras de afeto.", c: false, r: "O amor exige ação e sacrifício próprio." },
+                    { t: "Buscando apenas o seu próprio interesse.", c: false, r: "O amor não busca os seus próprios interesses." }
+                ]
+            },
+            {
+                q: "Qual o propósito dos dons ministeriais (Apóstolos, Pastores, etc) no capítulo 4?",
+                options: [
+                    { t: "Para que os líderes sejam exaltados.", c: false, r: "A liderança cristã é serviço, não autopromoção." },
+                    { t: "Para o aperfeiçoamento dos santos para a obra do ministério.", c: true, r: "Os líderes treinam o povo para que todos façam a obra de Deus." },
+                    { t: "Para substituir a leitura individual da Bíblia.", c: false, r: "Líderes devem incentivar o estudo individual." },
+                    { t: "Para arrecadar fundos para o Templo.", c: false, r: "O foco é a maturidade do corpo de Cristo." }
+                ]
+            },
+            {
+                q: "O que Paulo ordena não fazer com o Espírito Santo no capítulo 4?",
+                options: [
+                    { t: "Ignorá-lo", c: false, r: "Embora seja ruim, a palavra específica usada é outra." },
+                    { t: "Entristecê-lo", c: true, r: "Nossas atitudes de amargura e pecado 'entristecem' a Pessoa do Espírito." },
+                    { t: "Comprá-lo", c: false, r: "Isso foi o pecado de Simão Mago em Atos." },
+                    { t: "Aprisioná-lo", c: false, r: "O Espírito é livre." }
+                ]
+            },
+            {
+                q: "Qual é a única arma ofensiva da Armadura de Deus?",
+                options: [
+                    { t: "O Escudo da Fé", c: false, r: "O escudo é uma arma defensiva." },
+                    { t: "A Espada do Espírito", c: true, r: "Que é a Palavra (Rhema) de Deus." },
+                    { t: "A Couraça da Justiça", c: false, r: "A couraça protege o peito." },
+                    { t: "Os Calçados da Paz", c: false, r: "Eles dão prontidão e equilíbrio." }
+                ]
+            }
+        ];
+
+        let currentQ = 0; let score = 0; let answered = false;
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        function loadQuestion() {
+            answered = false; feedbackContainer.classList.add('hidden'); nextBtn.classList.add('hidden');
+            const qData = quizData[currentQ];
+            document.getElementById('questionCounter').innerText = `${currentQ + 1} / ${quizData.length}`;
+            questionText.innerText = qData.q;
+            optionsContainer.innerHTML = '';
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-lg bg-slate-800/80 border border-slate-600 text-slate-300 text-sm md:text-base';
+                btn.innerText = opt.t;
+                btn.onclick = () => selectOption(btn, opt);
+                optionsContainer.appendChild(btn);
+            });
+            progressBar.style.width = `${(currentQ / quizData.length) * 100}%`;
+        }
+
+        function selectOption(btn, opt) {
+            if (answered) return; answered = true;
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedbackContainer.classList.remove('hidden', 'bg-red-900/30', 'border-red-500/50', 'bg-green-900/30', 'border-green-500/50');
+            if (opt.c) {
+                score += 10; btn.classList.add('option-correct');
+                feedbackContainer.classList.add('bg-green-900/30', 'border-green-500/50', 'text-green-200');
+                feedbackContainer.innerHTML = `<strong>Correto!</strong> ${opt.r}`;
+            } else {
+                btn.classList.add('option-wrong');
+                feedbackContainer.classList.add('bg-red-900/30', 'border-red-500/50', 'text-red-200');
+                feedbackContainer.innerHTML = `<strong>Incorreto.</strong> ${opt.r}`;
+                buttons.forEach((b, i) => { if(quizData[currentQ].options[i].c) b.classList.add('option-correct'); });
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.onclick = () => {
+            currentQ++;
+            if (currentQ < quizData.length) loadQuestion();
+            else showResults();
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            document.getElementById('quizContainer').classList.add('hidden');
+            const res = document.getElementById('resultContainer');
+            res.classList.remove('hidden'); res.classList.add('flex');
+            document.getElementById('finalScore').innerText = score/10;
+            document.getElementById('inputPontos').value = score;
+            document.getElementById('inputAcertos').value = score/10;
+        }
+
+        document.getElementById('rankingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button'); btn.disabled = true; btn.innerText = "Salvando...";
+            fetch('api.php', { method: 'POST', body: new FormData(this) })
+            .then(() => window.location.href = 'index.html');
+        };
+
+        // Particles
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, sx: Math.random()*0.5-0.25, sy: Math.random()*0.5-0.25 });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(129, 140, 248, 0.2)";
+            particles.forEach(p => { p.x+=p.sx; p.y+=p.sy; if(p.x<0||p.x>canvas.width)p.sx*=-1; if(p.y<0||p.y>canvas.height)p.sy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        loadQuestion();
+    </script>
+</body>
+</html>
