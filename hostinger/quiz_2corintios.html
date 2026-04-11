@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz II Coríntios | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = { theme: { extend: { fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }, colors: { divine: '#10b981' } } } }
+    </script>
+    <style>
+        body { background-color: #021c13; color: #e2e8f0; }
+        .glass-panel { background: rgba(6, 36, 26, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .option-btn:hover { border-color: #10b981; background: rgba(16, 185, 129, 0.1); }
+        .correct { background: #065f46 !important; border-color: #34d399 !important; }
+        .wrong { background: #7f1d1d !important; border-color: #f87171 !important; }
+        @keyframes celebrate { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .celebration { animation: celebrate 0.5s ease-in-out infinite; }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #021c13; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #064e3b; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #10b981; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-[url('https://images.unsplash.com/photo-1473643069352-78d120a13e2f?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat bg-fixed">
+    <div class="absolute inset-0 bg-[#021c13]/90"></div>
+
+    <div class="relative z-10 w-full max-w-2xl">
+        
+        <div id="startScreen" class="glass-panel p-8 rounded-2xl text-center shadow-[0_0_40px_rgba(16,185,129,0.2)] border-t-4 border-emerald-500">
+            <i class="fa-solid fa-leaf text-5xl text-emerald-500 mb-6"></i>
+            <h1 class="font-serif text-3xl md:text-4xl text-white mb-2">Quiz II Coríntios</h1>
+            <p class="text-emerald-100/70 mb-8">A força na fraqueza. Responda a 15 perguntas aleatórias valendo 100 pontos.</p>
+            
+            <input type="text" id="playerName" placeholder="Digite seu Nome" class="w-full bg-black border border-slate-700 rounded-lg px-4 py-4 text-white text-center text-lg focus:border-emerald-500 focus:outline-none mb-4">
+            
+            <button onclick="startQuiz()" class="w-full bg-gradient-to-r from-emerald-700 to-emerald-500 hover:from-emerald-600 hover:to-emerald-400 text-white font-bold py-4 rounded-lg uppercase tracking-widest transition transform hover:scale-[1.02]">
+                Começar Desafio
+            </button>
+            <a href="index.html" class="block mt-4 text-xs text-slate-500 hover:text-emerald-400 underline">Voltar ao Início</a>
+        </div>
+
+        <div id="quizScreen" class="hidden glass-panel p-6 md:p-8 rounded-2xl shadow-2xl">
+            <div class="flex justify-between items-center mb-6 border-b border-emerald-900/50 pb-4">
+                <span class="text-xs uppercase tracking-widest text-emerald-100/50">Questão <span id="currentQ">1</span>/15</span>
+                <span class="text-emerald-400 font-bold"><span id="scoreVal">0</span> Pts</span>
+            </div>
+
+            <h2 id="questionText" class="text-xl md:text-2xl text-white font-serif mb-8 leading-relaxed"></h2>
+            <div id="optionsContainer" class="space-y-3"></div>
+        </div>
+
+        <div id="resultScreen" class="hidden glass-panel p-8 rounded-2xl text-center shadow-2xl">
+            <i id="resultIcon" class="fa-solid fa-medal text-6xl text-emerald-500 mb-4 block"></i>
+            <h2 class="font-serif text-3xl text-white mb-2">Fim de Jogo!</h2>
+            <p class="text-emerald-100/70 mb-6">A sua pontuação: <span id="finalScore" class="text-emerald-400 font-bold text-3xl"></span> pts.</p>
+
+            <div class="bg-black/80 rounded-lg p-4 mb-6 text-left border border-emerald-900/50">
+                <h3 class="text-xs uppercase tracking-widest text-emerald-500 mb-3 border-b border-emerald-900/50 pb-1">Ranking II Coríntios</h3>
+                <ul id="rankingList" class="space-y-2 text-sm max-h-40 overflow-y-auto custom-scroll pr-2"></ul>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="location.reload()" class="flex-1 bg-emerald-900/30 hover:bg-emerald-800/50 text-white py-3 rounded-lg font-bold text-sm border border-emerald-800">Tentar de Novo</button>
+                <a href="index.html" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-lg font-bold flex items-center justify-center text-sm">Voltar ao Menu</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const allQuestions = [
+            { q: "Paulo diz que Deus é o Pai das misericórdias e o Deus de toda a...?", options: ["Punição", "Consolação", "Riqueza", "Força"], c: 1 },
+            { q: "Onde Paulo diz que sofreu além de suas forças, desesperando da vida?", options: ["Egito", "Macedônia", "Ásia", "Galácia"], c: 2 },
+            { q: "As promessas de Deus em Cristo são o quê?", options: ["Incertas", "Difíceis", "Sim e Amém", "Apenas para judeus"], c: 2 },
+            { q: "O que Paulo pediu que a igreja fizesse com o ofensor que havia se arrependido?", options: ["O expulsasse", "O perdoasse e consolasse", "O fizesse líder", "O multasse"], c: 1 },
+            { q: "Para não sermos vencidos por quem, Paulo diz que perdoa?", options: ["Pelo império", "Pelos fariseus", "Por Satanás", "Pela carne"], c: 2 },
+            { q: "Deus nos faz triunfar em Cristo, manifestando o que em todo lugar?", options: ["Oração audível", "O bom perfume de Seu conhecimento", "A nuvem de glória", "Fogo do céu"], c: 1 },
+            { q: "Paulo diz que os crentes são uma carta de Cristo, escrita não com tinta, mas com...?", options: ["O Espírito do Deus vivo", "Letras de ouro", "Sangue", "Fogo"], c: 0 },
+            { q: "Segundo 2 Coríntios 3, a letra mata, mas o que vivifica?", options: ["A esperança", "O Espírito", "A água", "O sacrifício"], c: 1 },
+            { q: "Quem usava um véu no rosto para esconder o fim da glória desvanecente?", options: ["Elias", "Davi", "Abraão", "Moisés"], c: 3 },
+            { q: "Onde está o Espírito do Senhor, aí há...?", options: ["Silêncio", "Juízo", "Liberdade", "Tristeza"], c: 2 },
+            { q: "Quem cegou o entendimento dos incrédulos para que não lhes resplandeça a luz?", options: ["Deus", "Os anjos", "O deus deste século", "A Lei"], c: 2 },
+            { q: "Temos este tesouro (o Evangelho) em que tipo de vasos?", options: ["Vasos de barro", "Vasos de ouro", "Vasos de ferro", "Arcas de cedro"], c: 0 },
+            { q: "A nossa leve e momentânea tribulação produz o quê?", options: ["Cansaço", "Um eterno peso de glória", "Salvação para outros", "Riqueza terrena"], c: 1 },
+            { q: "Não atentamos nas coisas que se veem, porque elas são...", options: ["Eternas", "Más", "Temporais", "Ilusões"], c: 2 },
+            { q: "Se a nossa casa terrestre for desfeita, o que temos de Deus?", options: ["O nada", "Outra vida terrena", "Um edifício nos céus, eterno", "Um corpo invisível"], c: 2 },
+            { q: "Todos nós devemos comparecer perante qual Tribunal (Bema)?", options: ["O de Moisés", "O de César", "O de Cristo", "O dos anjos"], c: 2 },
+            { q: "Se alguém está em Cristo, é o quê?", options: ["Um anjo", "Nova criatura", "Perfeito imediatamente", "Livre de doenças"], c: 1 },
+            { q: "Aquele que não conheceu pecado, Deus O fez o que por nós?", options: ["Pecado", "Vencedor", "Invisível", "Juiz"], c: 0 },
+            { q: "Qual é a instrução de Paulo em 2 Coríntios 6:14?", options: ["Não comais carne", "Não vos prendais a um jugo desigual com os infiéis", "Não julgueis os de fora", "Não viajeis para Roma"], c: 1 },
+            { q: "Que comunhão tem a luz com o quê?", options: ["A água", "As estrelas", "As trevas", "O sol"], c: 2 },
+            { q: "A tristeza segundo Deus opera o quê?", options: ["Depressão", "Arrependimento para a salvação", "Morte", "Dúvida"], c: 1 },
+            { q: "A tristeza do mundo opera o quê?", options: ["Salvação", "Perdão", "A morte", "Reconhecimento"], c: 2 },
+            { q: "Quem trouxe grande consolo a Paulo quando ele estava aflito na Macedônia?", options: ["Tito", "Pedro", "João Marcos", "Timóteo"], c: 0 },
+            { q: "Quais igrejas foram exemplo de generosidade no meio da profunda pobreza?", options: ["As de Roma", "As da Ásia", "As da Macedônia", "As da Galácia"], c: 2 },
+            { q: "Jesus, sendo rico, por amor de vós se fez...?", options: ["Mestre", "Homem", "Pobre", "Rei"], c: 2 },
+            { q: "Deus ama a quem dá com...?", options: ["Choro", "Necessidade", "Obrigação", "Alegria"], c: 3 },
+            { q: "As armas da nossa milícia são poderosas para destruir o quê?", options: ["Impérios", "Exércitos", "Fortalezas (raciocínios e sofismas)", "Templos pagãos"], c: 2 },
+            { q: "Em que figura Satanás se transfigura para enganar?", options: ["Cordeiro inofensivo", "Leão dourado", "Anjo de luz", "Sacerdote"], c: 2 },
+            { q: "Quantas vezes Paulo recebeu trinta e nove açoites dos judeus?", options: ["Duas vezes", "Cinco vezes", "Nenhuma", "Sete vezes"], c: 1 },
+            { q: "Para qual céu Paulo diz que um homem foi arrebatado?", options: ["Primeiro", "Segundo", "Terceiro (Paraíso)", "Sétimo"], c: 2 },
+            { q: "O que foi dado a Paulo para que ele não se exaltasse com a grandeza das revelações?", options: ["Muitas riquezas", "Um espinho na carne (mensageiro de Satanás)", "Uma prisão perpétua", "Falta de memória"], c: 1 },
+            { q: "Quantas vezes Paulo rogou ao Senhor para que o espinho fosse removido?", options: ["Uma vez", "Duas vezes", "Três vezes", "Setenta vezes"], c: 2 },
+            { q: "O que Deus respondeu a Paulo sobre o espinho?", options: ["Estou contigo", "A minha graça te basta", "Eu te curo agora", "Suporta mais um ano"], c: 1 },
+            { q: "Onde o poder de Deus se aperfeiçoa, segundo o Senhor disse a Paulo?", options: ["Na força de vontade", "Na riqueza", "Na obediência", "Na fraqueza"], c: 3 },
+            { q: "Qual é o paradoxo famoso de Paulo no final de 2 Coríntios 12?", options: ["Quando estou triste, então canto", "Quando estou fraco, então sou forte", "Quando morro, então vivo", "Quando perco, então ganho"], c: 1 },
+            { q: "O que Paulo ordena à igreja em 2 Co 13:5?", options: ["Examinai-vos a vós mesmos se permaneceis na fé", "Expulsai os fracos", "Jejuai quarenta dias", "Doai tudo o que tendes"], c: 0 },
+            { q: "O que Paulo diz sobre a Verdade no capítulo 13?", options: ["A verdade dói", "A verdade é relativa", "Nada podemos contra a verdade, senão pela verdade", "A verdade liberta os tolos"], c: 2 },
+            { q: "Como Paulo encerra a carta? (A Bênção Apostólica)", options: ["A paz de Cristo seja convosco", "A graça do Senhor Jesus, o amor de Deus e a comunhão do Espírito Santo", "Deus vos abençoe rica e abundantemente", "Maranata!"], c: 1 },
+            { q: "Deus nos deu a palavra da _________ (2 Co 5:19).", options: ["Guerra", "Profecia", "Reconciliação", "Maldição"], c: 2 },
+            { q: "Qual era a atitude de Paulo em relação às ofertas de Corinto, a fim de não criar escândalo?", options: ["Ele exigia o dízimo", "Ele abria mão de seus direitos de sustento", "Ele cobrava taxas mensais", "Ele vendia os evangelhos"], c: 1 }
+        ];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let userName = "";
+        
+        const QTY_QUESTIONS = 15;
+        const POINTS_PER_Q = 100 / QTY_QUESTIONS; 
+
+        function startQuiz() {
+            const nameInput = document.getElementById('playerName');
+            if (nameInput.value.trim() === "") {
+                alert("Por favor, introduza o seu nome para entrar no Ranking!");
+                return;
+            }
+            userName = nameInput.value;
+            const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
+            currentQuestions = shuffled.slice(0, QTY_QUESTIONS);
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = currentQuestions[currentIndex];
+            document.getElementById('currentQ').innerText = currentIndex + 1;
+            document.getElementById('questionText').innerText = q.q;
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full bg-[#06241a]/80 border border-emerald-900 rounded-lg p-4 text-left text-emerald-100/80 transition duration-300 font-sans text-lg";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(btn, idx, q.c);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.disabled = true);
+            if (selected === correct) {
+                btn.classList.add('correct', 'text-white', 'font-bold');
+                score += POINTS_PER_Q;
+                document.getElementById('scoreVal').innerText = Math.round(score);
+            } else {
+                btn.classList.add('wrong', 'text-white');
+                buttons[correct].classList.add('correct', 'text-white');
+            }
+            setTimeout(() => {
+                currentIndex++;
+                if (currentIndex < QTY_QUESTIONS) {
+                    loadQuestion();
+                } else {
+                    finishQuiz();
+                }
+            }, 1500);
+        }
+
+        function finishQuiz() {
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+            let finalPoints = Math.round(score);
+            document.getElementById('finalScore').innerText = finalPoints;
+            if (finalPoints === 100) { document.getElementById('resultIcon').classList.add('celebration'); }
+            saveScore(finalPoints);
+        }
+
+        function saveScore(finalPoints) {
+            const formData = new FormData();
+            formData.append('acao', 'salvar_quiz_2corintios');
+            formData.append('nome', userName);
+            formData.append('pontos', finalPoints);
+            formData.append('acertos', Math.round(finalPoints / POINTS_PER_Q));
+            fetch('api.php', { method: 'POST', body: formData })
+                .then(() => loadRanking());
+        }
+
+        function loadRanking() {
+            fetch('api.php?acao=ranking_2corintios')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById('rankingList');
+                    list.innerHTML = '';
+                    let currentRank = 1;
+                    data.forEach((p, index) => {
+                        if (index > 0 && p.pontos < data[index - 1].pontos) { currentRank++; }
+                        let rankIcon = currentRank + 'º';
+                        let myClass = p.nome === userName ? 'text-emerald-400 font-bold bg-emerald-900/20' : 'text-slate-300';
+                        if(currentRank === 1) rankIcon = '🥇';
+                        if(currentRank === 2) rankIcon = '🥈';
+                        if(currentRank === 3) rankIcon = '🥉';
+                        list.innerHTML += `
+                            <li class="flex justify-between items-center border-b border-emerald-900/30 py-2 px-2 rounded ${myClass}">
+                                <span>${rankIcon} ${p.nome}</span>
+                                <span>${p.pontos} pts</span>
+                            </li>
+                        `;
+                    });
+                });
+        }
+    </script>
+</body>
+</html>

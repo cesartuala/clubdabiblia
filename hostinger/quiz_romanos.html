@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Romanos | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = { theme: { extend: { fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }, colors: { divine: '#ef4444' } } } }
+    </script>
+    <style>
+        body { background-color: #0a0a0a; color: #e2e8f0; }
+        .glass-panel { background: rgba(20, 10, 10, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .option-btn:hover { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+        .correct { background: #065f46 !important; border-color: #34d399 !important; }
+        .wrong { background: #7f1d1d !important; border-color: #f87171 !important; }
+        @keyframes celebrate { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .celebration { animation: celebrate 0.5s ease-in-out infinite; }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #1e293b; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #ef4444; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-[url('https://images.unsplash.com/photo-1549497551-b0e6e7370a2c?q=80&w=1740&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat bg-fixed">
+    <div class="absolute inset-0 bg-[#0a0a0a]/90"></div>
+
+    <div class="relative z-10 w-full max-w-2xl">
+        
+        <div id="startScreen" class="glass-panel p-8 rounded-2xl text-center shadow-[0_0_40px_rgba(239,68,68,0.2)] border-t-4 border-red-500">
+            <i class="fa-solid fa-cross text-5xl text-red-500 mb-6"></i>
+            <h1 class="font-serif text-3xl md:text-4xl text-white mb-2">Quiz de Romanos</h1>
+            <p class="text-slate-400 mb-8">O maior tratado teológico da fé. Responda 15 perguntas valendo 100 pontos.</p>
+            
+            <input type="text" id="playerName" placeholder="Digite seu Nome" class="w-full bg-black border border-slate-700 rounded-lg px-4 py-4 text-white text-center text-lg focus:border-red-500 focus:outline-none mb-4">
+            
+            <button onclick="startQuiz()" class="w-full bg-gradient-to-r from-red-700 to-red-500 hover:from-red-600 hover:to-red-400 text-white font-bold py-4 rounded-lg uppercase tracking-widest transition transform hover:scale-[1.02]">
+                Começar Desafio
+            </button>
+            <a href="index.html" class="block mt-4 text-xs text-slate-500 hover:text-red-400 underline">Voltar ao Início</a>
+        </div>
+
+        <div id="quizScreen" class="hidden glass-panel p-6 md:p-8 rounded-2xl shadow-2xl">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
+                <span class="text-xs uppercase tracking-widest text-slate-400">Questão <span id="currentQ">1</span>/15</span>
+                <span class="text-red-500 font-bold"><span id="scoreVal">0</span> Pts</span>
+            </div>
+
+            <h2 id="questionText" class="text-xl md:text-2xl text-white font-serif mb-8 leading-relaxed"></h2>
+            <div id="optionsContainer" class="space-y-3"></div>
+        </div>
+
+        <div id="resultScreen" class="hidden glass-panel p-8 rounded-2xl text-center shadow-2xl">
+            <i id="resultIcon" class="fa-solid fa-crown text-6xl text-red-500 mb-4 block"></i>
+            <h2 class="font-serif text-3xl text-white mb-2">Fim de Jogo!</h2>
+            <p class="text-slate-400 mb-6">Você fez <span id="finalScore" class="text-red-400 font-bold text-3xl"></span> pontos.</p>
+
+            <div class="bg-black/80 rounded-lg p-4 mb-6 text-left border border-slate-800">
+                <h3 class="text-xs uppercase tracking-widest text-red-500 mb-3 border-b border-slate-800 pb-1">Ranking de Romanos</h3>
+                <ul id="rankingList" class="space-y-2 text-sm max-h-40 overflow-y-auto custom-scroll pr-2"></ul>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="location.reload()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-lg font-bold text-sm border border-slate-700">Jogar Novamente</button>
+                <a href="romanos.html" class="flex-1 bg-red-600 hover:bg-red-500 text-white py-3 rounded-lg font-bold flex items-center justify-center text-sm">Ir para Leitura</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const allQuestions = [
+            { q: "Qual é o tema principal de Romanos 1:17?", options: ["A guarda do sábado", "O justo viverá pela fé", "A importância do batismo", "A lei de Moisés"], c: 1 },
+            { q: "Quem escreveu a carta aos Romanos (autor)?", options: ["Pedro", "João", "Paulo", "Tiago"], c: 2 },
+            { q: "Quem foi o amanuense (escriba) que redigiu a carta aos Romanos?", options: ["Tércio", "Lucas", "Timóteo", "Silas"], c: 0 },
+            { q: "Qual mulher levou a carta de Paulo até a igreja em Roma?", options: ["Priscila", "Febe", "Maria", "Júnia"], c: 1 },
+            { q: "Segundo Romanos 1, o que se manifesta do céu sobre a impiedade dos homens?", options: ["O amor de Deus", "A graça", "A ira de Deus", "A sabedoria"], c: 2 },
+            { q: "Qual foi a raiz da queda moral da humanidade descrita em Romanos 1?", options: ["A avareza", "O homicídio", "A idolatria (trocar o Criador pela criatura)", "A mentira"], c: 2 },
+            { q: "No capítulo 2, Paulo diz que os judeus não devem se gloriar de qual marca na carne?", options: ["Do batismo", "Das feridas", "Da circuncisão", "Das vestes longas"], c: 2 },
+            { q: "Segundo Romanos 3:23, quem pecou e destituído está da glória de Deus?", options: ["Apenas os gentios", "Apenas os judeus", "Os incrédulos", "Todos"], c: 3 },
+            { q: "Como somos justificados, segundo Romanos 3:24?", options: ["Gratuitamente pela sua graça", "Pelas nossas obras", "Pelo sofrimento", "Pela guarda da Lei"], c: 0 },
+            { q: "Qual patriarca Paulo usa como exemplo de justificação pela fé no capítulo 4?", options: ["Moisés", "Abraão", "Davi", "Elias"], c: 1 },
+            { q: "Abraão foi justificado por Deus ANTES ou DEPOIS de ser circuncidado?", options: ["Antes", "Depois", "Ao mesmo tempo", "Ele nunca foi"], c: 0 },
+            { q: "Qual o resultado imediato da justificação, segundo Romanos 5:1?", options: ["Ficamos ricos", "Temos paz com Deus", "Nunca mais pecamos", "Não sofremos mais"], c: 1 },
+            { q: "O que a tribulação produz no crente, segundo Romanos 5?", options: ["Desespero e morte", "Paciência, experiência e esperança", "Dúvida na fé", "Ira e mágoa"], c: 1 },
+            { q: "Quem é o 'Primeiro Adão' que trouxe a morte e quem é o 'Último Adão' que trouxe a vida?", options: ["Adão e Paulo", "Moisés e Jesus", "Adão e Jesus", "Abraão e Jesus"], c: 2 },
+            { q: "Paulo ensina que devemos continuar pecando para que a graça abunde?", options: ["Sim, para a glória de Deus", "De modo nenhum!", "Apenas em pecados menores", "Sim, a lei foi abolida"], c: 1 },
+            { q: "O que o batismo nas águas simboliza em Romanos 6?", options: ["Apenas lavar o corpo", "Entrar na sinagoga", "Morte e ressurreição com Cristo", "Receber os dons"], c: 2 },
+            { q: "Segundo Romanos 6:23, o salário do pecado é a morte. Mas qual é o dom gratuito de Deus?", options: ["O perdão condicional", "A vida eterna", "A prosperidade", "A sabedoria"], c: 1 },
+            { q: "No capítulo 7, Paulo diz estar morto para o quê, a fim de pertencer a Cristo?", options: ["Para a Lei", "Para o Espírito", "Para a oração", "Para a graça"], c: 0 },
+            { q: "Qual o grito de desespero de Paulo no final de Romanos 7?", options: ["Miserável homem que sou!", "Eu sou perfeito!", "Deus me abandonou!", "Venci a carne!"], c: 0 },
+            { q: "Como começa Romanos 8?", options: ["Ainda há condenação", "Nenhuma condenação há para os que estão em Cristo", "Todos irão perecer", "A lei é soberana"], c: 1 },
+            { q: "Qual palavra aramaica o Espírito nos faz clamar em Romanos 8?", options: ["Maranata", "Eli", "Abba (Pai)", "Shalom"], c: 2 },
+            { q: "O que toda a criação está fazendo, segundo Romanos 8:22?", options: ["Louvando sem parar", "Gemendo como em dores de parto", "Destruindo a si mesma", "Adormecida"], c: 1 },
+            { q: "Segundo Romanos 8:28, todas as coisas cooperam para o bem de quem?", options: ["De todo o mundo", "Daqueles que amam a Deus", "Apenas dos apóstolos", "Dos ricos"], c: 1 },
+            { q: "Quem poderá nos separar do amor de Cristo (Rm 8:35)?", options: ["A tribulação", "Os anjos", "Ninguém/Nada", "A morte"], c: 2 },
+            { q: "No capítulo 9, quais gêmeos Paulo cita para provar a eleição soberana de Deus?", options: ["Caim e Abel", "Efraim e Manassés", "Jacó e Esaú", "Perez e Zera"], c: 2 },
+            { q: "Para responder se Deus é injusto (Rm 9), Paulo usa a metáfora de quem?", options: ["Do Oleiro e do barro", "Do pastor e ovelha", "Do rei e súdito", "Do pai e filho"], c: 0 },
+            { q: "Em Romanos 10:4, Paulo diz que Cristo é o 'fim' de qual coisa?", options: ["Da graça", "Da paciência", "Da morte", "Da Lei"], c: 3 },
+            { q: "Como a fé vem, segundo Romanos 10:17?", options: ["Pelo ver milagres", "Pelo ouvir a Palavra de Deus", "Por sonhos", "Por batismo"], c: 1 },
+            { q: "No capítulo 11, qual árvore é usada para representar Israel e os Gentios?", options: ["Videira", "Figueira", "Oliveira", "Macieira"], c: 2 },
+            { q: "Como Paulo descreve o verdadeiro culto a Deus em Romanos 12:1?", options: ["Culto com sacrifício de animais", "Culto racional (corpo como sacrifício vivo)", "Culto de silêncio", "Culto em latim"], c: 1 },
+            { q: "Em Romanos 12:2, como não devemos nos conformar?", options: ["Com este mundo", "Com a igreja", "Com os apóstolos", "Com a verdade"], c: 0 },
+            { q: "De quem devemos nos vingar, segundo Romanos 12?", options: ["De nossos inimigos", "De quem nos ofende", "A vingança pertence a Deus, não a nós", "Do império romano"], c: 2 },
+            { q: "Em Romanos 13, como devemos agir em relação às autoridades governamentais?", options: ["Rebelar-se", "Estar sujeitos a elas", "Ignorá-las", "Cobrar impostos delas"], c: 1 },
+            { q: "O que Paulo diz ser o 'cumprimento da lei' em Romanos 13?", options: ["O dízimo", "O amor", "O jejum", "A oração"], c: 1 },
+            { q: "No capítulo 14, sobre os irmãos 'fracos na fé', o que os fortes NÃO devem fazer?", options: ["Ensiná-los", "Ajudá-los", "Desprezá-los ou julgá-los", "Cantar com eles"], c: 2 },
+            { q: "Segundo Romanos 14:17, o reino de Deus não é comida nem bebida, mas...", options: ["Poder e sinais", "Justiça, paz e alegria no Espírito", "Templos e ouro", "Filosofia e debate"], c: 1 },
+            { q: "Para qual região da Europa Paulo queria ir, contando com a ajuda de Roma (Rm 15)?", options: ["Gália", "Inglaterra", "Espanha", "Alemanha"], c: 2 },
+            { q: "Qual casal, muito querido por Paulo, é saudado em Romanos 16?", options: ["Priscila e Áquila", "Ananias e Safira", "Pedro e esposa", "João e Maria"], c: 0 },
+            { q: "A quem Deus esmagará em breve debaixo dos nossos pés (Rm 16:20)?", options: ["O império romano", "Satanás", "Os fariseus", "Os gregos"], c: 1 },
+            { q: "Com qual atitude termina a carta aos Romanos?", options: ["Um choro", "Um pedido de dinheiro", "Uma doxologia (glória) ao Deus sábio", "Uma ordem de prisão"], c: 2 }
+        ];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let userName = "";
+        
+        const QTY_QUESTIONS = 15;
+        const POINTS_PER_Q = 100 / QTY_QUESTIONS; 
+
+        function startQuiz() {
+            const nameInput = document.getElementById('playerName');
+            if (nameInput.value.trim() === "") {
+                alert("Por favor, digite seu nome para entrar no Ranking!");
+                return;
+            }
+            userName = nameInput.value;
+            const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
+            currentQuestions = shuffled.slice(0, QTY_QUESTIONS);
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = currentQuestions[currentIndex];
+            document.getElementById('currentQ').innerText = currentIndex + 1;
+            document.getElementById('questionText').innerText = q.q;
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full bg-[#120808]/80 border border-slate-800 rounded-lg p-4 text-left text-slate-300 transition duration-300 font-sans text-lg";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(btn, idx, q.c);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.disabled = true);
+            if (selected === correct) {
+                btn.classList.add('correct', 'text-white', 'font-bold');
+                score += POINTS_PER_Q;
+                document.getElementById('scoreVal').innerText = Math.round(score);
+            } else {
+                btn.classList.add('wrong', 'text-white');
+                buttons[correct].classList.add('correct', 'text-white');
+            }
+            setTimeout(() => {
+                currentIndex++;
+                if (currentIndex < QTY_QUESTIONS) {
+                    loadQuestion();
+                } else {
+                    finishQuiz();
+                }
+            }, 1500);
+        }
+
+        function finishQuiz() {
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+            let finalPoints = Math.round(score);
+            document.getElementById('finalScore').innerText = finalPoints;
+            if (finalPoints === 100) { document.getElementById('resultIcon').classList.add('celebration'); }
+            saveScore(finalPoints);
+        }
+
+        function saveScore(finalPoints) {
+            const formData = new FormData();
+            formData.append('acao', 'salvar_quiz_romanos');
+            formData.append('nome', userName);
+            formData.append('pontos', finalPoints);
+            formData.append('acertos', Math.round(finalPoints / POINTS_PER_Q));
+            fetch('api.php', { method: 'POST', body: formData })
+                .then(() => loadRanking());
+        }
+
+        function loadRanking() {
+            fetch('api.php?acao=ranking_romanos')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById('rankingList');
+                    list.innerHTML = '';
+                    let currentRank = 1;
+                    data.forEach((p, index) => {
+                        if (index > 0 && p.pontos < data[index - 1].pontos) { currentRank++; }
+                        let rankIcon = currentRank + 'º';
+                        let myClass = p.nome === userName ? 'text-red-400 font-bold bg-red-900/20' : 'text-slate-300';
+                        if(currentRank === 1) rankIcon = '🥇';
+                        if(currentRank === 2) rankIcon = '🥈';
+                        if(currentRank === 3) rankIcon = '🥉';
+                        list.innerHTML += `
+                            <li class="flex justify-between items-center border-b border-slate-800 py-2 px-2 rounded ${myClass}">
+                                <span>${rankIcon} ${p.nome}</span>
+                                <span>${p.pontos} pts</span>
+                            </li>
+                        `;
+                    });
+                });
+        }
+    </script>
+</body>
+</html>

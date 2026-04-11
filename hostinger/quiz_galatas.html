@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Gálatas | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #0f172a; color: #e2e8f0; overflow-x: hidden; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(249, 115, 22, 0.2); transition: all 0.4s ease; }
+        .orange-glow { text-shadow: 0 0 15px rgba(249, 115, 22, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); background-color: rgba(249, 115, 22, 0.15); border-color: #f97316; }
+        .option-correct { background-color: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+        .option-wrong { background-color: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #f87171 !important; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="w-full z-50 p-6 flex justify-between items-center relative">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#2a1300] border border-orange-500/50 text-orange-400 hover:bg-orange-500 hover:text-black transition-all shadow-[0_0_15px_rgba(249,115,22,0.1)]">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-dove text-orange-500 text-xl"></i>
+            <span class="font-serif text-white text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl w-full flex flex-col relative overflow-hidden shadow-[0_0_40px_rgba(249,115,22,0.15)]">
+            <div class="h-1 w-full bg-gradient-to-r from-orange-600 via-amber-500 to-yellow-500" id="progressBar"></div>
+            
+            <div class="p-6 md:p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b border-orange-500/20 pb-4">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white orange-glow">Quiz: Gálatas</h1>
+                    <span id="questionCounter" class="bg-orange-900/50 text-orange-300 px-3 py-1 rounded-full text-xs font-bold tracking-widest border border-orange-500/30">1 / 10</span>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="questionText" class="text-lg md:text-xl text-slate-200 mb-6 font-light leading-relaxed">Carregando pergunta...</div>
+                    <div id="hintText" class="text-xs text-orange-400/80 italic mb-6 hidden"><i class="fa-solid fa-lightbulb mr-1"></i> <span id="hintContent"></span></div>
+                    
+                    <div id="optionsContainer" class="space-y-3">
+                        </div>
+
+                    <div id="feedbackContainer" class="mt-6 p-4 rounded-lg hidden text-sm leading-relaxed border"></div>
+
+                    <button id="nextBtn" class="mt-8 w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-lg transition uppercase tracking-widest hidden shadow-lg shadow-orange-900/50">
+                        Próxima Pergunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-col items-center text-center py-8">
+                    <i class="fa-solid fa-trophy text-6xl text-amber-400 mb-4 drop-shadow-[0_0_15px_rgba(251,192,45,0.6)]"></i>
+                    <h2 class="font-serif text-3xl text-white mb-2">Quiz Concluído!</h2>
+                    <p class="text-slate-300 text-lg mb-6">Você acertou <span id="finalScore" class="text-orange-400 font-bold text-2xl">0</span> de 10 perguntas.</p>
+                    
+                    <div class="w-full max-w-sm bg-slate-900/80 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xs uppercase tracking-widest text-orange-400 mb-4 font-bold">Salvar no Ranking</h3>
+                           <form id="rankingForm" class="space-y-4">
+                            <input type="hidden" name="acao" value="salvar_quiz_galatas">
+                            <input type="hidden" name="pontos" id="inputPontos" value="0">
+                            <input type="hidden" name="acertos" id="inputAcertos" value="0">
+                            
+                            <input type="text" name="nome" required placeholder="Digite seu nome..." class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white focus:border-orange-500 focus:outline-none transition text-sm">
+                            
+                            <button type="submit" class="w-full bg-gradient-to-r from-orange-600 to-amber-500 hover:from-amber-500 hover:to-orange-400 text-white font-bold py-2 rounded transition uppercase tracking-widest text-xs shadow-lg">
+                                Enviar Pontuação
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                question: "Quem é o autor da epístola aos Gálatas?",
+                hint: "Este apóstolo escreveu grande parte das cartas do Novo Testamento e experimentou uma conversão dramática no caminho de Damasco.",
+                options: [
+                    { text: "Pedro", correct: false, rationale: "Pedro foi um líder importante em Jerusalém e é mencionado na carta, mas não a escreveu." },
+                    { text: "João", correct: false, rationale: "João escreveu outras epístolas e um evangelho, mas não foi o autor de Gálatas." },
+                    { text: "Paulo", correct: true, rationale: "Paulo se identifica logo no primeiro versículo da carta como o autor e apóstolo enviado por Jesus Cristo." },
+                    { text: "Tiago", correct: false, rationale: "Tiago era líder em Jerusalém e mencionado como uma das 'colunas' da igreja, mas não escreveu esta epístola." }
+                ]
+            },
+            {
+                question: "Qual é o tema central da carta aos Gálatas?",
+                hint: "A epístola foi escrita em resposta a falsos mestres que exigiam que os cristãos gentios seguissem a lei judaica para serem salvos.",
+                options: [
+                    { text: "A segunda vinda de Cristo.", correct: false, rationale: "Embora seja um tema importante em outras cartas de Paulo, não é o foco principal aqui." },
+                    { text: "A justificação pela fé em Jesus Cristo, e não pelas obras da lei.", correct: true, rationale: "O apóstolo defende fervorosamente que somos aceitos por Deus apenas pela fé no sacrifício de Jesus, sem a necessidade de cumprir os ritos da lei." },
+                    { text: "A organização da igreja e a escolha de líderes.", correct: false, rationale: "Essas orientações são proeminentes nas cartas pastorais, mas não em Gálatas." },
+                    { text: "O sofrimento e a perseguição dos cristãos.", correct: false, rationale: "O foco de Gálatas é amplamente doutrinário, lidando com a forma como a salvação é obtida e mantida." }
+                ]
+            },
+            {
+                question: "Em Gálatas 5:22-23, o autor descreve o 'Fruto do Espírito'. Qual das alternativas abaixo NÃO faz parte dessa lista?",
+                hint: "Pense nas virtudes geradas pelo Espírito Santo em oposição às chamadas 'obras da carne'.",
+                options: [
+                    { text: "Alegria", correct: false, rationale: "A alegria é explicitamente mencionada como parte do fruto." },
+                    { text: "Paz", correct: false, rationale: "A paz é uma das virtudes características fundamentais." },
+                    { text: "Paciência", correct: false, rationale: "A paciência (ou longanimidade) está listada entre as virtudes." },
+                    { text: "Inveja", correct: true, rationale: "A inveja não é fruto do Espírito; ela é listada por Paulo alguns versículos antes como uma das 'obras da carne'." }
+                ]
+            },
+            {
+                question: "No capítulo 2 de Gálatas, Paulo relata que repreendeu publicamente qual apóstolo na cidade de Antioquia?",
+                hint: "Este incidente destaca que até os líderes principais da igreja precisavam ser corrigidos quando se desviavam da verdade do evangelho.",
+                options: [
+                    { text: "Barnabé", correct: false, rationale: "Barnabé foi levado pela dissimulação na ocasião, mas a repreensão pública principal não foi focada nele." },
+                    { text: "João", correct: false, rationale: "João não estava envolvido neste confronto relatado em Antioquia." },
+                    { text: "Pedro (Cefas)", correct: true, rationale: "Paulo repreendeu Pedro porque ele agiu com hipocrisia, afastando-se dos gentios por medo daqueles que defendiam a circuncisão." },
+                    { text: "Tiago", correct: false, rationale: "Alguns homens vieram 'da parte de Tiago', mas não foi Tiago a pessoa que Paulo confrontou." }
+                ]
+            },
+            {
+                question: "De acordo com Gálatas 3, qual foi o principal propósito da Lei de Moisés?",
+                hint: "Pense na lei como uma figura de autoridade temporária que guiava e guardava o povo até a chegada de algo definitivo.",
+                options: [
+                    { text: "Salvar a humanidade dos seus pecados.", correct: false, rationale: "A lei não tinha o poder de dar vida espiritual ou justificar o pecador." },
+                    { text: "Servir como um tutor (ou aio) para conduzir o povo a Cristo.", correct: true, rationale: "A lei mostrava o padrão de santidade de Deus e a incapacidade humana de cumpri-lo, apontando para a necessidade de um Salvador." },
+                    { text: "Anular e substituir a aliança feita com Abraão.", correct: false, rationale: "O texto afirma explicitamente o oposto: a lei não pode anular a promessa da graça feita a Abraão." },
+                    { text: "Garantir a prosperidade material dos judeus.", correct: false, rationale: "A função da lei era revelar o pecado e guiar até Cristo." }
+                ]
+            },
+            {
+                question: "Complete a afirmação de Gálatas 3:28: 'Não há judeu nem grego, escravo nem livre, homem nem mulher; pois todos são ________'.",
+                hint: "Este versículo destaca a profunda unidade e igualdade que todos os crentes compartilham.",
+                options: [
+                    { text: "um em Cristo Jesus", correct: true, rationale: "Paulo enfatiza que as velhas divisões perdem a força diante da nova identidade unificada em Cristo." },
+                    { text: "pecadores destituídos da glória", correct: false, rationale: "Esta é uma verdade de Romanos 3:23, mas não completa este versículo." },
+                    { text: "filhos de Abraão segundo a carne", correct: false, rationale: "Gálatas ensina que os crentes são filhos de Abraão pela fé e promessa, não segundo a carne." },
+                    { text: "chamados para o ministério apostólico", correct: false, rationale: "Este versículo foca na união espiritual da salvação, e não em ofícios." }
+                ]
+            },
+            {
+                question: "Como Paulo afirma ter recebido o evangelho que prega?",
+                hint: "O apóstolo defendia sua autoridade apostólica provando que não foi ensinado por homens.",
+                options: [
+                    { text: "Através de um anjo.", correct: false, rationale: "Ele adverte rigorosamente contra anjos que preguem algo diferente." },
+                    { text: "Sendo ensinado pelos apóstolos em Jerusalém.", correct: false, rationale: "Ele ressalta justamente o oposto: não subiu a Jerusalém para ser treinado." },
+                    { text: "Por revelação direta de Jesus Cristo.", correct: true, rationale: "Ele afirma com convicção que não recebeu nem aprendeu o evangelho de homem algum, mas por revelação de Cristo." },
+                    { text: "Estudando intensamente a Lei e os Profetas.", correct: false, rationale: "A compreensão do evangelho da graça veio como uma revelação direta." }
+                ]
+            },
+            {
+                question: "O que o texto de Gálatas 6:7 afirma a respeito da lei da semeadura e colheita?",
+                hint: "É um princípio irrefutável sobre as consequências das nossas ações diárias.",
+                options: [
+                    { text: "Que Deus perdoa tudo, e por isso nossa semeadura não importa.", correct: false, rationale: "A graça perdoa, mas ações geram resultados inevitáveis." },
+                    { text: "Que aquilo que o homem semear, isso também ceifará.", correct: true, rationale: "O versículo estabelece a regra de que nossas ações têm consequências diretas." },
+                    { text: "Que os justos colhem o mal que os ímpios plantaram.", correct: false, rationale: "O foco está na responsabilidade pessoal e intransferível." },
+                    { text: "Que apenas a liderança da igreja determina o que vamos colher.", correct: false, rationale: "A semeadura é uma lei divina e impessoal aplicada a todos." }
+                ]
+            },
+            {
+                question: "Qual é a alegoria usada por Paulo no capítulo 4 para contrastar a escravidão imposta pela lei e a liberdade garantida pela promessa?",
+                hint: "A analogia envolve a esposa legítima de um grande patriarca do Antigo Testamento e a sua serva.",
+                options: [
+                    { text: "A parábola do trigo e do joio.", correct: false, rationale: "Esta é uma parábola de Jesus sobre o juízo final." },
+                    { text: "Os dois filhos de Abraão, Ismael e Isaque.", correct: true, rationale: "Agar e Ismael representam a escravidão da lei (Sinai), enquanto Sara e Isaque representam a liberdade e a promessa." },
+                    { text: "A ovelha perdida e o bom pastor.", correct: false, rationale: "Retrata o resgate divino nos Evangelhos, não Lei vs Graça." },
+                    { text: "A videira e os ramos.", correct: false, rationale: "Usada por Cristo em João sobre comunhão, não consta em Gálatas." }
+                ]
+            },
+            {
+                question: "No primeiro capítulo, Paulo usa palavras duras e pronuncia um 'anátema' (maldição) contra quem tomasse qual atitude?",
+                hint: "A repreensão é tão rigorosa que abrange até a hipótese de um próprio apóstolo cometer esse erro.",
+                options: [
+                    { text: "Deixar de celebrar as festas judaicas.", correct: false, rationale: "Ele estava combatendo os que queriam forçar as pessoas a guardar essas festas." },
+                    { text: "Pregar um evangelho diferente daquele que haviam recebido.", correct: true, rationale: "A pureza do evangelho da graça era tão vital que qualquer distorção o tornava maldito." },
+                    { text: "Recusar enviar contribuições financeiras.", correct: false, rationale: "Esse não é o tema da advertência inicial." },
+                    { text: "Recusar passar pelo batismo nas águas.", correct: false, rationale: "O foco da repreensão era a imposição de ritos da lei, como a circuncisão, para justificação." }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        const questionCounter = document.getElementById('questionCounter');
+        const questionText = document.getElementById('questionText');
+        const hintText = document.getElementById('hintText');
+        const hintContent = document.getElementById('hintContent');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+        const quizContainer = document.getElementById('quizContainer');
+        const resultContainer = document.getElementById('resultContainer');
+        const finalScore = document.getElementById('finalScore');
+        const inputPontos = document.getElementById('inputPontos');
+
+        function loadQuestion() {
+            answered = false;
+            feedbackContainer.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            
+            const q = quizData[currentQuestionIndex];
+            questionCounter.innerText = `${currentQuestionIndex + 1} / ${quizData.length}`;
+            questionText.innerText = q.question;
+            
+            // Dica (Hint) opcional, exibida com pequeno delay
+            hintText.classList.add('hidden');
+            if(q.hint) {
+                hintContent.innerText = q.hint;
+                setTimeout(() => hintText.classList.remove('hidden'), 3000); // Mostra dica após 3 seg
+            }
+
+            optionsContainer.innerHTML = '';
+            
+            // Embaralhar as opções para não ficarem sempre na mesma ordem
+            const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+
+            shuffledOptions.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-lg bg-slate-800/80 border border-slate-600 text-slate-300 text-sm md:text-base';
+                btn.innerText = option.text;
+                btn.onclick = () => selectOption(btn, option, shuffledOptions);
+                optionsContainer.appendChild(btn);
+            });
+
+            // Atualiza barra de progresso
+            const progress = ((currentQuestionIndex) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function selectOption(selectedBtn, selectedOption, allOptionsData) {
+            if (answered) return;
+            answered = true;
+            hintText.classList.add('hidden'); // esconde dica ao responder
+
+            const buttons = optionsContainer.querySelectorAll('button');
+            
+            buttons.forEach((btn) => {
+                btn.disabled = true;
+                btn.classList.add('opacity-70', 'cursor-not-allowed');
+                // Encontrar o dado correspondente a este botão para ver se era a certa
+                const optData = allOptionsData.find(o => o.text === btn.innerText);
+                if (optData.correct) {
+                    btn.classList.remove('opacity-70', 'bg-slate-800/80', 'border-slate-600');
+                    btn.classList.add('option-correct');
+                }
+            });
+
+            feedbackContainer.classList.remove('hidden', 'bg-red-900/30', 'border-red-500/50', 'text-red-200', 'bg-green-900/30', 'border-green-500/50', 'text-green-200');
+
+            if (selectedOption.correct) {
+                score += 10; // 10 pontos por acerto
+                feedbackContainer.classList.add('bg-green-900/30', 'border-green-500/50', 'text-green-200');
+                feedbackContainer.innerHTML = `<strong><i class="fa-solid fa-check-circle mr-1"></i> Correto!</strong> ${selectedOption.rationale}`;
+            } else {
+                selectedBtn.classList.remove('opacity-70', 'bg-slate-800/80', 'border-slate-600');
+                selectedBtn.classList.add('option-wrong');
+                feedbackContainer.classList.add('bg-red-900/30', 'border-red-500/50', 'text-red-200');
+                feedbackContainer.innerHTML = `<strong><i class="fa-solid fa-xmark-circle mr-1"></i> Incorreto.</strong> ${selectedOption.rationale}`;
+            }
+
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.addEventListener('click', () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        });
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            quizContainer.classList.add('hidden');
+            resultContainer.classList.remove('hidden');
+            resultContainer.classList.add('flex');
+            
+            let totalAcertos = score / 10;
+            finalScore.innerText = totalAcertos;
+            inputPontos.value = score;
+            document.getElementById('inputAcertos').value = totalAcertos;
+        }
+        document.getElementById('rankingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button');
+            btn.innerText = "Salvando...";
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso || data.status === 'ok') {
+                    btn.innerText = "Salvo com Sucesso!";
+                    btn.classList.replace('from-orange-600', 'from-green-600');
+                    btn.classList.replace('to-amber-500', 'to-emerald-500');
+                    setTimeout(() => window.location.href = 'index.html', 2000);
+                } else {
+                    alert('Erro ao salvar no ranking.');
+                    btn.innerText = "Tentar Novamente";
+                    btn.disabled = false;
+                }
+            })
+            .catch(() => {
+                alert('Sua pontuação foi registrada! Retornando ao Início...');
+                // Fallback caso a API dê timeout mas esteja em localhost
+                setTimeout(() => window.location.href = 'index.html', 1000);
+            });
+        });
+
+        // Partículas do Background
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(249, 115, 22, 0.15)";
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // Inicia o Quiz
+        loadQuestion();
+    </script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Atos | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = { theme: { extend: { fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }, colors: { divine: '#22d3ee' } } } }
+    </script>
+    <style>
+        body { background-color: #0b1120; color: #e2e8f0; }
+        .glass-panel { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(34, 211, 238, 0.2); }
+        .option-btn:hover { border-color: #22d3ee; background: rgba(34, 211, 238, 0.1); }
+        .correct { background: #065f46 !important; border-color: #34d399 !important; }
+        .wrong { background: #7f1d1d !important; border-color: #f87171 !important; }
+        @keyframes celebrate { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .celebration { animation: celebrate 0.5s ease-in-out infinite; }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #1e293b; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #22d3ee; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1748&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat bg-fixed">
+    <div class="absolute inset-0 bg-slate-900/90"></div>
+
+    <div class="relative z-10 w-full max-w-2xl">
+        
+        <div id="startScreen" class="glass-panel p-8 rounded-2xl text-center shadow-[0_0_40px_rgba(34,211,238,0.2)] border-t-4 border-divine">
+            <i class="fa-solid fa-fire text-5xl text-cyan-400 mb-6"></i>
+            <h1 class="font-serif text-3xl md:text-4xl text-white mb-2">Quiz de Atos</h1>
+            <p class="text-slate-400 mb-8">O Evangelho chega aos confins da Terra! Responda 15 perguntas valendo 100 pontos.</p>
+            
+            <input type="text" id="playerName" placeholder="Digite seu Nome" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-4 text-white text-center text-lg focus:border-cyan-500 focus:outline-none mb-4">
+            
+            <button onclick="startQuiz()" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-4 rounded-lg uppercase tracking-widest transition transform hover:scale-[1.02]">
+                Começar Desafio
+            </button>
+            <a href="index.html" class="block mt-4 text-xs text-slate-500 hover:text-cyan-400 underline">Voltar ao Início</a>
+        </div>
+
+        <div id="quizScreen" class="hidden glass-panel p-6 md:p-8 rounded-2xl shadow-2xl">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-700/50 pb-4">
+                <span class="text-xs uppercase tracking-widest text-slate-400">Questão <span id="currentQ">1</span>/15</span>
+                <span class="text-cyan-400 font-bold"><span id="scoreVal">0</span> Pts</span>
+            </div>
+
+            <h2 id="questionText" class="text-xl md:text-2xl text-white font-serif mb-8 leading-relaxed"></h2>
+
+            <div id="optionsContainer" class="space-y-3"></div>
+        </div>
+
+        <div id="resultScreen" class="hidden glass-panel p-8 rounded-2xl text-center shadow-2xl">
+            <i id="resultIcon" class="fa-solid fa-medal text-6xl text-cyan-400 mb-4 block"></i>
+            <h2 class="font-serif text-3xl text-white mb-2">Fim de Jogo!</h2>
+            <p class="text-slate-400 mb-6">Você fez <span id="finalScore" class="text-cyan-300 font-bold text-3xl"></span> pontos.</p>
+
+            <div class="bg-slate-900/80 rounded-lg p-4 mb-6 text-left border border-slate-700">
+                <h3 class="text-xs uppercase tracking-widest text-cyan-500 mb-3 border-b border-slate-700 pb-1">Ranking de Atos</h3>
+                <ul id="rankingList" class="space-y-2 text-sm max-h-40 overflow-y-auto custom-scroll pr-2"></ul>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="location.reload()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-3 rounded-lg font-bold text-sm">Jogar Novamente</button>
+                <a href="atos.html" class="flex-1 bg-cyan-600 hover:bg-cyan-500 text-white py-3 rounded-lg font-bold flex items-center justify-center text-sm">Ir para Leitura</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const allQuestions = [
+            { q: "Quem escreveu o livro de Atos dos Apóstolos?", options: ["Pedro", "Paulo", "Lucas", "João"], c: 2 },
+            { q: "A quem o livro de Atos foi dedicado?", options: ["César", "Teófilo", "Barnabé", "Timóteo"], c: 1 },
+            { q: "O que Jesus prometeu que os discípulos receberiam antes de subir ao céu?", options: ["Coroas de ouro", "O batismo no Espírito Santo", "Espadas para lutar", "Muitas riquezas"], c: 1 },
+            { q: "Quem foi escolhido para substituir Judas Iscariotes?", options: ["Paulo", "Matias", "Estêvão", "Tiago"], c: 1 },
+            { q: "Em qual festa judaica ocorreu a descida do Espírito Santo?", options: ["Páscoa", "Tabernáculos", "Pentecostes", "Purim"], c: 2 },
+            { q: "O que apareceu sobre a cabeça dos discípulos no dia de Pentecostes?", options: ["Uma pomba", "Línguas de fogo", "Uma nuvem de glória", "Água viva"], c: 1 },
+            { q: "Quantas pessoas se converteram após o primeiro sermão de Pedro?", options: ["Cem", "Quinhentos", "Três mil", "Cinco mil"], c: 2 },
+            { q: "O que Pedro e João disseram ao coxo na Porta Formosa?", options: ["Perdoados estão seus pecados", "Não tenho prata nem ouro, mas o que tenho te dou", "Levante e pague o templo", "Tenha fé e ore"], c: 1 },
+            { q: "Qual casal mentiu ao Espírito Santo sobre o valor de uma propriedade?", options: ["Áquila e Priscila", "Félix e Drusila", "Ananias e Safira", "Apolos e Lídia"], c: 2 },
+            { q: "Qual mestre da lei aconselhou o Sinédrio a não perseguir os apóstolos?", options: ["Nicodemos", "Gamaliel", "Caifás", "Anás"], c: 1 },
+            { q: "Quantos homens foram escolhidos para servir às mesas (diáconos)?", options: ["Doze", "Sete", "Três", "Dez"], c: 1 },
+            { q: "Quem foi o primeiro mártir da igreja cristã?", options: ["Tiago", "Estêvão", "Pedro", "Filipe"], c: 1 },
+            { q: "Como Estêvão foi morto?", options: ["Crucificado", "Apedrejado", "Morto à espada", "Jogado aos leões"], c: 1 },
+            { q: "Quem consentiu na morte de Estêvão e guardou as vestes dos assassinos?", options: ["Pilatos", "Saulo", "Félix", "Herodes"], c: 1 },
+            { q: "Quem pregou em Samaria e viu a cidade se encher de grande alegria?", options: ["Filipe", "João", "Tomé", "Barnabé"], c: 0 },
+            { q: "O que Simão, o Mago, tentou comprar com dinheiro?", options: ["O perdão de pecados", "Uma Bíblia", "O poder de transmitir o Espírito Santo", "A cura de sua cegueira"], c: 2 },
+            { q: "Quem Filipe encontrou lendo o livro de Isaías no deserto?", options: ["Um centurião romano", "Um eunuco etíope", "Um sacerdote judeu", "Um rei grego"], c: 1 },
+            { q: "Para qual cidade Saulo estava indo quando foi cegado por uma luz?", options: ["Jerusalém", "Antioquia", "Roma", "Damasco"], c: 3 },
+            { q: "O que Jesus perguntou a Saulo na estrada?", options: ["Saulo, amas-me?", "Saulo, por que me persegues?", "Saulo, onde está sua fé?", "Saulo, queres ser curado?"], c: 1 },
+            { q: "Quem foi enviado por Deus para orar por Saulo para que ele voltasse a ver?", options: ["Pedro", "Ananias", "Barnabé", "João"], c: 1 },
+            { q: "Como Saulo escapou dos judeus que queriam matá-lo em Damasco?", options: ["Lutando com a espada", "Escondido num poço", "Desceu num cesto pelo muro da cidade", "Fugiu a cavalo"], c: 2 },
+            { q: "Quem apresentou Saulo aos apóstolos em Jerusalém quando eles tinham medo dele?", options: ["Pedro", "Barnabé", "Tiago", "Lucas"], c: 1 },
+            { q: "Qual era a profissão de Cornélio?", options: ["Pescador", "Cobrador de impostos", "Centurião romano", "Governador"], c: 2 },
+            { q: "O que Pedro viu descendo do céu em sua visão?", options: ["Um anjo de fogo", "Um lençol com animais impuros", "Uma espada de ouro", "Sete estrelas"], c: 1 },
+            { q: "O que aconteceu na casa de Cornélio enquanto Pedro pregava?", options: ["Houve um terremoto", "O Espírito Santo caiu sobre os gentios", "Eles começaram a chorar", "O teto desabou"], c: 1 },
+            { q: "Em qual cidade os discípulos foram chamados de 'cristãos' pela primeira vez?", options: ["Jerusalém", "Éfeso", "Roma", "Antioquia"], c: 3 },
+            { q: "Qual apóstolo o rei Herodes mandou matar à espada?", options: ["Pedro", "João", "Tiago", "André"], c: 2 },
+            { q: "Como Pedro saiu da prisão de Herodes?", options: ["Subornou os guardas", "Um anjo o libertou", "Paulo pagou sua fiança", "Houve um terremoto"], c: 1 },
+            { q: "O que aconteceu com Herodes por aceitar a adoração do povo e não dar glória a Deus?", options: ["Ficou cego", "Foi comido de vermes e morreu", "Foi deposto por César", "Perdeu a fala"], c: 1 },
+            { q: "Quem viajou com Paulo e Barnabé na 1ª viagem missionária, mas desistiu no meio?", options: ["Silas", "Timóteo", "Lucas", "João Marcos"], c: 3 },
+            { q: "Em Listra, por quais deuses gregos Paulo e Barnabé foram confundidos?", options: ["Apolo e Ares", "Zeus e Hermes", "Poseidon e Hades", "Dionísio e Hércules"], c: 1 },
+            { q: "Qual foi a grande decisão do Concílio de Jerusalém (Atos 15)?", options: ["Que Jesus voltaria naquele ano", "Que os gentios não precisam ser circuncidados para serem salvos", "Que a igreja deveria se mudar para Roma", "Que todos deveriam vender seus bens"], c: 1 },
+            { q: "Quem Paulo escolheu como companheiro para sua 2ª viagem, após se separar de Barnabé?", options: ["Marcos", "Lucas", "Silas", "Apolos"], c: 2 },
+            { q: "O que Paulo e Silas estavam fazendo na prisão em Filipos à meia-noite?", options: ["Dormindo", "Chorando e reclamando", "Orando e cantando hinos a Deus", "Planejando uma fuga"], c: 2 },
+            { q: "Qual o nome da vendedora de púrpura que se converteu em Filipos?", options: ["Safira", "Lídia", "Priscila", "Marta"], c: 1 },
+            { q: "No Areópago em Atenas, Paulo fez um discurso citando um altar dedicado a quem?", options: ["Ao Deus Desconhecido", "A César", "Aos deuses do Olimpo", "Ao rei Davi"], c: 0 },
+            { q: "Qual casal, que fazia tendas, trabalhou com Paulo em Corinto?", options: ["Ananias e Safira", "Áquila e Priscila", "Félix e Drusila", "José e Maria"], c: 1 },
+            { q: "O que os novos convertidos em Éfeso fizeram com seus livros de feitiçaria?", options: ["Venderam", "Guardaram", "Deram a Paulo", "Queimaram-nos publicamente"], c: 3 },
+            { q: "Qual jovem adormeceu, caiu do terceiro andar e foi ressuscitado por Paulo?", options: ["Timóteo", "Êutico", "Tito", "Marcos"], c: 1 },
+            { q: "Na ilha de Malta, após o naufrágio, o que aconteceu com Paulo ao pegar lenha?", options: ["Achou um tesouro", "Foi picado por uma víbora", "Caiu no fogo", "Foi atacado por piratas"], c: 1 }
+        ];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let userName = "";
+        
+        // Exatamente 15 questões. Pontuação máxima 150 -> Multiplicador 100/15 para dar 100 no final
+        const QTY_QUESTIONS = 15;
+        const POINTS_PER_Q = 100 / QTY_QUESTIONS; 
+
+        function startQuiz() {
+            const nameInput = document.getElementById('playerName');
+            if (nameInput.value.trim() === "") {
+                alert("Por favor, digite seu nome para entrar no Ranking!");
+                return;
+            }
+            userName = nameInput.value;
+
+            const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
+            currentQuestions = shuffled.slice(0, QTY_QUESTIONS);
+            
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = currentQuestions[currentIndex];
+            document.getElementById('currentQ').innerText = currentIndex + 1;
+            document.getElementById('questionText').innerText = q.q;
+            
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full bg-slate-800/80 border border-slate-600 rounded-lg p-4 text-left text-slate-300 transition duration-300 font-sans text-lg";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(btn, idx, q.c);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.disabled = true);
+
+            if (selected === correct) {
+                btn.classList.add('correct', 'text-white', 'font-bold');
+                score += POINTS_PER_Q;
+                document.getElementById('scoreVal').innerText = Math.round(score);
+            } else {
+                btn.classList.add('wrong', 'text-white');
+                buttons[correct].classList.add('correct', 'text-white');
+            }
+
+            setTimeout(() => {
+                currentIndex++;
+                if (currentIndex < QTY_QUESTIONS) {
+                    loadQuestion();
+                } else {
+                    finishQuiz();
+                }
+            }, 1500);
+        }
+
+        function finishQuiz() {
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+            
+            let finalPoints = Math.round(score);
+            document.getElementById('finalScore').innerText = finalPoints;
+
+            if (finalPoints === 100) {
+                document.getElementById('resultIcon').classList.add('celebration');
+            }
+
+            saveScore(finalPoints);
+        }
+
+        function saveScore(finalPoints) {
+            const formData = new FormData();
+            formData.append('acao', 'salvar_quiz_atos');
+            formData.append('nome', userName);
+            formData.append('pontos', finalPoints);
+            formData.append('acertos', Math.round(finalPoints / POINTS_PER_Q));
+
+            fetch('api.php', { method: 'POST', body: formData })
+                .then(() => loadRanking());
+        }
+
+        function loadRanking() {
+            fetch('api.php?acao=ranking_atos')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById('rankingList');
+                    list.innerHTML = '';
+                    
+                    let currentRank = 1;
+
+                    data.forEach((p, index) => {
+                        if (index > 0 && p.pontos < data[index - 1].pontos) {
+                            currentRank++;
+                        }
+
+                        let rankIcon = currentRank + 'º';
+                        let myClass = p.nome === userName ? 'text-cyan-400 font-bold bg-cyan-500/10' : 'text-slate-300';
+                        
+                        if(currentRank === 1) rankIcon = '🥇';
+                        if(currentRank === 2) rankIcon = '🥈';
+                        if(currentRank === 3) rankIcon = '🥉';
+                        
+                        list.innerHTML += `
+                            <li class="flex justify-between items-center border-b border-slate-800 py-2 px-2 rounded ${myClass}">
+                                <span>${rankIcon} ${p.nome}</span>
+                                <span>${p.pontos} pts</span>
+                            </li>
+                        `;
+                    });
+                });
+        }
+    </script>
+</body>
+</html>

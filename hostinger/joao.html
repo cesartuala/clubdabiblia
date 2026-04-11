@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evangelho de João | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] },
+                    colors: { divine: { 400: '#FBC02D' } }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0f172a; color: #e2e8f0; overflow-x: hidden; }
+        .glass-panel { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .gold-glow { text-shadow: 0 0 15px rgba(251, 192, 45, 0.4); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .rich-text strong { color: #FBC02D; font-weight: 700; }
+        .rich-text .ref { color: #fbbf24; font-size: 0.9em; font-family: monospace; background: rgba(251, 191, 36, 0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(251, 191, 36, 0.2); }
+        .rich-text ul { list-style-type: disc; padding-left: 20px; margin-top: 15px; margin-bottom: 15px; }
+        .rich-text li { margin-bottom: 12px; line-height: 1.8; text-align: justify; }
+        .rich-text p { margin-bottom: 20px; line-height: 1.9; text-align: justify; hyphens: auto; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #FBC02D; }
+
+        .recording-pulse { animation: recPulse 1.5s infinite; background-color: #ef4444; border-color: #ef4444; color: white; }
+        @keyframes recPulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+        @keyframes pop { 50% { transform: scale(1.4); } }
+        .reacted-anim { animation: pop 0.3s ease-out; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="fixed top-0 w-full z-50 p-4 md:p-6 flex flex-col md:flex-row justify-between items-center bg-gradient-to-b from-black/95 to-black/80 backdrop-blur-md border-b border-white/5 transition-all">
+        
+        <div class="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto justify-between md:justify-start">
+            <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 border border-amber-500/50 text-amber-500 hover:bg-amber-500 hover:text-black transition-all shadow-[0_0_15px_rgba(251,192,45,0.1)] hover:shadow-[0_0_20px_rgba(251,192,45,0.4)]" title="Voltar para a Capa">
+                <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+                <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-book-bible text-amber-500 text-xl md:text-2xl"></i>
+                <span class="font-serif text-white text-lg md:text-xl tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto justify-end">
+            <span class="hidden md:inline text-xs text-slate-400 uppercase tracking-widest">Navegar:</span>
+            <select id="chapterSelect" onchange="loadChapter(this.value)" class="w-full md:w-auto bg-slate-900 text-amber-400 border border-amber-500/30 rounded px-4 py-2 text-sm uppercase tracking-widest focus:outline-none focus:border-amber-500 cursor-pointer hover:bg-slate-800 transition">
+                <option value="intro_book">★ Sobre o Livro</option>
+                <option value="intro_author">✎ Sobre o Autor</option>
+                <option disabled>──────────</option>
+                <option value="1">Capítulo 01</option>
+                <option value="2">Capítulo 02</option>
+                <option value="3">Capítulo 03</option>
+                <option value="4">Capítulo 04</option>
+                <option value="5">Capítulo 05</option>
+                <option value="6">Capítulo 06</option>
+                <option value="7">Capítulo 07</option>
+                <option value="8">Capítulo 08</option>
+                <option value="9">Capítulo 09</option>
+                <option value="10">Capítulo 10</option>
+                <option value="11">Capítulo 11</option>
+                <option value="12">Capítulo 12</option>
+                <option value="13">Capítulo 13</option>
+                <option value="14">Capítulo 14</option>
+                <option value="15">Capítulo 15</option>
+                <option value="16">Capítulo 16</option>
+                <option value="17">Capítulo 17</option>
+                <option value="18">Capítulo 18</option>
+                <option value="19">Capítulo 19</option>
+                <option value="20">Capítulo 20</option>
+                <option value="21">Capítulo 21</option>
+            </select>
+        </div>
+    </nav>
+
+    <header class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-32 md:pt-20">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=2094&auto=format&fit=crop')] bg-cover bg-center opacity-20"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a]/80 to-transparent"></div>
+        
+        <div class="z-10 reveal active space-y-4 max-w-5xl w-full">
+            <h2 class="text-amber-400 tracking-[0.5em] text-[10px] md:text-sm uppercase animate-pulse mb-4">Clube da Bíblia Apresenta</h2>
+            
+            <div id="dateBadge" class="hidden inline-flex items-center gap-2 border border-amber-500/50 rounded-full px-4 py-1 mb-4 bg-amber-500/10 backdrop-blur-sm transition-all duration-700 opacity-0">
+                <i class="fa-regular fa-calendar text-amber-400 text-xs"></i>
+                <span class="text-amber-300 text-xs tracking-widest uppercase font-bold">Leitura: <span id="dateValue" class="text-white"></span></span>
+            </div>
+
+            <h1 id="heroTitle" class="font-serif text-3xl md:text-7xl text-white mb-2 gold-glow transition-all duration-700 uppercase leading-tight px-2">
+                </h1>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 text-slate-400 mt-8 pt-8 border-t border-white/5 w-full max-w-3xl mx-auto">
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Idealizado por</p>
+                    <strong class="text-amber-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-amber-300 transition">Fellipe Gomes Andrade</strong>
+                </div>
+                <span class="hidden md:block h-8 w-[1px] bg-gradient-to-b from-transparent via-slate-600 to-transparent"></span>
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Desenvolvido por</p>
+                    <strong class="text-amber-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-amber-300 transition">Cesar Tuala</strong>
+                </div>
+            </div>
+
+            <p id="heroDesc" class="text-sm md:text-xl text-slate-300 max-w-2xl mx-auto pt-8 font-light italic transition-all duration-700 px-4">
+                </p>
+            
+            <div class="pt-10">
+                <button onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" class="animate-bounce text-amber-500 text-2xl">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="content" class="max-w-7xl mx-auto px-4 py-10 md:py-20 space-y-20 md:space-y-32 min-h-screen">
+        </main>
+
+    <section id="community-section" class="w-full bg-slate-900 border-t-4 border-amber-600 py-16 mb-0 relative shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <h3 class="font-serif text-3xl md:text-4xl text-amber-500 mb-2 uppercase tracking-widest gold-glow">
+                    <i class="fa-solid fa-users-line mr-3"></i>Comunidade
+                </h3>
+                <p class="text-slate-400 text-sm italic">"Compartilhe o que Deus falou ao seu coração"</p>
+                <div class="h-1 w-24 bg-gradient-to-r from-transparent via-amber-600 to-transparent mx-auto mt-4"></div>
+            </div>
+
+            <div class="glass-panel p-6 md:p-8 rounded-xl mb-12 border border-slate-700 shadow-2xl bg-slate-800/60">
+                <form id="commentForm" class="space-y-5">
+                    <input type="hidden" id="formChapterKey" name="capitulo">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="col-span-1">
+                            <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Nome</label>
+                            <input type="text" name="nome" required class="w-full bg-slate-900/80 border border-slate-600 rounded px-4 py-3 text-white focus:border-amber-500 focus:outline-none transition">
+                        </div>
+                        
+                        <div class="flex gap-3 col-span-1 md:col-span-2 items-end">
+                            <label class="flex-1 cursor-pointer bg-slate-700/50 border border-slate-600 hover:border-amber-500 hover:bg-slate-700 rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-camera group-hover:text-amber-400"></i> Foto
+                                <input type="file" name="foto" accept="image/*" class="hidden" onchange="previewFile(this)">
+                            </label>
+                            
+                            <button type="button" id="recordBtn" class="flex-1 bg-slate-700/50 border border-slate-600 hover:border-red-500 hover:bg-slate-700 rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-microphone group-hover:text-red-400"></i> <span id="recordText">Gravar Áudio</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="filePreview" class="text-xs text-amber-400 hidden bg-slate-900 p-2 rounded border border-amber-500/30"></div>
+
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Comentário</label>
+                        <textarea name="mensagem" class="w-full bg-slate-900/80 border border-slate-600 rounded px-4 py-3 text-white focus:border-amber-500 focus:outline-none h-28 resize-none transition"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white font-bold py-4 rounded-lg transition uppercase tracking-[0.2em] text-sm shadow-lg shadow-black/50 transform hover:-translate-y-1">
+                        Publicar Comentário
+                    </button>
+                </form>
+            </div>
+
+            <div id="commentsList" class="space-y-6"></div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-800 bg-slate-950 py-12 text-center relative z-10">
+        <div class="flex flex-col items-center justify-center space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="fa-solid fa-book-bible text-amber-600 text-xl"></i>
+                <span class="font-serif text-slate-300 text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+            
+            <div class="text-slate-500 text-xs flex flex-col md:flex-row gap-4 md:gap-8 items-center justify-center mt-4">
+                <div class="flex flex-col md:flex-row items-center gap-1">
+                    <span class="uppercase tracking-widest text-[10px] opacity-70">Idealização:</span>
+                    <strong class="text-amber-500 tracking-wider">Fellipe Gomes Andrade</strong>
+                </div>
+                <span class="hidden md:inline text-slate-700">|</span>
+                <div class="flex flex-col md:flex-row items-center gap-1">
+                    <span class="uppercase tracking-widest text-[10px] opacity-70">Desenvolvimento:</span>
+                    <strong class="text-amber-500 tracking-wider">Cesar Tuala</strong>
+                </div>
+            </div>
+
+            <p class="text-slate-700 text-[10px] tracking-widest uppercase mt-4">&copy; 2026 Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="imageModal" class="fixed inset-0 z-[100] bg-black/95 hidden flex justify-center items-center p-4 backdrop-blur-sm transition-opacity duration-300" onclick="closeImage()">
+        <div class="relative max-w-4xl w-full flex justify-center">
+            <button onclick="closeImage()" class="absolute -top-12 right-0 text-white text-3xl hover:text-amber-500 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modalImg" src="" class="max-h-[85vh] max-w-full rounded-lg shadow-[0_0_50px_rgba(251,192,45,0.3)] border-2 border-amber-500/20 object-contain">
+        </div>
+    </div>
+
+    <script>
+        // === DADOS COMPLETOS (INTRO + CAP 1-21) ===
+        const bibleData = {
+            "intro_book": {
+                title: "O EVANGELHO DE JESUS SEGUNDO JOÃO",
+                date: null,
+                desc: "<span class='text-xs uppercase tracking-[0.3em] text-amber-500 not-italic block mb-4'>Introdução: Sobre o Livro</span>\"Estes, porém, foram escritos para que creiais que Jesus é o Cristo.\"",
+                blocks: [
+                    {
+                        title: "Visão Geral e Propósito",
+                        verse: "Mas estes foram escritos para que vocês creiam que Jesus é o Cristo, o Filho de Deus e, crendo, tenham vida em seu nome. (João 20:31)",
+                        exegesis: `
+                            <p>O Quarto Evangelho permanece como uma das obras mais profundas da literatura mundial, sendo singular entre os escritos canônicos. Enquanto os Evangelhos Sinóticos (Mateus, Marcos e Lucas) compartilham uma visão comum e focam extensivamente no ministério de Jesus na Galileia, João transporta o leitor para uma dimensão teológica mais elevada, focando nos longos discursos e nos conflitos intensos ocorridos em Jerusalém e na Judeia. Clemente de Alexandria, já no século II, chamava-o de "o Evangelho Espiritual", percebendo que João não estava apenas narrando fatos, mas interpretando a essência divina por trás deles.</p>
+                            <ul>
+                                <li><strong>O Propósito Central:</strong> Diferente de uma biografia moderna, João declara explicitamente sua intenção apologética e evangelística em <span class="ref">Jo 20:31</span>. O objetivo não é apenas informar, mas gerar "pisteuo" (fé) salvadora. Ele seleciona cuidadosamente sete "Sinais" (*semeia*) — milagres que funcionam como placas de sinalização apontando para a divindade de Jesus.</li>
+                                <li><strong>Vocabulário Teológico:</strong> O livro é marcado por dualismos profundos: Luz vs. Trevas, Vida vs. Morte, Verdade vs. Mentira. Palavras-chave aparecem com frequência impressionante: "Crer" (usado 98 vezes, contra 34 nos sinóticos somados), "Vida" (36 vezes) e "Mundo" (78 vezes).</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2070&auto=format&fit=crop"
+                    },
+                    {
+                        title: "Estrutura Literária",
+                        verse: "O livro é dividido em quatro partes principais: O Prólogo, O Livro dos Sinais, O Livro da Glória e O Epílogo.",
+                        exegesis: `
+                            <p>A arquitetura literária de João é meticulosamente planejada, dividindo-se em duas grandes metades que refletem o movimento do ministério de Cristo. Esta estrutura ajuda o leitor a entender a progressão da revelação divina:</p>
+                            <ul>
+                                <li><strong>1. O Livro dos Sinais (Cap. 1-12):</strong> Cobre um período de cerca de três anos do ministério público. Aqui, Jesus revela Sua glória às nações e ao povo judeu através de milagres e discursos públicos. Esta seção termina tragicamente com a rejeição nacional de Israel, resumida em <span class="ref">Jo 12:37</span>: "Embora tivesse feito tantos sinais diante deles, não criam nele".</li>
+                                <li><strong>2. O Livro da Glória (Cap. 13-20):</strong> O tempo desacelera drasticamente. Estes capítulos cobrem apenas alguns dias — a última semana de Jesus. O foco muda do público para o privado (os discípulos). Paradoxalmente, João trata a crucificação não como uma derrota humilhante, mas como a "glorificação" do Filho, o momento em que Ele é "levantado" para atrair todos a si.</li>
+                                <li><strong>Os 7 "Eu Sou":</strong> Estruturando sua cristologia, João registra sete declarações onde Jesus apropria-se do Nome Divino revelado a Moisés ("EU SOU" - YHWH, <span class="ref">Êx 3:14</span>), combinando-o com metáforas de necessidade humana: Pão da Vida, Luz do Mundo, Porta, Bom Pastor, Ressurreição, Caminho e Videira Verdadeira.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=2070&auto=format&fit=crop"
+                    }
+                ]
+            },
+            "intro_author": {
+                title: "SOBRE O AUTOR",
+                date: null,
+                desc: "\"Este é o discípulo que dá testemunho destas coisas e que as escreveu.\"",
+                blocks: [
+                    {
+                        title: "João, o Filho do Trovão",
+                        verse: "Jesus deu-lhes o nome de Boanerges, que significa 'filhos do trovão'. (Marcos 3:17)",
+                        exegesis: `
+                            <p>Embora o texto não mencione seu nome explicitamente, identificando-o apenas como "o discípulo a quem Jesus amava" (<span class="ref">Jo 13:23</span>, <span class="ref">Jo 21:20</span>), a tradição da igreja primitiva (Ireneu, Policarpo) e as evidências internas apontam solidamente para João, filho de Zebedeu e Salomé.</p>
+                            <ul>
+                                <li><strong>De Pescador a Apóstolo:</strong> Originalmente sócio de Pedro e André no comércio de pesca no Mar da Galileia <span class="ref">Lc 5:10</span>, João deixou tudo para seguir o Mestre. Ele pertencia ao "círculo íntimo" (Pedro, Tiago e João), tendo o privilégio exclusivo de presenciar eventos como a ressurreição da filha de Jairo, a Transfiguração <span class="ref">Mt 17:1</span> e a agonia no Getsêmani.</li>
+                                <li><strong>Transformação de Caráter:</strong> Na juventude, João demonstrava um temperamento volátil e sectário, chegando a sugerir que fogo descesse do céu para consumir uma vila samaritana <span class="ref">Lc 9:54</span>, o que lhe rendeu o apelido de "Boanerges" (Filho do Trovão). O Evangelho e suas cartas mostram sua incrível metamorfose no "Apóstolo do Amor", cuja ênfase principal tornou-se a caridade fraterna e a comunhão com Deus.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1500674425229-f692875b0ab7?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                    },
+                    {
+                        title: "O Teólogo da Águia",
+                        verse: "O Verbo se fez carne e habitou entre nós. (João 1:14)",
+                        exegesis: `
+                            <p>Na iconografia cristã clássica, os quatro evangelistas são representados pelos seres viventes de Ezequiel e Apocalipse. João é invariavelmente simbolizado pela Águia. Por que? Porque enquanto os outros evangelistas caminham na terra narrando a história humana, a teologia de João voa nas alturas celestiais, encarando o sol da divindade de Cristo sem piscar.</p>
+                            <ul>
+                                <li><strong>O Combate às Heresias:</strong> Escrevendo provavelmente de Éfeso no final do primeiro século (85-95 d.C.), João enfrentava o nascente gnosticismo (docetismo), que negava a realidade física de Jesus. Por isso, ele enfatiza tanto a divindade ("o Verbo era Deus") quanto a humanidade tangível ("o que nossas mãos tocaram" - <span class="ref">1 Jo 1:1</span>).</li>
+                                <li><strong>O Legado Joanino:</strong> João foi o único apóstolo a morrer de causas naturais, atingindo idade avançada, embora tenha sofrido exílio na ilha de Patmos, onde recebeu a visão do Apocalipse <span class="ref">Ap 1:9</span>. Seus escritos formam a espinha dorsal da doutrina cristã sobre a Trindade e a Encarnação.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1506677383390-84397709dfa7?q=80&w=1068&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    }
+                ]
+            },
+            1: {
+                title: "O VERBO ETERNO",
+                date: "12/01",
+                desc: "\"No princípio era o Verbo, e o Verbo estava com Deus.\"",
+                blocks: [
+                    {
+                        title: "A Divindade do Logos",
+                        verse: "No princípio era aquele que é a Palavra... e a Palavra era Deus. (João 1:1)",
+                        exegesis: `
+                            <p>O Prólogo de João (vv. 1-18) é considerado por muitos teólogos como o texto mais sublime de toda a Escritura. João rompe com a narrativa cronológica e nos leva à eternidade passada. Ele introduz o termo grego <strong>Logos</strong> (Palavra/Verbo), um conceito que servia de ponte perfeita entre judeus e gregos. Para o grego, o Logos era a "Razão Cósmica" que ordenava o universo; para o judeu, era a poderosa "Palavra do Senhor" (Dabar Yahweh) que criou os céus <span class="ref">Sl 33:6</span>. Jesus é a plenitude de ambos.</p>
+                            <ul>
+                                <li><strong>Preexistência Absoluta:</strong> A frase "No princípio" ecoa <span class="ref">Gênesis 1:1</span>, mas com uma diferença crucial: quando o tempo começou, o Verbo *já era*. O verbo grego "era" (imperfecto) denota existência contínua. Nunca houve um tempo em que o Filho não existisse.</li>
+                                <li><strong>Distinção e Unidade:</strong> João protege a doutrina da Trindade em duas frases curtas. "O Verbo estava com Deus" (distinção de pessoas: Pai e Filho face a face) e "o Verbo era Deus" (unidade de essência). Ele não diz que o Verbo era "um deus" (como sugerem algumas seitas), nem que era "o Pai", mas que possuía a mesma natureza divina (Theos).</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2111&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Encarnação (União Hipostática)",
+                        verse: "Aquele que é a Palavra tornou-se carne e viveu entre nós. (João 1:14)",
+                        exegesis: `
+                            <p>Este é o versículo central da história da salvação. O Infinito tornou-se finito; o Eterno entrou no tempo; o Criador tornou-se criatura, sem deixar de ser Deus. Teologicamente, chamamos isso de <strong>União Hipostática</strong>: Jesus é 100% Deus e 100% homem, duas naturezas unidas em uma só pessoa, sem confusão e sem separação.</p>
+                            <ul>
+                                <li><strong>Tabernáculo Vivo:</strong> O verbo grego usado para "viveu" ou "habitou" é <em>skenoo</em>, que literalmente significa "armou sua tenda" ou "tabernaculou". João está fazendo uma conexão direta com o Tabernáculo do deserto em <span class="ref">Êxodo 40:34</span>, onde a nuvem da Glória (Shekinah) habitava. Agora, a Glória de Deus não está numa tenda de peles de animais, mas na carne humana de Jesus.</li>
+                                <li><strong>Graça sobre Graça:</strong> Moisés nos deu a Lei, que revela o pecado, mas Jesus nos trouxe a "Graça e a Verdade" (<span class="ref">Jo 1:17</span>), que removem o pecado. Nele, vemos o rosto de Deus que ninguém podia ver e continuar vivo no Antigo Testamento <span class="ref">Êx 33:20</span>.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/16/unsplash_526360a842e20_1.JPG?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    },
+                    {
+                        title: "O Cordeiro de Deus",
+                        verse: "Vejam! É o Cordeiro de Deus, que tira o pecado do mundo! (João 1:29)",
+                        exegesis: `
+                            <p>João Batista, o precursor, identifica Jesus com um título carregado de teologia sacrificial. Ao chamá-lo de "Cordeiro de Deus", ele funde várias imagens do Antigo Testamento: o cordeiro pascal que protegeu Israel no Egito (<span class="ref">Êxodo 12</span>), o cordeiro do sacrifício diário no Templo e, principalmente, o Servo Sofredor de <span class="ref">Isaías 53:7</span>, que foi levado ao matadouro mudo.</p>
+                            <ul>
+                                <li><strong>Expiação Universal:</strong> A declaração é revolucionária: Ele tira o pecado do "mundo", não apenas de Israel. A obra de Cristo tem alcance cósmico e transcultural. Note o singular: Ele tira o "pecado" (a raiz, a condição pecaminosa da humanidade), e não apenas os "pecados" (frutos/atos isolados).</li>
+                                <li><strong>O Batismo do Espírito:</strong> João Batista também introduz Jesus como aquele que "batiza com o Espírito Santo" (<span class="ref">Jo 1:33</span>). Enquanto o batismo de João era com água para arrependimento (preparatório), o de Jesus seria uma imersão na própria vida de Deus (regenerador).</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://media.istockphoto.com/id/1841903774/pt/foto/a-lost-sheep-on-cross-sunset-background.webp?a=1&b=1&s=612x612&w=0&k=20&c=lQ916whoQNo7xgm_N5_EmtW-oPsCftYVd9lmAMWtuac="
+                    }
+                ]
+            },
+            2: {
+                title: "O NOVO VINHO",
+                date: "13/01",
+                desc: "\"Manifestou a sua glória, e os seus discípulos creram nele.\"",
+                blocks: [
+                    {
+                        title: "Superando a Antiga Aliança",
+                        verse: "Disse-lhe Jesus: Enchei de água essas talhas... transformou a água em vinho. (João 2:6-10)",
+                        exegesis: `
+                            <p>O primeiro milagre de Jesus, ou "sinal" (*semeion*), ocorre num casamento em Caná. Não é por acaso que Jesus escolhe uma festa e não um funeral ou o deserto. Ele veio trazer a alegria do Reino. O milagre é uma profecia encenada sobre a transição das alianças.</p>
+                            <ul>
+                                <li><strong>O Simbolismo das Talhas:</strong> João detalha que eram seis talhas de pedra usadas para a "purificação dos judeus". Elas representam a Antiga Aliança e a Lei cerimonial: frias, pesadas e incapazes de gerar vida ou alegria interna. A água havia acabado, simbolizando o esgotamento do judaísmo rabínico da época.</li>
+                                <li><strong>O Vinho da Graça:</strong> Jesus transforma a água da lei no vinho da graça. A profecia de <span class="ref">Amós 9:13</span> dizia que na era messiânica os montes destilariam mosto. O vinho criado por Jesus foi "o melhor", indicando que a Nova Aliança é superior em qualidade e eficácia. Ele guardou o melhor para o final dos tempos.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/43/d2/fa/43d2fa9bef2972df5bb565f4274ab13e.jpg"
+                    },
+                    {
+                        title: "O Verdadeiro Templo",
+                        verse: "Destruam este templo, e eu o levantarei em três dias. (João 2:19)",
+                        exegesis: `
+                            <p>A purificação do Templo é um ato de julgamento messiânico. Movido pelo zelo profético do <span class="ref">Salmo 69:9</span>, Jesus interrompe o comércio religioso que impedia os gentios de orarem. Mas o ponto alto é a controvérsia sobre sua autoridade.</p>
+                            <ul>
+                                <li><strong>Substituição do Templo:</strong> Quando desafiado, Jesus profetiza sua morte e ressurreição usando a metáfora do Santuário. "Destruam este templo (o corpo Dele)". Teologicamente, isso é monumental: Jesus está dizendo que o local de encontro entre Deus e o homem não é mais um edifício de pedras em Jerusalém, mas a Sua própria Pessoa.</li>
+                                <li><strong>Cristologia da Ressurreição:</strong> Ele diz "Eu o levantarei", atestando sua divindade e poder sobre a própria morte (embora outras passagens digam que o Pai e o Espírito o ressuscitaram, mostrando a ação trinitária). Com a ressurreição, o véu se rasga e o corpo de Cristo torna-se o novo centro de adoração.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://plus.unsplash.com/premium_photo-1733306520273-a877dcc37e89?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cmVzc3VycmVpJUMzJUE3JUMzJUEzb3xlbnwwfHwwfHx8MA%3D%3D"
+                    }
+                ]
+            },
+            3: {
+                title: "REGENERAÇÃO",
+                date: "14/01",
+                desc: "\"Necessário vos é nascer de novo.\"",
+                blocks: [
+                    {
+                        title: "O Novo Nascimento (Monergismo)",
+                        verse: "Ninguém pode ver o Reino de Deus, se não nascer de novo. (João 3:3)",
+                        exegesis: `
+                            <p>O diálogo noturno com Nicodemos, um "príncipe dos judeus" e membro do Sinédrio, ataca o coração da religiosidade humana. Nicodemos achava que sua descendência de Abraão e sua observância da Lei garantiam o Reino. Jesus demole essa certeza.</p>
+                            <ul>
+                                <li><strong>Nascer do Alto:</strong> A expressão grega <em>anothen</em> pode significar "de novo" ou "do alto". Jesus ensina o <strong>Monergismo</strong>: a regeneração é uma obra exclusiva e soberana de Deus. Assim como um bebê não decide nascer fisicamente, o homem morto espiritualmente não decide nascer espiritualmente sem a iniciativa divina.</li>
+                                <li><strong>Água e Espírito:</strong> Esta não é uma referência ao batismo cristão (que nem existia ainda), mas uma alusão direta a <span class="ref">Ezequiel 36:25-27</span>. A "água" purifica das velhas impurezas e o "Espírito" implanta um novo coração capaz de obedecer. Sem essa transformação radical da natureza, a religião é inútil.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1668200741768-7e3c03f94aab?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmF0aXNtbyUyMG5hcyUyMGFndWFzfGVufDB8fDB8fHww"
+                    },
+                    {
+                        title: "O Amor Salvífico e a Cruz",
+                        verse: "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito... (João 3:16)",
+                        exegesis: `
+                            <p>Este versículo, muitas vezes chamado de "o evangelho em miniatura", estabelece a motivação suprema da redenção: o amor benevolente do Pai. Não é um amor sentimental, mas um amor que *entrega*. A palavra "deu" (*didomi*) aqui implica um sacrifício total.</p>
+                            <ul>
+                                <li><strong>A Tipologia da Serpente:</strong> Antes do v.16, Jesus faz uma comparação estranha: "Como Moisés levantou a serpente no deserto, assim importa que o Filho do homem seja levantado" (<span class="ref">Jo 3:14</span>). Em <span class="ref">Números 21</span>, o povo morria picado por serpentes (pecado). Deus mandou fazer uma serpente de bronze (símbolo do julgamento). Quem olhasse com fé, vivia.</li>
+                                <li><strong>A Aplicação:</strong> Jesus se fez "pecado por nós" (<span class="ref">2 Co 5:21</span>). Ele foi levantado na cruz como a serpente de bronze. A salvação vem não pelo esforço de curar a si mesmo, mas pelo simples ato de "olhar" (crer) para o Crucificado. Quem crê, já tem a vida eterna e não entra em juízo.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://cruzartesacra.com.br/wp-content/uploads/2018/03/crucifixion-religion-jesus-christ-art-painting-painting-by-andres-on-crucifixion-pictures-of-jesus.jpg"
+                    }
+                ]
+            },
+            4: {
+                title: "ÁGUA VIVA",
+                date: "15/01",
+                desc: "\"Mas aquele que beber da água que eu lhe der nunca terá sede.\"",
+                blocks: [
+                    {
+                        title: "A Fonte Eterna e a Graça Irresistível",
+                        verse: "A água que eu lhe der se tornará nele uma fonte de água a jorrar para a vida eterna. (João 4:14)",
+                        exegesis: `
+                            <p>Jesus propositalmente viaja por Samaria, um território hostil, para encontrar uma única mulher. O encontro ocorre ao meio-dia ("a hora sexta"), sob o sol escaldante, simbolizando a sede exaustiva da alma humana em busca de satisfação nas coisas do mundo (os maridos anteriores).</p>
+                            <ul>
+                                <li><strong>A Água Viva:</strong> Jesus contrasta a água parada do Poço de Jacó (religião, tradição, esforço humano) com a "Água Viva" (o Espírito Santo). A água do poço exige retorno constante ("voltará a ter sede"), mas a graça de Cristo satisfaz ontologicamente a alma. Torna-se uma fonte interna, gerando vida de dentro para fora.</li>
+                                <li><strong>Quebra de Barreiras:</strong> Jesus rompe três tabus gigantescos: o étnico (judeus não falavam com samaritanos), o de gênero (rabinos não ensinavam mulheres em público) e o moral (ela era uma adúltera ostracizada). Isso demonstra que a graça de Deus ignora hierarquias humanas e busca os indignos.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/3a/31/7c/3a317c2152535e031f90caa2dc00c833.jpg"
+                    },
+                    {
+                        title: "Adoração em Espírito e Verdade",
+                        verse: "Os verdadeiros adoradores adorarão o Pai em espírito e em verdade. (João 4:23)",
+                        exegesis: `
+                            <p>A mulher tenta desviar a conversa para debates teológicos sobre o local correto de culto (Monte Gerizim vs. Jerusalém). Jesus aproveita para inaugurar uma nova era na história da religião. Ele decreta o fim da "geografia sagrada".</p>
+                            <ul>
+                                <li><strong>Natureza de Deus:</strong> "Deus é Espírito" (<span class="ref">Jo 4:24</span>). Ele não tem corpo físico limitado ao espaço; portanto, a adoração não pode ser confinada a templos feitos por mãos humanas.</li>
+                                <li><strong>Binômio da Adoração:</strong> A verdadeira adoração exige "Espírito" (coração, emoção santificada, interioridade guiada pelo Espírito Santo) e "Verdade" (doutrina correta, revelação bíblica, conhecimento de quem Deus é). Emoção sem verdade é fanatismo; verdade sem espírito é ortodoxia morta. O Pai "procura" ativamente tais adoradores.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1483048135245-05d6017c6cef?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YWpvZWxoYWRvc3xlbnwwfHwwfHx8MA%3D%3D"
+                    }
+                ]
+            },
+            5: {
+                title: "AUTORIDADE DIVINA",
+                date: "16/01",
+                desc: "\"Meu Pai trabalha até agora, e eu trabalho também.\"",
+                blocks: [
+                    {
+                        title: "Soberania sobre o Sábado e a Lei",
+                        verse: "Levante-se! Pegue a sua maca e ande. (João 5:8)",
+                        exegesis: `
+                            <p>O terceiro sinal ocorre no tanque de Betesda, um local de superstição onde multidões esperavam o movimento das águas. Jesus foca em um homem paralisado há 38 anos. Este número não é aleatório; corresponde exatamente ao tempo que Israel vagou no deserto por causa da incredulidade (<span class="ref">Dt 2:14</span>). O homem é um símbolo de Israel sob a Lei: impotente, esperando um milagre que a água não pode realizar.</p>
+                            <ul>
+                                <li><strong>A Defesa de Jesus:</strong> Ao curar no sábado, Jesus é acusado de violar a Lei. Sua defesa é chocante: "Meu Pai trabalha até agora, e eu trabalho também" (<span class="ref">Jo 5:17</span>). A teologia judaica admitia que Deus "trabalhava" no sábado (dando vida, julgando, sustentando o cosmos), pois se Ele parasse, o universo colapsaria. Jesus reivindica para si essa mesma prerrogativa divina. Ele é Senhor do Sábado.</li>
+                                <li><strong>Graça Soberana:</strong> Jesus não curou todos no tanque. Ele escolheu um. Isso destaca a soberania da eleição divina. A pergunta "Queres ser curado?" visa despertar a fé e a responsabilidade num homem acostumado à vitimização.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/ee/39/f6/ee39f697f1a446fcdfd36982385f96d5.jpg"
+                    },
+                    {
+                        title: "A Igualdade com o Pai e o Juízo",
+                        verse: "Chamava Deus de seu próprio Pai, fazendo-se igual a Deus. (João 5:18)",
+                        exegesis: `
+                            <p>Este capítulo contém o discurso cristológico mais denso até o momento. Os líderes religiosos entenderam perfeitamente o que as seitas modernas tentam negar: ao chamar Deus de "Seu próprio Pai" (num sentido exclusivo, ontológico), Jesus estava se fazendo "igual a Deus". Em vez de negar, Jesus dobra a aposta e detalha essa igualdade funcional.</p>
+                            <ul>
+                                <li><strong>Poder de Dar Vida:</strong> Assim como o Pai ressuscita os mortos, o Filho "dá vida a quem quer" (<span class="ref">Jo 5:21</span>). Ele tem vida em Si mesmo (asseidade).</li>
+                                <li><strong>Juízo Delegado:</strong> O Pai não julga ninguém, mas confiou todo o julgamento ao Filho (<span class="ref">Jo 5:22</span>). Isso significa que, no dia final, todo ser humano estará diante de Jesus Cristo. A atitude que se tem para com Jesus hoje determina o veredito eterno. "Quem ouve a minha palavra... já passou da morte para a vida" (<span class="ref">Jo 5:24</span>). A escatologia de João é "realizada": a vida eterna começa agora, pela fé.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/d8/bf/f7/d8bff7009056d344a25256cda8e1f6e5.jpg"
+                    }
+                ]
+            },
+            6: {
+                title: "O PÃO DA VIDA",
+                date: "19/01",
+                desc: "\"Eu sou o pão da vida; aquele que vem a mim não terá fome.\"",
+                blocks: [
+                    {
+                        title: "A Multiplicação e o Misticismo",
+                        verse: "Jesus então tomou os pães e, tendo dado graças, repartiu-os entre os discípulos. (João 6:11)",
+                        exegesis: `
+                            <p>O milagre da multiplicação dos pães e peixes é o único relatado nos quatro evangelhos, tamanha sua importância. Jesus alimenta uma multidão faminta no deserto, ecoando o maná de Moisés. Contudo, a multidão busca apenas satisfação física ("Vocês me buscam porque comeram do pão e se fartaram" - v.26). Jesus redireciona o olhar deles para o alimento espiritual que não perece.</p>
+                            <ul>
+                                <li><strong>Soberania na Salvação:</strong> Neste capítulo, Jesus profere verdades duras sobre a eleição divina: "Ninguém pode vir a mim se o Pai que me enviou não o trouxer" (v.44). A salvação não inicia na vontade humana, mas na atração irresistível da graça de Deus.</li>
+                                <li><strong>Abundância:</strong> Sobraram 12 cestos cheios. O número 12 simboliza a totalidade do povo de Deus (12 tribos). Em Cristo, há graça superabundante para todo o Seu povo; ninguém sai faminto de Sua mesa.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1508612761958-e931d843da52?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "Eu Sou: Soberania sobre o Caos",
+                        verse: "Mas ele lhes disse: Sou eu; não temais. (João 6:20)",
+                        exegesis: `
+                            <p>Após alimentar a multidão, Jesus se retira ao monte e os discípulos enfrentam uma tempestade no mar. O caminhar sobre as águas não é apenas um milagre de física, mas uma teofania (aparição de Deus).</p>
+                            <ul>
+                                <li><strong>Ego Eimi:</strong> A expressão "Sou eu" no grego é <em>Ego Eimi</em>, a mesma usada para o nome divino no Êxodo. Jesus está afirmando Sua divindade sobre as águas do caos, um atributo exclusivo de YHWH no Antigo Testamento (Jó 9:8).</li>
+                                <li><strong>Acalmando o Medo:</strong> A presença de Cristo transforma o terror em paz imediata. Assim que Ele entra no barco, eles chegam ao destino. Com Jesus, a jornada, por mais turbulenta que seja, tem destino garantido.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Eucaristia Espiritual",
+                        verse: "Quem come a minha carne e bebe o meu sangue tem a vida eterna. (João 6:54)",
+                        exegesis: `
+                            <p>Esta declaração chocou os ouvintes ("Duro é este discurso, quem o pode ouvir?"). Jesus não estava pregando canibalismo, mas união mística e vital. No contexto semítico, "comer a carne" significa absorver a vida de alguém, internalizar sua essência.</p>
+                            <ul>
+                                <li><strong>Necessidade Absoluta:</strong> Assim como o corpo morre sem comida, a alma morre sem Cristo. Não basta admirar o Pão na vitrine (intelectualmente); é preciso comê-lo (apropriar-se dele pela fé).</li>
+                                <li><strong>A Divisão:</strong> A doutrina profunda divide a multidão. Muitos discípulos o abandonam. Pedro, porém, faz a confissão que define o verdadeiro crente: "Para quem iremos nós? Tu tens as palavras da vida eterna" (v.68).</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1548625361-ec85374828a2?q=80&w=1740&auto=format&fit=crop"
+                    }
+                ]
+            },
+            7: {
+                title: "RIOS DE ÁGUA VIVA",
+                date: "20/01",
+                desc: "\"Se alguém tem sede, venha a mim e beba.\"",
+                blocks: [
+                    {
+                        title: "O Tempo de Deus (Kairos)",
+                        verse: "O meu tempo ainda não chegou; mas o vosso tempo sempre está pronto. (João 7:6)",
+                        exegesis: `
+                            <p>Os irmãos de Jesus (filhos de Maria e José) o pressionam a ir à festa para se mostrar ao mundo, movidos por incredulidade e desejo de fama. Jesus recusa ser pautado pela agenda humana.</p>
+                            <ul>
+                                <li><strong>Kairos vs Chronos:</strong> Jesus opera no *kairos* (tempo oportuno, divino), não no *chronos* (tempo cronológico). Cada passo Seu em direção à cruz é milimetricamente calculado pelo Pai.</li>
+                                <li><strong>O Mundo o Odeia:</strong> Jesus explica que o mundo não pode odiar seus irmãos (pois eles pertencem ao mundo), mas O odeia porque Ele testifica que as obras do mundo são más. A luz sempre incomoda as trevas.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?q=80&w=1736&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Origem Divina",
+                        verse: "Vós me conheceis e sabeis de onde sou; e não vim de mim mesmo. (João 7:28)",
+                        exegesis: `
+                            <p>No meio da festa, Jesus sobe ao templo e ensina com autoridade, gerando perplexidade. A grande questão do capítulo é a origem do Messias. A multidão murmurava, dividida entre crer e rejeitar.</p>
+                            <ul>
+                                <li><strong>Doutrina do Pai:</strong> Jesus afirma que Seu ensino não é original d'Ele, mas dAquele que o enviou. A prova de validade de um profeta é que ele não busca a própria glória, mas a glória de quem o enviou.</li>
+                                <li><strong>Conhecimento Relacional:</strong> Ele confronta os judeus dizendo que, apesar de toda a religiosidade, eles não conhecem a Deus. Jesus O conhece porque vem d'Ele. Isso enfurece os líderes, que tentam prendê-lo, mas "ninguém lhe pôs a mão, porque ainda não era chegada a sua hora".</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1542642839-84ad17a7a1bc?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Promessa do Espírito",
+                        verse: "Do seu interior fluirão rios de água viva. (João 7:38)",
+                        exegesis: `
+                            <p>No último dia da festa, o auge da cerimônia da água (onde sacerdotes derramavam água de Siloé no altar), Jesus se levanta e grita a promessa que supera o ritual. Ele é a Rocha de onde flui a água verdadeira.</p>
+                            <ul>
+                                <li><strong>Sede Saciada e Compartilhada:</strong> A promessa tem dois lados: quem vem a Jesus tem sua sede saciada (salvação) e torna-se um canal de bênção para outros (missão). O Espírito não vem apenas *para* nós, mas *através* de nós.</li>
+                                <li><strong>A Glorificação:</strong> João nota que o Espírito só seria dado plenamente após Jesus ser "glorificado" (crucificado e ressurreto). A cruz é a comporta que libera o rio de Pentecostes.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1476842384041-a57a4f124e2e?q=80&w=1742&auto=format&fit=crop"
+                    }
+                ]
+            },
+            8: {
+                title: "A LUZ DO MUNDO",
+                date: "21/01",
+                desc: "\"E conhecereis a verdade, e a verdade vos libertará.\"",
+                blocks: [
+                    {
+                        title: "Graça Escandalosa",
+                        verse: "Aquele que dentre vós está sem pecado seja o primeiro que atire pedra. (João 8:7)",
+                        exegesis: `
+                            <p>Os fariseus trazem uma mulher apanhada em adultério não por zelo à Lei, mas para armar uma cilada. Se Jesus a perdoasse, violaria a Lei de Moisés; se a condenasse, violaria a lei romana e sua mensagem de misericórdia.</p>
+                            <ul>
+                                <li><strong>A Escrita no Chão:</strong> O silêncio de Jesus e seu ato de escrever na terra desarmam os acusadores. Ele muda o foco do pecado dela para a hipocrisia deles.</li>
+                                <li><strong>Nem eu te condeno:</strong> A graça não ignora o pecado ("Vá e não peques mais"), mas remove a condenação. Jesus é o único que tinha o direito de atirar a pedra (pois não tinha pecado), mas escolheu receber as pedras da ira de Deus na cruz em lugar dela.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1493612276216-9c5901955d43?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Luz e o Testemunho",
+                        verse: "Eu sou a luz do mundo; quem me segue não andará em trevas. (João 8:12)",
+                        exegesis: `
+                            <p>No Pátio das Mulheres, onde grandes candelabros iluminavam a festa, Jesus declara ser a Luz definitiva. A luz tem duas funções: revelar a sujeira (juízo) e guiar o caminho (salvação).</p>
+                            <ul>
+                                <li><strong>Testemunho Válido:</strong> Os fariseus alegam que o testemunho de Jesus é inválido porque Ele dá testemunho de Si mesmo. Jesus invoca a Lei (que exige duas testemunhas) e aponta o Pai como Sua segunda testemunha.</li>
+                                <li><strong>Morrer em Pecados:</strong> Jesus faz um alerta terrível: "Se não crerdes que EU SOU, morrereis nos vossos pecados" (v.24). A rejeição da divindade de Cristo é fatal.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1495615080073-6b89c9839ce0?q=80&w=1806&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Liberdade e a Paternidade",
+                        verse: "Se, pois, o Filho vos libertar, verdadeiramente sereis livres. (João 8:36)",
+                        exegesis: `
+                            <p>O debate atinge o clímax. Os judeus confiam na linhagem de Abraão, mas Jesus revela a paternidade espiritual deles: o Diabo.</p>
+                            <ul>
+                                <li><strong>Filhos do Diabo:</strong> Aqueles que rejeitam a verdade e querem matar Jesus imitam seu "pai", o diabo, que é homicida e pai da mentira (v.44). A filiação a Deus não é biológica, é espiritual.</li>
+                                <li><strong>Antes de Abraão, EU SOU:</strong> A declaração final (v.58). Jesus não diz "eu era", mas "EU SOU" (Eterno Presente). Ele reivindica existência eterna e divindade absoluta, o que leva os judeus a pegarem em pedras para matá-lo por blasfêmia.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1507646870363-22d7d74b97f0?q=80&w=1740&auto=format&fit=crop"
+                    }
+                ]
+            },
+            9: {
+                title: "VISÃO E CEGUEIRA",
+                date: "22/01",
+                desc: "\"Uma coisa sei: eu era cego e agora vejo.\"",
+                blocks: [
+                    {
+                        title: "A Teologia do Sofrimento",
+                        verse: "Nem ele pecou, nem seus pais; mas foi assim para que se manifestem nele as obras de Deus. (João 9:3)",
+                        exegesis: `
+                            <p>Os discípulos veem o cego de nascença como um problema teológico ("Quem pecou?"). Jesus o vê como uma oportunidade para a glória. Ele desmantela a teologia do "karma" ou retribuição direta que associava toda doença a pecado pessoal.</p>
+                            <ul>
+                                <li><strong>A Urgência:</strong> "Importa que façamos as obras... enquanto é dia" (v.4). Jesus sente a urgência da missão antes da "noite" (sua morte).</li>
+                                <li><strong>Soberania:</strong> O sofrimento humano, embora doloroso, está sob o controle soberano de Deus e pode ser o palco para a maior revelação de Sua graça.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1544719576-9c4297b25916?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "O Método e o Milagre",
+                        verse: "Cuspiu na terra, fez lodo com a saliva e aplicou-o aos olhos do cego. (João 9:6)",
+                        exegesis: `
+                            <p>Jesus usa métodos que ofendem a lógica humana e as regras farisaicas do sábado (fazer lodo era considerado "trabalho"). Há um eco da criação: Deus formou o homem do pó da terra; Jesus recria os olhos do cego com barro.</p>
+                            <ul>
+                                <li><strong>Obediência Ativa:</strong> A cura não foi instantânea no toque; exigiu a obediência de ir ao tanque de Siloé ("Enviado"). A fé caminha na direção da palavra de Cristo antes de ver a materialização do milagre.</li>
+                                <li><strong>Lavagem:</strong> O lavar simboliza a purificação e a iluminação do Espírito Santo. Ele foi cego e voltou vendo.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1516962215378-7fa2e137ae93?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "O Processo e a Adoração",
+                        verse: "Senhor, eu creio. E o adorou. (João 9:38)",
+                        exegesis: `
+                            <p>O capítulo narra a progressão da fé do ex-cego em contraste com a cegueira progressiva dos fariseus. O homem começa chamando Jesus de "o homem" (v.11), depois "profeta" (v.17), depois "vindo de Deus" (v.33) e finalmente "Senhor" (v.38).</p>
+                            <ul>
+                                <li><strong>Testemunho Irrefutável:</strong> "Uma coisa sei: eu era cego e agora vejo". A experiência pessoal com a graça é o argumento que a teologia morta não consegue refutar.</li>
+                                <li><strong>Julgamento Inverso:</strong> Jesus conclui que veio para que os que não veem (humildes) vejam, e os que veem (orgulhosos religiosos) se tornem cegos.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1581335028022-7936d07e997f?q=80&w=1740&auto=format&fit=crop"
+                    }
+                ]
+            },
+            10: {
+                title: "O BOM PASTOR",
+                date: "23/01",
+                desc: "\"As minhas ovelhas ouvem a minha voz; eu as conheço, e elas me seguem.\"",
+                blocks: [
+                    {
+                        title: "A Porta das Ovelhas",
+                        verse: "Eu sou a porta; se alguém entrar por mim, salvar-se-á. (João 10:9)",
+                        exegesis: `
+                            <p>No oriente antigo, em apriscos temporários no campo, não havia portão. O pastor dormia na abertura, tornando-se literalmente a "porta" física. O ladrão tenta pular o muro; o pastor é o próprio acesso.</p>
+                            <ul>
+                                <li><strong>Exclusividade:</strong> Não há múltiplos caminhos para Deus. Jesus é a única entrada legítima. Qualquer outro meio de salvação é obra de "ladrões e salteadores".</li>
+                                <li><strong>Vida em Abundância:</strong> O propósito do ladrão é triplo: roubar, matar e destruir. O propósito de Jesus é dar vida *zoe* (vida divina e eterna), superior à mera sobrevivência biológica.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1484557985045-edf25e08da73?q=80&w=1673&auto=format&fit=crop"
+                    },
+                    {
+                        title: "O Bom Pastor vs O Mercenário",
+                        verse: "O bom pastor dá a sua vida pelas ovelhas. (João 10:11)",
+                        exegesis: `
+                            <p>Jesus contrasta Sua liderança sacrificial com a dos líderes religiosos de Israel (os mercenários). O mercenário trabalha por dinheiro; quando vê o lobo, foge. O Bom Pastor (*Kalos* - nobre, belo) morre para salvar o rebanho.</p>
+                            <ul>
+                                <li><strong>Sacrifício Voluntário:</strong> "Ninguém a tira de mim, mas eu de mim mesmo a dou" (v.18). A morte de Jesus não foi um acidente trágico ou uma derrota política; foi um ato de autoridade soberana e amor intencional.</li>
+                                <li><strong>Outras Ovelhas:</strong> Jesus profetiza a inclusão dos gentios (nós): "Tenho outras ovelhas que não são deste aprisco... e haverá um rebanho e um pastor" (v.16).</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1469395269796-6e2730332303?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Segurança Eterna",
+                        verse: "Eu e o Pai somos um. (João 10:30)",
+                        exegesis: `
+                            <p>Jesus oferece a doutrina mais robusta sobre a segurança da salvação. As ovelhas ouvem Sua voz e o seguem.</p>
+                            <ul>
+                                <li><strong>Dupla Proteção:</strong> "Ninguém as arrebatará da minha mão... ninguém pode arrebatá-las da mão de meu Pai" (v.28-29). A segurança do crente não depende de sua força em segurar a Deus, mas da força onipotente de Deus em segurá-lo.</li>
+                                <li><strong>Unidade Divina:</strong> A declaração "Eu e o Pai somos um" (neutro, *hen*, uma só essência/natureza) é uma reivindicação tão clara de divindade que os judeus pegam pedras novamente para matá-lo. Eles entenderam o que muitos hoje negam: Ele estava se fazendo Deus.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1579786026937-23829be602b9?q=80&w=1740&auto=format&fit=crop"
+                    }
+                ]
+            },
+            11: {
+                title: "A RESSURREIÇÃO E A VIDA",
+                date: "26/01",
+                desc: "\"Eu sou a ressurreição e a vida. Quem crê em mim, ainda que morra, viverá.\"",
+                blocks: [
+                    {
+                        title: "O Atraso Divino",
+                        verse: "Quando, pois, ouviu que estava enfermo, ficou ainda dois dias no lugar onde estava. (João 11:6)",
+                        exegesis: `
+                            <p>A doença de Lázaro gera uma crise de expectativas. João usa duas palavras para o amor de Jesus aqui: <em>phileo</em> (amizade afetuosa) e <em>agape</em> (amor que busca o bem supremo). O paradoxo é que, por amor, Jesus permite a morte de Seu amigo.</p>
+                            <ul>
+                                <li><strong>Propósito na Dor:</strong> "Esta enfermidade não é para morte, mas para glória de Deus" (v.4). O atraso não foi falta de amor, mas a preparação de um milagre maior que a mera cura física.</li>
+                                <li><strong>O Quarto Dia:</strong> A tradição judaica acreditava que a alma pairava perto do corpo por três dias. Chegar no quarto dia significava que toda a esperança humana havia se esgotado; Lázaro estava irrefutavelmente morto.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1502485019198-a625bd53ceb7?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "Eu Sou a Ressurreição",
+                        verse: "Disse-lhe Jesus: Eu sou a ressurreição e a vida. (João 11:25)",
+                        exegesis: `
+                            <p>Marta acreditava na ressurreição no último dia (escatologia futura). Jesus muda o foco do "quando" para o "Quem". Ele antecipa o futuro para o presente.</p>
+                            <ul>
+                                <li><strong>O Quinto 'Eu Sou':</strong> A ressurreição não é apenas um evento futuro, é uma Pessoa. A vida eterna (*zoe*) está intrinsecamente ligada à pessoa de Cristo.</li>
+                                <li><strong>A Pergunta Fatal:</strong> Jesus encerra sua declaração com o teste final da fé: "Crês tu isto?". A resposta de Marta ("Sim, Senhor, creio que tu és o Cristo") é uma das mais profundas confissões do Novo Testamento.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1490730141103-6ac27aaab3b8?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "O Choro e o Grito",
+                        verse: "Jesus chorou... e clamou com grande voz: Lázaro, vem para fora! (João 11:35, 43)",
+                        exegesis: `
+                            <p>O menor versículo da Bíblia ("Jesus chorou", *dakryo* - derramar lágrimas em silêncio) revela a humanidade plena do Verbo. Ele chora não por impotência (pois sabia o que faria), mas por empatia com a dor do luto e indignação contra a morte.</p>
+                            <ul>
+                                <li><strong>A Palavra que Dá Vida:</strong> Diante do túmulo, Jesus não faz um ritual, apenas dá uma ordem. A mesma Palavra que criou o universo (<span class="ref">Jo 1:3</span>) agora recria a vida em um cadáver.</li>
+                                <li><strong>Chamado pelo Nome:</strong> Agostinho comentou que se Jesus não tivesse dito "Lázaro", todos os mortos teriam ressuscitado. O chamado eficaz da graça tira o homem da sepultura do pecado.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1540479859555-17af45c78602?q=80&w=1740&auto=format&fit=crop"
+                    }
+                ]
+            },
+            12: {
+                title: "A HORA DA GLORIFICAÇÃO",
+                date: "27/01",
+                desc: "\"Se o grão de trigo, caindo na terra, não morrer, fica ele só; mas se morrer, dá muito fruto.\"",
+                blocks: [
+                    {
+                        title: "A Unção Extravagante",
+                        verse: "Então Maria, tomando uma libra de bálsamo de nardo puro... ungiu os pés de Jesus. (João 12:3)",
+                        exegesis: `
+                            <p>Seis dias antes da Páscoa, a gratidão de Maria choca-se com a ganância de Judas. O nardo importado da Índia valia cerca de 300 denários (um ano de salário de um trabalhador).</p>
+                            <ul>
+                                <li><strong>A Economia da Graça:</strong> Para Judas, aquilo era um "desperdício". Para o amante de Cristo, nada é caro demais. Maria antecipa a unção fúnebre do Rei que logo morreria.</li>
+                                <li><strong>O Cheiro do Ambiente:</strong> "E a casa encheu-se com o cheiro do unguento". Onde há verdadeira adoração e sacrifício pessoal, o ambiente é impregnado pela presença de Deus.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1608681284706-e7631cc9bd70?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "O Grão de Trigo",
+                        verse: "Se o grão de trigo, caindo na terra, não morrer, fica ele só; mas se morrer, dá muito fruto. (João 12:24)",
+                        exegesis: `
+                            <p>A entrada triunfal atrai gentios (gregos) querendo ver Jesus. Essa busca global sinaliza que "A Hora" finalmente chegou. A missão de Jesus não é sentar num trono político, mas ir para a cruz.</p>
+                            <ul>
+                                <li><strong>A Lei da Vida pela Morte:</strong> Jesus usa a metáfora da agricultura. Ele é o grão cósmico. Se Ele apenas vivesse e ascendesse ao céu, ficaria "só" na eternidade. Ao morrer na cruz, Ele gera a "colheita" da Igreja.</li>
+                                <li><strong>Padrão para o Discípulo:</strong> "Quem ama a sua vida perdê-la-á". A cruz não é apenas o instrumento da nossa salvação, mas o modelo da nossa vida cristã: autonegação em favor de Deus.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1932&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Rejeição Final",
+                        verse: "E, tendo ele feito diante deles tantos sinais, não criam nele. (João 12:37)",
+                        exegesis: `
+                            <p>Este capítulo encerra o "Livro dos Sinais". O veredito nacional sobre o ministério público de Jesus é trágico: Incredulidade. João responde teologicamente a isso citando as profecias de Isaías.</p>
+                            <ul>
+                                <li><strong>Cegueira Judicial:</strong> "Cegou-lhes os olhos e endureceu-lhes o coração" (v.40). O endurecimento divino não é o primeiro passo, mas a sentença judicial de Deus sobre uma nação que já havia rejeitado a luz.</li>
+                                <li><strong>Glória de Isaías:</strong> O v.41 faz uma declaração assombrosa: quando Isaías viu YHWH sentado no trono em <span class="ref">Isaías 6</span>, ele estava, na verdade, vendo a glória de Jesus antes da encarnação.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1445053023192-8d45cb66099d?q=80&w=1740&auto=format&fit=crop"
+                    }
+                ]
+            },
+            13: {
+                title: "O SERVO SOBERANO",
+                date: "28/01",
+                desc: "\"Tendo amado os seus que estavam no mundo, amou-os até o fim.\"",
+                blocks: [
+                    {
+                        title: "O Senhor que Lava Pés",
+                        verse: "Levantou-se da ceia, tirou as vestes, e... começou a lavar os pés aos discípulos. (João 13:4-5)",
+                        exegesis: `
+                            <p>Inicia-se aqui o "Livro da Glória". O foco muda do mundo (público) para os Seus (privado). Numa cultura de honra e vergonha, lavar os pés era a tarefa do escravo mais baixo. Jesus subverte a pirâmide do poder cósmico.</p>
+                            <ul>
+                                <li><strong>Soberania e Serviço:</strong> João faz questão de frisar (v.3) que Jesus sabia de toda a Sua glória e poder, e *justamente por isso*, Ele serve. O verdadeiro poder divino manifesta-se na humildade extrema.</li>
+                                <li><strong>O Banho da Salvação:</strong> Pedro resiste, e Jesus explica: "Quem já se banhou (regeneração) não precisa senão lavar os pés (perdão diário dos pecados)". A santificação é contínua.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1544833058-e70f6ca25c17?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Traição e a Noite",
+                        verse: "E, tendo Judas tomado o bocado, saiu logo. E era já noite. (João 13:30)",
+                        exegesis: `
+                            <p>O contraste entre a luz e as trevas atinge seu ponto mais dramático na Última Ceia. O "bocado" era um gesto de honra do anfitrião; Jesus dá a Judas a última chance de arrependimento, que é rejeitada.</p>
+                            <ul>
+                                <li><strong>Possessão:</strong> "Entrou nele Satanás" (v.27). A decisão constante pelo mal abre portas para o controle demoníaco total. Judas vai para a perdição.</li>
+                                <li><strong>Era já Noite:</strong> Essa frase não é apenas um marcador de tempo, mas um símbolo teológico profundo no evangelho de João. Judas sai da presença da "Luz do Mundo" para as trevas eternas.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1505364860144-8d4885c3b9dd?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "O Novo Mandamento",
+                        verse: "Um novo mandamento vos dou: Que vos ameis uns aos outros; como eu vos amei. (João 13:34)",
+                        exegesis: `
+                            <p>Com a saída de Judas, o ambiente se purifica. Jesus aproveita para deixar Seu testamento aos apóstolos: a marca da igreja não seria milagres ou ortodoxia fria, mas o amor (*agape*).</p>
+                            <ul>
+                                <li><strong>A Novidade:</strong> O Antigo Testamento já mandava amar o próximo "como a si mesmo" (<span class="ref">Lv 19:18</span>). O que há de "novo"? O padrão mudou. Agora é "como EU vos amei". O padrão de amor não é mais o nosso egoísmo, mas a cruz de Cristo.</li>
+                                <li><strong>A Apologética Final:</strong> "Nisto todos conhecerão que sois meus discípulos" (v.35). O amor cristão é a principal ferramenta evangelística e a prova da nova natureza regenerada.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1529070538774-1843cb3265df?q=80&w=1740&auto=format&fit=crop"
+                    }
+                ]
+            },
+            14: {
+                title: "O CAMINHO E O CONSOLADOR",
+                date: "29/01",
+                desc: "\"Não se turbe o vosso coração; credes em Deus, crede também em mim.\"",
+                blocks: [
+                    {
+                        title: "O Único Caminho",
+                        verse: "Eu sou o caminho, e a verdade e a vida; ninguém vem ao Pai, senão por mim. (João 14:6)",
+                        exegesis: `
+                            <p>Diante do medo dos discípulos pelo abandono iminente, Jesus profere o sexto "Eu Sou", que é a declaração mais exclusiva e ofensiva ao pluralismo do mundo antigo e moderno.</p>
+                            <ul>
+                                <li><strong>Tríade Divina:</strong> Ele não mostra o caminho; Ele <em>é</em> o Caminho (*Hodos*). Ele não ensina a verdade; Ele <em>é</em> a Verdade (*Aletheia*). Ele não dá a vida; Ele <em>é</em> a Vida (*Zoe*).</li>
+                                <li><strong>Exclusividade Soteriológica:</strong> "Ninguém vem ao Pai, senão por mim". Jesus elimina a possibilidade de salvação fora d'Ele. As religiões são buscas humanas por Deus; Jesus é a busca de Deus pelo homem.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1716&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Unidade Trinitária",
+                        verse: "Quem me vê a mim vê o Pai; e como dizes tu: Mostra-nos o Pai? (João 14:9)",
+                        exegesis: `
+                            <p>Filipe pede uma teofania, uma visão cósmica de Deus, como Moisés pediu. Jesus responde revelando o mistério da Trindade (a Pericorese, a interpenetração das Pessoas Divinas).</p>
+                            <ul>
+                                <li><strong>Revelação Plena:</strong> Jesus é a "exegese" (explicação exata) de Deus (<span class="ref">Jo 1:18</span>). Para conhecer a Deus, não devemos olhar para os astros ou filosofias, mas para o rosto e as ações de Jesus Cristo.</li>
+                                <li><strong>Obras Maiores:</strong> Jesus promete que a Igreja faria "obras maiores" (v.12). Não maiores em poder (criar o mundo), mas em alcance: o Espírito levaria o Evangelho aos confins da Terra, salvando milhões.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1516410529446-2c777cb7366d?q=80&w=1887&auto=format&fit=crop"
+                    },
+                    {
+                        title: "O Parácleto (Consolador)",
+                        verse: "Eu rogarei ao Pai, e ele vos dará outro Consolador, para que fique convosco para sempre. (João 14:16)",
+                        exegesis: `
+                            <p>Jesus não deixaria Sua igreja órfã. A promessa do Espírito Santo muda a dinâmica da história da redenção. Ele usa o termo grego <em>Parakletos</em> (Consolador, Advogado, Auxiliador).</p>
+                            <ul>
+                                <li><strong>"Outro" (Allos):</strong> No grego, <em>allos</em> significa "outro da mesma espécie/natureza". O Espírito Santo não é uma força ativa, mas uma Pessoa Divina, coeterna e de mesma essência que Jesus.</li>
+                                <li><strong>Paz Espiritual:</strong> "A minha paz vos dou" (v.27). A paz (*Shalom*) que Jesus deixa não é a ausência de conflitos (paz romana), mas a tranquilidade interior que o mundo não pode dar nem tirar.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1601142634808-38923eb7c560?q=80&w=1740&auto=format&fit=crop"
+                    }
+                ]
+            },
+            15: {
+                title: "A VIDEIRA VERDADEIRA",
+                date: "30/01",
+                desc: "\"Eu sou a videira, vós as varas; quem está em mim, e eu nele, esse dá muito fruto.\"",
+                blocks: [
+                    {
+                        title: "A Identidade da Videira",
+                        verse: "Eu sou a videira verdadeira, e meu Pai é o lavrador. (João 15:1)",
+                        exegesis: `
+                            <p>O sétimo e último "Eu Sou". No Antigo Testamento, a videira era o símbolo nacional de Israel (<span class="ref">Salmo 80</span>, <span class="ref">Isaías 5</span>). Contudo, Israel frequentemente produziu "uvas bravas" (idolatria/injustiça). Jesus se declara o cumprimento fiel do que Israel falhou em ser.</p>
+                            <ul>
+                                <li><strong>União Orgânica:</strong> O cristianismo não é uma mera imitação de Jesus, é a participação na própria vida Dele. O ramo não tem vida independente da videira; assim como nós sem Cristo "nada podemos fazer" (v.5).</li>
+                                <li><strong>O Papel do Pai:</strong> O Pai é o <em>georgos</em> (agricultor/vinhateiro). Ele cuida, limpa e administra ativamente a Igreja para a glória Dele.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1596700010959-19ec5dd74dfd?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Poda e a Permanência",
+                        verse: "Toda a vara que em mim não dá fruto a tira; e limpa toda a que dá fruto, para que dê mais fruto. (João 15:2)",
+                        exegesis: `
+                            <p>Dois processos dolorosos ocorrem na vinha: o julgamento e a disciplina amorosa. A palavra-chave do capítulo é <em>Meno</em> (permanecer/estar em comunhão íntima), repetida 11 vezes.</p>
+                            <ul>
+                                <li><strong>A Poda (Kathairo):</strong> Ramos falsos são cortados para o fogo. Mas ramos frutíferos são "limpos" (podados). O sofrimento do crente não é punição de um juiz irado, mas o cuidado de um Pai que quer maximizar o fruto do Seu filho.</li>
+                                <li><strong>Evidência de Vida:</strong> O fruto (caráter cristão, amor, evangelismo) não é o que nos salva, mas é a evidência inevitável de que estamos ligados à Videira.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1551609139-652a1ba763a4?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "O Ódio do Mundo",
+                        verse: "Se o mundo vos odeia, sabei que, primeiro do que a vós, me odiou a mim. (João 15:18)",
+                        exegesis: `
+                            <p>Jesus prepara os discípulos para o choque de realidade. A lealdade à Videira gera imediata inimizade com o <em>Kosmos</em> (o sistema caído e rebelde ao governo de Deus).</p>
+                            <ul>
+                                <li><strong>Natureza Diferente:</strong> O mundo ama o que é seu. Como os crentes foram "escolhidos do mundo" (separados, santos), eles carregam a luz que as trevas odeiam. A perseguição é a norma do discipulado, não a exceção.</li>
+                                <li><strong>O Testemunho Duplo:</strong> Diante do ódio, a resposta não é retaliação, mas testemunho (v.26-27). O Espírito Santo testificará através dos crentes, confrontando o mundo com a verdade e o amor de Cristo.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?q=80&w=1740&auto=format&fit=crop"
+                    }
+                ]
+            },
+            16: {
+                title: "A OBRA DO ESPÍRITO",
+                date: "02/02",
+                desc: "\"Quando vier, porém, o Espírito da verdade, ele vos guiará a toda a verdade.\"",
+                blocks: [
+                    {
+                        title: "O Espírito como Promotor Divino",
+                        verse: "E, quando ele vier, convencerá o mundo do pecado, e da justiça e do juízo. (João 16:8)",
+                        exegesis: `
+                            <p>Jesus detalha a função forense (jurídica) do Espírito Santo. Ele atua como um promotor que apresenta provas irrefutáveis ao coração humano. O evangelismo não é convencer intelectualmente, mas a cooperação com essa obra sobrenatural.</p>
+                            <ul>
+                                <li><strong>Pecado da Incredulidade:</strong> O Espírito redefine o pecado não apenas como atos morais errados, mas como a rejeição de Cristo ("porque não creem em mim"). Esta é a raiz de toda condenação.</li>
+                                <li><strong>Juízo Consumado:</strong> Ele convence de que Satanás ("o príncipe deste mundo") já foi julgado na cruz. O mal não é um poder vitorioso, mas um inimigo derrotado aguardando a sentença final.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1507692049790-de58293a469d?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "Tristeza em Alegria",
+                        verse: "A vossa tristeza se converterá em alegria. (João 16:20)",
+                        exegesis: `
+                            <p>Usando a poderosa metáfora da mulher em trabalho de parto, Jesus explica o significado da cruz. A dor é real e intensa, mas é produtiva. Não é uma dor de morte, mas de nascimento.</p>
+                            <ul>
+                                <li><strong>Alegria Indestrutível:</strong> "E a vossa alegria ninguém vo-la tirará" (v.22). A alegria cristã não depende de circunstâncias favoráveis, mas da presença do Ressurreto. É uma alegria que o mundo não deu e, portanto, não pode tirar.</li>
+                                <li><strong>Novo Acesso:</strong> "Naquele dia... pedireis ao Pai em meu nome" (v.23). A obra de Cristo abre um acesso direto e amoroso ao Pai, sem necessidade de intermediários humanos.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?q=80&w=1664&auto=format&fit=crop"
+                    },
+                    {
+                        title: "Vitória sobre a Tribulação",
+                        verse: "No mundo tereis aflições, mas tende bom ânimo, eu venci o mundo. (João 16:33)",
+                        exegesis: `
+                            <p>O discurso do Cenáculo termina com realismo brutal e esperança infinita. Jesus não promete aos seus seguidores uma vida sem problemas (*thlipsis* - pressão, esmagamento).</p>
+                            <ul>
+                                <li><strong>Paz no Meio da Guerra:</strong> A paz de Cristo não é a ausência de conflito, mas a tranquilidade interior no meio do conflito.</li>
+                                <li><strong>Eu Venci (Nenikēka):</strong> O verbo está no perfeito, indicando uma vitória completa e permanente. A vitória de Jesus na cruz é a base da nossa coragem hoje. Não lutamos *para* a vitória, mas *a partir* da vitória d'Ele.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?q=80&w=1740&auto=format&fit=crop"
+                    }
+                ]
+            },
+            17: {
+                title: "A ORAÇÃO SACERDOTAL",
+                date: "03/02",
+                desc: "\"Pai, é chegada a hora; glorifica a teu Filho, para que também o teu Filho te glorifique a ti.\"",
+                blocks: [
+                    {
+                        title: "A Definição de Vida Eterna",
+                        verse: "E a vida eterna é esta: que te conheçam, a ti só, por único Deus verdadeiro. (João 17:3)",
+                        exegesis: `
+                            <p>Jesus ergue os olhos aos céus - a postura judaica de oração - e inicia o "Santo dos Santos" do Novo Testamento. Aqui Ele redefine a vida eterna não como duração infinita de existência, mas como uma qualidade de relacionamento.</p>
+                            <ul>
+                                <li><strong>Conhecimento Relacional:</strong> O verbo "conhecer" (*ginosko*) na Bíblia implica intimidade profunda, experiência, não apenas saber dados intelectuais. Ser salvo é entrar na comunhão de amor entre o Pai e o Filho.</li>
+                                <li><strong>Glória na Cruz:</strong> Jesus pede para ser glorificado para que possa glorificar o Pai. A cruz é o momento paradoxal onde a glória de Deus (Seu amor, justiça e poder) brilha mais intensamente.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1510936111840-65e151ad71bb?q=80&w=1790&auto=format&fit=crop"
+                    },
+                    {
+                        title: "Santificação pela Verdade",
+                        verse: "Santifica-os na tua verdade; a tua palavra é a verdade. (João 17:17)",
+                        exegesis: `
+                            <p>Jesus ora pela preservação espiritual dos discípulos. Ele não pede que sejam retirados do mundo (escapismo), mas que sejam guardados do mal enquanto cumprem a missão.</p>
+                            <ul>
+                                <li><strong>Agente de Santidade:</strong> A santificação (separação para Deus) ocorre através da Palavra. A verdade não é subjetiva; é a revelação de Deus. Uma igreja que abandona a Palavra perde sua santidade e poder.</li>
+                                <li><strong>Consagração para Missão:</strong> "Por eles eu me santifico" (v.19). Jesus se separou para o sacrifício na cruz para que nós pudéssemos ser separados para viver para Deus.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1507434965515-61970f2bd7c6?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Unidade Perfeita",
+                        verse: "Para que todos sejam um... para que o mundo creia que tu me enviaste. (João 17:21)",
+                        exegesis: `
+                            <p>O horizonte da oração se expande para incluir todos os futuros crentes (nós). O desejo supremo de Jesus é a unidade da Sua Igreja, modelada na unidade da Trindade ("como tu, ó Pai, o és em mim, e eu em ti").</p>
+                            <ul>
+                                <li><strong>Apologética do Amor:</strong> A unidade visível dos cristãos é o maior argumento para a divindade de Cristo diante do mundo. Divisões e brigas na igreja escandalizam o evangelho.</li>
+                                <li><strong>Amor Eterno:</strong> O objetivo final é que estejamos onde Ele está, contemplando Sua glória, envoltos no mesmo amor com que o Pai ama o Filho (v.26).</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1932&auto=format&fit=crop"
+                    }
+                ]
+            },
+            18: {
+                title: "TRAIÇÃO E JULGAMENTO",
+                date: "04/02",
+                desc: "\"A quem buscais? Responderam-lhe: A Jesus Nazareno. Disse-lhes Jesus: Sou eu.\"",
+                blocks: [
+                    {
+                        title: "Majestade no Getsêmani",
+                        verse: "Quando, pois, lhes disse: Sou eu, recuaram, e caíram por terra. (João 18:6)",
+                        exegesis: `
+                            <p>João não foca na agonia de Jesus (suor de sangue), mas em Sua majestade soberana. Quando a tropa romana chega para prendê-lo, Jesus se identifica com o nome divino "EU SOU" (*Ego Eimi*).</p>
+                            <ul>
+                                <li><strong>Poder da Voz:</strong> A revelação de Sua divindade é tão potente que soldados treinados caem no chão. Isso prova que Jesus não foi uma vítima capturada, mas um Rei que se entregou voluntariamente.</li>
+                                <li><strong>Proteção dos Discípulos:</strong> Mesmo na hora de Sua prisão, Jesus negocia a liberdade dos discípulos ("deixai ir estes"). Ele é o Bom Pastor que protege o rebanho até o fim.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1533227971488-b22030999026?q=80&w=1674&auto=format&fit=crop"
+                    },
+                    {
+                        title: "Pedro e a Fogueira",
+                        verse: "Estava ali Pedro... aquentando-se. E disse: Não sou. (João 18:18, 25)",
+                        exegesis: `
+                            <p>A narrativa alterna entre a coragem de Jesus diante do Sumo Sacerdote e a covardia de Pedro no pátio. Pedro, que prometeu morrer por Jesus, nega-o diante de uma criada porteira.</p>
+                            <ul>
+                                <li><strong>Fracasso Humano:</strong> A negação de Pedro mostra a falência da autoconfiança humana. Sem o Espírito Santo, até o mais forte dos apóstolos cai.</li>
+                                <li><strong>O Galo Cantou:</strong> O som do galo não foi apenas um sinal de tempo, mas um despertador para a consciência de Pedro, lembrando-o da palavra de Cristo.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1541849692-74768393cb89?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "O Reino e a Verdade",
+                        verse: "O meu reino não é deste mundo... Todo aquele que é da verdade ouve a minha voz. (João 18:36-37)",
+                        exegesis: `
+                            <p>No julgamento civil, Pilatos (o pragmático cínico) confronta Jesus (a Verdade encarnada). Jesus esclarece a natureza do Seu Reino.</p>
+                            <ul>
+                                <li><strong>Não Político:</strong> O Reino de Deus não se estabelece por espada, violência ou revolução política ("se fosse, os meus servos lutariam"). Ele se estabelece pela transformação dos corações através da verdade.</li>
+                                <li><strong>Que é a Verdade?:</strong> A pergunta de Pilatos ecoa o ceticismo de todas as eras. Ele estava diante da Verdade Absoluta, mas sua cegueira moral o impediu de vê-la. Ele escolhe a conveniência política em vez da justiça.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1590321307775-6e47b0df73cc?q=80&w=1740&auto=format&fit=crop"
+                    }
+                ]
+            },
+            19: {
+                title: "ESTÁ CONSUMADO",
+                date: "05/02",
+                desc: "\"E, inclinando a cabeça, entregou o espírito.\"",
+                blocks: [
+                    {
+                        title: "Eis o Homem (Ecce Homo)",
+                        verse: "Saiu, pois, Jesus fora, levando a coroa de espinhos e roupa de púrpura. E disse-lhes Pilatos: Eis aqui o homem. (João 19:5)",
+                        exegesis: `
+                            <p>Pilatos apresenta Jesus açoitado, numa tentativa de despertar pena ou zombaria. Teologicamente, a cena é profunda: Eis o Homem, o Segundo Adão, carregando sobre si a maldição da terra (espinhos, <span class="ref">Gn 3:18</span>).</p>
+                            <ul>
+                                <li><strong>A Rejeição Total:</strong> Os líderes judeus gritam "Não temos rei senão César". Esta é a apostasia final de Israel, rejeitando a teocracia de Deus para abraçar o poder pagão que, ironicamente, destruiria Jerusalém 40 anos depois.</li>
+                                <li><strong>Autoridade Universal:</strong> A placa na cruz ("Rei dos Judeus") foi escrita em hebraico (religião), latim (poder) e grego (cultura). Deus proclamou a realeza de Seu Filho para todo o mundo.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1543835728-97825b44357b?q=80&w=1674&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Maternidade da Cruz",
+                        verse: "Mulher, eis aí o teu filho... Eis aí a tua mãe. (João 19:26-27)",
+                        exegesis: `
+                            <p>Mesmo na agonia suprema, Jesus cuida de Maria. Ele cria uma nova família ao pé da cruz, confiando sua mãe ao "discípulo amado" (João). Os laços espirituais da fé tornam-se mais fortes que os laços de sangue.</p>
+                            <ul>
+                                <li><strong>Cumprimento da Escritura:</strong> João enfatiza que cada detalhe, desde o sorteio da túnica (sem costura, como a do sumo sacerdote) até a sede de Jesus, cumpriu profecias específicas (<span class="ref">Sl 22</span>, <span class="ref">Sl 69</span>).</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1504689269399-bf062973da28?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "Tetelestai: Está Pago",
+                        verse: "E, quando Jesus tomou o vinagre, disse: Está consumado. (João 19:30)",
+                        exegesis: `
+                            <p><em>Tetelestai</em> é a palavra grega mais vitoriosa da Bíblia. Era usada em recibos comerciais para dizer "Dívida totalmente paga". Jesus não disse "estou acabado", mas "a obra está completa".</p>
+                            <ul>
+                                <li><strong>Ativo na Morte:</strong> "Entregou o espírito". Jesus não morreu como uma vítima passiva cujas forças acabaram. Ele, como Senhor da Vida, decidiu o momento exato de partir, entregando voluntariamente Seu espírito ao Pai.</li>
+                                <li><strong>Sangue e Água:</strong> A lança no lado prova a morte real (contra heresias que diziam que Ele desmaiou). O sangue fala de sacrifício; a água, de purificação. A fonte foi aberta para o mundo.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1533613220915-609f661a6fe1?q=80&w=1674&auto=format&fit=crop"
+                    }
+                ]
+            },
+            20: {
+                title: "A RESSURREIÇÃO",
+                date: "06/02",
+                desc: "\"Porque ainda não sabiam a Escritura, que era necessário que ele ressuscitasse dentre os mortos.\"",
+                blocks: [
+                    {
+                        title: "Sinais no Túmulo Vazio",
+                        verse: "Viu, e creu. (João 20:8)",
+                        exegesis: `
+                            <p>João corre mais rápido que Pedro e chega ao túmulo. Ele vê os lençóis de linho no chão e o lenço que cobrira a cabeça enrolado num lugar à parte. A ordem meticulosa dos panos indicava que não houve roubo de corpo (ladrões não arrumam a cama!).</p>
+                            <ul>
+                                <li><strong>A Fé pelo Sinal:</strong> João crê na ressurreição antes mesmo de ver o Cristo vivo, apenas pela evidência dos sinais deixados. A fé verdadeira vê o invisível através das marcas de Deus na história.</li>
+                                <li><strong>Maria Madalena:</strong> A primeira testemunha da ressurreição é uma mulher, numa cultura onde o testemunho feminino não valia em tribunais. Isso atesta a veracidade histórica (ninguém inventaria isso) e a graça de Deus que honra a devoção.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1496664444929-8c75efb9546f?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "Paz e Missão",
+                        verse: "Assim como o Pai me enviou, também eu vos envio a vós. (João 20:21)",
+                        exegesis: `
+                            <p>Jesus aparece no cenáculo trancado (corpo glorificado atravessa matéria). Sua primeira palavra é "Shalom" (Paz), curando o medo e a culpa dos discípulos que fugiram.</p>
+                            <ul>
+                                <li><strong>O Pequeno Pentecostes:</strong> Ele sopra sobre eles e diz "Recebei o Espírito Santo". Este é um ato simbólico de recriação, paralelo a Deus soprando em Adão (<span class="ref">Gn 2:7</span>). A igreja é a nova humanidade, capacitada pelo Espírito para a missão.</li>
+                                <li><strong>Remissão de Pecados:</strong> A autoridade para declarar o perdão de pecados (baseada no Evangelho) é delegada à Igreja.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1517430529647-90c8b94360e7?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "Meu Senhor e Meu Deus",
+                        verse: "Tomé respondeu, e disse-lhe: Senhor meu, e Deus meu! (João 20:28)",
+                        exegesis: `
+                            <p>O evangelho atinge seu clímax teológico. Tomé, o cético, faz a confissão mais explícita da divindade de Jesus em todo o livro. Ele apropria-se de Jesus pessoalmente ("Meu").</p>
+                            <ul>
+                                <li><strong>A Bem-Aventurança da Fé:</strong> "Bem-aventurados os que não viram e creram". Esta bênção é dirigida a nós, leitores de hoje. Não dependemos de visão física, mas do testemunho apostólico registrado neste livro.</li>
+                                <li><strong>Propósito do Livro:</strong> João 20:31 declara a intenção da obra: não é uma biografia completa, mas uma seleção de sinais para gerar fé salvadora.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=1740&auto=format&fit=crop"
+                    }
+                ]
+            },
+            21: {
+                title: "RESTAURAÇÃO E CHAMADO",
+                date: "07/02",
+                desc: "\"Sim, Senhor, tu sabes que te amo. Disse-lhe: Apascenta as minhas ovelhas.\"",
+                blocks: [
+                    {
+                        title: "A Pesca e a Provisão",
+                        verse: "Lançai a rede à direita do barco, e achareis. (João 21:6)",
+                        exegesis: `
+                            <p>Os discípulos, talvez incertos sobre o futuro, voltam à velha profissão. Fracassam a noite toda. Jesus aparece ao amanhecer, repetindo o milagre da pesca (<span class="ref">Lc 5</span>) para lembrá-los de que a dependência d'Ele é a chave para a fecundidade.</p>
+                            <ul>
+                                <li><strong>Sou Eu:</strong> João (o amor) tem a percepção espiritual para reconhecer o Senhor; Pedro (a ação) tem a impetuosidade para se lançar ao mar.</li>
+                                <li><strong>A Fogueira Preparada:</strong> Ao chegarem à praia, já encontram peixe e pão preparados por Jesus. Ele aceita o nosso trabalho (os 153 peixes), mas Sua graça sempre nos precede. Ele é quem nos alimenta antes de nos enviar.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1528659529243-7f2a490d3464?q=80&w=1742&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Cura da Memória",
+                        verse: "Simão, filho de Jonas, amas-me mais do que estes? (João 21:15)",
+                        exegesis: `
+                            <p>Jesus recria o cenário da negação: uma fogueira de brasas (*anthrakian*), cedo de manhã. Ele faz três perguntas para curar as três negações de Pedro.</p>
+                            <ul>
+                                <li><strong>Amor Ágape vs Philia:</strong> Nas duas primeiras vezes, Jesus usa *agapas* (amor divino/total). Pedro, humilde e ciente de sua fraqueza, responde com *philo* (afeição de amigo). Na terceira vez, Jesus desce ao nível de Pedro e usa *phileis*. Ele aceita o amor que podemos dar e nos comissiona a partir daí: "Apascenta as minhas ovelhas". O serviço nasce do amor, não da culpa.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1499567946283-4a6f93792078?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "Segue-me Tu",
+                        verse: "Se eu quero que ele fique até que eu venha, que te importa a ti? Segue-me tu. (João 21:22)",
+                        exegesis: `
+                            <p>Jesus profetiza o martírio de Pedro (seria crucificado). Pedro, num momento de comparação humana, pergunta sobre o destino de João. Jesus corta a curiosidade inútil.</p>
+                            <ul>
+                                <li><strong>Soberania Individual:</strong> Deus tem planos distintos para cada filho. Um glorificará a Deus na morte violenta (Pedro), outro numa vida longa de testemunho (João). A grama do vizinho não é da nossa conta.</li>
+                                <li><strong>O Foco Final:</strong> O evangelho termina como começou: com o chamado simples e poderoso "Segue-me". Não importa o destino dos outros ou as circunstâncias, o discipulado é um olhar fixo em Jesus.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1443916568596-df5a58c41464?q=80&w=1740&auto=format&fit=crop"
+                    }
+                ]
+            }
+        };
+
+        // === LÓGICA GERAL ===
+        let currentAudioBlob = null;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        function loadChapter(chapterKey) {
+            const data = bibleData[chapterKey];
+            if (!data) return;
+
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
+            const dateBadge = document.getElementById('dateBadge');
+            const dateValue = document.getElementById('dateValue');
+            const communitySection = document.getElementById('community-section');
+            const formChapterKey = document.getElementById('formChapterKey');
+            
+            heroTitle.style.opacity = '0';
+            heroDesc.style.opacity = '0';
+            dateBadge.style.opacity = '0';
+            
+            setTimeout(() => {
+                if (data.date) {
+                    dateValue.textContent = data.date;
+                    dateBadge.classList.remove('hidden');
+                    communitySection.classList.remove('hidden');
+                    formChapterKey.value = chapterKey;
+                    carregarComentarios(chapterKey);
+                    setTimeout(() => { dateBadge.style.opacity = '1'; }, 100);
+                } else {
+                    dateBadge.classList.add('hidden');
+                    communitySection.classList.add('hidden');
+                }
+
+                heroTitle.innerHTML = data.title;
+                heroDesc.innerHTML = data.desc;
+                heroTitle.style.opacity = '1';
+                heroDesc.style.opacity = '1';
+            }, 300);
+
+            const mainContent = document.getElementById('content');
+            mainContent.innerHTML = ''; 
+
+            data.blocks.forEach((block, index) => {
+                const isEven = index % 2 !== 0; 
+                const fallbackImage = "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=2070&auto=format&fit=crop";
+
+                const html = `
+                    <section class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start reveal">
+                        <div class="relative group order-1 ${isEven ? 'md:order-1' : 'md:order-2'} md:sticky md:top-24 w-full">
+                            <div class="absolute -inset-1 bg-gradient-to-r from-amber-600 to-purple-600 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-1000"></div>
+                            <div class="relative glass-panel rounded-lg overflow-hidden shadow-2xl h-[300px] md:h-[500px]">
+                                <img src="${block.imgPlaceholder}" onerror="this.onerror=null; this.src='${fallbackImage}';" alt="" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700 bg-slate-900">
+                            </div>
+                        </div>
+                        <div class="order-2 ${isEven ? 'md:order-2' : 'md:order-1'} space-y-6">
+                            <h2 class="text-3xl md:text-4xl font-serif text-white">${block.title}</h2>
+                            <div class="border-l-4 border-amber-600 pl-6 py-4 italic text-slate-300 bg-white/5 rounded-r-lg leading-relaxed text-justify pr-4">"${block.verse}"</div>
+                            <div class="bg-slate-800/50 p-6 rounded-lg border border-slate-700 hover:border-amber-500/30 transition">
+                                <button class="flex justify-between items-center w-full text-left text-amber-200 hover:text-white focus:outline-none" onclick="toggleExegesis(this)">
+                                    <span class="uppercase tracking-widest text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-lightbulb"></i> Subsídio Teológico</span>
+                                    <i class="fa-solid fa-plus transition-transform"></i>
+                                </button>
+                                <div class="hidden mt-6 text-slate-300 text-sm leading-relaxed border-t border-slate-700/50 pt-4 rich-text">${block.exegesis}</div>
+                            </div>
+                        </div>
+                    </section>`;
+                mainContent.insertAdjacentHTML('beforeend', html);
+            });
+            resetObservers();
+        }
+
+        // === LÓGICA DE COMENTÁRIOS E REAÇÕES ===
+        function carregarComentarios(capitulo) {
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '<p class="text-center text-slate-500 text-sm animate-pulse">Carregando comentários...</p>';
+
+            fetch(`api.php?acao=listar&capitulo=${capitulo}`)
+            .then(res => res.json())
+            .then(data => {
+                list.innerHTML = '';
+                if(data.length === 0) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
+                }
+                data.forEach(c => {
+                    let mediaHtml = '';
+                    if(c.foto) mediaHtml += `<img src="${c.foto}" onclick="openImage(this.src)" class="mt-4 rounded-lg max-h-48 border border-slate-700 cursor-pointer hover:scale-[1.02] transition shadow-lg">`;
+                    if(c.audio) mediaHtml += `<audio controls src="${c.audio}" class="mt-4 w-full"></audio>`;
+
+                    const jaCurtiu = localStorage.getItem(`reagiu_likes_${c.id}`);
+                    const jaAmem = localStorage.getItem(`reagiu_amem_${c.id}`);
+                    const jaGloria = localStorage.getItem(`reagiu_gloria_${c.id}`);
+
+                    const html = `
+                        <div class="glass-panel p-5 pb-12 rounded-xl border border-slate-700 relative group transition hover:border-amber-500/50 bg-slate-800/40">
+                            <div class="flex justify-between items-start mb-3 border-b border-slate-700/50 pb-2">
+                                <strong class="text-amber-400 text-sm tracking-wide font-serif">${c.nome}</strong>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-widest">${new Date(c.data_envio).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed">${c.mensagem}</p>
+                            ${mediaHtml}
+                            
+                            <div class="absolute bottom-3 right-4 flex gap-2">
+                                <button onclick="reagirComentario(${c.id}, 'likes', this)" class="text-xs transition flex items-center gap-1 bg-slate-800/80 px-2 py-1 rounded-full border border-slate-700 ${jaCurtiu ? 'text-red-500 border-red-500/30' : 'text-slate-400 hover:text-red-400'}" ${jaCurtiu ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-heart"></i> <span class="count font-bold">${c.likes || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'amem', this)" class="text-xs transition flex items-center gap-1 bg-slate-800/80 px-2 py-1 rounded-full border border-slate-700 ${jaAmem ? 'text-cyan-400 border-cyan-400/30' : 'text-slate-400 hover:text-cyan-400'}" ${jaAmem ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-hands-praying"></i> <span class="count font-bold">${c.amem || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'gloria', this)" class="text-xs transition flex items-center gap-1 bg-slate-800/80 px-2 py-1 rounded-full border border-slate-700 ${jaGloria ? 'text-orange-500 border-orange-500/30' : 'text-slate-400 hover:text-orange-500'}" ${jaGloria ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-fire"></i> <span class="count font-bold">${c.gloria || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', html);
+                });
+            })
+            .catch(err => {
+                list.innerHTML = '<p class="text-center text-red-400 text-xs">Erro ao carregar comentários.</p>';
+            });
+        }
+
+        // Função Genérica de Reação
+        function reagirComentario(id, tipo, btn) {
+            if(localStorage.getItem(`reagiu_${tipo}_${id}`)) return;
+
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('.count');
+            let count = parseInt(countSpan.innerText);
+
+            icon.classList.add('reacted-anim');
+            btn.classList.remove('text-slate-400');
+            
+            if(tipo === 'likes') btn.classList.add('text-red-500', 'border-red-500/30');
+            if(tipo === 'amem') btn.classList.add('text-cyan-400', 'border-cyan-400/30');
+            if(tipo === 'gloria') btn.classList.add('text-orange-500', 'border-orange-500/30');
+
+            countSpan.innerText = count + 1;
+            btn.disabled = true;
+
+            localStorage.setItem(`reagiu_${tipo}_${id}`, 'true');
+
+            const formData = new FormData();
+            formData.append('acao', 'reagir');
+            formData.append('id', id);
+            formData.append('tipo', tipo);
+
+            fetch('api.php', { method: 'POST', body: formData });
+        }
+
+        // Enviar Comentário
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+            formData.append('acao', 'salvar');
+            if(currentAudioBlob) {
+                formData.append('audio', currentAudioBlob, 'audio.wav');
+            }
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    this.reset();
+                    document.getElementById('filePreview').innerHTML = '';
+                    currentAudioBlob = null;
+                    document.getElementById('recordText').innerText = "Gravar Áudio";
+                    carregarComentarios(document.getElementById('formChapterKey').value);
+                } else {
+                    alert('Erro ao enviar.');
+                }
+            })
+            .catch(() => alert('Erro de conexão.'))
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        });
+
+        function previewFile(input) {
+            const preview = document.getElementById('filePreview');
+            if(input.files && input.files[0]) {
+                preview.innerHTML = `<i class="fa-solid fa-check text-green-400"></i> Imagem selecionada: ${input.files[0].name}`;
+                preview.classList.remove('hidden');
+            }
+        }
+
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.addEventListener('click', async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                    mediaRecorder.onstop = () => {
+                        currentAudioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        document.getElementById('filePreview').classList.remove('hidden');
+                        document.getElementById('filePreview').innerHTML += '<br><i class="fa-solid fa-microphone text-green-400"></i> Áudio gravado!';
+                    };
+                    mediaRecorder.start();
+                    recordBtn.classList.add('recording-pulse');
+                    document.getElementById('recordText').innerText = "Parar Gravação";
+                } catch (err) {
+                    alert("Permita o uso do microfone para gravar.");
+                }
+            } else {
+                mediaRecorder.stop();
+                recordBtn.classList.remove('recording-pulse');
+                document.getElementById('recordText').innerText = "Gravar Áudio";
+            }
+        });
+
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        function closeImage() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function toggleExegesis(btn) {
+            const content = btn.nextElementSibling;
+            const icon = btn.querySelector('.fa-plus');
+            content.classList.toggle('hidden');
+            icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(45deg)';
+        }
+
+        function resetObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<80; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(251, 192, 45, 0.5)";
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        loadChapter('intro_book');
+    </script>
+</body>
+</html>

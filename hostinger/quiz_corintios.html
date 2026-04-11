@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz I Coríntios | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = { theme: { extend: { fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }, colors: { divine: '#a855f7' } } } }
+    </script>
+    <style>
+        body { background-color: #0b0510; color: #e2e8f0; }
+        .glass-panel { background: rgba(20, 5, 30, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(168, 85, 247, 0.2); }
+        .option-btn:hover { border-color: #a855f7; background: rgba(168, 85, 247, 0.1); }
+        .correct { background: #065f46 !important; border-color: #34d399 !important; }
+        .wrong { background: #7f1d1d !important; border-color: #f87171 !important; }
+        @keyframes celebrate { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .celebration { animation: celebrate 0.5s ease-in-out infinite; }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #1e293b; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #a855f7; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-[url('https://images.unsplash.com/photo-1574068560057-c3ce4b96cb50?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat bg-fixed">
+    <div class="absolute inset-0 bg-[#0b0510]/90"></div>
+
+    <div class="relative z-10 w-full max-w-2xl">
+        
+        <div id="startScreen" class="glass-panel p-8 rounded-2xl text-center shadow-[0_0_40px_rgba(168,85,247,0.2)] border-t-4 border-purple-500">
+            <i class="fa-solid fa-crown text-5xl text-purple-500 mb-6"></i>
+            <h1 class="font-serif text-3xl md:text-4xl text-white mb-2">Quiz I Coríntios</h1>
+            <p class="text-slate-400 mb-8">Teste seus conhecimentos sobre a loucura da cruz e os dons espirituais. Responda 15 perguntas valendo 100 pontos.</p>
+            
+            <input type="text" id="playerName" placeholder="Digite seu Nome" class="w-full bg-black border border-slate-700 rounded-lg px-4 py-4 text-white text-center text-lg focus:border-purple-500 focus:outline-none mb-4">
+            
+            <button onclick="startQuiz()" class="w-full bg-gradient-to-r from-purple-700 to-purple-500 hover:from-purple-600 hover:to-purple-400 text-white font-bold py-4 rounded-lg uppercase tracking-widest transition transform hover:scale-[1.02]">
+                Começar Desafio
+            </button>
+            <a href="index.html" class="block mt-4 text-xs text-slate-500 hover:text-purple-400 underline">Voltar ao Início</a>
+        </div>
+
+        <div id="quizScreen" class="hidden glass-panel p-6 md:p-8 rounded-2xl shadow-2xl">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
+                <span class="text-xs uppercase tracking-widest text-slate-400">Questão <span id="currentQ">1</span>/15</span>
+                <span class="text-purple-500 font-bold"><span id="scoreVal">0</span> Pts</span>
+            </div>
+
+            <h2 id="questionText" class="text-xl md:text-2xl text-white font-serif mb-8 leading-relaxed"></h2>
+            <div id="optionsContainer" class="space-y-3"></div>
+        </div>
+
+        <div id="resultScreen" class="hidden glass-panel p-8 rounded-2xl text-center shadow-2xl">
+            <i id="resultIcon" class="fa-solid fa-medal text-6xl text-purple-500 mb-4 block"></i>
+            <h2 class="font-serif text-3xl text-white mb-2">Fim de Jogo!</h2>
+            <p class="text-slate-400 mb-6">Você fez <span id="finalScore" class="text-purple-400 font-bold text-3xl"></span> pontos.</p>
+
+            <div class="bg-black/80 rounded-lg p-4 mb-6 text-left border border-slate-800">
+                <h3 class="text-xs uppercase tracking-widest text-purple-500 mb-3 border-b border-slate-800 pb-1">Ranking I Coríntios</h3>
+                <ul id="rankingList" class="space-y-2 text-sm max-h-40 overflow-y-auto custom-scroll pr-2"></ul>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="location.reload()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-lg font-bold text-sm border border-slate-700">Jogar Novamente</button>
+                <a href="corintios.html" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-3 rounded-lg font-bold flex items-center justify-center text-sm">Ir para Leitura</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 40 PERGUNTAS DE I CORÍNTIOS
+        const allQuestions = [
+            { q: "De onde Paulo provavelmente escreveu a primeira carta aos Coríntios?", options: ["Roma", "Jerusalém", "Éfeso", "Atenas"], c: 2 },
+            { q: "Qual família informou a Paulo sobre as divisões na igreja de Corinto?", options: ["A família de Cloe", "A família de Estéfanas", "A família de Lídia", "A família de Áquila"], c: 0 },
+            { q: "Como Paulo descreve a mensagem da cruz para os que perecem (1 Co 1)?", options: ["Sabedoria", "Loucura", "Mistério", "Poder"], c: 1 },
+            { q: "Segundo Paulo, quem é o único fundamento sobre o qual a igreja pode ser edificada?", options: ["Os apóstolos", "A doutrina", "Jesus Cristo", "Pedro"], c: 2 },
+            { q: "O que provará a qualidade da obra de cada um no Dia do Juízo (1 Co 3)?", options: ["A água", "O vento", "A luz", "O fogo"], c: 3 },
+            { q: "Paulo adverte os coríntios dizendo: 'Não sabeis vós que sois o _____ de Deus?'", options: ["Rebanho", "Santuário/Templo", "Exército", "Jardim"], c: 1 },
+            { q: "Como Paulo diz que os apóstolos foram expostos ao mundo, aos anjos e aos homens (1 Co 4)?", options: ["Como reis", "Como espetáculo (Theatron)", "Como juízes", "Como sacerdotes"], c: 1 },
+            { q: "Que pecado grave a igreja de Corinto estava tolerando no capítulo 5?", options: ["Roubo", "Incesto (um homem com a mulher do pai)", "Feitiçaria", "Homicídio"], c: 1 },
+            { q: "O que Paulo ordenou que fizessem com o membro impenitente do capítulo 5?", options: ["Orar mais por ele", "Perdoar sem correção", "Entregá-lo a Satanás para destruição da carne", "Elege-lo como líder"], c: 2 },
+            { q: "Paulo usa qual metáfora para explicar que tolerar o pecado contamina a igreja toda?", options: ["Uma ovelha doente", "Um pouco de fermento na massa", "Uma árvore seca", "Uma âncora quebrada"], c: 1 },
+            { q: "Quem é a nossa Páscoa que já foi sacrificada por nós?", options: ["O cordeiro no templo", "Moisés", "Paulo", "Cristo"], c: 3 },
+            { q: "O que Paulo considerava uma grande derrota para os irmãos em Corinto (1 Co 6)?", options: ["Falar em línguas", "Ir a tribunais e processar uns aos outros perante incrédulos", "Não jejuar", "Trabalhar com as mãos"], c: 1 },
+            { q: "Sobre a imoralidade sexual, Paulo afirma que o corpo do cristão não é dele mesmo, pois fomos...", options: ["Comprados por bom preço", "Predestinados a sofrer", "Feitos de poeira", "Criados livres"], c: 0 },
+            { q: "Em 1 Co 7, o que Paulo aconselha sobre a intimidade conjugal?", options: ["Deve ser evitada a todo custo", "O corpo do marido pertence à mulher, e o da mulher ao marido", "Só é permitida para ter filhos", "A esposa tem total controle sozinha"], c: 1 },
+            { q: "Se um cônjuge incrédulo quiser se separar do cristão, o que o crente deve fazer?", options: ["Obrigá-lo a ficar", "Deixar que se separe, pois não está sujeito à servidão", "Abandonar a fé", "Lutá-lo na justiça"], c: 1 },
+            { q: "Sobre as carnes oferecidas aos ídolos, Paulo ensina que 'a ciência incha, mas o...'?", options: ["Orgulho cega", "Dinheiro corrompe", "Amor edifica", "Ego destrói"], c: 2 },
+            { q: "Se comer carne escandalizar (fizer tropeçar) o irmão fraco, o que Paulo faria?", options: ["Nunca mais comeria carne", "Ignoraria o irmão", "Comeria escondido", "Obrigaria o irmão a comer"], c: 0 },
+            { q: "Em 1 Co 9, do que Paulo abriu mão voluntariamente para não colocar obstáculos ao Evangelho?", options: ["Do direito de casar", "Do direito de ser apóstolo", "Do direito de receber sustento financeiro (salário) da igreja", "Do direito de pregar"], c: 2 },
+            { q: "Paulo compara a vida cristã e o domínio próprio a qual prática comum na Grécia?", options: ["Teatro", "Política", "Corrida no estádio (atletas)", "Comércio marítimo"], c: 2 },
+            { q: "Segundo 1 Co 10, o que os israelitas beberam no deserto?", options: ["A água do mar", "O sangue dos sacrifícios", "A água da Rocha espiritual, que era Cristo", "O vinho da aliança"], c: 2 },
+            { q: "Qual o grande alerta de 1 Coríntios 10:12?", options: ["Não comas carne", "Aquele que cuida estar em pé, olhe não caia", "Ame o seu próximo", "Fuja da pobreza"], c: 1 },
+            { q: "Paulo diz que não podemos beber o cálice do Senhor e o cálice dos...", options: ["Fariseus", "Imperadores", "Demônios", "Apóstolos"], c: 2 },
+            { q: "Qual é o princípio máximo para todas as ações cristãs (1 Co 10:31)?", options: ["Fazer tudo em segredo", "Fazer tudo para agradar aos homens", "Fazer tudo para a glória de Deus", "Fazer o que a lei manda"], c: 2 },
+            { q: "No capítulo 11, sobre a ordem na criação, quem é a 'cabeça' (Kephale) do homem?", options: ["O apóstolo", "A mulher", "A igreja", "Cristo"], c: 3 },
+            { q: "O que as mulheres coríntias usavam na cabeça ao orar/profetizar como sinal de respeito e autoridade?", options: ["Uma coroa", "O véu", "Cinzas", "Flores"], c: 1 },
+            { q: "Qual era o grave problema nas reuniões da Ceia do Senhor em Corinto?", options: ["Eles esqueciam o pão", "Eles se dividiam: uns passavam fome e outros se embriagavam", "Eles vendiam a comida", "Eles não cantavam hinos"], c: 1 },
+            { q: "O que acontece com quem come o pão e bebe o cálice do Senhor indignamente?", options: ["Perde a salvação imediatamente", "Fica proibido de voltar à igreja", "É culpado do corpo e do sangue do Senhor", "Deve pagar uma multa"], c: 2 },
+            { q: "Em 1 Co 12, 'há diversidade de dons, mas o _______ é o mesmo'.", options: ["Senhor", "Espírito", "Corpo", "Batismo"], c: 1 },
+            { q: "Quem distribui os dons espirituais a cada um 'como quer'?", options: ["O pastor da igreja", "Os profetas", "O Espírito Santo", "Os anjos"], c: 2 },
+            { q: "A igreja é comparada a que organismo vivo no capítulo 12?", options: ["Uma árvore", "Um corpo com muitos membros", "Um rebanho de ovelhas", "Um campo de trigo"], c: 1 },
+            { q: "Segundo 1 Co 13, se eu falar línguas de anjos, mas não tiver amor, serei como o quê?", options: ["Um profeta cego", "O metal que soa ou o sino que tine", "Uma nuvem sem água", "Um fariseu hipócrita"], c: 1 },
+            { q: "Qual destas características NÃO pertence ao amor, segundo 1 Co 13?", options: ["É sofredor", "Não busca seus interesses", "Arde em ciúmes", "É benigno"], c: 2 },
+            { q: "Quais são as três virtudes que permanecem para sempre?", options: ["Oração, Jejum e Esmola", "Poder, Riqueza e Glória", "Fé, Esperança e Amor", "Alegria, Paz e Longanimidade"], c: 2 },
+            { q: "No capítulo 14, qual dom Paulo incentiva a igreja a buscar mais para edificar os outros?", options: ["Línguas", "Curas", "Maravilhas", "Profecia"], c: 3 },
+            { q: "Por que Paulo prefere falar cinco palavras com entendimento do que dez mil em línguas no culto?", options: ["Porque as línguas eram proibidas", "Para que pudesse instruir e edificar a igreja", "Porque ele não tinha o dom de línguas", "Para agradar os filósofos gregos"], c: 1 },
+            { q: "Qual o princípio teológico para a ordem nos cultos (1 Co 14:33)?", options: ["Deus não é Deus de confusão, mas de paz", "Deus ama o silêncio", "Deus se agrada do caos", "Deus só ouve em hebraico"], c: 0 },
+            { q: "Se não houver ressurreição dos mortos, qual a conclusão de Paulo (1 Co 15)?", options: ["Apenas nossas almas vão ao céu", "A nossa pregação é vã (inútil) e a fé também", "Devemos reencarnar", "Jesus é apenas um mestre"], c: 1 },
+            { q: "Quem é o último inimigo que será destruído por Cristo?", options: ["Satanás", "O pecado", "A morte", "O império romano"], c: 2 },
+            { q: "O que Paulo orienta os coríntios a fazerem no primeiro dia da semana (Domingo)?", options: ["Descansar", "Separar uma oferta/coleta para os santos necessitados", "Jejuar o dia todo", "Evitar sair de casa"], c: 1 },
+            { q: "Com qual expressão profética aramaica Paulo encerra a carta?", options: ["Hallelujah", "Talita Cumi", "Hosanna", "Maranata (O Senhor Vem)"], c: 3 }
+        ];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let userName = "";
+        
+        const QTY_QUESTIONS = 15;
+        const POINTS_PER_Q = 100 / QTY_QUESTIONS; 
+
+        function startQuiz() {
+            const nameInput = document.getElementById('playerName');
+            if (nameInput.value.trim() === "") {
+                alert("Por favor, digite seu nome para entrar no Ranking!");
+                return;
+            }
+            userName = nameInput.value;
+            const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
+            currentQuestions = shuffled.slice(0, QTY_QUESTIONS);
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = currentQuestions[currentIndex];
+            document.getElementById('currentQ').innerText = currentIndex + 1;
+            document.getElementById('questionText').innerText = q.q;
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full bg-[#120818]/80 border border-slate-800 rounded-lg p-4 text-left text-slate-300 transition duration-300 font-sans text-lg";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(btn, idx, q.c);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.disabled = true);
+            if (selected === correct) {
+                btn.classList.add('correct', 'text-white', 'font-bold');
+                score += POINTS_PER_Q;
+                document.getElementById('scoreVal').innerText = Math.round(score);
+            } else {
+                btn.classList.add('wrong', 'text-white');
+                buttons[correct].classList.add('correct', 'text-white');
+            }
+            setTimeout(() => {
+                currentIndex++;
+                if (currentIndex < QTY_QUESTIONS) {
+                    loadQuestion();
+                } else {
+                    finishQuiz();
+                }
+            }, 1500);
+        }
+
+        function finishQuiz() {
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+            let finalPoints = Math.round(score);
+            document.getElementById('finalScore').innerText = finalPoints;
+            if (finalPoints === 100) { document.getElementById('resultIcon').classList.add('celebration'); }
+            saveScore(finalPoints);
+        }
+
+        function saveScore(finalPoints) {
+            const formData = new FormData();
+            formData.append('acao', 'salvar_quiz_corintios');
+            formData.append('nome', userName);
+            formData.append('pontos', finalPoints);
+            formData.append('acertos', Math.round(finalPoints / POINTS_PER_Q));
+            fetch('api.php', { method: 'POST', body: formData })
+                .then(() => loadRanking());
+        }
+
+        function loadRanking() {
+            fetch('api.php?acao=ranking_corintios')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById('rankingList');
+                    list.innerHTML = '';
+                    let currentRank = 1;
+                    data.forEach((p, index) => {
+                        if (index > 0 && p.pontos < data[index - 1].pontos) { currentRank++; }
+                        let rankIcon = currentRank + 'º';
+                        let myClass = p.nome === userName ? 'text-purple-400 font-bold bg-purple-900/20' : 'text-slate-300';
+                        if(currentRank === 1) rankIcon = '🥇';
+                        if(currentRank === 2) rankIcon = '🥈';
+                        if(currentRank === 3) rankIcon = '🥉';
+                        list.innerHTML += `
+                            <li class="flex justify-between items-center border-b border-slate-800 py-2 px-2 rounded ${myClass}">
+                                <span>${rankIcon} ${p.nome}</span>
+                                <span>${p.pontos} pts</span>
+                            </li>
+                        `;
+                    });
+                });
+        }
+    </script>
+</body>
+</html>

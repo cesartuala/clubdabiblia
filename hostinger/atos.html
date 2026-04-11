@@ -1,0 +1,1699 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atos dos Apóstolos | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] },
+                    colors: { 
+                        divine: { 400: '#22d3ee' },
+                        darkbg: '#0b1120'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0b1120; color: #e2e8f0; overflow-x: hidden; }
+        .glass-panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(34, 211, 238, 0.1); }
+        .cyan-glow { text-shadow: 0 0 15px rgba(34, 211, 238, 0.4); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .rich-text strong { color: #22d3ee; font-weight: 700; }
+        .rich-text .ref { color: #67e8f9; font-size: 0.9em; font-family: monospace; background: rgba(34, 211, 238, 0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(34, 211, 238, 0.2); }
+        .rich-text ul { list-style-type: disc; padding-left: 20px; margin-top: 15px; margin-bottom: 15px; }
+        .rich-text li { margin-bottom: 12px; line-height: 1.8; text-align: justify; }
+        .rich-text p { margin-bottom: 20px; line-height: 1.9; text-align: justify; hyphens: auto; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0b1120; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #22d3ee; }
+
+        .recording-pulse { animation: recPulse 1.5s infinite; background-color: #ef4444; border-color: #ef4444; color: white; }
+        @keyframes recPulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+        @keyframes pop { 50% { transform: scale(1.4); } }
+        .reacted-anim { animation: pop 0.3s ease-out; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="fixed top-0 w-full z-50 p-4 md:p-6 flex flex-col md:flex-row justify-between items-center bg-gradient-to-b from-[#0b1120]/95 to-[#0b1120]/80 backdrop-blur-md border-b border-cyan-900/30 transition-all">
+        
+        <div class="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto justify-between md:justify-start">
+            <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0f172a] border border-cyan-500/50 text-cyan-400 hover:bg-cyan-500 hover:text-black transition-all shadow-[0_0_15px_rgba(34,211,238,0.1)] hover:shadow-[0_0_20px_rgba(34,211,238,0.4)]" title="Voltar para a Capa">
+                <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+                <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-fire text-cyan-500 text-xl md:text-2xl"></i>
+                <span class="font-serif text-white text-lg md:text-xl tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto justify-end">
+            <span class="hidden md:inline text-xs text-slate-400 uppercase tracking-widest">Navegar:</span>
+            <select id="chapterSelect" onchange="loadChapter(this.value)" class="w-full md:w-auto bg-slate-900 text-cyan-400 border border-cyan-500/30 rounded px-4 py-2 text-sm uppercase tracking-widest focus:outline-none focus:border-cyan-500 cursor-pointer hover:bg-slate-800 transition">
+                <option value="intro_book">★ Sobre o Livro</option>
+                <option value="intro_author">✎ Sobre o Autor</option>
+                <option disabled>──────────</option>
+                <option value="atos_1">Capítulo 01</option>
+                <option value="atos_2">Capítulo 02</option>
+                <option value="atos_3">Capítulo 03</option>
+                <option value="atos_4">Capítulo 04</option>
+                <option value="atos_5">Capítulo 05</option>
+                <option value="atos_6">Capítulo 06</option>
+                <option value="atos_7">Capítulo 07</option>
+                <option value="atos_8">Capítulo 08</option>
+                <option value="atos_9">Capítulo 09</option>
+                <option value="atos_10">Capítulo 10</option>
+                <option value="atos_11">Capítulo 11</option>
+                <option value="atos_12">Capítulo 12</option>
+                <option value="atos_13">Capítulo 13</option>
+                <option value="atos_14">Capítulo 14</option>
+                <option value="atos_15">Capítulo 15</option>
+                <option value="atos_16">Capítulo 16</option>
+                <option value="atos_17">Capítulo 17</option>
+                <option value="atos_18">Capítulo 18</option>
+                <option value="atos_19">Capítulo 19</option>
+                <option value="atos_20">Capítulo 20</option>
+                <option value="atos_21">Capítulo 21</option>
+                <option value="atos_22">Capítulo 22</option>
+                <option value="atos_23">Capítulo 23</option>
+                <option value="atos_24">Capítulo 24</option>
+                <option value="atos_25">Capítulo 25</option>
+                <option value="atos_26">Capítulo 26</option>
+                <option value="atos_27">Capítulo 27</option>
+                <option value="atos_28">Capítulo 28</option>
+            </select>
+        </div>
+    </nav>
+
+    <header class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-32 md:pt-20">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1455582916367-25f75bfc6710?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-20"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0b1120] via-[#0b1120]/80 to-transparent"></div>
+        
+        <div class="z-10 reveal active space-y-4 max-w-5xl w-full">
+            <h2 class="text-cyan-400 tracking-[0.5em] text-[10px] md:text-sm uppercase animate-pulse mb-4">Clube da Bíblia Apresenta</h2>
+            
+            <div id="dateBadge" class="hidden inline-flex items-center gap-2 border border-cyan-500/50 rounded-full px-4 py-1 mb-4 bg-cyan-500/10 backdrop-blur-sm transition-all duration-700 opacity-0">
+                <i class="fa-regular fa-calendar text-cyan-400 text-xs"></i>
+                <span class="text-cyan-300 text-xs tracking-widest uppercase font-bold">Leitura: <span id="dateValue" class="text-white"></span></span>
+            </div>
+
+            <h1 id="heroTitle" class="font-serif text-3xl md:text-7xl text-white mb-2 cyan-glow transition-all duration-700 uppercase leading-tight px-2">
+                </h1>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 text-slate-400 mt-8 pt-8 border-t border-cyan-900/30 w-full max-w-3xl mx-auto">
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Idealizado por</p>
+                    <strong class="text-cyan-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-cyan-300 transition">Fellipe Gomes Andrade</strong>
+                </div>
+                <span class="hidden md:block h-8 w-[1px] bg-gradient-to-b from-transparent via-cyan-900 to-transparent"></span>
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Desenvolvido por</p>
+                    <strong class="text-cyan-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-cyan-300 transition">Cesar Tuala</strong>
+                </div>
+            </div>
+
+            <p id="heroDesc" class="text-sm md:text-xl text-slate-300 max-w-2xl mx-auto pt-8 font-light italic transition-all duration-700 px-4">
+                </p>
+            
+            <div class="pt-10">
+                <button onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" class="animate-bounce text-cyan-500 text-2xl">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="content" class="max-w-7xl mx-auto px-4 py-10 md:py-20 space-y-20 md:space-y-32 min-h-screen">
+        </main>
+
+    <section id="community-section" class="w-full bg-[#0f172a] border-t-4 border-cyan-600 py-16 mb-0 relative shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <h3 class="font-serif text-3xl md:text-4xl text-cyan-500 mb-2 uppercase tracking-widest cyan-glow">
+                    <i class="fa-solid fa-users-line mr-3"></i>Comunidade
+                </h3>
+                <p class="text-slate-400 text-sm italic">"Compartilhe o que Deus falou ao seu coração"</p>
+                <div class="h-1 w-24 bg-gradient-to-r from-transparent via-cyan-600 to-transparent mx-auto mt-4"></div>
+            </div>
+
+            <div class="glass-panel p-6 md:p-8 rounded-xl mb-12 border border-slate-700 shadow-2xl bg-slate-800/60">
+                <form id="commentForm" class="space-y-5">
+                    <input type="hidden" id="formChapterKey" name="capitulo">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="col-span-1">
+                            <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Nome</label>
+                            <input type="text" name="nome" required class="w-full bg-slate-900/80 border border-slate-600 rounded px-4 py-3 text-white focus:border-cyan-500 focus:outline-none transition">
+                        </div>
+                        
+                        <div class="flex gap-3 col-span-1 md:col-span-2 items-end">
+                            <label class="flex-1 cursor-pointer bg-slate-700/50 border border-slate-600 hover:border-cyan-500 hover:bg-slate-700 rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-camera group-hover:text-cyan-400"></i> Foto
+                                <input type="file" name="foto" accept="image/*" class="hidden" onchange="previewFile(this)">
+                            </label>
+                            
+                            <button type="button" id="recordBtn" class="flex-1 bg-slate-700/50 border border-slate-600 hover:border-red-500 hover:bg-slate-700 rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-microphone group-hover:text-red-400"></i> <span id="recordText">Gravar Áudio</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="filePreview" class="text-xs text-cyan-400 hidden bg-slate-900 p-2 rounded border border-cyan-500/30"></div>
+
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Comentário</label>
+                        <textarea name="mensagem" class="w-full bg-slate-900/80 border border-slate-600 rounded px-4 py-3 text-white focus:border-cyan-500 focus:outline-none h-28 resize-none transition"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-cyan-700 to-cyan-600 hover:from-cyan-600 hover:to-cyan-500 text-white font-bold py-4 rounded-lg transition uppercase tracking-[0.2em] text-sm shadow-lg shadow-black/50 transform hover:-translate-y-1">
+                        Publicar Comentário
+                    </button>
+                </form>
+            </div>
+
+            <div id="commentsList" class="space-y-6"></div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-800 bg-[#080c17] py-12 text-center relative z-10">
+        <div class="flex flex-col items-center justify-center space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="fa-solid fa-book-bible text-cyan-600 text-xl"></i>
+                <span class="font-serif text-slate-300 text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+            
+            <div class="text-slate-500 text-xs flex flex-col md:flex-row gap-4 md:gap-8 items-center justify-center mt-4">
+                <div class="flex flex-col md:flex-row items-center gap-1">
+                    <span class="uppercase tracking-widest text-[10px] opacity-70">Idealização:</span>
+                    <strong class="text-cyan-500 tracking-wider">Fellipe Gomes Andrade</strong>
+                </div>
+                <span class="hidden md:inline text-slate-700">|</span>
+                <div class="flex flex-col md:flex-row items-center gap-1">
+                    <span class="uppercase tracking-widest text-[10px] opacity-70">Desenvolvimento:</span>
+                    <strong class="text-cyan-500 tracking-wider">Cesar Tuala</strong>
+                </div>
+            </div>
+
+            <p class="text-slate-700 text-[10px] tracking-widest uppercase mt-4">&copy; 2026 Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="imageModal" class="fixed inset-0 z-[100] bg-black/95 hidden flex justify-center items-center p-4 backdrop-blur-sm transition-opacity duration-300" onclick="closeImage()">
+        <div class="relative max-w-4xl w-full flex justify-center">
+            <button onclick="closeImage()" class="absolute -top-12 right-0 text-white text-3xl hover:text-cyan-500 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modalImg" src="" class="max-h-[85vh] max-w-full rounded-lg shadow-[0_0_50px_rgba(34,211,238,0.3)] border-2 border-cyan-500/20 object-contain">
+        </div>
+    </div>
+
+    <script>
+        // === DADOS DE ATOS ===
+        const bibleData = {
+            "intro_book": {
+                title: "ATOS DOS APÓSTOLOS",
+                date: null,
+                desc: "<span class='text-xs uppercase tracking-[0.3em] text-cyan-500 not-italic block mb-4'>Introdução: Sobre o Livro</span>\"Recebereis poder ao descer sobre vós o Espírito Santo.\"",
+                blocks: [
+                    {
+                        title: "A Continuação da Obra de Cristo",
+                        verse: "Fiz o primeiro tratado, ó Teófilo, acerca de tudo que Jesus começou, não só a fazer, mas a ensinar. (Atos 1:1)",
+                        exegesis: `
+                            <p>Lucas, o médico amado, escreve este segundo volume não como um mero apêndice, mas como a sequência vital do Evangelho. O uso do verbo "começou" implica que o ministério de Jesus não terminou na ascensão; ele apenas mudou de modo. Antes, Jesus operava em um corpo físico na Palestina; agora, Ele opera através do Seu "corpo místico" (a Igreja) em todo o mundo, pelo poder do Espírito Santo.</p>
+                            <ul>
+                                <li><strong>História Teológica:</strong> Atos não é apenas história antiga; é teologia narrativa. Lucas seleciona eventos que mostram a expansão imparável do Evangelho, de Jerusalém a Roma, rompendo barreiras raciais e geográficas.</li>
+                                <li><strong>O Título Real:</strong> Embora tradicionalmente chamado de "Atos dos Apóstolos", o livro seria melhor descrito como "Atos do Espírito Santo através dos Apóstolos". O Espírito é o protagonista divino, mencionado mais de 50 vezes.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/e7/12/b4/e712b48d07a44b0c5a11036239fc2eb9.jpg"
+                    },
+                    {
+                        title: "Estrutura Geográfica e Teológica",
+                        verse: "Ser-me-eis testemunhas, tanto em Jerusalém como em toda a Judeia e Samaria, e até aos confins da terra. (Atos 1:8)",
+                        exegesis: `
+                            <p>Este versículo fornece o esboço de todo o livro. A narrativa se expande em círculos concêntricos de influência:</p>
+                            <ul>
+                                <li><strong>Jerusalém (Caps 1-7):</strong> O nascimento da Igreja, o ministério de Pedro e o martírio de Estêvão. Foco judaico.</li>
+                                <li><strong>Judeia e Samaria (Caps 8-12):</strong> A transição. O Evangelho chega aos marginalizados (samaritanos) e ao primeiro gentio (Cornélio). Filipe, Pedro e a conversão de Saulo.</li>
+                                <li><strong>Confins da Terra (Caps 13-28):</strong> As viagens missionárias de Paulo, levando a luz às nações gentias, culminando na capital do império, Roma.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1748&auto=format&fit=crop"
+                    },
+                    {
+                        title: "Temas Centrais",
+                        verse: "E em nenhum outro há salvação, porque também debaixo do céu nenhum outro nome há... (Atos 4:12)",
+                        exegesis: `
+                            <p>Atos estabelece os pilares da Igreja Primitiva. Não é um manual de liturgia, mas de vida e poder.</p>
+                            <ul>
+                                <li><strong>A Ressurreição:</strong> É o tema central da pregação apostólica (Kerygma). Os apóstolos não pregavam "melhore sua vida", mas "Cristo ressuscitou e é Senhor".</li>
+                                <li><strong>O Espírito Santo:</strong> Ele capacita, dirige, proíbe e envia. A igreja não se move por planejamento estratégico humano, mas pela obediência à voz do Espírito.</li>
+                                <li><strong>A Soberania de Deus:</strong> Mesmo diante de perseguição intensa, prisões e naufrágios, a Palavra de Deus cresce e prevalece. Nada pode parar o avanço do Reino.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/01/67/32/016732730cc451fee318a467b1f6fd94.jpg"
+                    }
+                ]
+            },
+            "intro_author": {
+                title: "SOBRE O AUTOR",
+                date: null,
+                desc: "\"Saúda-vos Lucas, o médico amado.\" (Colossenses 4:14)",
+                blocks: [
+                    {
+                        title: "Lucas, o Historiador Gentio",
+                        verse: "A mim me pareceu bem... escrever-te tudo por ordem. (Lucas 1:3)",
+                        exegesis: `
+                            <p>Lucas é o único autor gentio (não-judeu) da Bíblia. Ele era um médico grego, altamente culto e meticuloso. Seu grego é considerado um dos mais refinados do Novo Testamento. Ele não foi testemunha ocular do ministério de Jesus, mas fez uma investigação exaustiva, entrevistando testemunhas (provavelmente incluindo Maria, mãe de Jesus).</p>
+                            <ul>
+                                <li><strong>Companheiro de Paulo:</strong> Nas seções "nós" de Atos (ex: Atos 16:10), Lucas muda a narrativa para a primeira pessoa, indicando que ele viajou com Paulo. Ele permaneceu fiel ao apóstolo até o fim, na prisão romana (<span class="ref">2 Tm 4:11</span>).</li>
+                                <li><strong>Volume Duplo:</strong> Lucas escreveu cerca de 28% do Novo Testamento (Lucas + Atos), mais do que Paulo ou João em volume de palavras. Suas obras foram escritas para Teófilo ("Amigo de Deus"), possivelmente um oficial romano de alto escalão.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=1587&auto=format&fit=crop"
+                    },
+                    {
+                        title: "O Teólogo da Universalidade",
+                        verse: "Para alumiar os que estão assentados em trevas e sombra de morte. (Lucas 1:79)",
+                        exegesis: `
+                            <p>Enquanto Mateus escreve para judeus e Marcos para romanos, Lucas tem uma visão universal. Ele enfatiza que a salvação é para todos os povos, não apenas Israel.</p>
+                            <ul>
+                                <li><strong>Foco nos Marginalizados:</strong> Lucas destaca o amor de Deus pelos pobres, pelas mulheres, pelos samaritanos e pelos pecadores notórios. Em Atos, ele mostra o Espírito sendo derramado sobre eunucos, centuriões romanos e filósofos gregos.</li>
+                                <li><strong>Precisão Histórica:</strong> Arqueólogos confirmaram repetidamente a exatidão de Lucas ao citar títulos de oficiais romanos (proconsules, asiarcas, politarcas) e detalhes geográficos. Ele é um historiador de primeira linha.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=2070&auto=format&fit=crop"
+                    }
+                ]
+            },
+            "atos_1": {
+                title: "A PROMESSA E A ASCENSÃO",
+                date: "09/02",
+                desc: "\"Mas recebereis a virtude do Espírito Santo, que há de vir sobre vós.\"",
+                blocks: [
+                    {
+                        title: "A Promessa do Pai (Dunamis)",
+                        verse: "Mas recebereis poder (dunamis), ao descer sobre vós o Espírito Santo. (Atos 1:8)",
+                        exegesis: `
+                            <p>Jesus instrui os discípulos a não saírem de Jerusalém sem o "revestimento". A palavra grega para poder é <em>Dunamis</em>, raiz de "dinamite" e "dinâmico". Não é apenas autoridade legal (*exousia*), mas capacidade sobrenatural, força explosiva para realizar milagres e testemunhar.</p>
+                            <ul>
+                                <li><strong>A Estratégia Divina:</strong> O plano não é político ("restaurarás o reino a Israel?"), mas espiritual. A missão é ser "testemunha" (*martys*, de onde vem mártir). O poder não é para autopromoção, mas para martírio e missão.</li>
+                                <li><strong>Espera Ativa:</strong> A ordem era "esperar". O ativismo sem o Espírito é estéril. A igreja nasce da oração e da dependência total.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/1200x/88/79/5d/88795d36fe4a2ad12fc3beeb7fdea831.jpg"
+                    },
+                    {
+                        title: "A Ascensão e a Nuvem",
+                        verse: "Foi elevado às alturas, e uma nuvem o recebeu, ocultando-o a seus olhos. (Atos 1:9)",
+                        exegesis: `
+                            <p>A Ascensão marca o fim do ministério terreno de Jesus e o início do ministério celestial como Sumo Sacerdote e Rei. A "nuvem" não é meteorológica, mas teológica: é a <em>Shekinah</em>, a nuvem da glória de Deus que enchia o Tabernáculo.</p>
+                            <ul>
+                                <li><strong>O Retorno Prometido:</strong> Dois anjos (varões de branco) profetizam a Segunda Vinda: "Esse Jesus... há de vir assim como para o céu o vistes ir". A escatologia cristã é ancorada na volta corpórea e visível do Senhor.</li>
+                                <li><strong>Cristo Entronizado:</strong> Ele subiu para "encher todas as coisas" (<span class="ref">Ef 4:10</span>). Ele não está ausente; Ele está no comando do universo, à destra do Pai.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/02/3b/0f/023b0fa891f30109868ea7b47cc2f3b0.jpg"
+                    },
+                    {
+                        title: "A Restauração dos Doze",
+                        verse: "E, orando, disseram: Tu, Senhor, que conheces o coração de todos, revela qual destes dois escolheste. (Atos 1:24)",
+                        exegesis: `
+                            <p>Pedro assume a liderança, interpretando os Salmos para explicar a traição de Judas. Era necessário preencher o cargo apostólico para manter o simbolismo das 12 tribos do Novo Israel.</p>
+                            <ul>
+                                <li><strong>Critérios Apostólicos:</strong> O substituto devia ser testemunha ocular desde o batismo de João até a ascensão. O foco era testemunhar a Ressurreição.</li>
+                                <li><strong>Soberania na Escolha:</strong> Matias é escolhido por sorteio (prática do AT), mas precedido de oração. Deus, o <em>Kardiognostes</em> (conhecedor de corações), faz a eleição. Esta é a última vez que o sorteio é usado na Bíblia; após Pentecostes, o Espírito fala diretamente.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/9e/b2/eb/9eb2eb2ecfbdc65061644ac96592a190.jpg"
+                    }
+                ]
+            },
+            "atos_2": {
+                title: "O PENTECOSTES",
+                date: "09/02",
+                desc: "\"E todos foram cheios do Espírito Santo, e começaram a falar noutras línguas.\"",
+                blocks: [
+                    {
+                        title: "Vento e Fogo (Teofania)",
+                        verse: "De repente veio do céu um som, como de um vento veemente... e foram vistas línguas de fogo. (Atos 2:2-3)",
+                        exegesis: `
+                            <p>Pentecostes (Festa das Semanas) celebrava a colheita e a entrega da Lei no Sinai. Agora, Deus entrega o Espírito. Os sinais são clássicos de teofania (manifestação de Deus).</p>
+                            <ul>
+                                <li><strong>Vento (Pneuma):</strong> Em grego e hebraico (*Ruach*), vento e espírito são a mesma palavra. Simboliza a vida invisível e poderosa de Deus soprando sobre os ossos secos.</li>
+                                <li><strong>Fogo:</strong> Simboliza a presença purificadora e a santidade de Deus (como na sarça ardente). Mas agora, o fogo não está num monte distante, mas pousa "sobre cada um deles". O crente tornou-se o templo individual e coletivo de Deus.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/1200x/e6/b9/03/e6b9030db8ef50afafa0b1efee481a0a.jpg"
+                    },
+                    {
+                        title: "O Sermão de Pedro (Kerygma)",
+                        verse: "Saiba, pois, com certeza toda a casa de Israel que a esse Jesus... Deus o fez Senhor e Cristo. (Atos 2:36)",
+                        exegesis: `
+                            <p>Pedro, antes medroso, agora cheio do Espírito, levanta-se e prega o primeiro sermão cristão. Ele não prega a si mesmo, mas expõe as Escrituras (<span class="ref">Joel 2</span>, <span class="ref">Salmo 16</span>, <span class="ref">Salmo 110</span>).</p>
+                            <ul>
+                                <li><strong>Cristocentrismo:</strong> O foco é Jesus: Sua vida, morte, ressurreição e exaltação. Ele acusa os ouvintes ("vós o matastes") não para condenar, mas para levar ao arrependimento.</li>
+                                <li><strong>Compunção:</strong> "Compungiram-se em seu coração". A palavra grega significa "perfurar". A verdadeira pregação do Espírito fere a consciência e mata o orgulho.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/1a/5d/65/1a5d657d3c46cb7ea87f42f8e8c64958.jpg"
+                    },
+                    {
+                        title: "A Koinonia (Comunhão Radical)",
+                        verse: "E perseveravam na doutrina dos apóstolos, e na comunhão, e no partir do pão, e nas orações. (Atos 2:42)",
+                        exegesis: `
+                            <p>O resultado do avivamento não foi apenas emoção, mas uma nova ética social. Nasce a Igreja, marcada por quatro pilares inegociáveis.</p>
+                            <ul>
+                                <li><strong>Tudo em Comum:</strong> A generosidade era tão profunda que ninguém considerava suas coisas como próprias. Não era comunismo forçado (estatal), mas amor voluntário (fraternal).</li>
+                                <li><strong>Favor e Temor:</strong> A igreja tinha "a graça de todo o povo" e ao mesmo tempo "em toda a alma havia temor". Um equilíbrio perfeito entre atração amorosa e reverência santa.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/01/38/76/013876e742c2cd1f5d2e1e2ed2279b91.jpg"
+                    }
+                ]
+            },
+            "atos_3": {
+                title: "O NOME QUE CURA",
+                date: "10/02",
+                desc: "\"Não tenho prata nem ouro; mas o que tenho isso te dou.\"",
+                blocks: [
+                    {
+                        title: "O Milagre na Porta Formosa",
+                        verse: "Em nome de Jesus Cristo, o Nazareno, levanta-te e anda. (Atos 3:6)",
+                        exegesis: `
+                            <p>Pedro e João sobem ao templo na hora da oração. O coxo de nascença pede esmola (alívio temporário), mas recebe cura (transformação radical). A "Porta Formosa" contrasta com a feiura do sofrimento humano.</p>
+                            <ul>
+                                <li><strong>A Falência Humana:</strong> "Não tenho prata nem ouro". A Igreja não tinha recursos financeiros, mas tinha poder espiritual. Hoje, muitas vezes temos ouro, mas falta o poder de dizer "levanta-te".</li>
+                                <li><strong>O Poder do Nome:</strong> O milagre não reside em Pedro, mas no "Nome". No pensamento semita, o nome carrega a essência e autoridade da pessoa. Invocar o Nome é trazer a presença de Jesus para a cena.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/76/fd/c2/76fdc2abf38bb81e91ba097e02b3b538.jpg"
+                    },
+                    {
+                        title: "O Autor da Vida",
+                        verse: "Matastes o Príncipe da vida, ao qual Deus ressuscitou dentre os mortos. (Atos 3:15)",
+                        exegesis: `
+                            <p>No Pórtico de Salomão, Pedro aproveita a aglomeração para pregar. Ele usa um paradoxo chocante: vocês pediram um assassino (Barrabás) e mataram o "Autor da Vida" (*Archegon* - o Pioneiro, a Fonte).</p>
+                            <ul>
+                                <li><strong>Ignorância vs Responsabilidade:</strong> Pedro admite que agiram por ignorância, mas isso não anula a culpa. A cura agora é o arrependimento (*metanoia* - mudança de mente).</li>
+                                <li><strong>Tempos de Refrigério:</strong> A promessa para o arrependimento é o "refrigério" (*anapsyxis* - alívio, brisa fresca) que vem da face do Senhor. A conversão traz descanso para a alma cansada do pecado.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/f8/3c/07/f83c07addcabac3801cde6cdc04971f5.jpg"
+                    },
+                    {
+                        title: "A Restauração de Tudo",
+                        verse: "O qual convém que o céu contenha até aos tempos da restauração de tudo. (Atos 3:21)",
+                        exegesis: `
+                            <p>Pedro aponta para a escatologia. Jesus está no céu, mas voltará para a "restauração" (*apokatastasis*) cósmica. O milagre do coxo é apenas um trailer, uma amostra grátis do que acontecerá no Universo quando o Reino for consumado.</p>
+                            <ul>
+                                <li><strong>O Profeta como Moisés:</strong> Pedro cita <span class="ref">Deuteronômio 18</span>, identificando Jesus como o Profeta final que Moisés prometeu. Rejeitar a Jesus é rejeitar a própria Lei que eles diziam defender.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1744&auto=format&fit=crop"
+                    }
+                ]
+            },
+            "atos_4": {
+                title: "OUSADIA SOB PRESSÃO",
+                date: "10/02",
+                desc: "\"Não podemos deixar de falar do que temos visto e ouvido.\"",
+                blocks: [
+                    {
+                        title: "A Pedra Angular",
+                        verse: "Este Jesus é a pedra... que se tornou a pedra angular. (Atos 4:11)",
+                        exegesis: `
+                            <p>Pela primeira vez, a liderança judaica (o Sinédrio) prende os apóstolos. Diante da elite religiosa, Pedro, cheio do Espírito, não se defende, mas ataca com a verdade. Ele cita o <span class="ref">Salmo 118</span>.</p>
+                            <ul>
+                                <li><strong>Exclusividade Absoluta:</strong> O versículo 12 é o pilar da soteriologia cristã: "E em nenhum outro há salvação". Numa cultura pluralista (romana) e exclusivista (judaica), essa afirmação era escandalosa. Jesus não é *um* caminho, é *o* único Nome dado aos homens.</li>
+                                <li><strong>A Marca de Cristo:</strong> O Sinédrio percebeu que eles eram "iletrados e incultos", mas "tinham estado com Jesus". A maior credencial do cristão não é acadêmica, é relacional.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/69/4c/20/694c20b1c812a19796a72946367da8d6.jpg"
+                    },
+                    {
+                        title: "Oração por Ousadia (Parrhesia)",
+                        verse: "Agora, pois, ó Senhor, olha para as suas ameaças, e concede aos teus servos que falem com toda a ousadia a tua palavra. (Atos 4:29)",
+                        exegesis: `
+                            <p>Soltos, eles voltam para a igreja e oram. Note o conteúdo da oração: eles não pedem proteção, segurança ou vingança. Eles pedem <em>parrhesia</em> (ousadia, liberdade de fala) para continuar pregando sob ameaça.</p>
+                            <ul>
+                                <li><strong>Soberania na Perseguição:</strong> Eles citam o <span class="ref">Salmo 2</span>, reconhecendo que a fúria das nações e dos reis (Herodes/Pilatos) estava, na verdade, cumprindo o plano soberano de Deus ("fazer tudo o que a tua mão... determinou"). Deus usa a maldade humana para cumprir Seus decretos.</li>
+                                <li><strong>O Tremor:</strong> "Moveu-se o lugar". Deus responde com um sinal físico e um novo enchimento do Espírito.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/9d/b6/a0/9db6a0ddda02a006fcc378b3e47f1228.jpg"
+                    },
+                    {
+                        title: "Generosidade Radical",
+                        verse: "Era um o coração e a alma da multidão dos que criam. (Atos 4:32)",
+                        exegesis: `
+                            <p>O poder espiritual transborda em generosidade social. Lucas apresenta Barnabé ("Filho da Consolação") como o exemplo positivo. Ele vende um campo e traz o dinheiro aos apóstolos.</p>
+                            <ul>
+                                <li><strong>Grande Poder e Grande Graça:</strong> Havia um equilíbrio. Os apóstolos davam testemunho com "grande poder" (milagres/pregação) e havia "abundante graça" (favor/amor) entre o povo.</li>
+                                <li><strong>Desapego:</strong> A graça quebra o poder do materialismo. Quando Cristo é o tesouro supremo, bens materiais tornam-se apenas ferramentas para abençoar o Reino.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/1200x/a3/35/71/a335713bf6c74e960965c976c802eebe.jpg"
+                    }
+                ]
+            },
+            "atos_5": {
+                title: "PUREZA E PODER",
+                date: "11/02",
+                desc: "\"Importa mais obedecer a Deus do que aos homens.\"",
+                blocks: [
+                    {
+                        title: "O Juízo de Ananias e Safira",
+                        verse: "Por que encheu Satanás o teu coração, para que mentisses ao Espírito Santo? (Atos 5:3)",
+                        exegesis: `
+                            <p>Satanás muda a tática: da perseguição externa (Cap. 4) para a corrupção interna (Cap. 5). Ananias e Safira queriam a reputação de generosidade sem o custo do sacrifício. O pecado não foi reter o dinheiro, mas mentir sobre a totalidade.</p>
+                            <ul>
+                                <li><strong>Divindade do Espírito:</strong> Pedro iguala mentir ao Espírito Santo a mentir a Deus (v.4). Uma das provas mais claras da divindade do Espírito na Bíblia.</li>
+                                <li><strong>Temor Santo:</strong> A morte súbita do casal traz um "grande temor" sobre a igreja. Deus demonstra que a pureza da Noiva é inegociável. Ele mata o corpo para salvar o espírito da hipocrisia na comunidade nascente.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/dc/e6/5e/dce65ee0665e2caba354011ff8614346.jpg"
+                    },
+                    {
+                        title: "Sinais e a Sombra de Pedro",
+                        verse: "A ponto de transportarem os enfermos para as ruas... para que ao menos a sombra de Pedro cobrisse alguns. (Atos 5:15)",
+                        exegesis: `
+                            <p>Após a purificação (juízo), vem a multiplicação. O poder era tanto que a superstição popular (a sombra) se tornava ponto de contato para a fé real. Deus condescende à fé simples do povo.</p>
+                            <ul>
+                                <li><strong>Inveja Religiosa:</strong> O sucesso do Evangelho provoca a inveja (*zelos*) do sumo sacerdote e dos saduceus. A religião morta não suporta a vida do Espírito.</li>
+                                <li><strong>Libertação Angélica:</strong> Eles são presos, mas um anjo abre as portas. A ordem do anjo é irônica: "Ide e apresentai-vos no templo". Voltem exatamente para onde foram proibidos de estar.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/1200x/15/72/df/1572df0f159f9e466aab6e657b9a55cb.jpg"
+                    },
+                    {
+                        title: "O Conselho de Gamaliel",
+                        verse: "Se este conselho ou esta obra é de homens, se desfará; mas, se é de Deus, não podereis desfazê-la. (Atos 5:38-39)",
+                        exegesis: `
+                            <p>Diante da fúria do Sinédrio, levanta-se Gamaliel, mestre da Lei (e professor de Paulo). Ele dá um conselho pragmático: a história é o juiz da verdade.</p>
+                            <ul>
+                                <li><strong>Alegria no Sofrimento:</strong> Os apóstolos são açoitados. A reação deles é sobrenatural: "retiraram-se... regozijando-se de terem sido julgados dignos de padecer afronta pelo nome de Jesus" (v.41). O sofrimento não era vergonha, mas um distintivo de honra e identificação com Cristo.</li>
+                                <li><strong>Imparáveis:</strong> "Não cessavam de ensinar e de anunciar a Jesus Cristo". Nenhuma ameaça humana pode silenciar quem viu o Ressurreto.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/1200x/1a/ac/49/1aac499650858b03d660ef40406f1424.jpg"
+                    }
+                ]
+            },
+            "atos_6": {
+                title: "O SERVIÇO E A ESTEVÃO",
+                date: "11/02",
+                desc: "\"E crescia a palavra de Deus, e em Jerusalém se multiplicava muito o número dos discípulos.\"",
+                blocks: [
+                    {
+                        title: "A Instituição dos Diáconos",
+                        verse: "Escolhei, pois, irmãos, dentre vós, sete varões de boa reputação, cheios do Espírito Santo e de sabedoria. (Atos 6:3)",
+                        exegesis: `
+                            <p>O crescimento gera problemas administrativos. A murmuração das viúvas gregas revela uma tensão cultural na igreja. Os apóstolos estabelecem uma prioridade vital: "não é razoável deixarmos a palavra de Deus para servir às mesas".</p>
+                            <ul>
+                                <li><strong>Delegação Espiritual:</strong> O diaconato não é um cargo inferior, mas um ministério espiritual que libera a liderança para a oração e a Palavra. Os requisitos (Espírito e sabedoria) mostram que servir mesas exige caráter santo.</li>
+                                <li><strong>Estêvão:</strong> Entre os escolhidos destaca-se Estêvão, um homem "cheio de fé e poder". Deus começa a usar não apenas os 12, mas a liderança leiga para operar milagres.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1579208575657-c595a05383b7?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Sinagoga dos Libertos",
+                        verse: "E levantaram-se alguns... disputando com Estêvão. E não podiam resistir à sabedoria e ao Espírito com que falava. (Atos 6:9-10)",
+                        exegesis: `
+                            <p>Estêvão enfrenta oposição intelectual das sinagogas helenistas. Ele prova pelas Escrituras que Jesus é o Cristo. Incapazes de vencer no debate, eles partem para a difamação e violência, acusando-o de blasfemar contra Moisés e o Templo.</p>
+                            <ul>
+                                <li><strong>O Rosto de Anjo:</strong> Levado ao Sinédrio, Estêvão não demonstra medo. "Viram o seu rosto como o rosto de um anjo" (v.15). A glória de Deus transparecia nele, refletindo a paz sobrenatural diante da morte iminente.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?q=80&w=1674&auto=format&fit=crop"
+                    },
+                    {
+                        title: "O Primeiro Mártir",
+                        verse: "E apedrejavam a Estêvão que em invocação dizia: Senhor Jesus, recebe o meu espírito. (Atos 7:59 - Contexto)",
+                        exegesis: `
+                            <p>Embora a morte ocorra no cap. 7, o cenário é montado aqui. Estêvão representa a transição crucial do cristianismo judaico para o universal. Ele entende que o Templo físico não é mais necessário, pois Cristo é o cumprimento.</p>
+                            <ul>
+                                <li><strong>Testemunha Fiel:</strong> Estêvão é o protótipo do mártir cristão. Sua defesa não visa salvar sua vida, mas salvar a alma de seus acusadores através da verdade confrontadora.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/67/51/9e/67519eba548ee9107de3cfe1b3dabe9b.jpg"
+                    }
+                ]
+            },
+            "atos_7": {
+                title: "O DISCURSO DE ESTEVÃO",
+                date: "12/02",
+                desc: "\"Eis que vejo os céus abertos, e o Filho do homem, que está em pé à mão direita de Deus.\"",
+                blocks: [
+                    {
+                        title: "A História da Rejeição",
+                        verse: "Vós sempre resistis ao Espírito Santo; assim vós sois como vossos pais. (Atos 7:51)",
+                        exegesis: `
+                            <p>O sermão de Estêvão é a defesa mais longa de Atos. Ele revisita a história de Israel para provar um ponto: o povo sempre rejeitou os libertadores enviados por Deus (José, Moisés, Profetas) e agora rejeitou o Justo (Jesus).</p>
+                            <ul>
+                                <li><strong>Deus Fora da Caixa:</strong> Estêvão demonstra que Deus operou fora da Terra Santa (Mesopotâmia, Egito, Deserto). Deus não está confinado ao Templo de Jerusalém, o que enfurece os tradicionalistas que idolatravam o lugar sagrado.</li>
+                                <li><strong>Corações Incircuncisos:</strong> A acusação final é devastadora. Eles têm a marca física da aliança, mas seus corações são pagãos e resistentes ao Espírito.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/f9/cc/a3/f9cca39fdac901c740cf3b0073afa1ab.jpg"
+                    },
+                    {
+                        title: "A Visão da Glória",
+                        verse: "Mas ele, estando cheio do Espírito Santo... viu a glória de Deus, e a Jesus, que estava à direita de Deus. (Atos 7:55)",
+                        exegesis: `
+                            <p>Enquanto a multidão range os dentes de ódio, Estêvão tem uma teofania. Ele vê o céu aberto.</p>
+                            <ul>
+                                <li><strong>Jesus em Pé:</strong> Normalmente, a Bíblia diz que Jesus está *assentado* à destra de Deus (autoridade consumada). Aqui, Ele está *em pé*. Muitos teólogos interpretam isso como Jesus se levantando para receber Seu primeiro mártir, numa atitude de honra e acolhimento.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/f6/d1/74/f6d17422cfdaf98596f5bcdd941a7b43.jpg"
+                    },
+                    {
+                        title: "Perdão na Morte",
+                        verse: "Senhor, não lhes imputes este pecado. E, tendo dito isto, adormeceu. (Atos 7:60)",
+                        exegesis: `
+                            <p>Estêvão morre como viveu: cheio do Espírito e imitando a Jesus. Suas últimas palavras espelham as de Cristo na cruz ("Pai, perdoa-lhes").</p>
+                            <ul>
+                                <li><strong>O Jovem Saulo:</strong> Lucas introduz um personagem sinistro: Saulo, que consentia na morte de Estêvão e guardava as vestes dos apedrejadores. O sangue do mártir Estêvão seria a semente que, em breve, germinaria na conversão de Paulo.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/52/3c/c7/523cc7591461eacef678268686d8020b.jpg"
+                    }
+                ]
+            },
+            "atos_8": {
+                title: "A EXPANSÃO PARA SAMARIA",
+                date: "12/02",
+                desc: "\"Indo eles, pois, pregavam a palavra.\"",
+                blocks: [
+                    {
+                        title: "Perseguição e Espalhamento",
+                        verse: "E iam por toda a parte, anunciando a palavra. (Atos 8:4)",
+                        exegesis: `
+                            <p>A morte de Estêvão desencadeia uma grande perseguição liderada por Saulo. O que o diabo intentou para destruir a igreja, Deus usou para cumprir Atos 1:8. Os cristãos foram dispersos, mas levaram o fogo do Evangelho com eles.</p>
+                            <ul>
+                                <li><strong>Filipe em Samaria:</strong> Filipe (o diácono) quebra barreiras raciais e vai aos samaritanos (mestiços odiados pelos judeus). O avivamento é explosivo: milagres, libertações e "grande alegria naquela cidade".</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/a9/11/63/a91163839532305b137c0870c295283c.jpg"
+                    },
+                    {
+                        title: "Simão, o Mago",
+                        verse: "Dá-me também a mim esse poder... (Atos 8:19)",
+                        exegesis: `
+                            <p>Simão, um ocultista famoso, "crê" e é batizado, mas seu coração não foi regenerado. Ele tenta comprar o poder do Espírito Santo (daí o termo "simonia").</p>
+                            <ul>
+                                <li><strong>O Coração Errado:</strong> Pedro discerne a intenção maligna: "Teu coração não é reto diante de Deus". O poder de Deus não é mercadoria. O episódio serve de alerta contra a busca de poder sem piedade.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/c5/bd/ba/c5bdba99bc1b1c277516253c2e386a48.jpg"
+                    },
+                    {
+                        title: "O Eunuco Etíope",
+                        verse: "Eis aqui água; que impede que eu seja batizado? (Atos 8:36)",
+                        exegesis: `
+                            <p>Filipe é tirado de um avivamento de multidões para pregar a uma única pessoa no deserto: um oficial da corte da Etiópia. Isso mostra o valor de uma alma.</p>
+                            <ul>
+                                <li><strong>Jesus no Antigo Testamento:</strong> O eunuco lia Isaías 53 (o Servo Sofredor). Filipe "anunciou-lhe a Jesus" a partir daquele texto. A chave hermenêutica da Bíblia é Cristo.</li>
+                                <li><strong>Fé e Batismo:</strong> A resposta imediata à compreensão do Evangelho é o batismo. O Evangelho começa a chegar aos "confins da terra" (África).</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/4d/f3/62/4df36287a2b158ca09f50c34817eead2.jpg"
+                    }
+                ]
+            },
+            "atos_9": {
+                title: "A CONVERSÃO DE SAULO",
+                date: "13/02",
+                desc: "\"Senhor, que queres que eu faça?\"",
+                blocks: [
+                    {
+                        title: "A Luz no Caminho de Damasco",
+                        verse: "Saulo, Saulo, por que me persegues? (Atos 9:4)",
+                        exegesis: `
+                            <p>O perseguidor torna-se o perseguido. A aparição do Cristo Ressurreto cega Saulo fisicamente para que ele possa ver espiritualmente. A pergunta de Jesus revela a união mística: perseguir a Igreja é perseguir o próprio Cristo.</p>
+                            <ul>
+                                <li><strong>Vaso Escolhido:</strong> Deus revela a Ananias que Saulo é um "vaso escolhido" para levar o Nome aos gentios, reis e filhos de Israel. A soberania de Deus transforma o maior inimigo no maior apóstolo.</li>
+                                <li><strong>Sofrimento:</strong> "Eu lhe mostrarei o quanto deve padecer pelo meu nome". O chamado de Paulo é intrinsecamente ligado ao sofrimento por Cristo.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/d3/b8/c8/d3b8c892edd912ae5961f0639d8272dd.jpg"
+                    },
+                    {
+                        title: "A Mudança Radical",
+                        verse: "E logo nas sinagogas pregava a Jesus, que este era o Filho de Deus. (Atos 9:20)",
+                        exegesis: `
+                            <p>A transformação é imediata. Aquele que foi para prender, agora é preso pelo amor de Cristo. Saulo confunde os judeus provando que Jesus é o Cristo. Ele passa de fariseu zeloso a evangelista apaixonado.</p>
+                            <ul>
+                                <li><strong>Barnabé, o Intercessor:</strong> A igreja em Jerusalém teme Saulo, mas Barnabé o acolhe e o apresenta aos apóstolos. O papel de mentores e pontes é crucial na vida de novos convertidos.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/b7/65/64/b76564b827aa028a3d8bdd2d8db434e6.jpg"
+                    },
+                    {
+                        title: "Milagres de Pedro",
+                        verse: "Tabita, levanta-te. E ela abriu os olhos. (Atos 9:40)",
+                        exegesis: `
+                            <p>A narrativa volta para Pedro. Ele cura Eneias (paralítico há 8 anos) e ressuscita Dorcas (Tabita), uma discípula amada por suas obras de caridade.</p>
+                            <ul>
+                                <li><strong>Poder da Ressurreição:</strong> Pedro imita Jesus no quarto de Jairo, orando e dizendo "Levanta-te". O poder que estava em Cristo agora flui através dos apóstolos, confirmando a mensagem do Evangelho e trazendo muitos à fé na região de Jope.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/e4/dc/31/e4dc312a864e0d13b8b4755e0a865a2e.jpg"
+                    }
+                ]
+            },
+            "atos_10": {
+                title: "O PENTECOSTES DOS GENTIOS",
+                date: "13/02",
+                desc: "\"Reconheço por verdade que Deus não faz acepção de pessoas.\"",
+                blocks: [
+                    {
+                        title: "Cornélio e a Busca",
+                        verse: "As tuas orações e as tuas esmolas têm subido para memória diante de Deus. (Atos 10:4)",
+                        exegesis: `
+                            <p>Cornélio é um centurião romano, um gentio "temente a Deus", mas ainda não salvo. Deus ouve a busca sincera dele e envia um anjo para conectá-lo ao Evangelho. Isso mostra que Deus orquestra encontros divinos para salvar os que O buscam.</p>
+                            <ul>
+                                <li><strong>Dupla Visão:</strong> Deus prepara Cornélio para ouvir e prepara Pedro para falar. A missão exige que Deus trabalhe em ambas as pontas.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/9e/24/d7/9e24d74e8357ad92035427b010e98b88.jpg"
+                    },
+                    {
+                        title: "A Visão do Lençol",
+                        verse: "Não chames tu comum ao que Deus purificou. (Atos 10:15)",
+                        exegesis: `
+                            <p>Pedro, preso ao legalismo judaico, recusa comer animais impuros na visão. Deus usa isso para ensinar uma lição teológica profunda: a barreira cerimonial entre judeus e gentios foi derrubada na cruz.</p>
+                            <ul>
+                                <li><strong>Universalidade:</strong> Pedro entende: "Deus mostrou-me que a nenhum homem chame comum ou imundo" (v.28). O Evangelho é para todas as etnias; não há mais distinção racial diante da Graça.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/54/86/ba/5486ba695bb4f9427c2e9595caee58d2.jpg"
+                    },
+                    {
+                        title: "O Espírito Cai sobre os Gentios",
+                        verse: "E, dizendo Pedro ainda estas palavras, caiu o Espírito Santo sobre todos os que ouviam a palavra. (Atos 10:44)",
+                        exegesis: `
+                            <p>Enquanto Pedro pregava sobre o perdão dos pecados, ocorre um "segundo Pentecostes". O Espírito é derramado sobre os gentios *antes* do batismo nas águas e sem circuncisão.</p>
+                            <ul>
+                                <li><strong>Sinal Divino:</strong> Eles falaram em línguas, assim como os judeus em Atos 2. Isso foi a prova irrefutável para a Igreja Judaica de que Deus aceitou os gentios plenamente. Pedro ordena o batismo, reconhecendo o que Deus já havia feito.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/1200x/ab/9f/8a/ab9f8a9b3ec14eca3d4593b6b9a122ab.jpg"
+                    }
+                ]
+            },
+            "atos_11": {
+                title: "A DEFESA DE PEDRO",
+                date: "16/02",
+                desc: "\"E, ouvindo estas coisas, apaziguaram-se e glorificaram a Deus.\"",
+                blocks: [
+                    {
+                        title: "Justificativa da Missão aos Gentios",
+                        verse: "Mas a voz respondeu-me do céu segunda vez: Não chames tu comum ao que Deus purificou. (Atos 11:9)",
+                        exegesis: `
+                            <p>Pedro retorna a Jerusalém e enfrenta críticas dos crentes circuncisos por ter entrado na casa de gentios. Sua defesa não é teológica, mas narrativa: ele reconta a visão do lençol e o derramar do Espírito.</p>
+                            <ul>
+                                <li><strong>Sinal Divino Irrefutável:</strong> O argumento final de Pedro é o batismo no Espírito Santo. "Quem era eu, para que pudesse resistir a Deus?" (v.17). A experiência sobrenatural valida a nova direção da igreja.</li>
+                                <li><strong>Glorificação a Deus:</strong> A igreja em Jerusalém, convencida, muda da crítica para o louvor, reconhecendo que "Deus deu também aos gentios o arrependimento para a vida" (v.18).</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/7d/92/83/7d92837e1f59c55bb380b052632209fc.jpg"
+                    },
+                    {
+                        title: "O Evangelho em Antioquia",
+                        verse: "E a mão do Senhor era com eles; e grande número creu e se converteu ao Senhor. (Atos 11:21)",
+                        exegesis: `
+                            <p>Crentes dispersos pela perseguição chegam a Antioquia e começam a pregar aos gregos. Antioquia torna-se o segundo centro do cristianismo, focado na missão mundial.</p>
+                            <ul>
+                                <li><strong>Barnabé Enviado:</strong> A igreja de Jerusalém envia Barnabé para investigar. Ele vê a graça de Deus e se alegra, exortando todos a permanecerem no Senhor. Ele busca Saulo em Tarso para ajudar no ensino.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/97/39/64/973964021977705ed06387fcdafe0885.jpg"
+                    },
+                    {
+                        title: "Chamados Cristãos",
+                        verse: "E em Antioquia foram os discípulos, pela primeira vez, chamados cristãos. (Atos 11:26)",
+                        exegesis: `
+                            <p>O termo "Cristão" (Christianos) significa "Pequenos Cristos" ou "Partidários de Cristo". Provavelmente foi dado inicialmente como um apelido pejorativo pelos pagãos, mas a igreja o adotou como distintivo de honra.</p>
+                            <ul>
+                                <li><strong>Solidariedade Prática:</strong> O profeta Ágabo prevê uma fome. A resposta da igreja gentílica é enviar socorro aos irmãos da Judeia. A unidade espiritual se manifesta em ajuda material.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/47/81/2b/47812b9fd4199e802575b8f698a83d65.jpg"
+                    }
+                ]
+            },
+            "atos_12": {
+                title: "PERSEGUIÇÃO E LIBERTAÇÃO",
+                date: "16/02",
+                desc: "\"Mas a igreja fazia contínua oração por ele a Deus.\"",
+                blocks: [
+                    {
+                        title: "O Martírio de Tiago e a Prisão de Pedro",
+                        verse: "E matou à espada Tiago, irmão de João. (Atos 12:2)",
+                        exegesis: `
+                            <p>Herodes Agripa I ataca a liderança da igreja. Tiago é o primeiro apóstolo a ser martirizado, cumprindo a profecia de Jesus de que beberiam o Seu cálice. Vendo que isso agradava aos judeus, prende Pedro.</p>
+                            <ul>
+                                <li><strong>Soberania Seletiva:</strong> Deus permite a morte de Tiago, mas liberta Pedro. Seus caminhos são inescrutáveis, mas ambos glorificam a Deus, seja na vida ou na morte.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/1a/09/54/1a0954b59b84bbe6b98659eb55646ba8.jpg"
+                    },
+                    {
+                        title: "A Oração da Igreja e o Anjo",
+                        verse: "E eis que sobreveio o anjo do Senhor... e as cadeias caíram-lhe das mãos. (Atos 12:7)",
+                        exegesis: `
+                            <p>Enquanto Pedro dormia (sinal de paz total na véspera da execução), a igreja orava incessantemente. Deus envia um anjo para libertá-lo milagrosamente das cadeias e dos guardas.</p>
+                            <ul>
+                                <li><strong>Incredulidade na Oração:</strong> Quando Pedro chega à casa de Maria (mãe de Marcos), os que oravam não acreditam que é ele, dizendo ser "o seu anjo". Isso mostra nossa humanidade: oramos, mas nos surpreendemos quando Deus responde.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/1200x/57/86/d2/5786d2596aa58be2602e78442918bb15.jpg"
+                    },
+                    {
+                        title: "O Juízo de Herodes",
+                        verse: "E o anjo do Senhor o feriu, porque não deu glória a Deus; e, comido de bichos, expirou. (Atos 12:23)",
+                        exegesis: `
+                            <p>Herodes aceita a adoração da multidão ("Voz de Deus, e não de homem"). O orgulho precede a queda. O julgamento divino é imediato e humilhante.</p>
+                            <ul>
+                                <li><strong>O Triunfo da Palavra:</strong> "E a palavra de Deus crescia e se multiplicava" (v.24). O capítulo contrasta o poder político, que morre comido por vermes, com a Palavra de Deus, que é viva e invencível.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/1200x/9c/7d/e6/9c7de605f95263285e09545be63abc6a.jpg"
+                    }
+                ]
+            },
+            "atos_13": {
+                title: "A PRIMEIRA VIAGEM MISSIONÁRIA",
+                date: "17/02",
+                desc: "\"Apartai-me a Barnabé e a Saulo para a obra a que os tenho chamado.\"",
+                blocks: [
+                    {
+                        title: "O Chamado do Espírito Santo",
+                        verse: "Servindo eles ao Senhor, e jejuando, disse o Espírito Santo: Apartai-me a Barnabé e a Saulo. (Atos 13:2)",
+                        exegesis: `
+                            <p>A missão mundial nasce em um ambiente de adoração e jejum. Não foi uma estratégia de comitê, mas uma ordem direta do Espírito Santo. A igreja de Antioquia envia seus melhores líderes.</p>
+                            <ul>
+                                <li><strong>Chipre e o Mago:</strong> Em Pafos, eles enfrentam a oposição espiritual de Elimas, o mágico. Saulo (agora chamado Paulo) cheio do Espírito, cega o mago. O poder de Deus confronta as trevas para libertar o procônsul Sérgio Paulo.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/7b/63/97/7b63970466488bd47719c7013e246295.jpg"
+                    },
+                    {
+                        title: "O Sermão em Antioquia da Pisídia",
+                        verse: "Sabei, pois... que por este se vos anuncia a remissão dos pecados. (Atos 13:38)",
+                        exegesis: `
+                            <p>Paulo prega na sinagoga, revisando a história de Israel até Davi, para apresentar Jesus como o Salvador prometido. O clímax é a doutrina da Justificação pela Fé.</p>
+                            <ul>
+                                <li><strong>Justificação (Dikaiosune):</strong> "De tudo o que, pela lei de Moisés, não pudestes ser justificados, por ele é justificado todo aquele que crê" (v.39). A Lei aponta o pecado; somente Cristo remove a culpa.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/ff/c5/53/ffc5534d4b758821e4b2c9f80a35cf15.jpg"
+                    },
+                    {
+                        title: "Voltando-se para os Gentios",
+                        verse: "Era mister que a vós se vos pregasse... mas, visto que a rejeitais... eis que nos voltamos para os gentios. (Atos 13:46)",
+                        exegesis: `
+                            <p>A rejeição invejosa dos judeus torna-se a ocasião para a oferta aberta aos gentios. Paulo cita Isaías 49:6 ("Luz para os gentios").</p>
+                            <ul>
+                                <li><strong>Eleição e Fé:</strong> "Creram todos quantos estavam ordenados para a vida eterna" (v.48). Lucas equilibra a responsabilidade humana de crer com a soberania divina na eleição. A alegria enche os novos discípulos.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc4iYjFl3HhBzlwPwKCDkHUUmlaCyz5evUdw&s"
+                    }
+                ]
+            },
+            "atos_14": {
+                title: "DEUSES OU HOMENS?",
+                date: "17/02",
+                desc: "\"E confirmando os ânimos dos discípulos, exortando-os a permanecer na fé.\"",
+                blocks: [
+                    {
+                        title: "Milagres e Mal-entendidos em Listra",
+                        verse: "As multidões... levantaram a voz, dizendo: Fizeram-se os deuses semelhantes aos homens, e desceram até nós. (Atos 14:11)",
+                        exegesis: `
+                            <p>Após curar um coxo, Paulo e Barnabé são confundidos com Hermes e Zeus. O paganismo tenta idolatrar os mensageiros. Os apóstolos reagem com horror, rasgando as vestes.</p>
+                            <ul>
+                                <li><strong>Apologética da Natureza:</strong> Paulo prega ao Deus Criador, que dá testemunho de Si mesmo através das chuvas e tempos frutíferos. Ele apela à revelação geral para alcançar uma cultura sem base bíblica.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1562569633-622303bafef5?q=80&w=1587&auto=format&fit=crop"
+                    },
+                    {
+                        title: "O Apedrejamento de Paulo",
+                        verse: "E, apedrejando a Paulo, o arrastaram para fora da cidade, cuidando que estava morto. (Atos 14:19)",
+                        exegesis: `
+                            <p>A multidão é volátil: num momento querem adorar, no outro querem matar. Instigados por judeus de Antioquia, apedrejam Paulo. Ele sobrevive milagrosamente ("levantou-se") e volta para a cidade.</p>
+                            <ul>
+                                <li><strong>Perseverança:</strong> Paulo não desiste. Ele demonstra que o chamado missionário exige resiliência física e espiritual diante do sofrimento extremo.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/05/82/ef/0582ef3e39719495bfdae01888f5c046.jpg"
+                    },
+                    {
+                        title: "Fortalecendo as Igrejas",
+                        verse: "Por muitas tribulações nos importa entrar no reino de Deus. (Atos 14:22)",
+                        exegesis: `
+                            <p>No retorno da viagem, eles visitam as novas igrejas para confirmar os discípulos e ordenar presbíteros (anciãos) em cada cidade. A estrutura eclesiástica é estabelecida.</p>
+                            <ul>
+                                <li><strong>Teologia do Sofrimento:</strong> Eles ensinam que a tribulação é parte integrante do caminho para o Reino. O cristianismo não promete facilidade, mas a presença de Deus na dificuldade.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1740&auto=format&fit=crop"
+                    }
+                ]
+            },
+            "atos_15": {
+                title: "O CONCÍLIO DE JERUSALÉM",
+                date: "18/02",
+                desc: "\"Pela graça do Senhor Jesus Cristo cremos que seremos salvos, como também eles.\"",
+                blocks: [
+                    {
+                        title: "A Controvérsia da Lei",
+                        verse: "Se não vos circuncidardes conforme o uso de Moisés, não podeis salvar-vos. (Atos 15:1)",
+                        exegesis: `
+                            <p>Surge a primeira grande crise teológica: judaizantes insistem que gentios precisam se tornar judeus (circuncisão) para serem salvos. Isso atacava a suficiência da cruz de Cristo.</p>
+                            <ul>
+                                <li><strong>O Debate:</strong> Paulo e Barnabé descem a Jerusalém para resolver a questão. A unidade da igreja e a verdade do Evangelho estavam em jogo.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1kU-JcPQ9elS6ruAKxnw0GloHXo2sCEoq8A&s"
+                    },
+                    {
+                        title: "O Veredito da Graça",
+                        verse: "Agora, pois, por que tentais a Deus, pondo sobre a cerviz dos discípulos um jugo...? (Atos 15:10)",
+                        exegesis: `
+                            <p>Pedro lembra a conversão de Cornélio: Deus purificou seus corações pela fé, não pela lei. Tiago (irmão de Jesus e líder em Jerusalém) confirma com a profecia de Amós sobre a restauração do tabernáculo de Davi para os gentios.</p>
+                            <ul>
+                                <li><strong>Sola Gratia:</strong> A decisão final é libertadora: a salvação é pela graça, não pela Lei. Impõem-se apenas restrições morais e rituais para facilitar a comunhão entre judeus e gentios, não como requisitos para salvação.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/0e/a8/0a/0ea80a0be8011112351271ac9cf3c2dc.jpg"
+                    },
+                    {
+                        title: "Desentendimento entre Gigantes",
+                        verse: "E houve entre eles tal desavença que se apartaram um do outro. (Atos 15:39)",
+                        exegesis: `
+                            <p>Paulo e Barnabé se preparam para a segunda viagem, mas divergem sobre levar João Marcos (que os abandonara antes). A "paroxismo" (discussão aguda) resulta na separação das duplas.</p>
+                            <ul>
+                                <li><strong>Soberania na Fraqueza:</strong> Deus usa até as falhas de temperamento para duplicar a força missionária. Barnabé vai com Marcos para Chipre; Paulo escolhe Silas. Mais tarde, Paulo reconheceria a utilidade de Marcos (<span class="ref">2 Tm 4:11</span>), mostrando que a graça também restaura relacionamentos.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/cb/f1/2e/cbf12ef895c2ecc581e8c722f8f73a94.jpg"
+                    }
+                ]
+            },
+            "atos_16": {
+                title: "A CHAMADA MACEDÔNIA",
+                date: "18/02",
+                desc: "\"Crê no Senhor Jesus Cristo e serás salvo, tu e a tua casa.\"",
+                blocks: [
+                    {
+                        title: "Direção pelo Espírito",
+                        verse: "Sendo impedidos pelo Espírito Santo de anunciar a palavra na Ásia. (Atos 16:6)",
+                        exegesis: `
+                            <p>O Espírito Santo não apenas envia, mas também proíbe. Paulo tenta ir para a Ásia e Bitínia, mas é impedido. Ele aprende a ser guiado pelos "nãos" de Deus tanto quanto pelos "sims".</p>
+                            <ul>
+                                <li><strong>A Visão:</strong> Em Trôade, Paulo tem a visão do varão macedônio: "Passa à Macedônia e ajuda-nos". O Evangelho cruza da Ásia para a Europa. Lucas se junta a eles (mudança para "nós" no v.10).</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/48/bc/f7/48bcf702d4c982c56717a8cce3e1dc0c.jpg"
+                    },
+                    {
+                        title: "Conversões em Filipos",
+                        verse: "O Senhor lhe abriu o coração para que estivesse atenta ao que Paulo dizia. (Atos 16:14)",
+                        exegesis: `
+                            <p>A primeira convertida na Europa é Lídia, uma mulher de negócios. Lucas destaca a soberania divina: foi o Senhor quem abriu seu coração. Em contraste, Paulo liberta uma jovem escrava de um espírito de adivinhação, confrontando o lucro da idolatria.</p>
+                            <ul>
+                                <li><strong>Poder Econômico:</strong> A expulsão do demônio causa prejuízo aos donos da escrava, que arrastam Paulo e Silas para a prisão. O Evangelho verdadeiro sempre confronta estruturas de exploração.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/01/68/e4/0168e4e2b05adcfb5eb6f6d6d835652c.jpg"
+                    },
+                    {
+                        title: "Louvor na Prisão",
+                        verse: "Perto da meia-noite, Paulo e Silas oravam e cantavam hinos a Deus. (Atos 16:25)",
+                        exegesis: `
+                            <p>Açoitados e presos no tronco, eles escolhem adorar. O louvor provoca um terremoto que abre as portas. O carcereiro, prestes a se matar, é impedido por Paulo.</p>
+                            <ul>
+                                <li><strong>Salvação da Casa:</strong> A pergunta do carcereiro "Que devo fazer para me salvar?" recebe a resposta clássica: "Crê no Senhor Jesus". A salvação alcança toda a sua família (oikos), mostrando o poder da influência do chefe da casa transformado.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/06/71/9d/06719d2db2203917e8ae55dbf00251cc.jpg"
+                    }
+                ]
+            },
+            "atos_17": {
+                title: "O AREÓPAGO E A NOBREZA",
+                date: "19/02",
+                desc: "\"Porque nele vivemos, e nos movemos, e existimos.\"",
+                blocks: [
+                    {
+                        title: "Os Bereanos Nobres",
+                        verse: "Ora, estes foram mais nobres do que os que estavam em Tessalônica, porque de bom grado receberam a palavra, examinando cada dia nas Escrituras. (Atos 17:11)",
+                        exegesis: `
+                            <p>Em Tessalônica, o sucesso gera inveja e tumulto ("estes que têm transtornado o mundo"). Em Bereia, a recepção é diferente. Lucas elogia a "nobreza" de caráter definida pelo exame crítico e diário das Escrituras.</p>
+                            <ul>
+                                <li><strong>Sola Scriptura:</strong> A fé saudável não é credulidade cega, mas a verificação da mensagem profética à luz da revelação escrita.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://www.voceparadeus.com/wp-content/uploads/2015/06/Are%C3%B3pago-Atenas.jpg"
+                    },
+                    {
+                        title: "O Deus Desconhecido em Atenas",
+                        verse: "Ao Deus Desconhecido. Esse, pois, que vós honrais, não o conhecendo, é o que eu vos anuncio. (Atos 17:23)",
+                        exegesis: `
+                            <p>Paulo chega a Atenas, o centro intelectual do mundo, e seu espírito se comove ao ver a cidade entregue à idolatria. No Areópago, ele discursa aos filósofos epicureus e estoicos.</p>
+                            <ul>
+                                <li><strong>Ponto de Contato:</strong> Ele não cita profecias judaicas (que eles desconheciam), mas usa um altar pagão ("Ao Deus Desconhecido") e poetas gregos como ponte cultural para apresentar o Deus Criador que não habita em templos feitos por mãos humanas.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://blog.cancaonova.com/junioralves/files/2016/05/deus-desconhecido.jpg"
+                    },
+                    {
+                        title: "Arrependimento Universal",
+                        verse: "Mas Deus... anuncia agora a todos os homens, e em todo o lugar, que se arrependam. (Atos 17:30)",
+                        exegesis: `
+                            <p>Paulo ataca o politeísmo e a ignorância espiritual. Deus é soberano sobre as nações e limites (geopolítica). O clímax é o juízo vindouro através do "varão" que Deus ressuscitou.</p>
+                            <ul>
+                                <li><strong>A Reação à Ressurreição:</strong> A menção da ressurreição divide a audiência: uns zombam, outros procrastinam ("outro dia te ouviremos"), e alguns creem (Dionísio e Dâmaris). O Evangelho sempre exige uma decisão.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://www.inovepapeisdeparede.com.br/image/cache/catalog/produtos/personalizado-studiolgartes-000126-ambiente-031-e774fd0738768c53f416813854437237-1024-1024-1000x1000.jpg"
+                    }
+                ]
+            },
+            "atos_18": {
+                title: "CORINTO E A PROMESSA",
+                date: "19/02",
+                desc: "\"Não temas, mas fala, e não te cales; porque eu sou contigo.\"",
+                blocks: [
+                    {
+                        title: "Fazedores de Tendas",
+                        verse: "E, como era do mesmo ofício, ficou com eles, e trabalhava. (Atos 18:3)",
+                        exegesis: `
+                            <p>Em Corinto, Paulo encontra Áquila e Priscila, refugiados de Roma. Ele trabalha manualmente para se sustentar. O ministério bivocacional ("fazer tendas") é validado como uma estratégia honrosa para o avanço do Reino.</p>
+                            <ul>
+                                <li><strong>Sacudindo as Vestes:</strong> Rejeitado na sinagoga, Paulo sacode as vestes (sinal de juízo) e declara-se limpo do sangue deles, voltando-se para os gentios. Ele passa a pregar na casa de Tício Justo, vizinha à sinagoga!</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9P_2-J0Vtg1WvqKNdDYlLRcAwiNAl6n2Kzw&s"
+                    },
+                    {
+                        title: "A Garantia Divina",
+                        verse: "Tenho muito povo nesta cidade. (Atos 18:10)",
+                        exegesis: `
+                            <p>Paulo, provavelmente temeroso e desanimado em Corinto (cidade imoral), recebe uma visão noturna. Jesus garante Sua presença ("Eu sou contigo") e proteção.</p>
+                            <ul>
+                                <li><strong>Eleição e Evangelismo:</strong> Deus diz que tem "muito povo" na cidade antes mesmo de eles se converterem. A certeza da eleição divina é o combustível para a evangelização persistente. Paulo fica 1 ano e 6 meses ensinando a Palavra.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROQRZIRDmLkfPmgSXBMVBm_GETya5A8vPfpQ&s"
+                    },
+                    {
+                        title: "Apolos e o Caminho Mais Perfeito",
+                        verse: "E eles... o levaram consigo, e lhe declararam mais pontualmente o caminho de Deus. (Atos 18:26)",
+                        exegesis: `
+                            <p>Apolos, um judeu eloquente e poderoso nas Escrituras, chega a Éfeso. Ele conhecia apenas o batismo de João. Priscila e Áquila, com humildade, o discipulam em particular.</p>
+                            <ul>
+                                <li><strong>Humildade no Aprendizado:</strong> Mesmo sendo um grande orador, Apolos aceita correção. Ele se torna uma ferramenta poderosa para a igreja, refutando publicamente os judeus e provando que Jesus é o Cristo.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://newr7-r7-prod.web.arc-cdn.net/resizer/v2/JYFO2T5RYBFGLAVYYFUUXQAWQY.png?auth=54f1d15dca8499f907c7089173b6fa3a1b66792ab14acc265d2abfcfe67ac90c&width=1016&height=553"
+                    }
+                ]
+            },
+            "atos_19": {
+                title: "O AVIVAMENTO EM ÉFESO",
+                date: "20/02",
+                desc: "\"Assim a palavra do Senhor crescia poderosamente e prevalecia.\"",
+                blocks: [
+                    {
+                        title: "O Espírito e o Rebatismo",
+                        verse: "Recebestes vós já o Espírito Santo quando crestes? (Atos 19:2)",
+                        exegesis: `
+                            <p>Paulo encontra discípulos em Éfeso que não conheciam o Espírito Santo, tendo apenas o batismo de arrependimento de João. Paulo explica que João apontava para Jesus.</p>
+                            <ul>
+                                <li><strong>Completando a Fé:</strong> Eles são batizados em nome de Jesus e, com a imposição de mãos, recebem o Espírito, falando em línguas e profetizando. Isso marca a plena transição para a Nova Aliança em Éfeso.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-gDqFCRQIZQIRTa3tix7J_qL6XTozvoc9sA&s"
+                    },
+                    {
+                        title: "Milagres e Batalha Espiritual",
+                        verse: "E Deus pelas mãos de Paulo fazia maravilhas extraordinárias. (Atos 19:11)",
+                        exegesis: `
+                            <p>O poder de Deus manifesta-se de forma incomum (lenços e aventais). Em contraste, os filhos de Ceva tentam usar o nome de Jesus como fórmula mágica e são humilhados pelo espírito maligno ("Conheço a Jesus, e bem sei quem é Paulo; mas vós quem sois?").</p>
+                            <ul>
+                                <li><strong>Queima de Livros:</strong> O temor cai sobre a cidade. Muitos convertidos confessam práticas ocultas e queimam seus livros de magia (valor de 50 mil peças de prata). O verdadeiro avivamento toca o bolso e a cultura.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBPTxFqMa-QVd09LcWZ842LizQpzTMWxc8Ew&s"
+                    },
+                    {
+                        title: "O Tumulto de Demétrio",
+                        verse: "Grande é a Diana dos efésios! (Atos 19:28)",
+                        exegesis: `
+                            <p>O impacto do Evangelho ameaça a economia da idolatria. Demétrio, ourives de ídolos, incita um tumulto no teatro. O "Caminho" não é apenas uma crença privada, mas uma força social que desafia o status quo.</p>
+                            <ul>
+                                <li><strong>Caos vs Ordem:</strong> A multidão grita por duas horas sem saber porquê. A confusão do paganismo contrasta com a racionalidade e a paz da mensagem cristã.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://segredosdosanjos.com.br/wp-content/uploads/2025/02/atos-dos-apostolos-capitulo-19-novo-testamento.jpeg"
+                    }
+                ]
+            },
+            "atos_20": {
+                title: "DESPEDIDA E LÁGRIMAS",
+                date: "20/02",
+                desc: "\"Em nada tenho a minha vida por preciosa, contanto que cumpra com alegria a minha carreira.\"",
+                blocks: [
+                    {
+                        title: "O Milagre em Trôade",
+                        verse: "E, caindo do terceiro andar, foi levantado morto... Não vos perturbeis, que a sua alma nele está. (Atos 20:9-10)",
+                        exegesis: `
+                            <p>Num culto longo (até a meia-noite) no primeiro dia da semana, o jovem Êutico adormece e cai da janela. A morte invade o culto.</p>
+                            <ul>
+                                <li><strong>Vida no Meio da Morte:</strong> Paulo desce, abraça-o e a vida retorna. A reunião continua com a Ceia do Senhor até o amanhecer. A igreja é a comunidade da ressurreição, onde a morte não tem a última palavra.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3tL_8634l6J_rfPgcf0KIGBHDd4RHgkgpog&s"
+                    },
+                    {
+                        title: "O Discurso Pastoral",
+                        verse: "Olhai, pois, por vós, e por todo o rebanho sobre que o Espírito Santo vos constituiu bispos. (Atos 20:28)",
+                        exegesis: `
+                            <p>Em Mileto, Paulo chama os presbíteros de Éfeso para uma despedida emocionante. É o único discurso de Paulo para cristãos em Atos. Ele revisa sua integridade: serviu com humildade, lágrimas e sem cobiça.</p>
+                            <ul>
+                                <li><strong>Sangue de Deus:</strong> Paulo afirma a divindade de Cristo de forma contundente: "a igreja de Deus, que ele resgatou com seu próprio sangue".</li>
+                                <li><strong>Lobos Vorazes:</strong> Ele alerta contra falsos mestres que surgiriam de dentro da própria igreja, distorcendo a verdade para atrair discípulos.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://mvmportuguese.wordpress.com/wp-content/uploads/2021/12/atos-20-vs-28-29.png"
+                    },
+                    {
+                        title: "O Caminho do Sacrifício",
+                        verse: "Mais bem-aventurada coisa é dar do que receber. (Atos 20:35)",
+                        exegesis: `
+                            <p>Paulo cita um <em>agraphon</em> (dito não escrito nos evangelhos) de Jesus. Ele vai para Jerusalém "ligado no espírito", sabendo que cadeias o esperam, mas sua vida não é preciosa para si mesmo.</p>
+                            <ul>
+                                <li><strong>Amor Fraternal:</strong> A cena final é de oração, choro e beijos. O amor cristão cria vínculos profundos. A maior dor deles era saber que não veriam mais o rosto de Paulo.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://imgs.casasbahia.com.br/1569641366/2xg.jpg?imwidth=1000"
+                    }
+                ]
+            },
+            "atos_21": {
+                title: "A CHEGADA A JERUSALÉM",
+                date: "23/02",
+                desc: "\"Estou pronto não só a ser ligado, mas ainda a morrer em Jerusalém pelo nome do Senhor Jesus.\"",
+                blocks: [
+                    {
+                        title: "Avisos do Espírito",
+                        verse: "Agabo... tomou a cinta de Paulo, ligando-se os seus próprios pés e mãos, disse: Assim ligarão os judeus o varão. (Atos 21:11)",
+                        exegesis: `
+                            <p>Durante a viagem, profetas (como as filhas de Filipe e Ágabo) avisam Paulo sobre a prisão iminente. Os irmãos, movidos por amor humano, imploram para que ele não vá. Mas Paulo, guiado pelo Espírito Santo, entende que o aviso não é uma proibição, mas uma preparação para o martírio.</p>
+                            <ul>
+                                <li><strong>Determinação:</strong> "Que fazeis chorando e magoando-me o coração?" Paulo prefere a vontade de Deus ao conforto pessoal. A igreja finalmente cede: "Faça-se a vontade do Senhor".</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://www.churchofjesuschrist.org/imgs/0d9965bac82711eda736eeeeac1e6a3620d4c7dc/full/%21500%2C/0/default"
+                    },
+                    {
+                        title: "O Voto de Purificação",
+                        verse: "Temos quatro varões que fizeram voto. Toma estes contigo, e santifica-te com eles. (Atos 21:23-24)",
+                        exegesis: `
+                            <p>Em Jerusalém, Tiago alerta Paulo sobre boatos de que ele ensinava os judeus a abandonar Moisés. Para provar que não era inimigo da Lei (para os judeus crentes), Paulo concorda em patrocinar o voto de nazireu de quatro irmãos no Templo.</p>
+                            <ul>
+                                <li><strong>Acomodação Cultural:</strong> Paulo pratica o que escreveu: "Fiz-me como judeu para os judeus" (<span class="ref">1 Co 9:20</span>). Ele não compromete o Evangelho (os gentios continuam livres da Lei), mas cede em tradições para manter a paz e a unidade da igreja.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjfblrDxFe2mrieNwJXMGrDZujjtntHsb1dyicFOJ82iiTmoIzthUYMH3ZV2lhpn2CAOMjBGNF266h-i7F6OgN8RLFf3wHE4eyRcuoC4ZPAamN7SfcgPLKHfUtmy9-zmhX7MATNfhMfa18/s1600/nazireu.jpg"
+                    },
+                    {
+                        title: "A Prisão no Templo",
+                        verse: "A cidade toda se alvoroçou... E, pegando de Paulo, o arrastaram para fora do templo. (Atos 21:30)",
+                        exegesis: `
+                            <p>Apesar de sua cautela, judeus da Ásia o acusam falsamente de profanar o Templo trazendo um gentio (Trófimo). A turba tenta matá-lo, mas o comandante romano intervém e o prende com duas cadeias (cumprindo a profecia de Ágabo).</p>
+                            <ul>
+                                <li><strong>Ousadia sob Guarda:</strong> Na escadaria da fortaleza Antônia, prestes a ser preso e espancado, a maior preocupação de Paulo não é sua segurança, mas a chance de pregar. Ele pede permissão ao tribuno para falar ao povo furioso.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://static.wixstatic.com/media/4e9efe_eb14d1eb34ab457391ec1e5726f9f567~mv2.jpg/v1/fill/w_445,h_223,al_c,lg_1,q_80,enc_avif,quality_auto/4e9efe_eb14d1eb34ab457391ec1e5726f9f567~mv2.jpg"
+                    }
+                ]
+            },
+            "atos_22": {
+                title: "A DEFESA NAS ESCADARIAS",
+                date: "23/02",
+                desc: "\"Varões irmãos e pais, ouvi agora a minha defesa perante vós.\"",
+                blocks: [
+                    {
+                        title: "O Testemunho Pessoal",
+                        verse: "Quando ouviram que lhes falava em língua hebraica, guardaram ainda maior silêncio. (Atos 22:2)",
+                        exegesis: `
+                            <p>Paulo faz sua defesa em hebraico/aramaico, ganhando a atenção da multidão. Sua apologética não é filosófica (como em Atenas), mas biográfica. Ele relata seu zelo farisaico e como o encontro com o Cristo ressurreto em Damasco mudou tudo.</p>
+                            <ul>
+                                <li><strong>A Identidade do Justo:</strong> Ananias havia dito a Paulo: "O Deus de nossos pais de antemão te designou para... veres o Justo e ouvires a voz da sua boca" (v.14). Jesus é apresentado como o Messias legítimo da história judaica.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://newr7-r7-prod.web.arc-cdn.net/resizer/v2/SAJDZPBCNNEALADZOPDIJLSYNI.png?auth=f1e6be9c96013245df4101c47ceba9e8da4655d43c06c97554e81b7d0f6ff575&width=677&height=369"
+                    },
+                    {
+                        title: "A Palavra que Enfurece",
+                        verse: "E disse-me: Vai, porque hei de enviar-te aos gentios de longe. (Atos 22:21)",
+                        exegesis: `
+                            <p>A multidão escuta pacientemente toda a história de revelação divina até Paulo pronunciar uma palavra: <strong>Gentios</strong>. O preconceito étnico explode. Eles rasgam vestes e jogam pó ao ar, exigindo a morte de Paulo.</p>
+                            <ul>
+                                <li><strong>Nacionalismo vs Graça:</strong> A teologia dos judeus era nacionalista e exclusiva. A ideia de que Deus estenderia o mesmo amor aos estrangeiros impuros era intolerável para a religiosidade orgulhosa deles.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/26/0b/be/260bbe215600eeb53e15eb8cb219ef83.jpg"
+                    },
+                    {
+                        title: "A Cidadania Romana",
+                        verse: "É-vos lícito açoitar um romano, sem ser condenado? (Atos 22:25)",
+                        exegesis: `
+                            <p>Para descobrir a causa do tumulto, o tribuno ordena que Paulo seja interrogado sob açoitamento (flagelo, que frequentemente levava à morte). Paulo, estrategicamente, invoca seus direitos civis.</p>
+                            <ul>
+                                <li><strong>Uso Legítimo da Lei:</strong> Paulo não era um masoquista. Ele usou sua cidadania romana de nascença para evitar sofrimento inútil e garantir que seu caso chegasse às altas cortes. O cristão tem dupla cidadania e pode usar as leis terrenas para proteger sua vida e a propagação do Evangelho.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://cms-imgp.jw-cdn.org/img/p/1101978171/univ/art/1101978171_univ_lsr_lg.jpg"
+                    }
+                ]
+            },
+            "atos_23": {
+                title: "DIANTE DO SINÉDRIO",
+                date: "24/02",
+                desc: "\"Importa que testifiques também em Roma.\"",
+                blocks: [
+                    {
+                        title: "A Divisão no Tribunal",
+                        verse: "Ora, Paulo, sabendo que uma parte era de saduceus e outra de fariseus, clamou no conselho: Varões irmãos, eu sou fariseu. (Atos 23:6)",
+                        exegesis: `
+                            <p>Levado ao Sinédrio, Paulo sofre uma bofetada ilegal e repreende o sumo sacerdote Ananias ("Parede branqueada"). Percebendo a impossibilidade de um julgamento justo, Paulo usa a inteligência e lança uma bomba teológica no tribunal.</p>
+                            <ul>
+                                <li><strong>A Esperança da Ressurreição:</strong> Ao afirmar que estava sendo julgado pela esperança da ressurreição, Paulo divide o tribunal. Os fariseus (que criam em anjos e ressurreição) passam a defendê-lo contra os saduceus (materialistas). A astúcia divina salvou sua vida.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://r2.padrepauloricardo.org/g49x8ggt9xu10jj0135rw6h04p0r"
+                    },
+                    {
+                        title: "A Promessa na Noite",
+                        verse: "Na noite seguinte, apresentando-se-lhe o Senhor, disse: Paulo, tem ânimo. (Atos 23:11)",
+                        exegesis: `
+                            <p>De volta à cela, provavelmente esgotado, temeroso e ferido, Paulo recebe a visita pessoal de Jesus. O Senhor não promete libertação imediata, mas garante o cumprimento do propósito.</p>
+                            <ul>
+                                <li><strong>O Destino é Roma:</strong> "Assim como em Jerusalém testificaste de mim, importa que testifiques também em Roma". A prisão não é o fim do ministério de Paulo, mas o meio de transporte que Deus usará para levá-lo à capital do império às custas do Estado romano.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=2094&auto=format&fit=crop"
+                    },
+                    {
+                        title: "O Complô e o Livramento",
+                        verse: "Fizeram um complô, e juraram... que não comeriam nem beberiam enquanto não matassem a Paulo. (Atos 23:12)",
+                        exegesis: `
+                            <p>Mais de 40 judeus fazem um voto de assassinato. No entanto, a providência de Deus entra em ação através de um personagem improvável: o jovem sobrinho de Paulo, que descobre o plano e avisa o comandante.</p>
+                            <ul>
+                                <li><strong>Escolta Imperial:</strong> O tribuno Lísias, para proteger um cidadão romano, despacha Paulo de noite com uma escolta absurda de 470 soldados (infantaria e cavalaria) em direção ao governador Félix, em Cesareia. Deus move o exército mais poderoso do mundo para proteger um pregador da Sua Palavra.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/474x/e1/8d/91/e18d91301c5c57cd21499d8b7f74ed6e.jpg"
+                    }
+                ]
+            },
+            "atos_24": {
+                title: "O EVANGELHO NO TRIBUNAL",
+                date: "24/02",
+                desc: "\"Porém, confessote que, conforme aquele Caminho que chamam seita, assim sirvo ao Deus de nossos pais.\"",
+                blocks: [
+                    {
+                        title: "A Acusação e a Defesa",
+                        verse: "Temos achado que este homem é uma peste, e promotor de sedições... (Atos 24:5)",
+                        exegesis: `
+                            <p>O orador Tértulo apresenta queixas formais contra Paulo diante do governador Félix. Ele o acusa de ser um agitador político e profanador do Templo, chamando o cristianismo de "seita" (*hairesis* - heresia/facção dos nazarenos).</p>
+                            <ul>
+                                <li><strong>O Caminho:</strong> Paulo rebate provando sua inocência civil (não houve tumulto provocado por ele) e defende sua fé. Ele afirma que "O Caminho" não é uma seita herege, mas a continuidade perfeita e o cumprimento de tudo o que está escrito na Lei e nos Profetas.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://www.estanabiblia.com.br/wp-content/uploads/2025/04/4-licoes-de-fe-e-coragem-em-tempos-de-injustica.jpg"
+                    },
+                    {
+                        title: "Consciência Limpa",
+                        verse: "E por isso procuro sempre ter uma consciência sem ofensa, tanto para com Deus como para com os homens. (Atos 24:16)",
+                        exegesis: `
+                            <p>A principal tese da defesa de Paulo é a ressurreição dos mortos, tanto de justos quanto de injustos. É essa expectativa de um juízo final que molda sua ética diária.</p>
+                            <ul>
+                                <li><strong>A Ética Cristã:</strong> A fé na ressurreição não aliena o homem da realidade, pelo contrário, produz a busca rigorosa por uma consciência pura (*aproskopon* - não tropeçar nem fazer tropeçar) nas relações verticais (Deus) e horizontais (homens).</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://i.pinimg.com/736x/b7/98/ac/b798acabf5a90c0c060cf1efa7fd1dba.jpg"
+                    },
+                    {
+                        title: "O Governador que Tremeu",
+                        verse: "Tratando ele da justiça, do domínio próprio e do juízo vindouro, Félix, espavorido, respondeu: Por agora vai-te... (Atos 24:25)",
+                        exegesis: `
+                            <p>Félix era conhecido por ser um governante cruel e imoral (Drusila, sua esposa, era judia e estava em seu terceiro casamento). Quando Paulo tem a chance de agradar o governador para ser solto, ele faz o oposto: ele prega exatamente contra os pecados de Félix.</p>
+                            <ul>
+                                <li><strong>O Perigo de Adiar:</strong> O sermão produz efeito ("Félix tremeu"), mas não conversão. Ele adia a decisão esperando suborno ("esperando que Paulo lhe desse dinheiro"). Ele manteve Paulo preso por dois anos, perdendo a chance de sua salvação.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://comunidadepiox.org.br/wp-content/uploads/2023/09/Viagem-de-Paulo-da-prisao-em-Cesareia-ao-naufragio-em-Malta.jpg"
+                    }
+                ]
+            },
+            "atos_25": {
+                title: "APELO A CÉSAR",
+                date: "25/02",
+                desc: "\"Para o tribunal de César apelo.\"",
+                blocks: [
+                    {
+                        title: "O Novo Governador e a Velha Trama",
+                        verse: "Os principais dos sacerdotes... pediram como favor... que o fizesse vir a Jerusalém, armando ciladas para o matarem no caminho. (Atos 25:2-3)",
+                        exegesis: `
+                            <p>Após dois anos, Festo substitui Félix. A raiva dos líderes judeus não havia esfriado; o ódio religioso tem memória longa. Eles tentam manipular Festo para transferir o julgamento para Jerusalém, com o fim de emboscar e assassinar Paulo.</p>
+                            <ul>
+                                <li><strong>A Providência:</strong> Festo, agindo como um magistrado romano correto, recusa e decide julgá-lo em Cesareia, frustrando mais uma vez os planos do inferno.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://imagens.mensagemespirita.com.br/images/uploads/posts_file_foto/ftw-940x-cilada_armadilha.jpg"
+                    },
+                    {
+                        title: "O Direito de um Cidadão",
+                        verse: "Se fiz algum agravo, ou cometi alguma coisa digna de morte, não recuso morrer; mas... apelo para César. (Atos 25:11)",
+                        exegesis: `
+                            <p>Festo, querendo "ganhar o favor dos judeus", propõe enviar Paulo a Jerusalém. Percebendo a armadilha política, Paulo pronuncia as palavras mágicas da jurisprudência romana: <em>"Caesarem appello"</em>.</p>
+                            <ul>
+                                <li><strong>Estratégia Divina:</strong> Qualquer cidadão romano tinha o direito de ser julgado diretamente pelo Imperador (Nero, na época). Esse apelo tira Paulo das mãos do Sinédrio de uma vez por todas e garante a passagem (prometida por Jesus) para Roma.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://www.rodrigosilvaoficial.com.br/wp-content/uploads/2025/05/cesar.png"
+                    },
+                    {
+                        title: "Diante da Nobreza",
+                        verse: "E Festo disse: O rei Agripa e todos os varões que estais presentes... tendes aqui este homem. (Atos 25:24)",
+                        exegesis: `
+                            <p>O rei Herodes Agripa II (bisneto de Herodes o Grande) visita Festo. Festo, não entendendo as questões teológicas ("falavam de um certo Jesus, que já morreu, mas que Paulo afirma estar vivo"), pede ajuda a Agripa para redigir a acusação para Nero.</p>
+                            <ul>
+                                <li><strong>A Pompa e a Verdade:</strong> Agripa e Berenice entram no auditório "com grande pompa". Há um contraste profundo entre a realeza terrena cheia de ouro, e o apóstolo acorrentado que possui as chaves da vida eterna.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://pt.thechurchnews.com/resizer/v2/WNZNE2X2WESFIUJQUAZIRIELEA.jpg?auth=7dafed48455d8d372d703a9c8e723a0541c5d5995ee6db44c713baff48326dde&focal=320%2C240&width=800&height=600"
+                    }
+                ]
+            },
+            "atos_26": {
+                title: "A DEFESA DIANTE DO REI",
+                date: "25/02",
+                desc: "\"Por pouco me persuades a me fazer cristão.\"",
+                blocks: [
+                    {
+                        title: "A Esperança de Israel",
+                        verse: "E agora pela esperança da promessa que por Deus foi feita a nossos pais estou aqui e sou julgado. (Atos 26:6)",
+                        exegesis: `
+                            <p>Com permissão para falar, Paulo não faz uma defesa criminal, mas prega o Evangelho ao rei. Ele ancora a fé cristã firmemente na esperança ancestral de Israel. O cristianismo não é uma nova religião rompendo com o Antigo Testamento, mas o seu glorioso cumprimento.</p>
+                            <ul>
+                                <li><strong>O Foco na Ressurreição:</strong> Paulo desafia a incredulidade intelectual da nobreza: "Por que se julga incrível entre vós que Deus ressuscite os mortos?" O poder do Criador torna o milagre racional.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Missão e os Olhos Abertos",
+                        verse: "Para lhes abrires os olhos, e das trevas os converteres à luz, e do poder de Satanás a Deus. (Atos 26:18)",
+                        exegesis: `
+                            <p>Paulo relata novamente sua conversão no caminho de Damasco, detalhando as palavras exatas de Jesus sobre seu chamado. O Evangelho é apresentado em seus efeitos práticos.</p>
+                            <ul>
+                                <li><strong>A Obra Completa:</strong> A pregação tem o poder de quebrar a cegueira espiritual, transferir o domínio (de Satanás para Deus), conceder remissão de pecados e dar "herança entre os santificados pela fé" (Cristo).</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1493612276216-9c5901955d43?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "Loucura vs Persuasão",
+                        verse: "Agripa disse a Paulo: Por pouco me persuades a me fazer cristão. (Atos 26:28)",
+                        exegesis: `
+                            <p>Festo interrompe o discurso gritando que o muito saber estava enlouquecendo Paulo. Paulo responde com sobriedade e se volta para Agripa (que conhecia as Escrituras), apelando à sua consciência.</p>
+                            <ul>
+                                <li><strong>A Resposta de Paulo:</strong> "Quisera a Deus que, ou por pouco ou por muito, não somente tu, mas também todos os que hoje me ouvem, se tornassem tais qual eu sou, exceto estas cadeias". Paulo tem uma alma infinitamente mais livre e rica do que o rei que o julgava.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1549144415-3850129a28e9?q=80&w=1674&auto=format&fit=crop"
+                    }
+                ]
+            },
+            "atos_27": {
+                title: "A TEMPESTADE E O NAUFRÁGIO",
+                date: "26/02",
+                desc: "\"Porque eu confio em Deus, que acontecerá assim como me foi dito.\"",
+                blocks: [
+                    {
+                        title: "O Euroaquilão",
+                        verse: "Não muito depois, deu nela um tufão de vento, chamado Euroaquilão. (Atos 27:14)",
+                        exegesis: `
+                            <p>A viagem para Roma começa. Contra o conselho prudente de Paulo, o centurião Júlio e o piloto decidem navegar, buscando um porto melhor para invernar. Eles são pegos por um furacão violento. Lucas usa uma terminologia náutica tão precisa que este é considerado um dos maiores relatos marítimos da antiguidade.</p>
+                            <ul>
+                                <li><strong>Perda de Esperança:</strong> Após dias de tormenta, jogando a carga e a armação do navio ao mar, "dissipou-se toda a esperança de salvação" (v.20). A sabedoria humana e técnica falha completamente.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?q=80&w=1587&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Paz na Tormenta",
+                        verse: "Porque esta mesma noite o anjo de Deus, de quem eu sou e a quem sirvo, esteve comigo. (Atos 27:23)",
+                        exegesis: `
+                            <p>No meio do desespero absoluto (276 homens em pânico), Paulo se levanta como líder espiritual. Ele não fala de sua experiência, mas de uma revelação divina: "Nenhuma alma se perderá, mas somente o navio".</p>
+                            <ul>
+                                <li><strong>Identidade e Posse:</strong> Paulo declara "de quem eu sou". A confiança na tempestade não vem da força do barco, mas de pertencer ao Dono dos mares. Por causa de Paulo, Deus concede a vida a todos os que navegavam com ele.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?q=80&w=1740&auto=format&fit=crop"
+                    },
+                    {
+                        title: "A Eucaristia no Mar",
+                        verse: "Tomando o pão, deu graças a Deus na presença de todos; e, partindo-o, começou a comer. (Atos 27:35)",
+                        exegesis: `
+                            <p>Após 14 dias de jejum e terror, Paulo traz ordem ao caos. Ele realiza um ato profundamente litúrgico: dá graças e parte o pão. A paz de Cristo em Paulo infecta o ambiente, e "tendo todos cobrado ânimo, puseram-se também a comer".</p>
+                            <ul>
+                                <li><strong>A Salvação:</strong> O navio encalha e se despadaça, mas a palavra do Senhor não cai por terra. Uns a nado, outros em tábuas, "todos chegaram salvos a terra" (v.44).</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1505506874110-6a7a4f9aa123?q=80&w=1587&auto=format&fit=crop"
+                    }
+                ]
+            },
+            "atos_28": {
+                title: "A CHEGADA A ROMA",
+                date: "26/02",
+                desc: "\"Pregando o reino de Deus, e ensinando com toda a liberdade as coisas pertencentes ao Senhor Jesus.\"",
+                blocks: [
+                    {
+                        title: "Milagres na Ilha de Malta",
+                        verse: "Uma víbora, fugindo do calor, lhe acometeu a mão... E ele, sacudindo a besta no fogo, não padeceu nenhum mal. (Atos 28:3, 5)",
+                        exegesis: `
+                            <p>Salvos do mar, acolhidos por "bárbaros" (pessoas que não falavam grego), Paulo sofre outro ataque. A picada da víbora faz os nativos pensarem que ele é um assassino punido pela deusa Justiça (Diké). Ao sair ileso, passam a considerá-lo um deus.</p>
+                            <ul>
+                                <li><strong>O Evangelho Curador:</strong> Paulo não aceita a adoração. Ele retribui a hospitalidade curando o pai do líder da ilha (Públio) e muitos outros. O Evangelho sempre traz restauração física e espiritual por onde passa.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1533227971488-b22030999026?q=80&w=1674&auto=format&fit=crop"
+                    },
+                    {
+                        title: "O Conforto da Irmandade",
+                        verse: "Os irmãos, ouvindo falar de nós, nos saíram ao encontro... E Paulo, vendo-os, deu graças a Deus e tomou ânimo. (Atos 28:15)",
+                        exegesis: `
+                            <p>Após a longa jornada de sofrimento, a chegada à Itália é marcada por um alívio relacional. A igreja romana (que Paulo ainda não conhecia, mas para a qual já havia escrito a Carta aos Romanos) viaja dezenas de quilômetros até a Praça de Ápio para recebê-lo.</p>
+                            <ul>
+                                <li><strong>A Humanidade do Apóstolo:</strong> Mesmo o grande Paulo precisava de ânimo. Ver a comunhão dos santos renova suas forças para encarar a prisão em Roma. Ninguém serve a Deus sozinho.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1932&auto=format&fit=crop"
+                    },
+                    {
+                        title: "O Final Aberto (Parrhesia)",
+                        verse: "Pregando o reino de Deus, e ensinando... com toda a liberdade, sem impedimento algum. (Atos 28:31)",
+                        exegesis: `
+                            <p>Em Roma, Paulo fica em prisão domiciliar por dois anos. Ele tenta primeiro os judeus, citando Isaías 6 para explicar a dureza de coração deles, e declara que a salvação foi enviada aos gentios, "e eles a ouvirão".</p>
+                            <ul>
+                                <li><strong>Sem Impedimento:</strong> O livro termina abruptamente. Não há relato da morte de Paulo ou do seu julgamento perante César. Por quê? Porque Lucas quer mostrar que o Evangelho chegou à capital do mundo e está marchando sem correntes. A palavra final no grego é <em>akolytos</em> ("sem impedimento"). A igreja continua escrevendo o livro de Atos hoje.</li>
+                            </ul>
+                        `,
+                        imgPlaceholder: "https://images.unsplash.com/photo-1469042072166-3d237d25bb9f?q=80&w=1740&auto=format&fit=crop"
+                    }
+                ]
+            }
+        };
+
+        // === LÓGICA GERAL (IDÊNTICA À DE JOÃO) ===
+        let currentAudioBlob = null;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        function loadChapter(chapterKey) {
+            const data = bibleData[chapterKey];
+            if (!data) return;
+
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
+            const dateBadge = document.getElementById('dateBadge');
+            const dateValue = document.getElementById('dateValue');
+            const communitySection = document.getElementById('community-section');
+            const formChapterKey = document.getElementById('formChapterKey');
+            
+            heroTitle.style.opacity = '0';
+            heroDesc.style.opacity = '0';
+            dateBadge.style.opacity = '0';
+            
+            setTimeout(() => {
+                if (data.date) {
+                    dateValue.textContent = data.date;
+                    dateBadge.classList.remove('hidden');
+                    communitySection.classList.remove('hidden');
+                    formChapterKey.value = chapterKey;
+                    carregarComentarios(chapterKey);
+                    setTimeout(() => { dateBadge.style.opacity = '1'; }, 100);
+                } else {
+                    dateBadge.classList.add('hidden');
+                    communitySection.classList.add('hidden');
+                }
+
+                heroTitle.innerHTML = data.title;
+                heroDesc.innerHTML = data.desc;
+                heroTitle.style.opacity = '1';
+                heroDesc.style.opacity = '1';
+            }, 300);
+
+            const mainContent = document.getElementById('content');
+            mainContent.innerHTML = ''; 
+
+            data.blocks.forEach((block, index) => {
+                const isEven = index % 2 !== 0; 
+                const fallbackImage = "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=2070&auto=format&fit=crop";
+
+                const html = `
+                    <section class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start reveal">
+                        <div class="relative group order-1 ${isEven ? 'md:order-1' : 'md:order-2'} md:sticky md:top-24 w-full">
+                            <div class="absolute -inset-1 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-1000"></div>
+                            <div class="relative glass-panel rounded-lg overflow-hidden shadow-2xl h-[300px] md:h-[500px]">
+                                <img src="${block.imgPlaceholder}" onerror="this.onerror=null; this.src='${fallbackImage}';" alt="" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700 bg-slate-900">
+                            </div>
+                        </div>
+                        <div class="order-2 ${isEven ? 'md:order-2' : 'md:order-1'} space-y-6">
+                            <h2 class="text-3xl md:text-4xl font-serif text-white">${block.title}</h2>
+                            <div class="border-l-4 border-cyan-600 pl-6 py-4 italic text-slate-300 bg-white/5 rounded-r-lg leading-relaxed text-justify pr-4">"${block.verse}"</div>
+                            <div class="bg-slate-800/50 p-6 rounded-lg border border-slate-700 hover:border-cyan-500/30 transition">
+                                <div class="rich-text text-slate-300 text-sm leading-relaxed">${block.exegesis}</div>
+                            </div>
+                        </div>
+                    </section>`;
+                mainContent.insertAdjacentHTML('beforeend', html);
+            });
+            resetObservers();
+        }
+
+        // === LÓGICA DE COMENTÁRIOS E REAÇÕES ===
+        function carregarComentarios(capitulo) {
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '<p class="text-center text-slate-500 text-sm animate-pulse">Carregando comentários...</p>';
+
+            fetch(`api.php?acao=listar&capitulo=${capitulo}`)
+            .then(res => res.json())
+            .then(data => {
+                list.innerHTML = '';
+                if(data.length === 0) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
+                }
+                data.forEach(c => {
+                    let mediaHtml = '';
+                    if(c.foto) mediaHtml += `<img src="${c.foto}" onclick="openImage(this.src)" class="mt-4 rounded-lg max-h-48 border border-slate-700 cursor-pointer hover:scale-[1.02] transition shadow-lg">`;
+                    if(c.audio) mediaHtml += `<audio controls src="${c.audio}" class="mt-4 w-full"></audio>`;
+
+                    const jaCurtiu = localStorage.getItem(`reagiu_likes_${c.id}`);
+                    const jaAmem = localStorage.getItem(`reagiu_amem_${c.id}`);
+                    const jaGloria = localStorage.getItem(`reagiu_gloria_${c.id}`);
+
+                    const html = `
+                        <div class="glass-panel p-5 pb-12 rounded-xl border border-slate-700 relative group transition hover:border-cyan-500/50 bg-slate-800/40">
+                            <div class="flex justify-between items-start mb-3 border-b border-slate-700/50 pb-2">
+                                <strong class="text-cyan-400 text-sm tracking-wide font-serif">${c.nome}</strong>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-widest">${new Date(c.data_envio).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed">${c.mensagem}</p>
+                            ${mediaHtml}
+                            
+                            <div class="absolute bottom-3 right-4 flex gap-2">
+                                <button onclick="reagirComentario(${c.id}, 'likes', this)" class="text-xs transition flex items-center gap-1 bg-slate-800/80 px-2 py-1 rounded-full border border-slate-700 ${jaCurtiu ? 'text-red-500 border-red-500/30' : 'text-slate-400 hover:text-red-400'}" ${jaCurtiu ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-heart"></i> <span class="count font-bold">${c.likes || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'amem', this)" class="text-xs transition flex items-center gap-1 bg-slate-800/80 px-2 py-1 rounded-full border border-slate-700 ${jaAmem ? 'text-cyan-400 border-cyan-400/30' : 'text-slate-400 hover:text-cyan-400'}" ${jaAmem ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-hands-praying"></i> <span class="count font-bold">${c.amem || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'gloria', this)" class="text-xs transition flex items-center gap-1 bg-slate-800/80 px-2 py-1 rounded-full border border-slate-700 ${jaGloria ? 'text-orange-500 border-orange-500/30' : 'text-slate-400 hover:text-orange-500'}" ${jaGloria ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-fire"></i> <span class="count font-bold">${c.gloria || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', html);
+                });
+            })
+            .catch(err => {
+                list.innerHTML = '<p class="text-center text-red-400 text-xs">Erro ao carregar comentários.</p>';
+            });
+        }
+
+        function reagirComentario(id, tipo, btn) {
+            if(localStorage.getItem(`reagiu_${tipo}_${id}`)) return;
+
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('.count');
+            let count = parseInt(countSpan.innerText);
+
+            icon.classList.add('reacted-anim');
+            btn.classList.remove('text-slate-400');
+            
+            if(tipo === 'likes') btn.classList.add('text-red-500', 'border-red-500/30');
+            if(tipo === 'amem') btn.classList.add('text-cyan-400', 'border-cyan-400/30');
+            if(tipo === 'gloria') btn.classList.add('text-orange-500', 'border-orange-500/30');
+
+            countSpan.innerText = count + 1;
+            btn.disabled = true;
+
+            localStorage.setItem(`reagiu_${tipo}_${id}`, 'true');
+
+            const formData = new FormData();
+            formData.append('acao', 'reagir');
+            formData.append('id', id);
+            formData.append('tipo', tipo);
+
+            fetch('api.php', { method: 'POST', body: formData });
+        }
+
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+            formData.append('acao', 'salvar');
+            if(currentAudioBlob) {
+                formData.append('audio', currentAudioBlob, 'audio.wav');
+            }
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    this.reset();
+                    document.getElementById('filePreview').innerHTML = '';
+                    currentAudioBlob = null;
+                    document.getElementById('recordText').innerText = "Gravar Áudio";
+                    carregarComentarios(document.getElementById('formChapterKey').value);
+                } else {
+                    alert('Erro ao enviar.');
+                }
+            })
+            .catch(() => alert('Erro de conexão.'))
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        });
+
+        function previewFile(input) {
+            const preview = document.getElementById('filePreview');
+            if(input.files && input.files[0]) {
+                preview.innerHTML = `<i class="fa-solid fa-check text-green-400"></i> Imagem selecionada: ${input.files[0].name}`;
+                preview.classList.remove('hidden');
+            }
+        }
+
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.addEventListener('click', async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                    mediaRecorder.onstop = () => {
+                        currentAudioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        document.getElementById('filePreview').classList.remove('hidden');
+                        document.getElementById('filePreview').innerHTML += '<br><i class="fa-solid fa-microphone text-green-400"></i> Áudio gravado!';
+                    };
+                    mediaRecorder.start();
+                    recordBtn.classList.add('recording-pulse');
+                    document.getElementById('recordText').innerText = "Parar Gravação";
+                } catch (err) {
+                    alert("Permita o uso do microfone para gravar.");
+                }
+            } else {
+                mediaRecorder.stop();
+                recordBtn.classList.remove('recording-pulse');
+                document.getElementById('recordText').innerText = "Gravar Áudio";
+            }
+        });
+
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        function closeImage() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function resetObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<80; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(34, 211, 238, 0.2)"; 
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        loadChapter('intro_book');
+    </script>
+</body>
+</html>

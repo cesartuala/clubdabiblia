@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efésios | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] },
+                    colors: { 
+                        divine: { 400: '#818cf8' } /* Índigo/Celeste */
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        
+        .glass-panel { background: rgba(10, 5, 25, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(129, 140, 248, 0.2); }
+        .indigo-glow { text-shadow: 0 0 15px rgba(129, 140, 248, 0.5); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .rich-text strong { color: #a5b4fc; font-weight: 700; }
+        .rich-text .ref { color: #818cf8; font-size: 0.9em; font-family: monospace; background: rgba(129, 140, 248, 0.15); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(129, 140, 248, 0.3); }
+        .rich-text h3 { color: #6366f1; font-weight: bold; margin-top: 2rem; margin-bottom: 0.75rem; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.15em; border-bottom: 1px solid rgba(129, 140, 248, 0.3); padding-bottom: 6px; }
+        .rich-text ul { list-style-type: none; padding-left: 0; margin-top: 15px; margin-bottom: 20px; }
+        .rich-text li { margin-bottom: 15px; line-height: 1.8; text-align: justify; border-left: 3px solid #6366f1; padding-left: 20px; background: linear-gradient(to right, rgba(129,140,248,0.05), transparent); padding-top: 5px; padding-bottom: 5px; }
+        .rich-text p { margin-bottom: 20px; line-height: 2; text-align: justify; font-size: 1.05rem; color: #cbd5e1; }
+        .rich-text blockquote { border-left: 4px solid #6366f1; padding-left: 20px; margin: 20px 0; font-style: italic; color: #a5b4fc; background: rgba(129, 140, 248, 0.05); padding: 15px; border-radius: 0 8px 8px 0; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050510; }
+        ::-webkit-scrollbar-thumb { background: #1e1b4b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+
+        .recording-pulse { animation: recPulse 1.5s infinite; background-color: #ef4444; border-color: #ef4444; color: white; }
+        @keyframes recPulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @keyframes pop { 50% { transform: scale(1.4); } }
+        .reacted-anim { animation: pop 0.3s ease-out; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="fixed top-0 w-full z-50 p-4 md:p-6 flex flex-col md:flex-row justify-between items-center bg-gradient-to-b from-[#050510]/95 to-[#050510]/80 backdrop-blur-md border-b border-indigo-900/40 transition-all">
+        <div class="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto justify-between md:justify-start">
+            <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0f0a1a] border border-indigo-500/50 text-indigo-400 hover:bg-indigo-500 hover:text-black transition-all shadow-[0_0_15px_rgba(129,140,248,0.1)]">
+                <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+                <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-church text-indigo-500 text-xl md:text-2xl"></i>
+                <span class="font-serif text-white text-lg md:text-xl tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto justify-end">
+            <span class="hidden md:inline text-xs text-slate-400 uppercase tracking-widest">Navegar:</span>
+            <select id="chapterSelect" onchange="loadChapter(this.value)" class="w-full md:w-auto bg-[#0f0a1a] text-indigo-400 border border-indigo-500/40 rounded px-4 py-2 text-sm uppercase tracking-widest focus:outline-none focus:border-indigo-500 cursor-pointer">
+                <option value="intro_book">★ Sobre o Livro</option>
+                <option value="intro_author">✎ Sobre o Autor</option>
+                <option disabled>──────────</option>
+                <option value="efesios_1">Capítulo 01</option>
+                <option value="efesios_2">Capítulo 02</option>
+                <option value="efesios_3">Capítulo 03</option>
+                <option value="efesios_4">Capítulo 04</option>
+                <option value="efesios_5">Capítulo 05</option>
+                <option value="efesios_6">Capítulo 06</option>
+            </select>
+        </div>
+    </nav>
+
+    <header class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-32 md:pt-20">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#050510] via-[#050510]/80 to-transparent"></div>
+        
+        <div class="z-10 reveal active space-y-4 max-w-5xl w-full">
+            <h2 class="text-indigo-400 tracking-[0.5em] text-[10px] md:text-sm uppercase animate-pulse mb-4 font-bold">Clube da Bíblia Apresenta</h2>
+            
+            <div id="dateBadge" class="hidden inline-flex items-center gap-2 border border-indigo-500/50 rounded-full px-4 py-1 mb-4 bg-indigo-500/10 backdrop-blur-sm transition-all duration-700 opacity-0">
+                <i class="fa-regular fa-calendar text-indigo-400 text-xs"></i>
+                <span class="text-indigo-300 text-xs tracking-widest uppercase font-bold">Leitura: <span id="dateValue" class="text-white"></span></span>
+            </div>
+
+            <h1 id="heroTitle" class="font-serif text-4xl md:text-7xl text-white mb-2 indigo-glow transition-all duration-700 uppercase leading-tight px-2"></h1>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 text-slate-400 mt-8 pt-8 border-t border-indigo-900/40 w-full max-w-3xl mx-auto">
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Idealizado por</p>
+                    <strong class="text-indigo-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-indigo-300 transition">Fellipe Gomes Andrade</strong>
+                </div>
+                <span class="hidden md:block h-8 w-[1px] bg-gradient-to-b from-transparent via-indigo-900 to-transparent"></span>
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Desenvolvido por</p>
+                    <strong class="text-indigo-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-indigo-300 transition">Cesar Tuala</strong>
+                </div>
+            </div>
+
+            <p id="heroDesc" class="text-sm md:text-xl text-slate-300 max-w-2xl mx-auto pt-8 font-light italic transition-all duration-700 px-4"></p>
+            
+            <div class="pt-10">
+                <button onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" class="animate-bounce text-indigo-500 text-2xl">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="content" class="max-w-4xl mx-auto px-4 py-10 md:py-20 space-y-20 md:space-y-32 min-h-screen"></main>
+
+    <section id="community-section" class="w-full bg-[#07030f] border-t-4 border-indigo-600 py-16 mb-0 relative shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <h3 class="font-serif text-3xl md:text-4xl text-indigo-500 mb-2 uppercase tracking-widest indigo-glow">
+                    <i class="fa-solid fa-users-line mr-3"></i>Comunidade
+                </h3>
+                <p class="text-slate-400 text-sm italic">"Compartilhe o que Deus falou ao seu coração"</p>
+                <div class="h-1 w-24 bg-gradient-to-r from-transparent via-indigo-600 to-transparent mx-auto mt-4"></div>
+            </div>
+
+            <div class="glass-panel p-6 md:p-8 rounded-xl mb-12 border border-slate-800 shadow-2xl bg-[#0a0514]/80">
+                <form id="commentForm" class="space-y-5">
+                    <input type="hidden" id="formChapterKey" name="capitulo">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="col-span-1">
+                            <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Nome</label>
+                            <input type="text" name="nome" required class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-indigo-500 focus:outline-none transition">
+                        </div>
+                        <div class="flex gap-3 col-span-1 md:col-span-2 items-end">
+                            <label class="flex-1 cursor-pointer bg-black/50 border border-slate-700 hover:border-indigo-500 hover:bg-[#110a24] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-camera group-hover:text-indigo-400"></i> Foto
+                                <input type="file" name="foto" accept="image/*" class="hidden" onchange="previewFile(this)">
+                            </label>
+                            <button type="button" id="recordBtn" class="flex-1 bg-black/50 border border-slate-700 hover:border-red-500 hover:bg-[#110a24] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-microphone group-hover:text-red-400"></i> <span id="recordText">Gravar Áudio</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="filePreview" class="text-xs text-indigo-400 hidden bg-black p-2 rounded border border-indigo-500/30"></div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Comentário</label>
+                        <textarea name="mensagem" class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-indigo-500 focus:outline-none h-28 resize-none transition"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-indigo-800 to-indigo-600 hover:from-indigo-600 hover:to-indigo-500 text-white font-bold py-4 rounded-lg transition uppercase tracking-[0.2em] text-sm shadow-lg shadow-black/50 transform hover:-translate-y-1">
+                        Publicar Comentário
+                    </button>
+                </form>
+            </div>
+            <div id="commentsList" class="space-y-6"></div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-800 bg-black py-12 text-center relative z-10">
+        <div class="flex flex-col items-center justify-center space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="fa-solid fa-church text-indigo-600 text-xl"></i>
+                <span class="font-serif text-slate-300 text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+            <p class="text-slate-700 text-[10px] tracking-widest uppercase mt-4">&copy; 2026 Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="imageModal" class="fixed inset-0 z-[100] bg-black/95 hidden flex justify-center items-center p-4 backdrop-blur-sm transition-opacity duration-300" onclick="closeImage()">
+        <div class="relative max-w-4xl w-full flex justify-center">
+            <button onclick="closeImage()" class="absolute -top-12 right-0 text-white text-3xl hover:text-indigo-500 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modalImg" src="" class="max-h-[85vh] max-w-full rounded-lg shadow-[0_0_50px_rgba(129,140,248,0.3)] border-2 border-indigo-500/20 object-contain">
+        </div>
+    </div>
+
+    <script>
+        const bibleData = {
+            "intro_book": {
+                title: "A CARTA AOS EFÉSIOS",
+                date: null,
+                desc: "<span class='text-xs uppercase tracking-[0.3em] text-indigo-400 not-italic block mb-4'>Introdução: Sobre o Livro</span>\"As riquezas insondáveis de Cristo e o mistério cósmico da Igreja.\"",
+                blocks: [
+                    {
+                        title: "Os Alpes do Novo Testamento",
+                        verse: "Bendito o Deus e Pai de nosso Senhor Jesus Cristo, o qual nos abençoou com todas as bênçãos espirituais nos lugares celestiais em Cristo. (Ef 1:3)",
+                        exegesis: `
+                            <p>A Epístola aos Efésios é a coroa da teologia cristã. O teólogo John Mackay a chamou de "Os Alpes do Novo Testamento", porque nela alcançamos as altitudes mais elevadas do plano de Deus. Diferente de Coríntios (que corrigia bagunças locais) ou Gálatas (que defendia a doutrina contra falsos mestres), Efésios não lida com nenhuma controvérsia. É uma carta de adoração, desenhada para alargar as mentes dos cristãos a respeito do que eles têm em Cristo.</p>
+                            
+                            <h3>1. A Estrutura Perfeita (Sente-se, Ande, Fique Firme)</h3>
+                            <ul>
+                                <li>O livro tem uma arquitetura divina, dividida exatamente ao meio.</li>
+                                <li><strong>A Posição do Crente (Capítulos 1 a 3):</strong> O foco é teológico e invisível. Trata do nosso "assentar-se" nas regiões celestiais. O que Deus fez por nós na eternidade. É a pura e gloriosa <em>Doutrina</em>.</li>
+                                <li><strong>A Prática do Crente (Capítulos 4 a 6):</strong> O foco é terreno e visível. Se estamos sentados nos céus, como devemos "andar" aqui na Terra no casamento, no trabalho e na igreja? E finalmente, como "ficar firmes" (resistir) contra os ataques do Diabo. É a vida de <em>Dever</em>.</li>
+                            </ul>
+                            
+                            <h3>2. A Palavra-Chave: \"Em Cristo\"</h3>
+                            <ul>
+                                <li>O conceito fundamental de Efésios é a nossa união espiritual com Jesus. A frase "em Cristo", "nele" ou "no Amado" aparece cerca de 35 vezes neste pequeno livro. Não recebemos bênçãos <em>de</em> Cristo como pacotes entregues; recebemos bênçãos porque estamos organicamente ligados a Ele, assim como um ramo está ligado à videira. Se Ele subiu ao trono cósmico, nós subimos junto com Ele!</li>
+                            </ul>
+
+                            <h3>3. O Mistério da Igreja</h3>
+                            <ul>
+                                <li>Na Bíblia, "mistério" (<em>mysterion</em>) não é um segredo assustador que ninguém pode descobrir, mas uma verdade que esteve escondida no passado, mas que agora foi revelada a todos. Qual era o grande mistério que o Antigo Testamento não via claramente? Que Deus pegaria judeus e gentios (povos que se odiavam), destruiria o muro de inimizade entre eles, e faria de ambos um Único Corpo, um Novo Homem, uma Nova Criação: A Igreja.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "intro_author": {
+                title: "SOBRE O AUTOR",
+                date: null,
+                desc: "\"Paulo, apóstolo de Jesus Cristo, pela vontade de Deus, aos santos que estão em Éfeso...\"",
+                blocks: [
+                    {
+                        title: "O Prisioneiro e a Metrópole da Magia",
+                        verse: "Por esta causa eu, Paulo, sou o prisioneiro de Jesus Cristo por vós, os gentios... (Ef 3:1)",
+                        exegesis: `
+                            <p>Entender a circunstância de Paulo ao escrever esta carta torna a sua mensagem de triunfo ainda mais espetacular.</p>
+
+                            <h3>1. Escrita das Correntes</h3>
+                            <ul>
+                                <li>Efésios é uma das quatro "Cartas da Prisão" (junto com Filipenses, Colossenses e Filemom). Paulo a escreveu por volta dos anos 60-62 d.C., enquanto estava em prisão domiciliar em Roma, acorrentado a um guarda pretoriano. Note a ironia genial: o homem que está fisicamente algemado num calabouço escuro em Roma escreve o livro mais livre de todos, declarando que o seu espírito está "assentado nas regiões celestiais"! As correntes não o impediam de governar com Cristo.</li>
+                            </ul>
+
+                            <h3>2. O Contexto de Éfeso</h3>
+                            <ul>
+                                <li>Paulo amava Éfeso profundamente; ele passou cerca de três anos lá, ensinando diariamente na escola de Tirano (Atos 19). Éfeso era a metrópole da Ásia Menor, famosa em todo o mundo antigo pelo Templo de Ártemis (Diana), uma das sete maravilhas do mundo antigo. Era a capital mundial do ocultismo, bruxaria e amuletos mágicos ("artes mágicas"). Quando o evangelho explodiu ali, os crentes queimaram milhões de moedas em livros de magia na praça pública.</li>
+                            </ul>
+
+                            <h3>3. O Poder Superior</h3>
+                            <ul>
+                                <li>Porque a igreja de Éfeso havia saído de uma vida apavorada por demônios, astrologia e maldições, Paulo foca intensamente na suprema autoridade de Jesus. Ele não fala apenas sobre o amor de Deus, mas sobre o Seu <strong>Poder</strong> (o mesmo poder que ressuscitou Cristo dos mortos). Ele assegura àqueles novos cristãos que Cristo foi colocado "acima de todo principado, e poder, e potestade" (os deuses falsos que eles temiam). Nada no universo tem mais poder do que Aquele a quem a Igreja está unida.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "efesios_1": {
+                title: "A RIQUEZA DA SALVAÇÃO",
+                date: "06/04 (Segunda)",
+                desc: "\"Nele fomos também feitos herança, predestinados segundo o propósito daquele que faz todas as coisas...\"",
+                blocks: [
+                    {
+                        title: "O Hino à Trindade e a Garantia Eterna",
+                        verse: "Em quem temos a redenção pelo seu sangue, a remissão das ofensas, segundo as riquezas da sua graça. (Ef 1:7)",
+                        exegesis: `
+                            <h3>1. Uma Única Sentença de Louvor</h3>
+                            <ul>
+                                <li>No idioma grego original, os versículos 3 a 14 formam uma única e monumental frase sem ponto final. Paulo estava tão impactado com a beleza da salvação que as palavras jorraram numa cascata ininterrupta de adoração. Essa passagem é um cântico de louvor que destaca o papel de cada pessoa da Trindade na nossa salvação.</li>
+                            </ul>
+                            
+                            <h3>2. O Trabalho da Trindade</h3>
+                            <ul>
+                                <li><strong>A Obra do Pai (Eleição):</strong> No passado (antes da fundação do mundo), Deus Pai nos elegeu e nos adotou como filhos. A salvação não foi um plano de contingência porque o Éden deu errado; foi uma arquitetura eterna do amor.</li>
+                                <li><strong>A Obra do Filho (Redenção):</strong> No presente (na cruz histórica), Jesus Cristo comprou a nossa liberdade. "Redenção" era um termo de mercado de escravos: significava pagar o preço para alforriar um cativo. O preço não foi ouro, foi o sangue imaculado de Jesus.</li>
+                                <li><strong>A Obra do Espírito Santo (O Selo):</strong> Para o futuro, o Espírito Santo nos foi dado como o "Selo" e o "Penhor". Um selo de cera garantia a propriedade e a segurança inviolável de uma correspondência real. O penhor (<em>arrhabon</em>) era o anel de noivado, o sinal de compromisso que garante que o Noivo voltará para pagar o resto e levar a noiva. Se você tem o Espírito, sua salvação está eternamente garantida.</li>
+                            </ul>
+
+                            <h3>3. A Oração pela Iluminação (Fos)</h3>
+                            <ul>
+                                <li>Paulo encerra o capítulo não pedindo que os efésios ganhem mais dinheiro, saúde ou bens materiais. Eles já possuem as "bênçãos celestiais". O problema deles (e nosso) é a amnésia espiritual. Ele ora para que os olhos do nosso entendimento (o coração) sejam "iluminados" para sabermos três coisas: a esperança do nosso chamado, a glória da herança, e a suprema grandeza do poder que ressuscitou Cristo. Somos bilionários espirituais vivendo como mendigos porque não lemos o nosso testamento cósmico.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "efesios_2": {
+                title: "A GRAÇA QUE RESSUSCITA",
+                date: "07/04 (Terça)",
+                desc: "\"Porque pela graça sois salvos, por meio da fé; e isto não vem de vós, é dom de Deus.\"",
+                blocks: [
+                    {
+                        title: "De Cadáveres a Templos Vivos",
+                        verse: "E vos vivificou, estando vós mortos em ofensas e pecados. (Ef 2:1)",
+                        exegesis: `
+                            <h3>1. A Condição Humana: Cadáveres Espirituais</h3>
+                            <ul>
+                                <li>Paulo faz o diagnóstico mais trágico da humanidade. O homem não-salvo não está doente precisando de remédio; ele está no necrotério precisando de ressurreição. "Mortos em ofensas". Estávamos sob a influência do mundo, seguindo o "príncipe das potestades do ar" (Satanás), e escravizados pela nossa própria carne, destinados à ira de Deus. Um cadáver não pode se salvar, não pode fazer boas obras para impressionar Deus, nem levantar a própria mão.</li>
+                            </ul>
+                            
+                            <h3>2. O Divino "Mas Deus..."</h3>
+                            <ul>
+                                <li>Os versículos 4 e 5 trazem a maior virada da história humana: <strong>"Mas Deus, que é riquíssimo em misericórdia..."</strong>. Quando não podíamos fazer absolutamente nada, Deus operou uma ressurreição espiritual. Ele nos "vivificou com Cristo" (nos deu vida), nos "ressuscitou", e nos "fez assentar nos lugares celestiais" ao lado do Rei. A justificação é descrita na famosa fórmula do v.8: Salvação é pela Graça (a ação de Deus que não merecemos) por meio da Fé (a mão vazia que recebe o presente). Boas obras não são a <em>causa</em> da salvação, são o <em>resultado</em> (somos feitura dEle, v.10).</li>
+                            </ul>
+
+                            <h3>3. Derrubando a Parede da Inimizade</h3>
+                            <ul>
+                                <li>A segunda metade do capítulo foca numa crise social profunda: a inimizade milenar entre Judeus e Gentios. No templo em Jerusalém, havia um muro literal com uma placa dizendo que qualquer gentio que o cruzasse seria morto. A cruz dinamitou esse muro. Jesus não pegou judeus e gentios e fez uma "mistura" deles; Ele os fundiu para criar "em si mesmo, dos dois, um <strong>Novo Homem</strong>". Somos concidadãos e estamos sendo construídos como um único Templo vivo, edificado sobre os apóstolos e os profetas, do qual o próprio Jesus é a Pedra Angular (a fundação que sustenta tudo).</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "efesios_3": {
+                title: "O MISTÉRIO E A ORAÇÃO",
+                date: "08/04 (Quarta)",
+                desc: "\"Para que Cristo habite pela fé nos vossos corações...\"",
+                blocks: [
+                    {
+                        title: "A Revelação do Segredo e o Amor Incomensurável",
+                        verse: "A mim, o mínimo de todos os santos, me foi dada esta graça de anunciar entre os gentios, por meio do evangelho, as riquezas incompreensíveis de Cristo. (Ef 3:8)",
+                        exegesis: `
+                            <h3>1. O Desvendar do Mistério Cósmico</h3>
+                            <ul>
+                                <li>Paulo faz uma pausa para explicar a sua própria vocação. Ele se autodenomina "o menor de todos os santos", encarregado de pregar o "mistério" que esteve oculto nas eras passadas. O mistério é simplesmente este: que os gentios (nós, os não-judeus) somos <strong>coerdeiros, do mesmo corpo e co-participantes</strong> da promessa em Cristo. A Igreja não era o "Plano B" de Deus porque Israel falhou; a Igreja era o prato principal oculto sob um véu até o advento da cruz.</li>
+                            </ul>
+                            
+                            <h3>2. A Igreja como o Teatro de Deus</h3>
+                            <ul>
+                                <li>O versículo 10 é estarrecedor: "Para que agora, pela igreja, a multiforme sabedoria de Deus seja conhecida dos principados e potestades nos céus". Qual é a plateia que assiste a história da Igreja? O exército de anjos e demônios invisíveis. Deus está usando a união de pecadores miseráveis para esfregar a Sua sabedoria multiforme na cara do inferno, provando que Satanás fracassou e que a Cruz triunfou absolutamente.</li>
+                            </ul>
+
+                            <h3>3. A Oração pelas 4 Dimensões do Amor</h3>
+                            <ul>
+                                <li>Para que a igreja suporte tudo isso, Paulo dobra os joelhos e faz a segunda oração estupenda da carta. Ele pede que os cristãos sejam fortalecidos com poder no homem interior pelo Espírito, para que Cristo <em>habite</em> (faça morada permanente, se sinta em casa) nos seus corações. </li>
+                                <li>E o ápice do pedido é que eles tenham capacidade divina para compreender o incompreensível: a largura (alcança a todos), o comprimento (vai de eternidade a eternidade), a altura (nos eleva aos céus) e a profundidade (desceu até o inferno dos nossos pecados) do Amor de Cristo. Ele termina o bloco doutrinário louvando a Deus "que é poderoso para fazer infinitamente mais do que tudo quanto pedimos ou pensamos".</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "efesios_4": {
+                title: "O NOVO ANDAR DA IGREJA",
+                date: "09/04 (Quinta)",
+                desc: "\"Rogo-vos, pois... que andeis como é digno da vocação com que fostes chamados.\"",
+                blocks: [
+                    {
+                        title: "Os Ministérios e o Abandono da Velha Natureza",
+                        verse: "Até que todos cheguemos à unidade da fé, e ao conhecimento do Filho de Deus, a homem perfeito, à medida da estatura completa de Cristo. (Ef 4:13)",
+                        exegesis: `
+                            <h3>1. A Dobradiça da Carta: O "Andar"</h3>
+                            <ul>
+                                <li>Aqui a carta faz uma curva de 90 graus. A palavra-chave muda de "assentar-se" para "andar" (<em>peripateo</em> - conduta diária). A doutrina celestial exige deveres terrenos. "Rogo-vos... que andeis de modo digno da vocação". Como fazemos isso? Com humildade, mansidão, longanimidade (paciência infinita com os irmãos defeituosos), suportando-nos uns aos outros em amor. A meta primária da igreja na terra é a <strong>Unidade</strong>. O Corpo é um, o Espírito é um, a esperança é uma, o Senhor é um, a fé é uma. Dividir a igreja é uma heresia contra a própria natureza de Deus.</li>
+                            </ul>
+                            
+                            <h3>2. O Despojo da Guerra e os Cinco Ministérios</h3>
+                            <ul>
+                                <li>Citando o Salmo 68, Paulo descreve a ascensão de Jesus como a marcha de um General Vitorioso que subjugou seus inimigos (Satanás e a morte) e distribuiu o saque da guerra ao Seu exército (a igreja). Quais são esses dons? São <em>pessoas</em> dotadas para liderança: <strong>Apóstolos, Profetas, Evangelistas, Pastores e Mestres</strong>. Qual é a função deles? Fazer o trabalho sozinho? Não! A função deles é "o aperfeiçoamento dos santos, para a obra do ministério". Os pastores treinam os santos, e os santos fazem o trabalho pesado do Reino até que todo o Corpo chegue à maturidade espiritual, para que a igreja não caia em heresias e modismos.</li>
+                            </ul>
+
+                            <h3>3. Troca de Roupas (Vestindo o Novo Homem)</h3>
+                            <ul>
+                                <li>Paulo usa a metáfora de um guarda-roupa moral. Ele ordena que nos "despojemos" (arranquemos como roupa suja e contaminada) do Velho Homem, com seus desejos depravados, e que "nos revistamos" do Novo Homem, criado em justiça e santidade. Isso afeta o cotidiano: parem com a mentira, se irarem não deixem o sol se pôr sobre o vosso ressentimento, que o ladrão trabalhe para abençoar os pobres, que as conversas torpes saiam da boca, e acima de tudo: não entristeçam o Espírito Santo com amargura e ódio (v.30-32).</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "efesios_5": {
+                title: "LUZ, SABEDORIA E CASAMENTO",
+                date: "10/04 (Sexta)",
+                desc: "\"Sede, pois, imitadores de Deus, como filhos amados.\"",
+                blocks: [
+                    {
+                        title: "Plenitude do Espírito e o Mistério Conjugal",
+                        verse: "E não vos embriagueis com vinho, em que há contenda, mas enchei-vos do Espírito. (Ef 5:18)",
+                        exegesis: `
+                            <h3>1. Andando em Amor e Luz</h3>
+                            <ul>
+                                <li>O imperativo divino atinge o seu ápice: "Sede imitadores (<em>mimetes</em> - mímicos) de Deus". Como? Andando em amor. A seguir, Paulo contrasta as trevas do mundo (prostituição, ganância, piadas sujas) com o andar na "Luz". Os efésios antes eram trevas, mas agora foram transformados na própria luz no Senhor. A luz expõe a podridão e não tem comunhão com a escuridão. O cristão deve "despertar do sono" da apatia moral e viver como sábio no meio de dias maus, remindo o tempo (v.14-16).</li>
+                            </ul>
+                            
+                            <h3>2. O Enchimento Contínuo</h3>
+                            <ul>
+                                <li>Como ter força para viver em pureza e sabedoria? "Não vos embriagueis com vinho... mas enchei-vos do Espírito". A embriaguez é a submissão da mente a um fluido externo que gera loucura. O enchimento do Espírito é submeter o controle da vida ao Hóspede divino, gerando vida abundante. No grego, o verbo é um imperativo contínuo: "Deixem-se ser preenchidos a cada momento". O sinal de uma igreja cheia do Espírito não é confusão e desordem, é música adoradora ("falando entre vós com salmos e hinos", v.19), ações de graças contínuas, e submissão mútua ("sujeitando-vos uns aos outros", v.21).</li>
+                            </ul>
+
+                            <h3>3. O Grande Mistério do Matrimônio</h3>
+                            <ul>
+                                <li>Aplicando o princípio da submissão ("sujeitem-se"), Paulo aborda o casamento. Ele abalou a cultura patriarcal e abusiva da Roma Antiga com um mandamento radical: "Maridos, amai vossas mulheres, <strong>como Cristo amou a igreja e a si mesmo se entregou por ela</strong>". O marido não é o chefe déspota, mas o servo-líder que dá a própria vida pela noiva, que a lava com a Palavra e a protege para ser gloriosa. A mulher, em resposta a esse amor seguro e sacrificial, reverencia e respeita a liderança do marido. </li>
+                                <li>Paulo, entretanto, confessa: "Grande é este mistério; digo-o, porém, a respeito de Cristo e da igreja" (v.32). O casamento não foi inventado no Éden; ele foi projetado na eternidade como um espelho físico para mostrar ao mundo como é o amor louco e apaixonado de Cristo pela Sua Noiva salva.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "efesios_6": {
+                title: "A ARMADURA DE DEUS",
+                date: "10/04 (Sexta)",
+                desc: "\"Revesti-vos de toda a armadura de Deus, para que possais estar firmes contra as astutas ciladas do diabo.\"",
+                blocks: [
+                    {
+                        title: "Batalha nas Regiões Invisíveis e o Agir Varonil",
+                        verse: "Porque não temos que lutar contra a carne e o sangue, mas, sim, contra os principados, contra as potestades, contra os príncipes das trevas... (Ef 6:12)",
+                        exegesis: `
+                            <h3>1. A Ética no Lar e no Trabalho</h3>
+                            <ul>
+                                <li>Antes da batalha, Paulo encerra os deveres do dia a dia: filhos, obedeçam aos pais (o primeiro mandamento com promessa). Pais, não provoquem os filhos à ira (não os irritem com tirania), mas criem-nos na admoestação do Senhor. Escravos e senhores também são abordados: trabalhem com zelo e honestidade, não para agradar homens, mas servindo como se o vosso patrão fosse o próprio Cristo no céu. Se a nossa vida espiritual não funciona na sala de estar e no escritório, a nossa teologia é uma fraude.</li>
+                            </ul>
+                            
+                            <h3>2. A Verdadeira Guerra: Não é de Sangue</h3>
+                            <ul>
+                                <li>O livro que começou com a glória dos céus termina na lama das trincheiras de guerra. A vida cristã não é um parquinho, é um campo minado. "Fortalecei-vos no Senhor e na força do seu poder". Por quê? Porque o inimigo não é a sogra, o vizinho chato, o político corrupto ou o chefe cruel. O verdadeiro inimigo respira nas dimensões ocultas: hostes espirituais, demônios, principados, potestades organizados sob a ditadura de Satanás. Nossa luta não é contra carne e sangue, não pode ser vencida com debates humanos, terapia, ciência ou dinheiro. Precisamos vestir o armamento de outro mundo.</li>
+                            </ul>
+
+                            <h3>3. A Panóplia (A Armadura Completa)</h3>
+                            <ul>
+                                <li>Encarando o soldado romano ao qual estava acorrentado enquanto escrevia a carta, Paulo lista as peças vitais para resistirmos de pé no dia mau:
+                                    <br>• <strong>Cinto da Verdade:</strong> Integridade e honestidade que amarra toda a vida.
+                                    <br>• <strong>Couraça da Justiça:</strong> A certeza de que fomos declarados justos por Cristo (protege o coração e as emoções de condenação).
+                                    <br>• <strong>Calçados da Paz:</strong> A firmeza e prontidão geradas pelo Evangelho que nos ancora no chão.
+                                    <br>• <strong>Escudo da Fé:</strong> A única defesa capaz de apagar (extinguir e desativar) as flechas de fogo das acusações, medos e tentações do diabo.
+                                    <br>• <strong>Capacete da Salvação:</strong> A segurança mental de que já fomos resgatados (protege a cabeça contra heresias e dúvidas).
+                                    <br>• <strong>A Espada do Espírito:</strong> A Palavra de Deus (<em>Rhema</em>), a única arma de ataque da armadura, proferida no poder divino.
+                                </li>
+                                <li>A peça final e o oxigênio da armadura inteira: <strong>A Oração</strong>. Orai em todo o tempo, com toda súplica no Espírito. O soldado cristão avança de joelhos dobrados. Paulo conclui pedindo que orem para que ele possa abrir a boca livremente e pregar corajosamente o Evangelho pelo qual é um embaixador algemado.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            }
+        };
+
+        // === LÓGICA GERAL ===
+        let currentAudioBlob = null;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        function loadChapter(chapterKey) {
+            const data = bibleData[chapterKey];
+            if (!data) return;
+
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
+            const dateBadge = document.getElementById('dateBadge');
+            const dateValue = document.getElementById('dateValue');
+            const communitySection = document.getElementById('community-section');
+            const formChapterKey = document.getElementById('formChapterKey');
+            
+            heroTitle.style.opacity = '0';
+            heroDesc.style.opacity = '0';
+            dateBadge.style.opacity = '0';
+            
+            setTimeout(() => {
+                if (data.date) {
+                    dateValue.textContent = data.date;
+                    dateBadge.classList.remove('hidden');
+                    communitySection.classList.remove('hidden');
+                    formChapterKey.value = chapterKey;
+                    carregarComentarios(chapterKey);
+                    setTimeout(() => { dateBadge.style.opacity = '1'; }, 100);
+                } else {
+                    dateBadge.classList.add('hidden');
+                    communitySection.classList.add('hidden');
+                }
+
+                heroTitle.innerHTML = data.title;
+                heroDesc.innerHTML = data.desc;
+                heroTitle.style.opacity = '1';
+                heroDesc.style.opacity = '1';
+            }, 300);
+
+            const mainContent = document.getElementById('content');
+            mainContent.innerHTML = ''; 
+
+            data.blocks.forEach((block) => {
+                let borderColor = 'border-indigo-600';
+                let blurTop = 'bg-indigo-600/5';
+                let blurBottom = 'bg-indigo-800/5';
+                let borderPanel = 'border-indigo-900/30';
+
+                const html = `
+                    <section class="reveal max-w-4xl mx-auto w-full relative">
+                        <div class="absolute -inset-4 ${blurTop} to-transparent rounded-3xl blur-xl pointer-events-none"></div>
+                        
+                        <div class="space-y-6 relative z-10">
+                            <div class="text-center mb-10">
+                                <h2 class="text-3xl md:text-5xl font-serif text-white leading-tight mb-6">${block.title}</h2>
+                                <div class="inline-block border-l-4 border-r-4 ${borderColor} px-6 py-4 italic text-slate-300 bg-[#0a0514]/50 shadow-sm max-w-3xl rounded-sm">
+                                    "${block.verse}"
+                                </div>
+                            </div>
+                            
+                            <div class="bg-[#050510]/80 p-8 md:p-12 rounded-xl border ${borderPanel} transition shadow-2xl relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-64 h-64 ${blurTop} rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+                                <div class="absolute bottom-0 left-0 w-64 h-64 ${blurBottom} rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
+                                <div class="rich-text text-slate-300 text-[16px] md:text-lg leading-relaxed relative z-10 font-light">
+                                    ${block.exegesis}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+                mainContent.insertAdjacentHTML('beforeend', html);
+            });
+            resetObservers();
+        }
+
+        function carregarComentarios(capitulo) {
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '<p class="text-center text-slate-500 text-sm animate-pulse">Carregando comentários...</p>';
+
+            fetch(`api.php?acao=listar&capitulo=${capitulo}`)
+            .then(res => res.json())
+            .then(data => {
+                list.innerHTML = '';
+                if(data.length === 0) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
+                }
+                data.forEach(c => {
+                    let mediaHtml = '';
+                    if(c.foto) mediaHtml += `<img src="${c.foto}" onclick="openImage(this.src)" class="mt-4 rounded-lg max-h-48 border border-slate-700 cursor-pointer hover:scale-[1.02] transition shadow-lg">`;
+                    if(c.audio) mediaHtml += `<audio controls src="${c.audio}" class="mt-4 w-full"></audio>`;
+
+                    const jaCurtiu = localStorage.getItem(`reagiu_likes_${c.id}`);
+                    const jaAmem = localStorage.getItem(`reagiu_amem_${c.id}`);
+                    const jaGloria = localStorage.getItem(`reagiu_gloria_${c.id}`);
+
+                    let themeColor = 'text-indigo-400';
+                    let panelBorder = 'hover:border-indigo-500/50';
+
+                    const html = `
+                        <div class="glass-panel p-5 pb-12 rounded-xl border border-slate-800 relative group transition ${panelBorder} bg-[#0a0514]/60">
+                            <div class="flex justify-between items-start mb-3 border-b border-slate-800 pb-2">
+                                <strong class="${themeColor} text-sm tracking-wide font-serif">${c.nome}</strong>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-widest">${new Date(c.data_envio).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed">${c.mensagem}</p>
+                            ${mediaHtml}
+                            
+                            <div class="absolute bottom-3 right-4 flex gap-2">
+                                <button onclick="reagirComentario(${c.id}, 'likes', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaCurtiu ? 'text-red-500 border-red-500/30' : 'text-slate-400 hover:text-red-400'}" ${jaCurtiu ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-heart"></i> <span class="count font-bold">${c.likes || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'amem', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaAmem ? 'text-indigo-400 border-indigo-400/30' : 'text-slate-400 hover:text-indigo-400'}" ${jaAmem ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-hands-praying"></i> <span class="count font-bold">${c.amem || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'gloria', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaGloria ? 'text-blue-500 border-blue-500/30' : 'text-slate-400 hover:text-blue-500'}" ${jaGloria ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-fire"></i> <span class="count font-bold">${c.gloria || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', html);
+                });
+            })
+            .catch(err => {
+                list.innerHTML = '<p class="text-center text-red-400 text-xs">Erro ao carregar comentários.</p>';
+            });
+        }
+
+        function reagirComentario(id, tipo, btn) {
+            if(localStorage.getItem(`reagiu_${tipo}_${id}`)) return;
+
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('.count');
+            let count = parseInt(countSpan.innerText);
+
+            icon.classList.add('reacted-anim');
+            btn.classList.remove('text-slate-400');
+            
+            if(tipo === 'likes') btn.classList.add('text-red-500', 'border-red-500/30');
+            if(tipo === 'amem') btn.classList.add('text-indigo-400', 'border-indigo-400/30');
+            if(tipo === 'gloria') btn.classList.add('text-blue-500', 'border-blue-500/30');
+
+            countSpan.innerText = count + 1;
+            btn.disabled = true;
+
+            localStorage.setItem(`reagiu_${tipo}_${id}`, 'true');
+
+            const formData = new FormData();
+            formData.append('acao', 'reagir');
+            formData.append('id', id);
+            formData.append('tipo', tipo);
+
+            fetch('api.php', { method: 'POST', body: formData });
+        }
+
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+            formData.append('acao', 'salvar');
+            if(currentAudioBlob) {
+                formData.append('audio', currentAudioBlob, 'audio.wav');
+            }
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    this.reset();
+                    document.getElementById('filePreview').innerHTML = '';
+                    currentAudioBlob = null;
+                    document.getElementById('recordText').innerText = "Gravar Áudio";
+                    carregarComentarios(document.getElementById('formChapterKey').value);
+                } else {
+                    alert('Erro ao enviar.');
+                }
+            })
+            .catch(() => alert('Erro de conexão.'))
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        });
+
+        function previewFile(input) {
+            const preview = document.getElementById('filePreview');
+            if(input.files && input.files[0]) {
+                preview.innerHTML = `<i class="fa-solid fa-check text-green-400"></i> Imagem selecionada: ${input.files[0].name}`;
+                preview.classList.remove('hidden');
+            }
+        }
+
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.addEventListener('click', async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                    mediaRecorder.onstop = () => {
+                        currentAudioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        document.getElementById('filePreview').classList.remove('hidden');
+                        document.getElementById('filePreview').innerHTML += '<br><i class="fa-solid fa-microphone text-green-400"></i> Áudio gravado!';
+                    };
+                    mediaRecorder.start();
+                    recordBtn.classList.add('recording-pulse');
+                    document.getElementById('recordText').innerText = "Parar Gravação";
+                } catch (err) {
+                    alert("Permita o uso do microfone para gravar.");
+                }
+            } else {
+                mediaRecorder.stop();
+                recordBtn.classList.remove('recording-pulse');
+                document.getElementById('recordText').innerText = "Gravar Áudio";
+            }
+        });
+
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        function closeImage() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function resetObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<80; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(129, 140, 248, 0.15)"; /* Índigo */
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        loadChapter('intro_book');
+    </script>
+</body>
+</html>

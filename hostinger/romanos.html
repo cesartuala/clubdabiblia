@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aos Romanos | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] },
+                    colors: { 
+                        divine: { 400: '#ef4444' }, /* Vermelho/Carmesim para Romanos */
+                        darkbg: '#0a0a0a'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0a0a0a; color: #e2e8f0; overflow-x: hidden; }
+        
+        .glass-panel { background: rgba(20, 10, 10, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(239, 68, 68, 0.15); }
+        .red-glow { text-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        /* Estilização Profunda do Conteúdo (Sem Imagens, Foco na Tipografia) */
+        .rich-text strong { color: #fca5a5; font-weight: 700; }
+        .rich-text .ref { color: #f87171; font-size: 0.9em; font-family: monospace; background: rgba(239, 68, 68, 0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .rich-text h3 { color: #ef4444; font-weight: bold; margin-top: 2rem; margin-bottom: 0.75rem; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.15em; border-bottom: 1px solid rgba(239, 68, 68, 0.2); padding-bottom: 6px; }
+        .rich-text ul { list-style-type: none; padding-left: 0; margin-top: 15px; margin-bottom: 20px; }
+        .rich-text li { margin-bottom: 15px; line-height: 1.8; text-align: justify; border-left: 3px solid #ef4444; padding-left: 20px; background: linear-gradient(to right, rgba(239,68,68,0.05), transparent); padding-top: 5px; padding-bottom: 5px; }
+        .rich-text p { margin-bottom: 20px; line-height: 2; text-align: justify; font-size: 1.05rem; color: #cbd5e1; }
+        .rich-text blockquote { border-left: 4px solid #ef4444; padding-left: 20px; margin: 20px 0; font-style: italic; color: #fca5a5; background: rgba(239, 68, 68, 0.05); padding: 15px; border-radius: 0 8px 8px 0; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #3f1515; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ef4444; }
+
+        .recording-pulse { animation: recPulse 1.5s infinite; background-color: #ef4444; border-color: #ef4444; color: white; }
+        @keyframes recPulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @keyframes pop { 50% { transform: scale(1.4); } }
+        .reacted-anim { animation: pop 0.3s ease-out; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="fixed top-0 w-full z-50 p-4 md:p-6 flex flex-col md:flex-row justify-between items-center bg-gradient-to-b from-[#0a0a0a]/95 to-[#0a0a0a]/80 backdrop-blur-md border-b border-red-900/30 transition-all">
+        <div class="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto justify-between md:justify-start">
+            <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#140a0a] border border-red-500/50 text-red-400 hover:bg-red-500 hover:text-black transition-all shadow-[0_0_15px_rgba(239,68,68,0.1)] hover:shadow-[0_0_20px_rgba(239,68,68,0.4)]" title="Voltar para a Capa">
+                <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+                <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-cross text-red-500 text-xl md:text-2xl"></i>
+                <span class="font-serif text-white text-lg md:text-xl tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto justify-end">
+            <span class="hidden md:inline text-xs text-slate-400 uppercase tracking-widest">Navegar:</span>
+            <select id="chapterSelect" onchange="loadChapter(this.value)" class="w-full md:w-auto bg-[#140a0a] text-red-400 border border-red-500/30 rounded px-4 py-2 text-sm uppercase tracking-widest focus:outline-none focus:border-red-500 cursor-pointer hover:bg-[#1f0f0f] transition">
+                <option value="intro_book">★ Sobre o Livro</option>
+                <option value="intro_author">✎ Sobre o Autor</option>
+                <option disabled>──────────</option>
+                <option value="romanos_1">Capítulo 01</option>
+                <option value="romanos_2">Capítulo 02</option>
+                <option value="romanos_3">Capítulo 03</option>
+                <option value="romanos_4">Capítulo 04</option>
+                <option value="romanos_5">Capítulo 05</option>
+                <option value="romanos_6">Capítulo 06</option>
+                <option value="romanos_7">Capítulo 07</option>
+                <option value="romanos_8">Capítulo 08</option>
+                <option value="romanos_9">Capítulo 09</option>
+                <option value="romanos_10">Capítulo 10</option>
+                <option value="romanos_11">Capítulo 11</option>
+                <option value="romanos_12">Capítulo 12</option>
+                <option value="romanos_13">Capítulo 13</option>
+                <option value="romanos_14">Capítulo 14</option>
+                <option value="romanos_15">Capítulo 15</option>
+                <option value="romanos_16">Capítulo 16</option>
+            </select>
+        </div>
+    </nav>
+
+    <header class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-32 md:pt-20">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10 grayscale"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/80 to-transparent"></div>
+        
+        <div class="z-10 reveal active space-y-4 max-w-5xl w-full">
+            <h2 class="text-red-500 tracking-[0.5em] text-[10px] md:text-sm uppercase animate-pulse mb-4 font-bold">Clube da Bíblia Apresenta</h2>
+            
+            <div id="dateBadge" class="hidden inline-flex items-center gap-2 border border-red-500/50 rounded-full px-4 py-1 mb-4 bg-red-500/10 backdrop-blur-sm transition-all duration-700 opacity-0">
+                <i class="fa-regular fa-calendar text-red-400 text-xs"></i>
+                <span class="text-red-300 text-xs tracking-widest uppercase font-bold">Leitura: <span id="dateValue" class="text-white"></span></span>
+            </div>
+
+            <h1 id="heroTitle" class="font-serif text-4xl md:text-7xl text-white mb-2 red-glow transition-all duration-700 uppercase leading-tight px-2"></h1>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 text-slate-400 mt-8 pt-8 border-t border-red-900/30 w-full max-w-3xl mx-auto">
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Idealizado por</p>
+                    <strong class="text-red-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-red-300 transition">Fellipe Gomes Andrade</strong>
+                </div>
+                <span class="hidden md:block h-8 w-[1px] bg-gradient-to-b from-transparent via-red-900 to-transparent"></span>
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Desenvolvido por</p>
+                    <strong class="text-red-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-red-300 transition">Cesar Tuala</strong>
+                </div>
+            </div>
+
+            <p id="heroDesc" class="text-sm md:text-xl text-slate-300 max-w-2xl mx-auto pt-8 font-light italic transition-all duration-700 px-4"></p>
+            
+            <div class="pt-10">
+                <button onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" class="animate-bounce text-red-500 text-2xl">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="content" class="max-w-4xl mx-auto px-4 py-10 md:py-20 space-y-20 md:space-y-32 min-h-screen">
+        </main>
+
+    <section id="community-section" class="w-full bg-[#0d0505] border-t-4 border-red-600 py-16 mb-0 relative shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <h3 class="font-serif text-3xl md:text-4xl text-red-500 mb-2 uppercase tracking-widest red-glow">
+                    <i class="fa-solid fa-users-line mr-3"></i>Comunidade
+                </h3>
+                <p class="text-slate-400 text-sm italic">"Compartilhe o que Deus falou ao seu coração"</p>
+                <div class="h-1 w-24 bg-gradient-to-r from-transparent via-red-600 to-transparent mx-auto mt-4"></div>
+            </div>
+
+            <div class="glass-panel p-6 md:p-8 rounded-xl mb-12 border border-slate-800 shadow-2xl bg-[#120808]/80">
+                <form id="commentForm" class="space-y-5">
+                    <input type="hidden" id="formChapterKey" name="capitulo">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="col-span-1">
+                            <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Nome</label>
+                            <input type="text" name="nome" required class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-red-500 focus:outline-none transition">
+                        </div>
+                        <div class="flex gap-3 col-span-1 md:col-span-2 items-end">
+                            <label class="flex-1 cursor-pointer bg-black/50 border border-slate-700 hover:border-red-500 hover:bg-[#1a0c0c] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-camera group-hover:text-red-400"></i> Foto
+                                <input type="file" name="foto" accept="image/*" class="hidden" onchange="previewFile(this)">
+                            </label>
+                            <button type="button" id="recordBtn" class="flex-1 bg-black/50 border border-slate-700 hover:border-red-500 hover:bg-[#1a0c0c] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-microphone group-hover:text-red-400"></i> <span id="recordText">Gravar Áudio</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="filePreview" class="text-xs text-red-400 hidden bg-black p-2 rounded border border-red-500/30"></div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Comentário</label>
+                        <textarea name="mensagem" class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-red-500 focus:outline-none h-28 resize-none transition"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-red-800 to-red-600 hover:from-red-600 hover:to-red-500 text-white font-bold py-4 rounded-lg transition uppercase tracking-[0.2em] text-sm shadow-lg shadow-black/50 transform hover:-translate-y-1">
+                        Publicar Comentário
+                    </button>
+                </form>
+            </div>
+            <div id="commentsList" class="space-y-6"></div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-800 bg-black py-12 text-center relative z-10">
+        <div class="flex flex-col items-center justify-center space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="fa-solid fa-cross text-red-600 text-xl"></i>
+                <span class="font-serif text-slate-300 text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+            <p class="text-slate-700 text-[10px] tracking-widest uppercase mt-4">&copy; 2026 Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="imageModal" class="fixed inset-0 z-[100] bg-black/95 hidden flex justify-center items-center p-4 backdrop-blur-sm transition-opacity duration-300" onclick="closeImage()">
+        <div class="relative max-w-4xl w-full flex justify-center">
+            <button onclick="closeImage()" class="absolute -top-12 right-0 text-white text-3xl hover:text-red-500 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modalImg" src="" class="max-h-[85vh] max-w-full rounded-lg shadow-[0_0_50px_rgba(239,68,68,0.3)] border-2 border-red-500/20 object-contain">
+        </div>
+    </div>
+
+    <script>
+        // === DADOS COMPLETOS DE ROMANOS (1-16) ===
+        const bibleData = {
+            "intro_book": {
+                title: "A CARTA AOS ROMANOS",
+                date: null,
+                desc: "<span class='text-xs uppercase tracking-[0.3em] text-red-500 not-italic block mb-4'>Introdução: Sobre o Livro</span>\"Porque não me envergonho do evangelho de Cristo...\"",
+                blocks: [
+                    {
+                        title: "A Magna Carta da Fé Cristã",
+                        verse: "Visto que a justiça de Deus se revela no evangelho, de fé em fé, como está escrito: O justo viverá por fé. (Rm 1:17)",
+                        exegesis: `
+                            <p>A Epístola aos Romanos transcende a categoria de mera carta antiga; ela é o tratado teológico mais majestoso, sistemático e revolucionário já escrito na história da humanidade. É a espinha dorsal da doutrina cristã e o manifesto definitivo da graça soberana de Deus.</p>
+                            
+                            <h3>1. O Impacto Histórico e a Transformação da Igreja</h3>
+                            <ul>
+                                <li>Ao longo dos séculos, Romanos foi a faísca que acendeu as maiores revoluções espirituais. <strong>Agostinho de Hipona</strong>, no século IV, abandonou uma vida de devassidão após ler Romanos 13. No século XVI, o monge <strong>Martinho Lutero</strong>, atormentado pelo peso da culpa e pelas penitências, encontrou a libertação em Romanos 1:17, descobrindo que a "Justiça de Deus" não era um atributo punitivo, mas um dom, deflagrando assim a <em>Reforma Protestante</em>.</li>
+                                <li><strong>João Calvino</strong> afirmou que, ao compreender Romanos, o cristão encontra "uma porta aberta para os tesouros mais ocultos da Escritura". Mais tarde, em 1738, <strong>John Wesley</strong> sentiu seu coração "estranhamente aquecido" e iniciou o avivamento metodista ao ouvir a leitura do prefácio de Lutero a esta mesma carta. Romanos tem o poder inerente de ressuscitar igrejas mortas.</li>
+                            </ul>
+                            
+                            <h3>2. O Contexto Geopolítico e as Tensões em Roma</h3>
+                            <ul>
+                                <li>Paulo escreve para uma congregação que ele não fundou e que ainda não conhecia pessoalmente. Havia uma razão pastoral urgente: o imperador romano Cláudio (por volta de 49 d.C.) havia banido todos os judeus de Roma devido a conflitos internos constantes (muitos deles instigados pela pregação sobre <em>Chrestus</em> - Cristo).</li>
+                                <li>Durante o exílio judaico, a igreja em Roma tornou-se exclusivamente gentílica. Anos depois, quando o edito expirou sob o governo de Nero, os crentes judeus retornaram e encontraram uma igreja com liturgia diferente, sem a guarda da Lei de Moisés, festas ou restrições alimentares. A tensão étnica era explosiva. Paulo escreve para nivelar o orgulho de ambos os lados, mostrando que judeus e gentios são igualmente pecadores e salvos unicamente pela mesma cruz.</li>
+                            </ul>
+
+                            <h3>3. A Arquitetura do Livro: O Tribunal Cósmico</h3>
+                            <ul>
+                                <li>A estrutura lógica de Romanos é impecável, conduzindo o leitor por uma sala de tribunal celestial. Paulo atua como promotor e, depois, como advogado de defesa. A carta se divide em quatro movimentos sinfônicos principais:</li>
+                                <li><strong>Condenação (Cap. 1-3):</strong> O diagnóstico letal. Paulo prova metodicamente que tanto pagãos irracionais quanto religiosos moralistas estão debaixo da justa ira de Deus. Não há exceções.</li>
+                                <li><strong>Justificação (Cap. 3-5):</strong> O remédio divino. A apresentação da expiação pelo sangue de Cristo, a imputação da justiça e a fé como único meio de receber a absolvição.</li>
+                                <li><strong>Santificação (Cap. 6-8):</strong> A vivência prática. A resposta contra o antinomianismo, a morte para o domínio do pecado, o conflito da carne e a vitória gloriosa e segura pelo Espírito Santo.</li>
+                                <li><strong>Vindicação e Aplicação (Cap. 9-16):</strong> A teodiceia de Paulo explicando a soberania de Deus na eleição de Israel e a transformação ética que o Evangelho deve produzir no comportamento diário, civil e nos relacionamentos comunitários.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "intro_author": {
+                title: "SOBRE O AUTOR",
+                date: null,
+                desc: "\"Paulo, servo de Jesus Cristo, chamado para apóstolo...\"",
+                blocks: [
+                    {
+                        title: "O Fariseu Transformado pela Graça",
+                        verse: "Separado para o evangelho de Deus. (Romanos 1:1)",
+                        exegesis: `
+                            <p>Para entender a magnitude da Carta aos Romanos, é imperativo compreender a mente genial e a alma redimida de quem a escreveu. Paulo não era um pensador de gabinete, mas um homem que experimentou a violência de ambas as extremidades do espectro religioso: como perseguidor implacável e, posteriormente, como mártir sofredor.</p>
+
+                            <h3>1. A Formação Erudita: Um Mestre de Três Mundos</h3>
+                            <ul>
+                                <li>Saulo nasceu em Tarso da Cilícia, uma das mais prestigiadas cidades universitárias do mundo antigo, rivalizando com Atenas e Alexandria. Ele era o homem perfeito para a missão universal de Deus porque habitava em três mundos simultaneamente:</li>
+                                <li><strong>O Mundo Romano:</strong> Ele possuía a cobiçada cidadania romana por nascimento, um privilégio raro que lhe dava status, direitos legais, proteção em tribunais e passaporte para transitar livremente por todo o império.</li>
+                                <li><strong>O Mundo Grego:</strong> Cresceu imerso na cultura helenística, fluente no grego koiné, conhecedor da filosofia estoica e epicurista, capaz de debater com os maiores pensadores do Areópago de igual para igual.</li>
+                                <li><strong>O Mundo Judaico:</strong> Acima de tudo, era "hebreu de hebreus". Foi enviado a Jerusalém para ser educado aos pés de Gamaliel, o rabino mais reverenciado da época. Saulo era um fariseu da linha dura, meticuloso na Torá e na tradição oral, treinado para ser o grande defensor do judaísmo ortodoxo.</li>
+                            </ul>
+
+                            <h3>2. A Ruptura de Damasco: De Terrorista a Escravo</h3>
+                            <ul>
+                                <li>O currículo impecável de Saulo gerou um zelo perigoso. Acreditando estar prestando culto a Deus, ele organizou esquadrões de extermínio contra a Igreja primitiva, assistindo à morte de Estêvão e arrastando famílias inteiras para a prisão.</li>
+                                <li>O encontro com a glória ofuscante de Jesus Cristo no caminho de Damasco não foi apenas uma conversão moral; foi um terremoto ontológico. Toda a sua teologia de "salvação por mérito e obras" desmoronou instantaneamente. Ele percebeu que sua religiosidade perfeita era, na verdade, inimizade contra Deus. É por isso que, ao abrir a carta aos Romanos, o homem mais culto de sua geração usa o título mais vil da sociedade: <em>Doulos</em> (Escravo/Servo). Ele reconheceu que havia sido comprado, e sua liberdade agora consistia em submissão total a Cristo.</li>
+                            </ul>
+
+                            <h3>3. O Apóstolo Estrategista e a Comitiva</h3>
+                            <ul>
+                                <li>Paulo escreveu Romanos por volta do ano 57 d.C., durante os meses de inverno em que esteve na turbulenta e imoral cidade de Corinto. Ele ditou essas palavras insondáveis a um escriba, um amanuense chamado <strong>Tércio</strong> (que até deixa sua própria saudação no final da carta).</li>
+                                <li>A estratégia de Paulo era fazer de Roma a sua nova base de operações ("quartel-general") para missões no ocidente, especificamente na Espanha, já que o oriente (de Jerusalém à Ilíria) já estava saturado pelo Evangelho. É comovente notar que Paulo confia o transporte do pergaminho teológico mais importante da história a uma mulher, a diaconisa <strong>Febe</strong>, que viajou as perigosas estradas imperiais para entregar o pão da vida à igreja de Roma.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "romanos_1": {
+                title: "O EVANGELHO E A IRA",
+                date: "02/03",
+                desc: "\"Porque não me envergonho do evangelho de Cristo...\"",
+                blocks: [
+                    {
+                        title: "O Diagnóstico do Mundo Pagão",
+                        verse: "Porque do céu se manifesta a ira de Deus sobre toda a impiedade e injustiça dos homens, que detêm a verdade em injustiça. (Romanos 1:18)",
+                        exegesis: `
+                            <p>O capítulo inicial de Romanos é um prelúdio poderoso. Paulo inicia estabelecendo o fundamento inabalável da sua mensagem, antes de mergulhar na mais terrível acusação contra a humanidade caída já registrada nas Escrituras.</p>
+
+                            <h3>1. O Evangelho (Euangelion) como Força Explosiva</h3>
+                            <ul>
+                                <li>A palavra <em>Euangelion</em> (Evangelho) não foi inventada por Paulo. No Império Romano, era um termo político usado para anunciar as "Boas Novas" de uma vitória militar ou a ascensão de um novo César, considerado divino. Ao aplicar este termo a Jesus, um carpinteiro judeu crucificado, Paulo está cometendo um ato de suprema subversão política e teológica. O verdadeiro Rei do universo venceu a morte e está assumindo o trono.</li>
+                                <li>Paulo declara que não se envergonha deste Evangelho. Por quê? Porque em Roma, o centro do poder e da arrogância humana, a mensagem de um salvador humilhado numa cruz era vista como a quintessência da fraqueza ("loucura" para os gregos, "escândalo" para os judeus). No entanto, Paulo afirma que este Evangelho não apenas contém poder; ele <em>é</em> o poder (<em>Dunamis</em>, força explosiva e recriadora) de Deus para salvação. Não é conselho moral; é um decreto de resgate divino que opera milagres em quem crê.</li>
+                            </ul>
+                            
+                            <h3>2. A Justiça de Deus Revelada (Dikaiosune)</h3>
+                            <ul>
+                                <li>O versículo 17 ("O justo viverá da fé") é o versículo que tirou a Igreja Medieval das trevas. Historicamente, "Justiça de Deus" era entendida como o atributo ativo pelo qual um Deus irado punia o pecador. Se fosse assim, o Evangelho seria uma péssima notícia.</li>
+                                <li>A revelação de Paulo (ecoando Habacuque) é que a Justiça de Deus em Romanos é um <strong>Dom</strong>. É o estado de retidão que o próprio Deus exige, mas que o próprio Deus fornece e concede gratuitamente ao pecador através da obra de Cristo. Nós não alcançamos essa justiça subindo a escada das obras mortas; nós a recebemos de braços abertos através da via exclusiva da <strong>Fé</strong>. A justiça desce de Deus para o homem.</li>
+                            </ul>
+
+                            <h3>3. A Anatomia da Ira Divina (Orge) e a Queda em Espiral</h3>
+                            <ul>
+                                <li>A partir do versículo 18, o tom do tribunal escurece drasticamente. A ira de Deus (<em>Orge</em>) é revelada contra a humanidade. Esta ira não é um ataque de fúria irracional, mas a oposição santa, firme e implacável de Deus contra o câncer do pecado. A acusação é grave: o homem possui a "Revelação Geral". Olhando para o cosmos e para a natureza, o poder e a divindade do Criador são evidentes, tornando o ser humano inescusável por sua rebelião.</li>
+                                <li>A raiz de todo o mal, segundo Paulo, é a <strong>Idolatria</strong>: a troca deliberada da glória do Criador imortal por imagens da criatura corruptível. Quando o homem destrona a Deus em seu coração, o pior julgamento que Deus pode aplicar é simplesmente dizer "Seja feita a sua vontade". 
+                                <blockquote>"Por isso Deus os entregou..." (v. 24, 26, 28)</blockquote>
+                                <li>A consequência da idolatria é o colapso moral. Paulo descreve uma espiral descendente de degradação: as paixões infames, a inversão da ordem natural da sexualidade humana e a corrupção total da mente, resultando em uma sociedade cheia de malícia, inveja e crueldade. A imoralidade não atrai o juízo de Deus; a imoralidade <em>já é</em> o juízo de Deus em ação contra um mundo que o rejeitou.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "romanos_2": {
+                title: "O JUÍZO E A HIPOCRISIA",
+                date: "02/03",
+                desc: "\"Portanto, és inescusável quando julgas, ó homem, quem quer que sejas.\"",
+                blocks: [
+                    {
+                        title: "O Desmascaramento da Religião Falsa",
+                        verse: "Pois não é judeu o que o é exteriormente... mas é judeu o que o é no interior, e circuncisão a que é do coração. (Romanos 2:28-29)",
+                        exegesis: `
+                            <p>Após relatar a degradação chocante dos pagãos no capítulo 1, Paulo prepara uma emboscada teológica genial. Ele imagina o seu leitor judeu e o moralista gentio acenando afirmativamente com a cabeça e dizendo: "Isso mesmo, Paulo! Esse mundo depravado merece o inferno!" É neste momento que Paulo vira o espelho do tribunal de Deus na direção deles.</p>
+
+                            <h3>1. A Armadilha do Moralismo Arrogante</h3>
+                            <ul>
+                                <li>"Tu que julgas... fazes as mesmas coisas" (v.1). A acusação de Paulo é que o moralismo externo é frequentemente um manto para esconder o orgulho e a corrupção interna. Julgar o pecado alheio não imuniza o homem do juízo divino; pelo contrário, agrava-o, pois prova que o acusador conhece a lei e a transgride mesmo assim.</li>
+                                <li>Muitos interpretam a paciência e a bondade temporal de Deus como uma aprovação silenciosa de seu comportamento. Paulo corrige isso drasticamente: as riquezas da bondade e da tolerância de Deus têm um único propósito — "te conduzir ao arrependimento" (<em>Metanoia</em> - mudança profunda de mente e direção). Ignorar isso é entesourar ira para o dia do juízo.</li>
+                            </ul>
+                            
+                            <h3>2. A Lei da Consciência e o Princípio da Imparcialidade</h3>
+                            <ul>
+                                <li>Como Deus, que é justo, julgará os povos que nunca tiveram acesso à Torá ou à Bíblia Sagrada? Paulo introduz a doutrina da "Lei inscrita no coração". Os gentios, que não têm a lei escrita em tábuas de pedra, demonstram pelo seu próprio comportamento social (seus sistemas de justiça, a culpa interna, os absolutos morais de não matar ou não roubar) que possuem um senso moral inato, colocado ali pelo Criador.</li>
+                                <li>A consciência humana atua como uma promotoria interna: ora os acusa, ora os defende. No dia final, Deus não julgará com base em privilégios étnicos ("não há acepção de pessoas"), mas julgará os "segredos dos homens" (motivações profundas, intenções obscuras) por meio de Jesus Cristo. Aqueles que pecaram sem a Lei perecerão sem a Lei; e os que pecaram debaixo da Lei serão condenados pelo rigor dessa mesma Lei.</li>
+                            </ul>
+
+                            <h3>3. A Desconstrução do Privilégio Ritual</h3>
+                            <ul>
+                                <li>Na seção final do capítulo, Paulo dirige-se diretamente à falsa segurança da comunidade judaica, cuja confiança estava ancorada em três coisas: a posse da Lei, o conhecimento de Deus e a marca da circuncisão na carne. Paulo argumenta que ter a Lei e ensinar aos outros não salva; a única coisa que a Lei reconhece é a obediência perfeita.</li>
+                                <li>Mais profundo ainda é o ataque à circuncisão (o sinal máximo do judeu ortodoxo). Paulo diz que rituais externos são absolutamente estéreis se não forem acompanhados de uma vida santa. Ele choca seus leitores ao declarar que um gentio incircunciso que cumpre a lei é considerado um verdadeiro judeu diante de Deus. O selo da verdadeira aliança não é uma cirurgia física, mas a circuncisão operada no coração, no espírito, cuja aprovação e louvor vêm exclusivamente do céu, e não da tradição dos homens.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "romanos_3": {
+                title: "DEPRAVAÇÃO E PROPICIAÇÃO",
+                date: "03/03",
+                desc: "\"Porque todos pecaram e destituídos estão da glória de Deus.\"",
+                blocks: [
+                    {
+                        title: "O Ponto de Virada da História Humana",
+                        verse: "Ao qual Deus propôs para propiciação pela fé no seu sangue, para demonstrar a sua justiça... (Romanos 3:25)",
+                        exegesis: `
+                            <p>Romanos 3 é, indiscutivelmente, o centro nevrálgico do Evangelho. Paulo leva o tribunal que construiu nos capítulos anteriores ao seu veredito final e assustador, antes de apresentar o resgate inimaginável orquestrado por Deus.</p>
+
+                            <h3>1. O Veredito Universal: Depravação Total</h3>
+                            <ul>
+                                <li>Para fechar todas as saídas de fuga, Paulo constrói uma acusação usando um cordão de textos do Antigo Testamento (Salmos, Isaías, Provérbios). O diagnóstico é arrasador: <em>"Não há um justo, nem um sequer. Não há ninguém que entenda; não há ninguém que busque a Deus"</em>. </li>
+                                <li>Esta é a doutrina da "Depravação Total". Ela não ensina que o homem pratica todo o mal que é capaz de cometer, ou que o homem é desprovido de qualquer bondade civil. Significa que o veneno do pecado corrompeu <strong>todas as áreas</strong> do ser humano (mente, emoções, vontade, corpo). Não há um único centímetro do coração humano que não esteja manchado. Consequentemente, a função da Lei não é nos oferecer um plano de salvação, mas atuar como um termômetro que revela a febre: "pela lei vem o conhecimento do pecado". O resultado? Toda boca humana fica fechada (sem argumentos ou desculpas) diante do Juiz.</li>
+                            </ul>
+                            
+                            <h3>2. A Grande Ruptura: "Mas Agora..."</h3>
+                            <ul>
+                                <li>O versículo 21 muda o curso do universo. Diante da total incapacidade humana, ocorre uma invasão divina: <em>"Mas agora se manifestou a justiça de Deus SEM A LEI"</em>. A retidão que o homem falhou em produzir através das obras agora é oferecida gratuitamente.</li>
+                                <li>Como Deus pode declarar um criminoso culpado como sendo "injustificável" (sem falhas)? Se um juiz terreno absolve um assassino por pena, esse juiz é corrupto. Como Deus pode perdoar o pecador sem ferir Sua própria justiça e santidade? A resposta é a cruz. A Justificação é um ato legal onde Deus credita a perfeição e os méritos de Cristo na nossa conta, recebida puramente mediante a <strong>fé</strong>, anulando qualquer possibilidade de soberba.</li>
+                            </ul>
+
+                            <h3>3. O Mistério da Propiciação (Hilasterion)</h3>
+                            <ul>
+                                <li>O verso 25 traz a palavra-chave que resolve o dilema da justiça de Deus: <em>Hilasterion</em> (Propiciação). Na Septuaginta (Antigo Testamento grego), esta palavra se referia à tampa de ouro maciço sobre a Arca da Aliança (o "Propiciatório"). Uma vez por ano, no Dia da Expiação, o sumo sacerdote aspergia o sangue de um cordeiro inocente sobre essa tampa para cobrir a Lei (quebrada pelo povo) e apaziguar a ira de Deus.</li>
+                                <li>Paulo declara que Jesus Cristo é o nosso <em>Hilasterion</em> público. Na cruz, Jesus não foi apenas o nosso substituto, Ele absorveu e exauriu completamente a fúria santa de Deus contra a nossa impiedade. A ira de Deus não foi varrida para debaixo do tapete; ela foi descarregada no Seu próprio Filho. O sangue de Cristo satisfez as demandas judiciais do céu. O resultado é glorioso: Deus se mantém perfeitamente Justo (porque puniu o pecado em Cristo) e simultaneamente Justificador (porque perdoa a todos nós que temos fé em Jesus).</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "romanos_4": {
+                title: "O EXEMPLO DE ABRAÃO",
+                date: "03/03",
+                desc: "\"Creu Abraão em Deus, e isso lhe foi imputado como justiça.\"",
+                blocks: [
+                    {
+                        title: "O Pai de Todos os que Creem",
+                        verse: "Ora, àquele que faz qualquer obra não lhe é imputado o galardão segundo a graça, mas segundo a dívida. (Romanos 4:4)",
+                        exegesis: `
+                            <p>Após estabelecer que a salvação é apenas pela fé, independentemente das obras da Lei (Rm 3), Paulo antecipa o ataque dos religiosos: "Isso é uma heresia nova! E a nossa Tradição? E os nossos pais?" Para esmagar a objeção, Paulo convoca para o banco das testemunhas o herói máximo, a raiz e o fundador da nação de Israel: o patriarca Abraão.</p>
+
+                            <h3>1. A Ruína do Mérito Humano</h3>
+                            <ul>
+                                <li>Se Abraão conquistou a aprovação de Deus por seu próprio esforço ético e por suas obras notáveis, ele teria motivos legítimos para se gloriar. A religião humana sempre opera em um sistema de "trabalho e salário": você trabalha para a divindade, e ela lhe deve o pagamento. Mas Paulo recorre ao texto supremo da Torá, <span class="ref">Gênesis 15:6</span>: <em>"Creu Abraão a Deus, e isso lhe foi imputado como justiça"</em>.</li>
+                                <li>O verbo grego <em>Logizomai</em> (imputar, creditar, levar em conta) é uma linguagem contábil. A justiça não foi transferida para Abraão porque ele "trabalhou duro" e Deus ficou em dívida com ele. A justiça foi transferida para uma conta bancária espiritual falida simplesmente porque ele confiou na promessa. A salvação é, portanto, um dom da graça para "aquele que não pratica obras, mas crê naquele que justifica o ímpio" (v.5). Isso era revolucionário: Deus justifica o ímpio, não o "bom moço". E Paulo reforça isso citando o Rei Davi (Salmo 32), que também celebra a bem-aventurança do homem cujos pecados Deus decide "não colocar na conta".</li>
+                            </ul>
+                            
+                            <h3>2. A Cronologia Irrefutável da Graça</h3>
+                            <ul>
+                                <li>O orgulho dos oponentes de Paulo residia no rito da circuncisão. Era a marca que separava os "santos" dos "pagãos". Paulo então levanta uma questão histórica devastadora: "Quando a justiça foi imputada a Abraão? Quando ele já era circuncidado ou quando ainda era incircunciso?"</li>
+                                <li>A cronologia do livro de Gênesis é clara: Abraão foi declarado justo em Gênesis 15. A aliança da circuncisão só foi instituída em Gênesis 17, pelo menos 14 anos depois! Logo, a justificação precedeu o rito religioso. A circuncisão não foi a *causa* da salvação de Abraão, mas apenas o *selo* ou carimbo de uma justiça que ele já possuía pela fé quando ainda era um "gentio" incircunciso. A consequência teológica é assombrosa: isso faz de Abraão o pai espiritual de todos os povos, tanto dos incircuncisos (gentios) que creem, quanto dos judeus que andam nas pisadas de sua fé.</li>
+                            </ul>
+
+                            <h3>3. A Natureza da Fé que Ressuscita</h3>
+                            <ul>
+                                <li>Na parte final do capítulo, Paulo disseca a qualidade da fé de Abraão. A fé bíblica não é pensamento positivo ou otimismo cego; ela repousa na natureza do seu Objeto. Abraão creu no Deus <em>"que vivifica os mortos e chama à existência as coisas que não existem"</em> (v.17).</li>
+                                <li>Esperando contra a esperança, Abraão olhou para o seu próprio corpo (com cerca de 100 anos, biologicamente "morto" para gerar vida) e para a esterilidade morta do ventre de Sara, mas não limitou o poder de Deus pela realidade biológica. Ele "não vacilou", fortalecendo-se na convicção de que Deus era poderoso para cumprir o impossível. A aplicação para nós, diz Paulo, é idêntica: a nossa fé salvadora consiste em olhar para um cadáver numa cruz e crer que Deus o ressuscitou dos mortos para a nossa absolvição eterna. A mesma fé que gerou vida no ventre morto de Sara nos gera vida espiritual hoje.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "romanos_5": {
+                title: "OS DOIS ADÕES",
+                date: "04/03",
+                desc: "\"Sendo, pois, justificados pela fé, temos paz com Deus, por nosso Senhor Jesus Cristo.\"",
+                blocks: [
+                    {
+                        title: "Federalismo e Paz Permanente",
+                        verse: "Porque, como pela desobediência de um só homem, muitos foram feitos pecadores, assim pela obediência de um muitos serão feitos justos. (Romanos 5:19)",
+                        exegesis: `
+                            <p>Após estabelecer com precisão cirúrgica *como* a justificação ocorre (somente pela fé), Paulo agora transita em Romanos 5 para exibir os <strong>frutos</strong> indestrutíveis dessa nova realidade legal diante do universo e a mecânica teológica por trás dela.</p>
+
+                            <h3>1. A Declaração do Fim da Guerra</h3>
+                            <ul>
+                                <li>"Sendo, pois, justificados pela fé, temos <strong>paz com Deus</strong>". O estado natural do ser humano, diz a Bíblia, não é o de um pecador passivo e neutro precisando de uma ajuda amigável. A realidade brutal é a inimizade; o homem caído odeia a autoridade divina (v.10 chama o homem natural de "inimigo" e "ímpio"). </li>
+                                <li>Esta "paz" que Paulo descreve não é um sentimento subjetivo de tranquilidade emocional (a "paz de Deus"), mas um status objetivo e forense ("paz COM Deus"). A guerra cósmica acabou. O armistício foi assinado com o sangue na cruz. O veredito do Juiz encerrou as hostilidades de forma unilateral. E porque estamos nesta "graça na qual estamos firmes", temos acesso direto e desimpedido à sala do trono do Pai, regozijando-nos na esperança da Sua glória vindoura.</li>
+                            </ul>
+                            
+                            <h3>2. A Alquimia da Tribulação e a Lógica do Amor Maior</h3>
+                            <ul>
+                                <li>Devido a esta nova posição indestrutível, a perspectiva do crente sobre o sofrimento muda radicalmente. Paulo usa um verbo chocante: "nós nos gloriamos nas tribulações" (v.3). A dor perdeu seu caráter de punição e condenação. Agora, sob o governo da graça, a tribulação atua como uma fornalha purificadora: ela esmaga a fragilidade, forjando a "paciência" (perseverança), que por sua vez esculpe a "experiência" (caráter provado), desaguando em uma "esperança que não traz confusão". O sofrimento não destrói o crente, porque o Espírito Santo já inundou seu coração com o amor de Deus.</li>
+                                <li>Para provar que essa esperança é segura, Paulo usa o argumento "do maior para o menor". O amor humano é condicional (dificilmente alguém morreria por um homem bom, v.7). Mas Deus provou Seu amor ao enviar Cristo para morrer por nós quando ainda éramos inimigos repugnantes e pecadores impotentes. A lógica é irrefutável: se Deus fez o mais difícil (reconciliar inimigos e reviver mortos), quanto mais Ele fará o mais fácil (salvar os Seus próprios filhos redimidos da ira futura)? Nossa segurança não baseia-se em nosso desempenho, mas na força da reconciliação divina.</li>
+                            </ul>
+
+                            <h3>3. O Federalismo: A Colisão dos Dois Cabeças da Humanidade</h3>
+                            <ul>
+                                <li>A partir do versículo 12, Paulo responde à pergunta inevitável: *Como a morte e a obediência de um único homem (Cristo), ocorrida há tantos anos, pode salvar a mim e a milhões hoje?* A resposta reside no Princípio da Representação Federal (ou Solidariedade Corporativa). </li>
+                                <li><strong>O Primeiro Adão:</strong> Deus não lidou com a humanidade como indivíduos soltos, mas através de um representante legal. Quando Adão quebrou a aliança no Éden, a sua transgressão singular abriu a porta para o vírus do pecado e da morte entrar no fluxo sanguíneo do cosmos. Todos nós fomos considerados culpados e infectados não apenas pelos nossos atos, mas porque estávamos representados n'Ele. Onde Adão estava, a humanidade estava.</li>
+                                <li><strong>O Último Adão:</strong> Cristo entra na história como o novo Cabeça de uma nova linhagem espiritual da humanidade. Assim como a ofensa de um homem imputou a condenação a todos sem o nosso esforço, o sacrifício e a obediência perfeita de Cristo (o Último Adão) imputam Justiça e vida eterna a todos os que estão unidos a Ele pela fé, sem o nosso esforço. Onde o pecado produziu devastação e abundou, a graça agiu com supremacia e <strong>superabundou</strong>, reinando triunfante para a vida eterna.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "romanos_6": {
+                title: "MORTOS PARA O PECADO",
+                date: "04/03",
+                desc: "\"Porque o salário do pecado é a morte, mas o dom gratuito de Deus é a vida eterna.\"",
+                blocks: [
+                    {
+                        title: "Identidade, União e a Nova Servidão",
+                        verse: "Ou não sabeis que todos quantos fomos batizados em Jesus Cristo fomos batizados na sua morte? (Romanos 6:3)",
+                        exegesis: `
+                            <p>O capítulo 6 é o manifesto magistral de Paulo sobre a Santificação. Ele responde diretamente à maior calúnia contra o Evangelho da Graça Soberana e define a identidade ontológica do novo crente.</p>
+
+                            <h3>1. A Absurdidade do Antinomianismo</h3>
+                            <ul>
+                                <li>O antinomianismo (do grego <em>anti</em> = contra, <em>nomos</em> = lei) é a ideia de que a graça livre nos dá permissão para pecar. Os oponentes de Paulo zombavam: "Se Deus é glorificado por perdoar o pecado (como ensinado no cap. 5:20), então vamos pecar o máximo possível para maximizar a glória da Sua graça!". Paulo recua diante dessa acusação com uma exclamação violenta: <em>Mē genoito!</em> (Uma frase grega para "Absolutamente não!" ou "Que Deus não o permita!").</li>
+                                <li>A justificativa de Paulo é simples e irrefutável: a conversão altera o estado existencial do homem. <em>"Nós, que já morremos para o pecado, como viveremos ainda nele?"</em> (v.2). Não é que o crente não possa cometer um ato pecaminoso, mas que o pecado deixou de ser o oxigênio que ele respira. Um peixe que foi tirado da água e transformado em ave não pode decidir voltar a viver submerso; sua nova natureza impede isso. A graça não apenas remove a culpa do pecado, mas quebra irreversivelmente o seu reinado.</li>
+                            </ul>
+                            
+                            <h3>2. O Significado Místico do Batismo: União com Cristo</h3>
+                            <ul>
+                                <li>Para ilustrar essa quebra de domínio, Paulo não apela ao esforço moral, mas aponta para o <strong>Batismo</strong> (<em>Baptizo</em> - imergir, afundar). A água física não tem poder salvífico, mas é o drama visível do milagre invisível da União Mística com Cristo. Fomos inseridos cirurgicamente na história do Senhor.</li>
+                                <li>Quando Cristo sofreu na cruz, o velho "eu" adâmico, rebelde e escravizado, foi crucificado junto com Ele. A imersão na água simboliza o sepultamento definitivo dessa velha natureza corrupta — o funeral do velho homem. Emergir da água representa a ressurreição conjunta, capacitando o crente a caminhar em "novidade de vida". O poder do pecado repousava na carne, e como aquela velha carne "morreu" legalmente na cruz de Cristo, nós fomos justificados e alforriados. A ordem espiritual não é "sinta-se livre", mas "considerai-vos" (<em>logizesthe</em> - calculem como fato matemático) mortos para as ofertas tentadoras do pecado e perfeitamente vivos para obedecer a Deus (v.11).</li>
+                            </ul>
+
+                            <h3>3. A Mudança de Senhores: A Escravidão Inevitável</h3>
+                            <ul>
+                                <li>Na segunda metade do capítulo, Paulo aniquila a ilusão da autonomia humana moderna. A humanidade gosta de acreditar na ideia de liberdade absoluta, onde o homem é "o capitão da sua própria alma". Paulo destrói esse mito: não existe ninguém absolutamente livre. A vida espiritual é uma estrutura binária. Ou você é escravo, e obedece ao seu senhor, ou é livre, e obedece a outro. O ser humano foi criado para a servidão.</li>
+                                <li>Paulo apresenta a escolha final: Antes da conversão, todo homem é <strong>escravo do pecado</strong>. O Senhor impiedoso do pecado promete prazer, mas o seu contracheque no final do mês é rigorosamente pago: "O salário (<em>opsonia</em> - ração de soldado) do pecado é a morte" (v.23). A rebelião sempre gera a morte física, espiritual e eterna.</li>
+                                <li>Através da redenção, fomos comprados no mercado de escravos com o sangue de Cristo. Agora, a ordem é entregarmos voluntariamente nossos membros para sermos <strong>escravos da justiça e servos de Deus</strong>. O contraste no versículo 23 é poético e letal: a morte é um salário que nós trabalhamos arduamente para merecer; mas a vida eterna não é salário, é <em>Charisma</em> (um dom gratuito, um presente majestoso e imerecido de Deus através de nosso novo Senhor, Cristo Jesus).</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "romanos_7": {
+                title: "O CONFLITO INTERNO",
+                date: "05/03",
+                desc: "\"Miserável homem que eu sou! quem me livrará do corpo desta morte?\"",
+                blocks: [
+                    {
+                        title: "A Lei, o Pecado e o Campo de Batalha da Alma",
+                        verse: "Porque eu sei que em mim, isto é, na minha carne, não habita bem algum; e com efeito o querer está em mim, mas não consigo realizar o bem. (Romanos 7:18)",
+                        exegesis: `
+                            <p>Romanos 7 aborda uma das questões teológicas mais complexas e pessoais da Bíblia. Tendo afirmado que fomos libertos do domínio do pecado e estamos sob a graça (Rm 6), qual é, então, o papel da Lei de Moisés na vida do cristão? E por que, se fomos libertos, a tentação continua sendo tão agressiva?</p>
+
+                            <h3>1. A Analogia do Casamento e a Libertação da Lei</h3>
+                            <ul>
+                                <li>Paulo ilustra o relacionamento do crente com a Lei (Torá) utilizando a jurisprudência matrimonial. Uma mulher casada está ligada pela lei ao seu marido enquanto ele viver. Tentar se unir a outro homem a torna adúltera. No entanto, se o marido morrer, o vínculo legal é instantaneamente dissolvido, e ela está livre para casar-se com outro. </li>
+                                <li>Na aplicação espiritual (v. 4-6), a Lei era o primeiro "marido": exigente, perfeito, e implacável. Ela exigia total obediência, mas não fornecia força para alcançá-la, gerando apenas culpa e condenação. Nós não matamos a Lei; nós, representados no corpo crucificado de Cristo, é que "morremos" para a Lei. E porque fomos ressuscitados, o contrato foi anulado. Estamos livres para nos unir a um novo e bondoso marido — o Cristo Vivo. A finalidade dessa nova união mística não é a libertinagem, mas "para que déssemos fruto para Deus" não na caducidade da letra escrita, mas na novidade impulsionada pelo Espírito Santo.</li>
+                            </ul>
+                            
+                            <h3>2. O Espelho, a Lanterna e a Provocação do Pecado</h3>
+                            <ul>
+                                <li>A conclusão de Paulo gera um desconforto: "Então, se fomos libertos da Lei para dar frutos, a Lei é o problema? A Lei é pecado?". A resposta é um estrondoso "De modo nenhum!". "A lei é santa; e o mandamento, santo, justo e bom" (v. 12). O problema nunca esteve no padrão moral de Deus, mas na depravação profunda da nossa natureza carnal.</li>
+                                <li>A Lei funciona como um espelho de alta resolução e um raio-x: ela diagnostica perfeitamente a doença, mas não possui nenhuma capacidade de curá-la. Mais ainda, a Lei atua como um estímulo para a rebeldia intrínseca da carne. A proibição ("Não cobiçarás") atua como um gatilho. O "pecado", que jazia oculto como um cadáver, ao deparar-se com a restrição divina, aproveitou a ocasião, revivido e produziu no coração humano toda a espécie de cobiça (v.8). A Lei entrou para expor a virulência, o engano e o peso devastador de quão maligno o pecado realmente é.</li>
+                            </ul>
+
+                            <h3>3. <em>Simul Justus et Peccator</em>: O Grito do Cristão Dividido</h3>
+                            <ul>
+                                <li>Da metade do capítulo até o final (v. 14-25), Paulo muda os verbos para o presente do indicativo, descrevendo um campo de batalha agonizante e excruciante dentro da própria alma. Há séculos os teólogos debatem se Paulo descreve aqui o homem incrédulo moralista, ou a luta diária do cristão regenerado e maduro. A poderosa tradição Reformada sustenta que apenas um crente verdadeiramente habitado pelo Espírito Santo (e dotado de um coração que "tem prazer na lei de Deus no seu homem interior") sentiria um horror tão agudo em relação à falha em si mesmo.</li>
+                                <li>O cenário é de um ego dividido (<em>Simul Justus et Peccator</em> - simultaneamente justo e pecador). O "eu" espiritual anseia apaixonadamente fazer o que é agradável a Deus, mas esbarra num "sabotador" residente: "a lei do pecado que está nos meus membros". Quando ele quer fazer o bem, o mal está presente. Essa esquizofrenia espiritual esmaga a autossuficiência do apóstolo, levando-o ao grito de falência total: <em>"Miserável homem que sou! Quem me livrará do corpo desta morte?"</em> (v. 24). A cura para o desespero de Romanos 7 não é prometer tentar mais forte ou criar um novo método; a cura é olhar para fora de si mesmo. O grito é respondido imediatamente: "Dou graças a Deus, por Jesus Cristo, nosso Senhor!". A libertação final está consumada em Cristo.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "romanos_8": {
+                title: "O ESPÍRITO E A GLÓRIA",
+                date: "05/03",
+                desc: "\"Portanto, agora nenhuma condenação há para os que estão em Cristo Jesus.\"",
+                blocks: [
+                    {
+                        title: "O Everest da Bíblia: Segurança Eterna",
+                        verse: "Porque os que são segundo a carne inclinam-se para as coisas da carne; mas os que são segundo o Espírito para as coisas do Espírito. (Romanos 8:5)",
+                        exegesis: `
+                            <p>Romanos 8 é, sem exagero, o "Everest" da teologia do Novo Testamento. O capítulo começa com <em>"Nenhuma Condenação"</em>, atestando nossa posição legal no presente, e termina com <em>"Nenhuma Separação"</em>, garantindo nosso destino eterno no futuro. O abismo e o desespero do final do capítulo 7 são totalmente absorvidos e subjugados pelo poder triunfante do Espírito Santo.</p>
+
+                            <h3>1. A Lei do Espírito, a Mudança de Mente e o Grito de Adoção</h3>
+                            <ul>
+                                <li>A lei de Deus era incapaz de nos salvar porque nós éramos fracos na carne. O que a lei não pôde fazer, Deus fez: enviou Jesus na semelhança da carne para condenar o pecado e cumprir toda a exigência de justiça em nós. O contraste agora é brutalmente claro: o homem natural vive dominado pela mentalidade da carne (que é hostilidade, inimizade e incapacidade de se submeter a Deus), o que inevitavelmente gera morte espiritual. Mas o crente vive sob a mentalidade e controle do Espírito, o que gera vida e paz (<em>Shalom</em>).</li>
+                                <li>Essa libertação muda radicalmente nossa posição perante o Pai. Não fomos recebidos como empregados e não recebemos um "espírito de escravidão" para vivermos sob o terror de sermos punidos ou demitidos. Fomos alvo da mais íntima das graças: o <strong>Espírito de adoção</strong> (<em>Huiothesia</em>). É o próprio Espírito que testifica ao nosso espírito que somos legítimos filhos herdeiros, nos autorizando a invocar o Criador com o termo aramaico familiar e afetuoso de uma criança: <em>"Abba, Pai!"</em>. A religião do medo foi substituída pela certeza do amor paternal.</li>
+                            </ul>
+                            
+                            <h3>2. A Redenção Cósmica e o Triplo Gemido</h3>
+                            <ul>
+                                <li>Paulo eleva seus olhos da salvação pessoal do indivíduo e abrange todo o cosmos. O universo inteiro foi atingido pela queda de Adão. A natureza não é um paraíso intacto, mas um reino "sujeito à vaidade" e à futilidade, sofrendo com doenças, catástrofes e decomposição. Paulo diz poeticamente que toda a criação emite "gemidos como de dores de parto" aguardando o grande e glorioso dia da redenção final: o momento da ressurreição do corpo dos filhos de Deus.</li>
+                                <li>Nesse hiato entre a promessa e o cumprimento, nós experimentamos a fraqueza, frequentemente não sabendo nem como orar direito em meio às provações. Mas há um consolo celestial contínuo: O Espírito Santo se une ao nosso gemido terreno com Seus "gemidos inexprimíveis" intercedendo por nós no trono, filtrando nossas preces ignorantes e harmonizando-as perfeitamente com a vontade insondável do Pai.</li>
+                            </ul>
+
+                            <h3>3. A Corrente de Ouro e o Hino do Vencedor</h3>
+                            <ul>
+                                <li>O versículo 28 não é um clichê de otimismo: <em>"Sabemos que todas as coisas cooperam para o bem daqueles que amam a Deus"</em>. E por que sabemos disso? Porque a salvação não é um experimento frágil; é um decreto inabalável forjado antes do tempo. Paulo constrói o que os teólogos chamam de "A Corrente de Ouro da Redenção", composta por cinco elos inquebráveis da ação soberana de Deus sobre os Seus eleitos:</li>
+                                <li><strong>Conheceu (Amou) de Antemão → Predestinou → Chamou → Justificou → Glorificou.</strong> É impossível que alguém chamado não seja glorificado (o verbo no passado aponta a certeza do futuro consumado). </li>
+                                <li>Com base nessa teologia monumental da garantia da graça, Paulo conclui o capítulo como um advogado desafiando o universo: Se o próprio Juiz (Deus) nos justificou e o próprio Cristo intercede por nós, <strong>quem intentará acusação?</strong> E, mergulhado em uma convicção fervorosa e impenetrável, Paulo solta o hino triunfal e invencível da segurança cristã: Nenhuma tribulação, angústia, perseguição, fome ou espada nos separará. Nem a própria morte, nem a vida, nem demônios, nem autoridades políticas, nem abismos profundos, <strong>absolutamente nada</strong> em toda a criação tem poder ou autorização para nos separar do amor de Deus que está forjado em Cristo Jesus, nosso Senhor. N'Ele, somos muito mais do que meros sobreviventes; somos "mais do que vencedores".</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "romanos_9": {
+                title: "A SOBERANIA NA ELEIÇÃO",
+                date: "06/03",
+                desc: "\"Terei misericórdia de quem eu tiver misericórdia, e me compadecerei de quem eu me compadecer.\"",
+                blocks: [
+                    {
+                        title: "A Teodiceia Divina e o Direito do Oleiro",
+                        verse: "Mas, ó homem, quem és tu, que a Deus replicas? Porventura a coisa formada dirá ao que a formou: Por que me fizeste assim? (Romanos 9:20)",
+                        exegesis: `
+                            <p>Após a euforia e a segurança indestrutível apresentadas em Romanos 8, Paulo muda a marcha de forma dramática para um tom de profunda agonia e tristeza existencial. O capítulo 9 inaugura a "Teodiceia" de Paulo (uma defesa da justiça e do caráter de Deus) ao confrontar o mistério mais espinhoso da época: Se Jesus é o Messias judeu prometido no Antigo Testamento e o Evangelho é tão poderoso, por que a imensa maioria do povo judeu (a nação eleita) O rejeitou tão violentamente? A Palavra de Deus falhou?</p>
+
+                            <h3>1. A Dor de Paulo e a Verdadeira Identidade de Israel</h3>
+                            <ul>
+                                <li>Paulo abre seu coração com um lamento cortante. Ele ama tanto a sua nação que chega a dizer que, se fosse possível, preferiria ser ele próprio <em>"anátema"</em> (amaldiçoado, condenado ao inferno e separado de Cristo) para que seus compatriotas judeus pudessem ser salvos. Ele lista o glorioso pedigree de Israel: eles receberam a adoção nacional, a glória do tabernáculo, as alianças proféticas, a entrega da Lei no Sinai, as promessas e a nobreza dos patriarcas. O clímax dessa herança é que, fisicamente e biologicamente, "deles descende Cristo, o qual é Deus sobre todos, bendito eternamente" (v.5).</li>
+                                <li>Diante de tanta vantagem espiritual, o fracasso de Israel em crer parece anular as promessas de Deus. Mas Paulo rejeita categoricamente isso. A chave teológica está na frase: <em>"Nem todos os que são descendentes biológicos de Israel são, espiritualmente, Israel"</em> (v.6). Deus nunca prometeu salvar cada indivíduo da etnia judaica. A promessa sempre esteve baseada não na hereditariedade natural, mas no decreto da graça, na ação seletiva e na promessa miraculosa, simbolizada pelo fato de que Ismael (filho da carne) foi rejeitado, e Isaque (o filho da promessa divina) foi acolhido.</li>
+                            </ul>
+                            
+                            <h3>2. A Doutrina da Eleição Incondicional (Jacó e Esaú)</h3>
+                            <ul>
+                                <li>Para esmagar a ideia judaica (e humana moderna) de que Deus escolhe salvar pessoas com base no mérito, na herança ou na previsão de que fariam boas obras no futuro, Paulo intensifica o argumento e usa o caso dos gêmeos Jacó e Esaú.</li>
+                                <li>A dupla nasceu do mesmo pai, da mesma mãe, na mesma hora. Mas, antes mesmo que os gêmeos saíssem do ventre de Rebeca, <em>"não tendo eles ainda feito nem bem nem mal (para que o propósito de Deus, segundo a eleição, ficasse firme, não por causa das obras, mas por aquele que chama)"</em>, o Senhor decreta e inverte a ordem natural dos direitos: o irmão mais velho serviria ao mais novo. Paulo sela a exposição citando Malaquias: "Amei a Jacó, mas rejeitei (aborreci) a Esaú". O alicerce da salvação e da misericórdia repousa de forma singular, irrevogável e exclusiva na soberania insondável de Deus. O homem não toma a iniciativa. Como Paulo crava no v.16: "Não depende daquele que quer [vontade humana], nem daquele que corre [esforço e moralidade humana], mas de Deus, que tem misericórdia".</li>
+                            </ul>
+
+                            <h3>3. O Oleiro, o Barro e a Insignificância da Objeção Humana</h3>
+                            <ul>
+                                <li>Paulo é um argumentador afiado e sabe exatamente como a mente humana caída responde à doutrina da predestinação incondicional. Ele antecipa as duas grandes e agressivas acusações humanas: "Então há injustiça em Deus?" e "Se Deus age como quer, por que Ele ainda culpa o homem, já que ninguém resiste à Sua vontade?".</li>
+                                <li>Paulo não tenta suavizar o discurso com filosofia. Ele apela para a imensa diferença de autoridade entre o Criador Altíssimo e a criatura pó. Quem é você, ser humano insignificante, para interrogar ou levar Deus a um tribunal intelectual ("Quem és tu, que a Deus replicas?")? </li>
+                                <li>Ele evoca a metáfora devastadora do Oleiro de Isaías. Um pedaço de argila não tem o direito cósmico de questionar o design das mãos do artesão. O Oleiro divino tem absoluta autoridade, da mesma massa caída da humanidade rebelde, para forjar e apartar <em>vasos para honra</em> (os eleitos), a fim de demonstrar a riqueza infinita e radiante de Sua misericórdia. E Ele também tem autoridade e liberdade para tolerar, com muita longanimidade, <em>vasos de ira</em> preparados para a destruição (sendo Faraó o exemplo clássico), com o objetivo sagrado de demonstrar a plenitude do Seu poder e Sua aversão santa e justa pelo pecado (v.22-23). Nos dois cenários, Deus atua na plenitude de seus atributos. Aqueles que perecem recebem exatamente o que o salário de seus pecados e corações endurecidos exigia — estrita <strong>Justiça</strong>. Aqueles que são salvos (sejam judeus ou os gentios espalhados pelo império) não recebem justiça, mas algo que nunca mereceram — a pura, imerecida e gloriosa <strong>Graça</strong>. A soberania de Deus não comete erros.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "romanos_10": {
+                title: "A FÉ QUE SALVA",
+                date: "06/03",
+                desc: "\"Porque o fim da lei é Cristo para justiça de todo aquele que crê.\"",
+                blocks: [
+                    {
+                        title: "Cristo, Confissão e o Mandato Missionário",
+                        verse: "A saber: Se com a tua boca confessares ao Senhor Jesus, e em teu coração creres que Deus o ressuscitou dentre os mortos, serás salvo. (Rm 10:9)",
+                        exegesis: `
+                            <p>Se o capítulo 9 foca na altura insondável da eleição soberana de Deus (o ponto de vista divino da salvação), o capítulo 10 aterra na urgência prática da responsabilidade humana, da crença, da pregação e do acolhimento global da graça do Evangelho.</p>
+
+                            <h3>1. O Tropeço Fatal do Zelo Religioso e o 'Telos' da Lei</h3>
+                            <ul>
+                                <li>Paulo abre novamente confirmando o desejo fervoroso do seu coração e a sua oração pela salvação dos israelitas. Ele lhes dá um crédito formidável: os judeus possuíam uma devoção extrema e ardente por Deus. No entanto, "zelo sem entendimento" é um foguete na direção errada. O problema deles foi a ignorância teológica: por não compreenderem e se submeterem ao padrão absolutamente irretocável da "justiça de Deus" provida gratuitamente (v.3), e não perceberem o quão arruinada estava a própria carne humana, eles tentaram orgulhosamente fabricar e estabelecer uma justiça por conta própria (meritocracia via mandamentos).</li>
+                                <li>A tragédia deles foi não perceber a pessoa que a Torá apontava desde Gênesis. Paulo declara uma das afirmações mais radicais da era apostólica: <em>"Porque o fim da lei é Cristo, para a justificação de todo o que crê"</em> (v.4). A palavra grega usada para "fim" é <em>Telos</em>. Ela não significa que a lei de Deus foi abolida ou descartada como inútil; significa que a lei atingiu o seu <strong>propósito final, seu clímax, sua consumação e ponto de chegada</strong> na vida perfeita, ensinamento e sacrifício de Cristo. A corrida esgotante e impossível da busca pelo merecimento através das regras acabou. Jesus já cruzou a linha de chegada impecavelmente por nós e nos confere o prêmio eterno da justificação.</li>
+                            </ul>
+                            
+                            <h3>2. A Simplicidade Radical da Salvação pela Fé</h3>
+                            <ul>
+                                <li>Moisés ensinava que a retidão baseada na lei exigia que "o homem que as cumprir viverá por elas" (o que exigiria uma vida 100% perfeita, o que é impossível após a queda). Paulo, citando a retórica de <span class="ref">Deuteronômio 30</span>, personifica a mensagem da Justiça pela Fé e prova que a salvação do Evangelho não exige nenhuma cruzada heroica da parte do homem. Não precisamos ascender aos céus (tentando trazer a encarnação de Cristo pela nossa força), nem descer ao abismo (tentando efetuar a Sua ressurreição). O trabalho penoso e cósmico já foi executado.</li>
+                                <li>A palavra (<em>Rhema</em>) da fé está incrivelmente próxima: na nossa boca e no nosso coração. A receita para a libertação eterna combina a fé interior profunda e a manifestação exterior irrefutável. Se o homem <strong>"Crer no coração"</strong> (ter a convicção profunda de que Deus fisicamente ressuscitou Jesus dentre os mortos, comprovando a eficácia do sacrifício) e, consequentemente, <strong>"Confessar com a boca"</strong> (uma declaração pública, talvez sob ameaça imperial de César, de que Jesus é o <em>Kyrios</em>, o Senhor supremo sobre o corpo e alma), ele será incondicionalmente salvo. Como a Escritura promete citando Isaías, todo o que n'Ele deposita sua confiança será preservado de ser "confundido" (envergonhado no juízo final). Esse decreto aniquila a exclusividade racial judaica: Deus não faz distinção entre o judeu de Jerusalém e o grego em Roma. Ele é rico, abastado em derramar Sua misericórdia sobre a vida de <em>todo e qualquer homem</em> que clama e invoca o Seu Santo Nome (v.12-13).</li>
+                            </ul>
+
+                            <h3>3. A Corrente Lógica da Responsabilidade Missionária</h3>
+                            <ul>
+                                <li>Para os opositores calvinistas, frequentemente acusa-se a doutrina da eleição (Rm 9) de esmagar o ímpeto missionário e paralisar o evangelismo da igreja. Paulo destrói essa acusação ao apresentar a engrenagem gloriosa que Deus estabeleceu na terra para recolher os Seus eleitos: o meio de transporte da graça é a pregação expositiva. Ele constrói uma "escada" lógica inversa e poderosa que mostra que a crença depende inteiramente de uma proclamação externa.</li>
+                                <li>Ele argumenta no versículo 14 e 15: Como um incrédulo poderá clamar e <strong>invocar</strong> por socorro se não chegar a <strong>crer</strong> no Salvador? Como eles poderão crer se nunca chegarem a <strong>ouvir</strong> falar e entender as Boas Novas? Como será possível ouvir a verdade se não houver um mensageiro apaixonado disposto a <strong>pregar</strong>? E, fundamentalmente, como homens pecadores poderão pregar em nome de Deus se não forem enviados, comissionados e sustentados pela Igreja sob a direção do Espírito Santo?</li>
+                                <li>A conclusão teológica é inegável: a fé verdadeira não é uma centelha cega que brota espontaneamente na imaginação de mentes humanas solitárias, uma teoria oculta baseada em misticismo ou contemplação irracional. Como sintetiza o famoso versículo 17: <em>"A fé (fides) vem pelo ouvir, e o ouvir pela palavra de Deus (ou 'palavra acerca de Cristo')"</em>. E é nesse espírito de comissionamento ardente e responsabilidade missionária irrenunciável que Paulo irrompe com as emocionantes palavras do profeta Isaías (52:7): <em>"Quão formosos [belos, admiráveis, portadores da alegria] são os pés dos que anunciam a paz, e dos que proclamam boas novas de coisas boas!"</em>. O livro de Romanos clama para que a igreja calce seus sapatos, desça do pedestal e leve a mensagem aos confins do mundo.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "romanos_11": {
+                title: "O MISTÉRIO DE ISRAEL",
+                date: "09/03",
+                desc: "\"Ó profundidade das riquezas, tanto da sabedoria, como da ciência de Deus!\"",
+                blocks: [
+                    {
+                        title: "O Remanescente, a Oliveira e a Doxologia",
+                        verse: "Porque os dons e a vocação de Deus são sem arrependimento. (Romanos 11:29)",
+                        exegesis: `
+                            <p>Paulo conclui a sua gigantesca "Teodiceia" (a justificação dos caminhos de Deus) abordando o futuro profético de Israel. A nação como um todo rejeitou o Messias, mas isso significa que Deus rejeitou definitivamente o Seu povo? De modo nenhum.</p>
+
+                            <h3>1. O Remanescente da Graça (Leimma)</h3>
+                            <ul>
+                                <li>Paulo usa a si mesmo como prova viva de que Deus não abandonou os judeus, afinal, ele é da tribo de Benjamim. Ele evoca a história de Elias, que achou que era o único fiel remanescente em Israel, mas Deus preservara 7.000 homens que não dobraram os joelhos a Baal.</li>
+                                <li>Paulo aplica este princípio ao seu tempo: "Assim, pois, também agora neste tempo ficou um <em>remanescente</em>, segundo a eleição da graça" (v.5). Se é por graça, o mérito das obras é destruído. Israel tropeçou, mas o seu tropeço não foi uma queda fatal e sem propósito; foi a alavanca que Deus usou para enviar a salvação aos gentios (v.11).</li>
+                            </ul>
+                            
+                            <h3>2. A Alegoria da Oliveira e o Enxerto</h3>
+                            <ul>
+                                <li>Para curar qualquer resquício de arrogância e anti-semitismo na igreja gentílica de Roma, Paulo usa a metáfora da Oliveira (Israel/a aliança abraâmica). Alguns ramos naturais (judeus incrédulos) foram quebrados por causa da incredulidade. Os gentios, que eram um zambujeiro selvagem, foram enxertados "contra a natureza" na raiz santa.</li>
+                                <li>O aviso de Paulo é severo: "Não te glories contra os ramos... não sejas altivo, mas teme" (v.18-20). A salvação do gentio depende da mesma graça que julga a incredulidade do judeu. Mais ainda, se Deus enxertou os gentios selvagens, Ele tem poder infinito para reenxertar os judeus em sua própria Oliveira natural, caso não permaneçam na incredulidade.</li>
+                            </ul>
+
+                            <h3>3. O Mistério Revelado e a Doxologia Final</h3>
+                            <ul>
+                                <li>Paulo revela um "mistério" escatológico (v.25): o endurecimento de Israel é parcial e temporário, e durará até que haja entrado a "plenitude dos gentios". E então, de forma gloriosa, "todo o Israel será salvo" no fim dos tempos, quando o Libertador vier de Sião. Os dons de Deus e o Seu chamado são irrevogáveis (v.29).</li>
+                                <li>Percebendo a teia magistral de graça, juízo, misericórdia e planejamento cósmico, a teologia de Paulo irrompe em pura adoração (Doxologia). Ele fica maravilhado com a mente de Deus: <em>"Ó profundidade das riquezas, tanto da sabedoria, como da ciência de Deus! Quão insondáveis são os seus juízos, e quão inescrutáveis os seus caminhos!"</em> (v.33). O capítulo termina lembrando-nos da supremacia divina: <strong>"Porque dele e por ele, e para ele, são todas as coisas; glória, pois, a ele eternamente. Amém."</strong></li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "romanos_12": {
+                title: "O CULTO RACIONAL",
+                date: "09/03",
+                desc: "\"Rogo-vos, pois, irmãos, pelas misericórdias de Deus...\"",
+                blocks: [
+                    {
+                        title: "Metamorfose, Dons e o Amor Sincero",
+                        verse: "E não sede conformados com este mundo, mas sede transformados pela renovação do vosso entendimento... (Rm 12:2)",
+                        exegesis: `
+                            <p>A palavra <em>"Pois/Portanto"</em> no verso 1 serve como uma dobradiça massiva que une os 11 capítulos de teologia profunda aos 5 capítulos de aplicação prática. A ética cristã não é baseada em moralismo, mas é uma resposta de gratidão "pelas misericórdias de Deus" que acabaram de ser expostas.</p>
+
+                            <h3>1. O Culto Racional e a Metamorfose (Metamorphoo)</h3>
+                            <ul>
+                                <li>No Antigo Testamento, a adoração consistia em matar animais e oferecê-los mortos no altar. Na Nova Aliança, Paulo exige que apresentemos nossos próprios corpos como um <strong>sacrifício vivo</strong>. O culto verdadeiro não se limita à liturgia de domingo, mas é uma vida consagrada diariamente em serviço. Paulo chama isso de "culto racional" (<em>logikos latreia</em> - adoração lógica, sensata, a única resposta coerente diante da cruz).</li>
+                                <li>O versículo 2 apresenta um contraste imperativo: "Não vos conformeis" (não permitam que o padrão desta era molde a forma de vocês de fora para dentro) "mas transformai-vos" (<em>Metamorphoo</em> - sofram uma metamorfose). Essa mudança radical de lagarta para borboleta espiritual não ocorre por esforço místico, mas "pela renovação da vossa mente" através da Palavra de Deus.</li>
+                            </ul>
+                            
+                            <h3>2. A Graça dos Dons (Charismata) na Comunidade</h3>
+                            <ul>
+                                <li>Uma mente renovada produz, imediatamente, humildade comunitária. Paulo adverte a igreja em Roma (que tinha problemas de ego entre gentios e judeus) a não ter um conceito de si mesmos além do que convém. A igreja é um Corpo, e nós somos membros uns dos outros.</li>
+                                <li>Deus distribui <em>Charismata</em> (dons da graça) de forma diversificada para a saúde do Corpo. Paulo lista profecia, ministério (serviço prático), ensino, exortação, contribuição financeira (que deve ser feita com liberalidade, sem segundas intenções), liderança (com zelo) e misericórdia (com alegria). A maturidade de uma igreja é vista quando a diversidade não gera competição, mas cooperação harmoniosa.</li>
+                            </ul>
+
+                            <h3>3. A Ética do Amor Extremo (Agape Anyposkritos)</h3>
+                            <ul>
+                                <li>A partir do versículo 9, os imperativos práticos caem como uma metralhadora apostólica. "O amor (<em>Agape</em>) seja não fingido (<em>anyposkritos</em> - sem máscara de ator de teatro)". A vida cristã deve abominar o mal e se apegar fanaticamente ao bem.</li>
+                                <li>A ética ensinada por Paulo reflete diretamente o Sermão do Monte de Jesus. O crente é chamado a alegrar-se com os que se alegram, chorar com os que choram, abençoar os que o perseguem e, o mais contracultural de tudo, "não pagar a ninguém mal por mal". A vingança não pertence ao homem, pertence a Deus. Vencemos a hostilidade do mundo derramando o "bem" sobre o nosso inimigo.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "romanos_13": {
+                title: "AUTORIDADE E O FIM DOS TEMPOS",
+                date: "10/03",
+                desc: "\"Toda a alma esteja sujeita às potestades superiores...\"",
+                blocks: [
+                    {
+                        title: "O Estado, a Lei do Amor e o Despertar",
+                        verse: "Revesti-vos do Senhor Jesus Cristo, e não tenhais cuidado da carne em suas concupiscências. (Rm 13:14)",
+                        exegesis: `
+                            <p>Romanos 13 lida com a ética cristã no domínio público. Como os "cidadãos do céu" devem se comportar sob o governo do Império Romano (cujo imperador logo iniciaria a pior perseguição da história)?</p>
+
+                            <h3>1. A Submissão às Autoridades (Exousia)</h3>
+                            <ul>
+                                <li>"Não há autoridade que não venha de Deus" (v.1). Paulo ensina que a instituição do Estado, do governo civil e das leis (magistrados, polícia) é uma ordenança divina criada para conter o caos resultante do pecado, promover a ordem e punir a injustiça empunhando a "espada".</li>
+                                <li>O cristão deve sujeitar-se não apenas pelo medo da punição civil, mas "por dever de consciência". Pagar impostos e tributos não é uma derrota, é o cumprimento da justiça social requerida por Deus. Obviamente, na teologia paulina (e de Pedro em Atos 5), a submissão ao Estado vai até o limite em que o Estado não exija que o cristão desobedeça à lei suprema de Deus.</li>
+                            </ul>
+                            
+                            <h3>2. O Amor como o Cumprimento da Lei (Pleroma)</h3>
+                            <ul>
+                                <li>Enquanto o Estado opera pela lei e pela espada, a Igreja opera pelo amor e pela dívida da graça. "A ninguém devais coisa alguma, a não ser o amor com que vos ameis uns aos outros" (v.8). O amor é a única dívida perpétua do cristão, que nunca terminamos de pagar.</li>
+                                <li>Paulo prova que os Dez Mandamentos (não adulterar, não matar, não furtar) estão resumidos e embutidos em um único princípio: amar o próximo como a si mesmo. Quem age em prol do bem incondicional do outro jamais lhe fará mal; portanto, "o amor é o cumprimento (<em>pleroma</em> - plenitude) da lei" (v.10).</li>
+                            </ul>
+
+                            <h3>3. O Despertar Escatológico: Vestindo-se de Cristo</h3>
+                            <ul>
+                                <li>O capítulo encerra com um chamado militar para acordar. O tempo presente é visto como uma "noite" que está terminando, e o "dia" (a volta de Cristo e a eternidade) está amanhecendo. O fato escatológico de que "a salvação está agora mais perto de nós do que quando cremos" (v.11) deve produzir santidade no presente.</li>
+                                <li>Paulo manda a igreja jogar fora as "obras das trevas" (orgias, bebedeiras, contendas, invejas) e vestir-se das "armas da luz". O imperativo final é monumental: <em>"Revesti-vos (Endyo) do Senhor Jesus Cristo"</em>. Foi exatamente a leitura deste versículo 14, num jardim em Milão, que perfurou o coração de Santo Agostinho, libertando-o para sempre das amarras da luxúria para se tornar o maior teólogo da Igreja Primitiva.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "romanos_14": {
+                title: "OS FORTES E OS FRACOS",
+                date: "10/03",
+                desc: "\"Porque o reino de Deus não é comida nem bebida, mas justiça, e paz, e alegria no Espírito Santo.\"",
+                blocks: [
+                    {
+                        title: "Liberdade, Consciência e o Tribunal de Cristo",
+                        verse: "De maneira que cada um de nós dará conta de si mesmo a Deus. (Romanos 14:12)",
+                        exegesis: `
+                            <p>Roma era uma igreja perigosamente dividida entre judeus convertidos (que ainda se apegavam a restrições alimentares e festas do Antigo Testamento) e gentios convertidos (que se sentiam perfeitamente livres para comer qualquer coisa). Paulo entra como um pacificador teológico para tratar da "liberdade cristã" em assuntos secundários.</p>
+
+                            <h3>1. A Acolhida sem Julgamento</h3>
+                            <ul>
+                                <li>Paulo divide a congregação em dois grupos: os "fracos na fé" (aqueles cuja consciência ainda era escrupulosa e os proibia de comer carne ou desrespeitar sábados) e os "fortes" (que entendiam que em Cristo todos os alimentos eram puros e os dias eram iguais). Paulo inclui a si mesmo entre os "fortes".</li>
+                                <li>O mandamento central é: "Acolhei o fraco na fé, não para discutir opiniões" (v.1). O perigo era que o "forte" desprezasse o "fraco" como um legalista ignorante, e que o "fraco" condenasse o "forte" como um herege mundano. Paulo pergunta: "Quem és tu, que julgas o servo alheio?" O nosso Mestre é o Senhor, e é Ele quem sustenta e justifica o Seu servo.</li>
+                            </ul>
+                            
+                            <h3>2. O Tribunal de Cristo (Bema)</h3>
+                            <ul>
+                                <li>Para aniquilar o espírito de condenação na igreja, Paulo evoca a certeza do juízo futuro. Citando o profeta Isaías, ele lembra que "todo joelho se dobrará, e toda língua confessará a Deus" (v.11). </li>
+                                <li>Todos os cristãos, sem exceção, comparecerão perante o Tribunal (<em>Bema</em>) de Cristo (v.10). Como cada um dará conta de si mesmo a Deus, devemos parar de julgar nossos irmãos e passar a julgar o nosso próprio comportamento, garantindo que não estamos colocando nenhuma "pedra de tropeço" ou escândalo no caminho daqueles por quem Cristo morreu.</li>
+                            </ul>
+
+                            <h3>3. A Essência do Reino de Deus</h3>
+                            <ul>
+                                <li>A liberdade cristã não é o direito de fazer o que eu quiser, mas o poder de renunciar ao meu direito por amor ao meu irmão. Se o meu irmão tropeça e perde a paz porque eu decido comer carne ou beber vinho na frente dele, o meu amor me impulsiona a não fazer isso. "Não destruas por causa da tua comida a obra de Deus" (v.20).</li>
+                                <li>Paulo estabelece um axioma de ouro no versículo 17: "Porque o reino de Deus não é comida nem bebida" (não se trata de liturgia cerimonial ou cardápio religioso), "mas justiça, e paz, e alegria no Espírito Santo". A comunhão e o amor fraternal devem sempre ter primazia sobre disputas de teologia secundária. E "tudo o que não provém da fé é pecado" (v.23) — desrespeitar a própria consciência é um perigo espiritual.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "romanos_15": {
+                title: "UNIDADE E MISSÃO",
+                date: "11/03",
+                desc: "\"Para que concordes, a uma boca, glorifiqueis ao Deus e Pai de nosso Senhor Jesus Cristo.\"",
+                blocks: [
+                    {
+                        title: "O Exemplo de Cristo e a Ambição Paulina",
+                        verse: "E assim me esforcei por anunciar o evangelho, não onde Cristo foi nomeado, para não edificar sobre fundamento alheio. (Rm 15:20)",
+                        exegesis: `
+                            <p>No capítulo 15, Paulo encerra suas orientações éticas, fundamentando o dever de agradar ao próximo no exemplo esmagador da cruz de Cristo, e então revela o seu grande plano missionário global.</p>
+
+                            <h3>1. A Unidade como Propósito Divino</h3>
+                            <ul>
+                                <li>Paulo resume o capítulo anterior: "Nós, que somos fortes, devemos suportar as fraquezas dos fracos, e não agradar a nós mesmos". Qual a justificativa? Jesus. "Porque também Cristo não agradou a si mesmo" (v.3). Se o Senhor da Glória suportou as afrontas humanas para nos salvar, nós devemos suportar as diferenças dos nossos irmãos para manter a unidade.</li>
+                                <li>Ele ora para que judeus e gentios, agora unidos no mesmo corpo, possam "com um mesmo ânimo e a uma só boca" glorificar a Deus Pai. Paulo empilha quatro citações do Antigo Testamento (da Lei, dos Profetas e dos Salmos) para provar que a salvação dos gentios e o louvor de povos pagãos a YHWH sempre foi o plano de Deus. O Deus da paciência é também o Deus da esperança (v.13).</li>
+                            </ul>
+                            
+                            <h3>2. O Sacerdócio Missionário de Paulo (Hierourgeo)</h3>
+                            <ul>
+                                <li>Mudando de assunto, Paulo faz uma defesa pessoal do seu ministério. Ele usa uma linguagem cerimonial profundamente rica no versículo 16: ele atua como um "ministro" de Jesus, exercendo a função de sacerdote (<em>Hierourgeo</em>) do Evangelho, a fim de que a "oferta dos gentios" (as nações convertidas a Cristo) seja aceitável e santificada pelo Espírito Santo. Paulo não sacrifica ovelhas; ele sacrifica sua vida para oferecer povos redimidos a Deus.</li>
+                            </ul>
+
+                            <h3>3. A Fronteira da Espanha e o Desafio da Igreja</h3>
+                            <ul>
+                                <li>Paulo não era um pastor local, mas um pioneiro apostólico impulsionado por uma ambição missional santa. Seu princípio ético era claro: não pregar onde o nome de Cristo já havia sido anunciado, não edificando sobre o alicerce de outros. Por isso, ele declara, num tom triunfal, que de Jerusalém até o Ilírico (atual região da Croácia/Sérvia), ele "cumpriu" a pregação do evangelho. O oriente estava evangelizado.</li>
+                                <li>O olhar de Paulo agora se volta para os confins do oeste europeu: a Espanha. A carta aos Romanos tinha o objetivo final de consolidar a igreja em Roma como sua base de apoio financeiro e logístico para essa jornada ("para ser encaminhado por vós para lá"). Antes disso, ele precisava ir a Jerusalém entregar a oferta dos pobres (a união prática entre gentios e judeus), e pede encarecidamente orações, pois sabia do grande perigo que correria na Judeia.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "romanos_16": {
+                title: "A IGREJA EM REDE",
+                date: "11/03",
+                desc: "\"Ao único Deus, sábio, seja dada glória por Jesus Cristo para todo o sempre. Amém.\"",
+                blocks: [
+                    {
+                        title: "Saudações Pessoais, Liderança Feminina e Doxologia",
+                        verse: "Recomendo-vos, pois, Febe, nossa irmã, a qual serve na igreja que está em Cencréia. (Romanos 16:1)",
+                        exegesis: `
+                            <p>O capítulo final é, muitas vezes, ignorado nas leituras bíblicas por ser "apenas uma lista de nomes". No entanto, é um tesouro teológico que revela a composição sociológica da igreja primitiva, o papel das mulheres no ministério e o afeto profundo de Paulo.</p>
+
+                            <h3>1. A Liderança Feminina na Igreja Primitiva</h3>
+                            <ul>
+                                <li>Paulo menciona 26 indivíduos pelo nome, provando que ele, mesmo nunca tendo ido a Roma, possuía uma rede profunda de contatos. É espantoso o número de mulheres elogiadas por seu trabalho árduo no ministério.</li>
+                                <li>Ele começa recomendando <strong>Febe</strong>, chamando-a de <em>Diakonos</em> (diaconisa, serva, ministra) da igreja de Cencreia, e de <em>Prostatis</em> (protetora, patrona e financiadora do apóstolo). Foi ela quem transportou o manuscrito de Romanos, arriscando a vida na viagem, e possivelmente a primeira pessoa a ler e expor a carta em Roma. Em seguida, ele cita o casal de líderes Priscila e Áquila, que arriscaram a própria cabeça por ele. Paulo até menciona Júnia (uma mulher) ao lado de Andrônico, chamando-os de "notáveis entre os apóstolos" (v.7), evidenciando o respeito paulino pelas mulheres em funções chaves de ensino e sacrifício na igreja.</li>
+                            </ul>
+                            
+                            <h3>2. O Alerta Final contra Falsos Mestres</h3>
+                            <ul>
+                                <li>No meio dos beijos santos e saudações afetuosas, Paulo insere um alerta abrupto e urgente. Ele instrui a igreja a vigiar os falsos mestres que promovem divisões, escândalos e contrariam a verdadeira doutrina. Esses homens não servem a Cristo, mas ao seu próprio "ventre" (apetites, ganância), enganando os simples com discursos suaves (v.18).</li>
+                                <li>A resposta de Paulo a essa ameaça é uma promessa de esmagamento cósmico baseada em <span class="ref">Gênesis 3:15</span>: <em>"E o Deus de paz esmagará em breve Satanás debaixo dos vossos pés"</em> (v.20). A paz de Deus não é fraqueza, ela atua pela erradicação do mal.</li>
+                            </ul>
+
+                            <h3>3. A Doxologia: O Mistério Revelado a Todas as Nações</h3>
+                            <ul>
+                                <li>A carta que começa com o "Evangelho de Deus" termina em uma das mais sublimes doxologias do Novo Testamento. Paulo louva a Deus pelo "mistério guardado em silêncio nos tempos eternos". Qual é esse mistério? É o fato de que a justiça e o poder salvador de Deus iriam se expandir para além da fronteira do judaísmo, atingindo os gentios e promovendo "a obediência da fé entre todas as nações".</li>
+                                <li>Toda a vasta argumentação lógica, a dor por Israel, a graça insondável, a obra do Espírito e o chamamento do povo se fundem num grito final de pura adoração: <em>"Ao único Deus, sábio, seja dada glória por Jesus Cristo para todo o sempre. Amém."</em> (v.27). A teologia autêntica sempre deságua aos pés do Trono em adoração incondicional.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            }
+        };
+
+        // === LÓGICA GERAL ===
+        let currentAudioBlob = null;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        function loadChapter(chapterKey) {
+            const data = bibleData[chapterKey];
+            if (!data) return;
+
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
+            const dateBadge = document.getElementById('dateBadge');
+            const dateValue = document.getElementById('dateValue');
+            const communitySection = document.getElementById('community-section');
+            const formChapterKey = document.getElementById('formChapterKey');
+            
+            heroTitle.style.opacity = '0';
+            heroDesc.style.opacity = '0';
+            dateBadge.style.opacity = '0';
+            
+            setTimeout(() => {
+                if (data.date) {
+                    dateValue.textContent = data.date;
+                    dateBadge.classList.remove('hidden');
+                    communitySection.classList.remove('hidden');
+                    formChapterKey.value = chapterKey;
+                    carregarComentarios(chapterKey);
+                    setTimeout(() => { dateBadge.style.opacity = '1'; }, 100);
+                } else {
+                    dateBadge.classList.add('hidden');
+                    communitySection.classList.add('hidden');
+                }
+
+                heroTitle.innerHTML = data.title;
+                heroDesc.innerHTML = data.desc;
+                heroTitle.style.opacity = '1';
+                heroDesc.style.opacity = '1';
+            }, 300);
+
+            const mainContent = document.getElementById('content');
+            mainContent.innerHTML = ''; 
+
+            data.blocks.forEach((block, index) => {
+                // Layout Centralizado Sem Imagens (Foco no Texto)
+                const html = `
+                    <section class="reveal max-w-4xl mx-auto w-full relative">
+                        <div class="absolute -inset-4 bg-gradient-to-b from-red-600/5 to-transparent rounded-3xl blur-xl pointer-events-none"></div>
+                        
+                        <div class="space-y-6 relative z-10">
+                            <div class="text-center mb-10">
+                                <h2 class="text-3xl md:text-5xl font-serif text-white leading-tight mb-6">${block.title}</h2>
+                                <div class="inline-block border-l-4 border-r-4 border-red-600 px-6 py-4 italic text-slate-300 bg-[#120808]/50 shadow-sm max-w-3xl rounded-sm">
+                                    "${block.verse}"
+                                </div>
+                            </div>
+                            
+                            <div class="bg-[#120808]/80 p-8 md:p-12 rounded-xl border border-slate-800 transition shadow-2xl relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-64 h-64 bg-red-600/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+                                <div class="absolute bottom-0 left-0 w-64 h-64 bg-red-800/5 rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
+                                <div class="rich-text text-slate-300 text-[16px] md:text-lg leading-relaxed relative z-10 font-light">
+                                    ${block.exegesis}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+                mainContent.insertAdjacentHTML('beforeend', html);
+            });
+            resetObservers();
+        }
+
+        // === LÓGICA DE COMENTÁRIOS E REAÇÕES ===
+        function carregarComentarios(capitulo) {
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '<p class="text-center text-slate-500 text-sm animate-pulse">Carregando comentários...</p>';
+
+            fetch(`api.php?acao=listar&capitulo=${capitulo}`)
+            .then(res => res.json())
+            .then(data => {
+                list.innerHTML = '';
+                if(data.length === 0) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
+                }
+                data.forEach(c => {
+                    let mediaHtml = '';
+                    if(c.foto) mediaHtml += `<img src="${c.foto}" onclick="openImage(this.src)" class="mt-4 rounded-lg max-h-48 border border-slate-700 cursor-pointer hover:scale-[1.02] transition shadow-lg">`;
+                    if(c.audio) mediaHtml += `<audio controls src="${c.audio}" class="mt-4 w-full"></audio>`;
+
+                    const jaCurtiu = localStorage.getItem(`reagiu_likes_${c.id}`);
+                    const jaAmem = localStorage.getItem(`reagiu_amem_${c.id}`);
+                    const jaGloria = localStorage.getItem(`reagiu_gloria_${c.id}`);
+
+                    const html = `
+                        <div class="glass-panel p-5 pb-12 rounded-xl border border-slate-800 relative group transition hover:border-red-500/50 bg-[#120808]/60">
+                            <div class="flex justify-between items-start mb-3 border-b border-slate-800 pb-2">
+                                <strong class="text-red-400 text-sm tracking-wide font-serif">${c.nome}</strong>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-widest">${new Date(c.data_envio).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed">${c.mensagem}</p>
+                            ${mediaHtml}
+                            
+                            <div class="absolute bottom-3 right-4 flex gap-2">
+                                <button onclick="reagirComentario(${c.id}, 'likes', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaCurtiu ? 'text-red-500 border-red-500/30' : 'text-slate-400 hover:text-red-400'}" ${jaCurtiu ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-heart"></i> <span class="count font-bold">${c.likes || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'amem', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaAmem ? 'text-cyan-400 border-cyan-400/30' : 'text-slate-400 hover:text-cyan-400'}" ${jaAmem ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-hands-praying"></i> <span class="count font-bold">${c.amem || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'gloria', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaGloria ? 'text-orange-500 border-orange-500/30' : 'text-slate-400 hover:text-orange-500'}" ${jaGloria ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-fire"></i> <span class="count font-bold">${c.gloria || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', html);
+                });
+            })
+            .catch(err => {
+                list.innerHTML = '<p class="text-center text-red-400 text-xs">Erro ao carregar comentários.</p>';
+            });
+        }
+
+        function reagirComentario(id, tipo, btn) {
+            if(localStorage.getItem(`reagiu_${tipo}_${id}`)) return;
+
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('.count');
+            let count = parseInt(countSpan.innerText);
+
+            icon.classList.add('reacted-anim');
+            btn.classList.remove('text-slate-400');
+            
+            if(tipo === 'likes') btn.classList.add('text-red-500', 'border-red-500/30');
+            if(tipo === 'amem') btn.classList.add('text-cyan-400', 'border-cyan-400/30');
+            if(tipo === 'gloria') btn.classList.add('text-orange-500', 'border-orange-500/30');
+
+            countSpan.innerText = count + 1;
+            btn.disabled = true;
+
+            localStorage.setItem(`reagiu_${tipo}_${id}`, 'true');
+
+            const formData = new FormData();
+            formData.append('acao', 'reagir');
+            formData.append('id', id);
+            formData.append('tipo', tipo);
+
+            fetch('api.php', { method: 'POST', body: formData });
+        }
+
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+            formData.append('acao', 'salvar');
+            if(currentAudioBlob) {
+                formData.append('audio', currentAudioBlob, 'audio.wav');
+            }
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    this.reset();
+                    document.getElementById('filePreview').innerHTML = '';
+                    currentAudioBlob = null;
+                    document.getElementById('recordText').innerText = "Gravar Áudio";
+                    carregarComentarios(document.getElementById('formChapterKey').value);
+                } else {
+                    alert('Erro ao enviar.');
+                }
+            })
+            .catch(() => alert('Erro de conexão.'))
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        });
+
+        function previewFile(input) {
+            const preview = document.getElementById('filePreview');
+            if(input.files && input.files[0]) {
+                preview.innerHTML = `<i class="fa-solid fa-check text-green-400"></i> Imagem selecionada: ${input.files[0].name}`;
+                preview.classList.remove('hidden');
+            }
+        }
+
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.addEventListener('click', async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                    mediaRecorder.onstop = () => {
+                        currentAudioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        document.getElementById('filePreview').classList.remove('hidden');
+                        document.getElementById('filePreview').innerHTML += '<br><i class="fa-solid fa-microphone text-green-400"></i> Áudio gravado!';
+                    };
+                    mediaRecorder.start();
+                    recordBtn.classList.add('recording-pulse');
+                    document.getElementById('recordText').innerText = "Parar Gravação";
+                } catch (err) {
+                    alert("Permita o uso do microfone para gravar.");
+                }
+            } else {
+                mediaRecorder.stop();
+                recordBtn.classList.remove('recording-pulse');
+                document.getElementById('recordText').innerText = "Gravar Áudio";
+            }
+        });
+
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        function closeImage() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function resetObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<80; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(239, 68, 68, 0.15)"; /* Red particles */
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        loadChapter('intro_book');
+    </script>
+</body>
+</html>

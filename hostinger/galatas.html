@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gálatas | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] },
+                    colors: { 
+                        divine: { 400: '#f97316' }, /* Laranja para Gálatas */
+                        darkbg: '#1a0d00'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #1a0d00; color: #e2e8f0; overflow-x: hidden; }
+        
+        .glass-panel { background: rgba(30, 15, 0, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(249, 115, 22, 0.15); }
+        .orange-glow { text-shadow: 0 0 15px rgba(249, 115, 22, 0.5); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .rich-text strong { color: #fdba74; font-weight: 700; }
+        .rich-text .ref { color: #fb923c; font-size: 0.9em; font-family: monospace; background: rgba(249, 115, 22, 0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(249, 115, 22, 0.2); }
+        .rich-text h3 { color: #f97316; font-weight: bold; margin-top: 2rem; margin-bottom: 0.75rem; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.15em; border-bottom: 1px solid rgba(249, 115, 22, 0.2); padding-bottom: 6px; }
+        .rich-text ul { list-style-type: none; padding-left: 0; margin-top: 15px; margin-bottom: 20px; }
+        .rich-text li { margin-bottom: 15px; line-height: 1.8; text-align: justify; border-left: 3px solid #f97316; padding-left: 20px; background: linear-gradient(to right, rgba(249,115,22,0.05), transparent); padding-top: 5px; padding-bottom: 5px; }
+        .rich-text p { margin-bottom: 20px; line-height: 2; text-align: justify; font-size: 1.05rem; color: #cbd5e1; }
+        .rich-text blockquote { border-left: 4px solid #f97316; padding-left: 20px; margin: 20px 0; font-style: italic; color: #fdba74; background: rgba(249, 115, 22, 0.05); padding: 15px; border-radius: 0 8px 8px 0; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a0d00; }
+        ::-webkit-scrollbar-thumb { background: #7c2d12; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #f97316; }
+
+        .recording-pulse { animation: recPulse 1.5s infinite; background-color: #ef4444; border-color: #ef4444; color: white; }
+        @keyframes recPulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @keyframes pop { 50% { transform: scale(1.4); } }
+        .reacted-anim { animation: pop 0.3s ease-out; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="fixed top-0 w-full z-50 p-4 md:p-6 flex flex-col md:flex-row justify-between items-center bg-gradient-to-b from-[#1a0d00]/95 to-[#1a0d00]/80 backdrop-blur-md border-b border-orange-900/30 transition-all">
+        <div class="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto justify-between md:justify-start">
+            <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#2a1300] border border-orange-500/50 text-orange-400 hover:bg-orange-500 hover:text-black transition-all shadow-[0_0_15px_rgba(249,115,22,0.1)] hover:shadow-[0_0_20px_rgba(249,115,22,0.4)]" title="Voltar para a Capa">
+                <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+                <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-dove text-orange-500 text-xl md:text-2xl"></i>
+                <span class="font-serif text-white text-lg md:text-xl tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto justify-end">
+            <span class="hidden md:inline text-xs text-slate-400 uppercase tracking-widest">Navegar:</span>
+            <select id="chapterSelect" onchange="loadChapter(this.value)" class="w-full md:w-auto bg-[#2a1300] text-orange-400 border border-orange-500/30 rounded px-4 py-2 text-sm uppercase tracking-widest focus:outline-none focus:border-orange-500 cursor-pointer hover:bg-[#3d1c00] transition">
+                <option value="intro_book">★ Sobre o Livro</option>
+                <option value="intro_author">✎ Sobre o Autor</option>
+                <option disabled>──────────</option>
+                <option value="galatas_1">Capítulo 01</option>
+                <option value="galatas_2">Capítulo 02</option>
+                <option value="galatas_3">Capítulo 03</option>
+                <option value="galatas_4">Capítulo 04</option>
+                <option value="galatas_5">Capítulo 05</option>
+                <option value="galatas_6">Capítulo 06</option>
+            </select>
+        </div>
+    </nav>
+
+    <header class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-32 md:pt-20">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1490730141103-6ac27aaab3b8?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10 grayscale"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#1a0d00] via-[#1a0d00]/80 to-transparent"></div>
+        
+        <div class="z-10 reveal active space-y-4 max-w-5xl w-full">
+            <h2 class="text-orange-500 tracking-[0.5em] text-[10px] md:text-sm uppercase animate-pulse mb-4 font-bold">Clube da Bíblia Apresenta</h2>
+            
+            <div id="dateBadge" class="hidden inline-flex items-center gap-2 border border-orange-500/50 rounded-full px-4 py-1 mb-4 bg-orange-500/10 backdrop-blur-sm transition-all duration-700 opacity-0">
+                <i class="fa-regular fa-calendar text-orange-400 text-xs"></i>
+                <span class="text-orange-300 text-xs tracking-widest uppercase font-bold">Leitura: <span id="dateValue" class="text-white"></span></span>
+            </div>
+
+            <h1 id="heroTitle" class="font-serif text-4xl md:text-7xl text-white mb-2 orange-glow transition-all duration-700 uppercase leading-tight px-2"></h1>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 text-slate-400 mt-8 pt-8 border-t border-orange-900/30 w-full max-w-3xl mx-auto">
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Idealizado por</p>
+                    <strong class="text-orange-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-orange-300 transition">Fellipe Gomes Andrade</strong>
+                </div>
+                <span class="hidden md:block h-8 w-[1px] bg-gradient-to-b from-transparent via-orange-900 to-transparent"></span>
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Desenvolvido por</p>
+                    <strong class="text-orange-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-orange-300 transition">Cesar Tuala</strong>
+                </div>
+            </div>
+
+            <p id="heroDesc" class="text-sm md:text-xl text-slate-300 max-w-2xl mx-auto pt-8 font-light italic transition-all duration-700 px-4"></p>
+            
+            <div class="pt-10">
+                <button onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" class="animate-bounce text-orange-500 text-2xl">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="content" class="max-w-4xl mx-auto px-4 py-10 md:py-20 space-y-20 md:space-y-32 min-h-screen"></main>
+
+    <section id="community-section" class="w-full bg-[#0d0600] border-t-4 border-orange-600 py-16 mb-0 relative shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <h3 class="font-serif text-3xl md:text-4xl text-orange-500 mb-2 uppercase tracking-widest orange-glow">
+                    <i class="fa-solid fa-users-line mr-3"></i>Comunidade
+                </h3>
+                <p class="text-slate-400 text-sm italic">"Compartilhe o que Deus falou ao seu coração"</p>
+                <div class="h-1 w-24 bg-gradient-to-r from-transparent via-orange-600 to-transparent mx-auto mt-4"></div>
+            </div>
+
+            <div class="glass-panel p-6 md:p-8 rounded-xl mb-12 border border-slate-800 shadow-2xl bg-[#140a00]/80">
+                <form id="commentForm" class="space-y-5">
+                    <input type="hidden" id="formChapterKey" name="capitulo">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="col-span-1">
+                            <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Nome</label>
+                            <input type="text" name="nome" required class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-orange-500 focus:outline-none transition">
+                        </div>
+                        <div class="flex gap-3 col-span-1 md:col-span-2 items-end">
+                            <label class="flex-1 cursor-pointer bg-black/50 border border-slate-700 hover:border-orange-500 hover:bg-[#1f0f00] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-camera group-hover:text-orange-400"></i> Foto
+                                <input type="file" name="foto" accept="image/*" class="hidden" onchange="previewFile(this)">
+                            </label>
+                            <button type="button" id="recordBtn" class="flex-1 bg-black/50 border border-slate-700 hover:border-orange-500 hover:bg-[#1f0f00] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-microphone group-hover:text-red-400"></i> <span id="recordText">Gravar Áudio</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="filePreview" class="text-xs text-orange-400 hidden bg-black p-2 rounded border border-orange-500/30"></div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Comentário</label>
+                        <textarea name="mensagem" class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-orange-500 focus:outline-none h-28 resize-none transition"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-orange-800 to-orange-600 hover:from-orange-600 hover:to-orange-500 text-white font-bold py-4 rounded-lg transition uppercase tracking-[0.2em] text-sm shadow-lg shadow-black/50 transform hover:-translate-y-1">
+                        Publicar Comentário
+                    </button>
+                </form>
+            </div>
+            <div id="commentsList" class="space-y-6"></div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-800 bg-black py-12 text-center relative z-10">
+        <div class="flex flex-col items-center justify-center space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="fa-solid fa-dove text-orange-600 text-xl"></i>
+                <span class="font-serif text-slate-300 text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+            <p class="text-slate-700 text-[10px] tracking-widest uppercase mt-4">&copy; 2026 Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="imageModal" class="fixed inset-0 z-[100] bg-black/95 hidden flex justify-center items-center p-4 backdrop-blur-sm transition-opacity duration-300" onclick="closeImage()">
+        <div class="relative max-w-4xl w-full flex justify-center">
+            <button onclick="closeImage()" class="absolute -top-12 right-0 text-white text-3xl hover:text-orange-500 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modalImg" src="" class="max-h-[85vh] max-w-full rounded-lg shadow-[0_0_50px_rgba(249,115,22,0.3)] border-2 border-orange-500/20 object-contain">
+        </div>
+    </div>
+
+    <script>
+        const bibleData = {
+            "intro_book": {
+                title: "A CARTA AOS GÁLATAS",
+                date: null,
+                desc: "<span class='text-xs uppercase tracking-[0.3em] text-orange-500 not-italic block mb-4'>Introdução: Sobre o Livro</span>\"Para a liberdade Cristo nos libertou; permanecei, pois, firmes.\"",
+                blocks: [
+                    {
+                        title: "O Grito de Liberdade do Novo Testamento",
+                        verse: "Maravilho-me de que tão depressa passásseis daquele que vos chamou à graça de Cristo para outro evangelho. (Gl 1:6)",
+                        exegesis: `
+                            <p>A epístola aos Gálatas é o documento mais feroz, cortante e inegociável já escrito pelo apóstolo Paulo. Ela é frequentemente chamada de "A Magna Carta da Liberdade Espiritual". Sem Gálatas, o cristianismo poderia ter se tornado apenas mais uma seita obscura do judaísmo.</p>
+                            
+                            <h3>1. A Invasão dos Judaizantes</h3>
+                            <ul>
+                                <li>Paulo fundou igrejas na região da Galácia (atual Turquia) durante sua primeira viagem missionária. Pouco tempo depois de ele partir, falsos mestres judeu-cristãos (conhecidos como judaizantes) invadiram as igrejas. Eles não negavam Jesus; o problema era muito mais sutil. Eles diziam: "Jesus é maravilhoso, mas a cruz não é suficiente. Para ser salvo, além de crer em Jesus, você tem que guardar a lei de Moisés e ser circuncidado".</li>
+                            </ul>
+                            
+                            <h3>2. A Raiva Apostólica (Fé vs Obras)</h3>
+                            <ul>
+                                <li>Normalmente, as cartas de Paulo começam com uma ação de graças e elogios ("Dou graças a Deus pela vossa fé..."). Em Gálatas, ele omite o louvor e vai direto para a artilharia pesada: "Ó gálatas insensatos!". Paulo percebeu que adicionar uma única gota de "esforço humano" (Lei) ao mar da Graça divina destrói a salvação inteira. Misturar fé e obras não cria um evangelho melhor; cria uma anátema (maldição).</li>
+                            </ul>
+
+                            <h3>3. A Estrutura da Defesa</h3>
+                            <ul>
+                                <li>A carta de apenas seis capítulos tem uma estrutura brilhante:</li>
+                                <li><strong>Histórica (Cap. 1-2):</strong> Paulo defende sua autoridade apostólica provando que o seu Evangelho veio diretamente por revelação de Jesus, e não de homens.</li>
+                                <li><strong>Teológica (Cap. 3-4):</strong> Ele defende a justificação pela fé, provando no Antigo Testamento que Abraão foi salvo pela fé antes da lei existir.</li>
+                                <li><strong>Prática (Cap. 5-6):</strong> Ele explica como viver a verdadeira liberdade cristã: não como uma licença para a carne, mas caminhando no Fruto do Espírito Santo.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "intro_author": {
+                title: "SOBRE O AUTOR",
+                date: null,
+                desc: "\"Paulo, apóstolo, não da parte dos homens... mas por Jesus Cristo.\"",
+                blocks: [
+                    {
+                        title: "O Apóstolo Autêntico e a Verdade Exclusiva",
+                        verse: "Mas faço-vos saber, irmãos, que o evangelho que por mim foi anunciado não é segundo os homens. (Gl 1:11)",
+                        exegesis: `
+                            <p>Os oponentes em Gálatas usaram a tática de assassinato de caráter. Para destruir a mensagem da Graça Livre, eles tentaram destruir a autoridade do mensageiro, espalhando que Paulo era um apóstolo "de segunda categoria", inferior a Pedro e a Tiago em Jerusalém.</p>
+
+                            <h3>1. A Credencial Direta do Céu</h3>
+                            <ul>
+                                <li>A primeira frase do livro é uma declaração de independência: "Paulo, apóstolo (não da parte dos homens, nem por homem algum, mas por Jesus Cristo e por Deus Pai)". Paulo não foi ordenado por uma comissão teológica nem frequentou a escola apostólica com os doze. Seu chamado foi um raio do céu na estrada de Damasco. Seu Evangelho é autêntico porque é fruto de uma revelação sobrenatural direta.</li>
+                            </ul>
+
+                            <h3>2. A Transformação Inexplicável</h3>
+                            <ul>
+                                <li>A maior prova de que o seu Evangelho não foi "inventado" para agradar as massas é o seu próprio passado. Paulo era a estrela cadente do judaísmo radical. Ele excedia todos os de sua idade no fanatismo pela Lei de Moisés e perseguiu a igreja de Deus até a tentativa de aniquilação. Que homem abandona tal poder e privilégio religioso para abraçar açoites, fome e morte? Apenas alguém que viu a Glória do Filho de Deus.</li>
+                            </ul>
+
+                            <h3>3. A Coragem de um Homem Só</h3>
+                            <ul>
+                                <li>Gálatas nos mostra o quão solitário Paulo estava disposto a ficar pela verdade. Ele confrontou igrejas, falsos irmãos e até mesmo o líder supremo da igreja (Pedro). Para Paulo, o Evangelho não é uma mesa de negociações; é a verdade imutável de Deus que exige rendição absoluta.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "galatas_1": {
+                title: "O ÚNICO EVANGELHO",
+                date: "30/03",
+                desc: "\"Ainda que nós mesmos ou um anjo do céu vos anuncie outro evangelho... seja anátema.\"",
+                blocks: [
+                    {
+                        title: "Anátema e a Independência da Revelação",
+                        verse: "Maravilho-me de que tão depressa passásseis... para outro evangelho; O qual não é outro, mas há alguns que vos inquietam e querem transtornar o evangelho de Cristo. (Gl 1:6-7)",
+                        exegesis: `
+                            <h3>1. O Assombro de Paulo (A Deserção)</h3>
+                            <ul>
+                                <li>Paulo não está apenas desiludido, ele está em estado de choque. "Maravilho-me de que <em>tão depressa</em>...". O problema não era que eles tinham esfriado na fé, mas que estavam ativamente adotando um <em>Heteron Euangelion</em> (um evangelho de gênero diferente). A seita judaizante acrescentou a "Lei de Moisés" (circuncisão e rituais) à cruz de Cristo. Paulo diz que esse acréscimo não cria uma versão alternativa de cristianismo; ele o destrói completamente. O Evangelho "mais" alguma coisa é a negação do Evangelho.</li>
+                            </ul>
+                            
+                            <h3>2. A Maldição Suprema (Anathema)</h3>
+                            <ul>
+                                <li>A gravidade da situação exige a palavra mais pesada do dicionário paulino: <em>Anathema</em> (Amaldiçoado, condenado à destruição eterna no inferno). Ele estabelece a regra absoluta: se um homem respeitado, ou ele mesmo (Paulo), ou até um ser angelical brilhante descendo do céu ousar pregar uma via de salvação que não seja 100% Graça baseada na cruz, que seja amaldiçoado. A autoridade da Mensagem é infinitamente superior à figura do mensageiro (v.8-9).</li>
+                            </ul>
+
+                            <h3>3. Não Para Agradar Homens</h3>
+                            <ul>
+                                <li>O verso 10 é o filtro vocacional de todo pregador: "Busco eu agora o favor dos homens ou de Deus?". O Evangelho da Graça ofende o orgulho humano, porque diz que o homem é tão falido que nada do que ele faz pode ajudar na sua salvação. Se Paulo quisesse aplausos (agradar homens), ele continuaria pregando o sistema de obras dos fariseus. A prova de que ele é servo de Cristo são as perseguições que ele sofre. Ele encerra o capítulo provando que não foi a Jerusalém ser treinado por Pedro, mas foi ensinado no deserto da Arábia pelo próprio Cristo.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "galatas_2": {
+                title: "A VERDADE E O CONFRONTO",
+                date: "31/03",
+                desc: "\"Já estou crucificado com Cristo; e vivo, não mais eu, mas Cristo vive em mim.\"",
+                blocks: [
+                    {
+                        title: "O Embate em Antioquia e a Justificação (Dikaioo)",
+                        verse: "Sabendo que o homem não é justificado pelas obras da lei, mas pela fé em Jesus Cristo. (Gl 2:16)",
+                        exegesis: `
+                            <h3>1. O Reconhecimento em Jerusalém</h3>
+                            <ul>
+                                <li>Quatorze anos depois, Paulo volta a Jerusalém para comparar o seu evangelho com os líderes originais (Tiago, Pedro e João). Os judaizantes infiltrados tentaram obrigar que o grego Tito fosse circuncidado, mas Paulo resistiu frontalmente: "nem por uma hora cedemos". Os líderes aprovaram a mensagem de Paulo, lhe deram a mão direita de comunhão e reconheceram que ele tinha a mesma autoridade divina para alcançar os gentios que Pedro tinha para alcançar os judeus.</li>
+                            </ul>
+                            
+                            <h3>2. O Confronto de Gigantes em Antioquia</h3>
+                            <ul>
+                                <li>Este é o registro da maior crise apostólica da igreja. Pedro (Cefas) estava em Antioquia comendo alegremente à mesa com os cristãos gentios (reconhecendo que em Cristo a divisão das leis alimentares acabara). Mas, quando chegaram os extremistas judeus enviados por Tiago, Pedro acovardou-se. Com medo da opinião pública, ele recuou e parou de comer com os gentios, levando Barnabé junto na hipocrisia. Paulo, enfurecido ao ver a verdade do Evangelho sendo traída por racismo teológico, resiste a Pedro "na cara" (v.11), diante de toda a congregação. Um líder verdadeiro não teme ferir o ego de outro líder quando o coração da Graça está em jogo.</li>
+                            </ul>
+
+                            <h3>3. Crucificado com Cristo</h3>
+                            <ul>
+                                <li>Para explicar o absurdo de voltar a confiar em rituais da Lei, Paulo expõe o núcleo da Justificação (<em>Dikaioo</em> - ser declarado inocente e retificado). O homem não é salvo pelo que ele faz (obras), mas pela fé nos méritos de Cristo. Voltar para as regras mosaicas é reconstruir a prisão que Cristo destruiu (v.18).</li>
+                                <li>O versículo 20 é a coroa do capítulo: <em>"Já estou crucificado com Cristo; e vivo, não mais eu, mas Cristo vive em mim"</em>. A lei crucifica o homem, mas a graça crucificou a lei. Se a salvação pudesse vir por minha própria obediência, a morte de Cristo não teria sentido (v.21).</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "galatas_3": {
+                title: "A MALDIÇÃO DA LEI E A PROMESSA",
+                date: "01/04",
+                desc: "\"Cristo nos resgatou da maldição da lei, fazendo-se maldição por nós.\"",
+                blocks: [
+                    {
+                        title: "O Feitiço, Abraão e a Função do Pedagogo",
+                        verse: "Ó gálatas insensatos! quem vos fascinou para não obedecerdes à verdade? (Gl 3:1)",
+                        exegesis: `
+                            <h3>1. O Feitiço (Baskaino) e a Experiência do Espírito</h3>
+                            <ul>
+                                <li>Paulo abre o capítulo 3 com uma exclamação atroz: "Ó gálatas insensatos, quem vos enfeitiçou (<em>Baskaino</em> - colocar o mau olhado/hipnotizar)?". Abandonar a cruz por causa da lei é tão estúpido que parece bruxaria. Paulo apela para a experiência inegável deles: "Como vocês receberam o Espírito Santo e viram milagres? Foi obedecendo a ritos, ou foi pela pregação da fé?" É loucura começar no poder do Espírito e tentar aperfeiçoar-se na força da carne (esforço humano).</li>
+                            </ul>
+                            
+                            <h3>2. A Maldição e a Redenção</h3>
+                            <ul>
+                                <li>Os judaizantes exaltavam a Lei de Moisés como o topo da comunhão. Paulo os golpeia citando a própria Lei: <em>"Maldito todo aquele que não permanece em todas as coisas escritas no livro da lei"</em> (Dt 27:26). A Lei exige obediência 100% perfeita. Como ninguém atinge isso, a Lei é uma máquina de produzir maldição e condenação sobre todos nós.</li>
+                                <li>O versículo 13 apresenta o resgate majestoso: <strong>Cristo nos comprou da maldição, tornando-Se Ele próprio a Maldição em nosso lugar</strong>. A árvore da cruz foi o para-raios onde a ira divina foi descarregada, libertando-nos e abrindo caminho para que a bênção de Abraão (o Espírito Santo) chegasse a nós pela fé.</li>
+                            </ul>
+
+                            <h3>3. A Semente (Singular) e o Pedagogo (Paidagogos)</h3>
+                            <ul>
+                                <li>Paulo é um exegeta formidável: a aliança feita com Abraão 430 anos antes do Sinai não pode ser anulada pela Lei de Moisés. A promessa foi feita "à sua Semente" (no singular), que é Cristo (v.16). </li>
+                                <li>Qual é, então, o propósito da Lei, se não salva? Ela foi adicionada como um carcereiro temporário para revelar e aprisionar a humanidade na culpa do pecado. A Lei foi o nosso <em>Paidagogos</em> (o escravo grego cuja função era bater nas crianças rebeldes e levá-las à escola). A Lei de Moisés é esse mestre disciplinador que quebrou as nossas pernas e nos arrastou, falidos, até a escola da Cruz, para que só em Cristo pudéssemos ser justificados (v.24). Estando agora justificados e adultos na fé, não precisamos mais do pedagogo repressor.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "galatas_4": {
+                title: "DE ESCRAVOS A FILHOS",
+                date: "02/04",
+                desc: "\"E, porque sois filhos, Deus enviou aos vossos corações o Espírito de seu Filho, que clama: Aba, Pai.\"",
+                blocks: [
+                    {
+                        title: "A Maioridade, a Adoção e a Alegoria das Mães",
+                        verse: "Mas, vindo a plenitude dos tempos, Deus enviou seu Filho, nascido de mulher, nascido sob a lei. (Gl 4:4)",
+                        exegesis: `
+                            <h3>1. A Plenitude dos Tempos e o 'Abba'</h3>
+                            <ul>
+                                <li>Paulo continua a analogia da herança. O herdeiro ainda criança não difere do escravo, pois vive sob as regras rígidas de tutores. Mas quando a "plenitude dos tempos" (o relógio exato da eternidade de Deus) chegou, Cristo nasceu de uma mulher debaixo do peso e da exigência da mesma Lei que nos esmagava. Ele obedeceu a Lei perfeitamente para "resgatar os que estavam debaixo dela".</li>
+                                <li>O resultado é deslumbrante: fomos promovidos de escravos à posição legal de filhos plenos (adoção). O atestado cósmico dessa paternidade é o Espírito do Filho pulsando no nosso peito, nos impulsionando a clamar <em>"Aba, Pai"</em>. Voltar aos rituais judaicos (dias, meses e tempos guardados com fanatismo, v.10) é agir como um filho real do rei que foge do palácio para voltar a viver nas correntes e chicotes dos antigos senhores.</li>
+                            </ul>
+                            
+                            <h3>2. A Angústia Maternal de Paulo</h3>
+                            <ul>
+                                <li>Paulo relembra o afeto com que os gálatas o receberam quando ele lhes pregou o evangelho na fraqueza de sua carne (possivelmente ele tinha uma doença grave nos olhos, pois diz que eles teriam arrancado os próprios olhos para lhe dar). Agora, envenenados pela falsa religião, eles tratam Paulo como inimigo por lhes dizer a verdade. Ele exprime sua profunda angústia pastoral: "Meus filhinhos, por quem de novo sofro as dores de parto, até que Cristo seja formado em vós" (v.19).</li>
+                            </ul>
+
+                            <h3>3. A Alegoria Épica: Agar e Sara</h3>
+                            <ul>
+                                <li>Para silenciar os adoradores da Lei, Paulo usa uma brilhante alegoria do livro de Gênesis. Abraão teve dois filhos: um da escrava Agar (Ismael, gerado pela força da carne humana para "ajudar" a Deus) e um da mulher livre Sara (Isaque, gerado milagrosamente pela promessa divina em um ventre morto).</li>
+                                <li>Paulo diz: Estas duas mulheres representam dois pactos (v.24). Agar é o pacto do Monte Sinai (a Lei de Moisés que gera filhos para a escravidão e condenação, a Jerusalém terrena). Sara é a Nova Aliança (a Jerusalém celestial, a Graça Livre que opera pela fé e milagre). A ordem é feroz e ecoa a voz de Sara em Gênesis: "Lança fora a escrava (a Lei das obras) e seu filho; porque o filho da escrava não herdará com o filho da livre". A nossa mãe é a Graça.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "galatas_5": {
+                title: "A LIBERDADE E O FRUTO DO ESPÍRITO",
+                date: "02/04",
+                desc: "\"Estai, pois, firmes na liberdade com que Cristo nos libertou...\"",
+                blocks: [
+                    {
+                        title: "O Perigo do Legalismo e as Obras da Carne",
+                        verse: "Separados estais de Cristo, vós os que vos justificais pela lei; da graça tendes caído. (Gl 5:4)",
+                        exegesis: `
+                            <h3>1. A Posição de Liberdade e a Queda da Graça</h3>
+                            <ul>
+                                <li>"Para a liberdade (<em>Eleutheria</em>) foi que Cristo nos libertou". A liberdade cristã não é o direito de pecar, mas o resgate de estar sempre tentando (e falhando) salvar-se pelas próprias obras. Paulo emite um dos maiores avisos da Bíblia: Se vocês deixarem-se circuncidar (ou seja, se tentarem adicionar um ritual ao sacrifício de Jesus como requisito para a salvação), Cristo de nada vos servirá.</li>
+                                <li>Aqui encontramos a polêmica frase: <strong>"Da graça decaístes"</strong> (v.4). Isto não significa perder a salvação por cometer um pecado moral. "Cair da graça" em Gálatas significa cair no erro mortal de tentar se justificar pela Lei, rejeitando a suficiência da cruz. Porque em Jesus, o que importa não é circuncisão ou incircuncisão, mas a fé que opera (trabalha ativamente) pelo amor (v.6).</li>
+                            </ul>
+                            
+                            <h3>2. A Cruz como Escândalo (Skandalon)</h3>
+                            <ul>
+                                <li>Paulo expõe a real motivação dos falsos mestres: pregar rituais humanos evita o escândalo da cruz (v.11). A cruz é ofensiva porque ela diz ao homem natural que as suas "boas obras" e sua "moralidade superior" não servem para nada no tribunal de Deus. Paulo está tão enojado com os judaizantes que mutilavam as igrejas que usa um sarcasmo cortante no verso 12: "Oxalá se castrassem de vez os que vos inquietam" (referência irônica aos ritos de adoração pagã da deusa Cibele na região).</li>
+                            </ul>
+
+                            <h3>3. Carne vs. Espírito (Karpos)</h3>
+                            <ul>
+                                <li>Não usar a liberdade como pretexto para o pecado (antinomianismo). Mas como vencer a carne se não usamos a Lei de Moisés? Paulo responde: "Andai no Espírito, e jamais satisfareis as concupiscências da carne". A santificação não é produzir frutos através da força do ego, mas submissão a um Guia Interno.</li>
+                                <li>Paulo contrasta as Obras da Carne (que são manifestas e plurais: prostituição, feitiçaria, inimizades, iras, discórdias) com o <strong>Fruto do Espírito</strong>. Note que a palavra "Fruto" (<em>Karpos</em>) está no singular. O Espírito não nos dá uma virtude de cada vez, Ele implanta o caráter integral de Cristo: Amor, alegria, paz, longanimidade, benignidade, bondade, fidelidade, mansidão e domínio próprio. Contra o brilho destas coisas, a velha Lei de pedra fica sem função.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "galatas_6": {
+                title: "A LEI DE CRISTO E A CRUZ",
+                date: "02/04",
+                desc: "\"Mas longe esteja de mim gloriar-me, a não ser na cruz de nosso Senhor Jesus Cristo...\"",
+                blocks: [
+                    {
+                        title: "Restauração, Semeadura e os Estigmas de Cristo",
+                        verse: "Levai as cargas uns dos outros, e assim cumprireis a lei de Cristo. (Gl 6:2)",
+                        exegesis: `
+                            <h3>1. A Restauração com Mansidão</h3>
+                            <ul>
+                                <li>O teste final da espiritualidade verdadeira não é falar em línguas ou ter poder místico, mas o tratamento dispensado a um irmão que caiu em pecado (v.1). Os falsos mestres (focados na lei) esmagariam o ofensor. Paulo diz: "Vós, que sois espirituais, encaminhai o tal com espírito de mansidão". A igreja deve funcionar como uma sala de ortopedia espiritual, colocando o osso quebrado no lugar (restaurar), sempre vigiando a própria alma contra a arrogância. Levar as cargas (fardos esmagadores) uns dos outros é cumprir perfeitamente a "Lei de Cristo" (O Amor de Rm 13).</li>
+                            </ul>
+                            
+                            <h3>2. O Princípio Inquebrável da Semeadura</h3>
+                            <ul>
+                                <li>"Não erreis: Deus não se deixa escarnecer (zombar)". Paulo apresenta a lei irrevogável da agricultura espiritual. Tudo o que o homem semear, isso ele também irá ceifar de forma multiplicada. Aquele que semeia na sua carne (investindo sua vida, recursos e tempo em apetites egoístas) irá, da carne, colher corrupção eterna. Aquele que semeia no Espírito irá colher a vida. É um apelo à resistência para não cansar de fazer o bem nos momentos de silêncio e seca, pois "a seu tempo ceifaremos, se não houvermos desfalecido" (v.9).</li>
+                            </ul>
+
+                            <h3>3. A Glória Exclusiva na Cruz e as Marcas da Verdade</h3>
+                            <ul>
+                                <li>Paulo toma a pena nas mãos (v.11) para escrever a conclusão com letras grandes. Ele expõe a covardia dos judaizantes: eles só forçam a circuncisão externa para se gloriarem do crescimento de sua facção religiosa e para escaparem da perseguição que a pregação da Cruz atrai.</li>
+                                <li>E então, Paulo levanta a bandeira definitiva do verdadeiro cristianismo, o verso mais marcante da carta: <strong>"Mas longe esteja de mim gloriar-me, a não ser na cruz de nosso Senhor Jesus Cristo, pela qual o mundo está crucificado para mim e eu para o mundo"</strong> (v.14). A cruz aniquila a reputação terrena, tornando circuncisão ou incircuncisão irrelevantes. O que importa é a <em>Nova Criatura</em>.</li>
+                                <li>No versículo final (v.17), Paulo dá o xeque-mate: "Ninguém me moleste (me perturbe com falsas acusações), porque trago no meu corpo as marcas (<em>stigmata</em>) de Jesus". Os falsos mestres tinham a marca da circuncisão judaica feita com um bisturi; Paulo tinha as costas laceradas por chicotes e pedras, as cicatrizes do sofrimento por Jesus. Os "estigmas" eram as marcas feitas a ferro quente que provavam de quem um escravo era propriedade. Paulo provou na carne a quem pertencia.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            }
+        };
+
+        // --- LÓGICA GERAL DE CARREGAMENTO ---
+        let currentAudioBlob = null;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        function loadChapter(chapterKey) {
+            const data = bibleData[chapterKey];
+            if (!data) return;
+
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
+            const dateBadge = document.getElementById('dateBadge');
+            const dateValue = document.getElementById('dateValue');
+            const communitySection = document.getElementById('community-section');
+            const formChapterKey = document.getElementById('formChapterKey');
+            
+            heroTitle.style.opacity = '0';
+            heroDesc.style.opacity = '0';
+            dateBadge.style.opacity = '0';
+            
+            setTimeout(() => {
+                if (data.date) {
+                    dateValue.textContent = data.date;
+                    dateBadge.classList.remove('hidden');
+                    communitySection.classList.remove('hidden');
+                    formChapterKey.value = chapterKey;
+                    carregarComentarios(chapterKey);
+                    setTimeout(() => { dateBadge.style.opacity = '1'; }, 100);
+                } else {
+                    dateBadge.classList.add('hidden');
+                    communitySection.classList.add('hidden');
+                }
+
+                heroTitle.innerHTML = data.title;
+                heroDesc.innerHTML = data.desc;
+                heroTitle.style.opacity = '1';
+                heroDesc.style.opacity = '1';
+            }, 300);
+
+            const mainContent = document.getElementById('content');
+            mainContent.innerHTML = ''; 
+
+            data.blocks.forEach((block) => {
+                // Tema Orange
+                let borderColor = 'border-orange-600';
+                let blurTop = 'bg-orange-600/5';
+                let blurBottom = 'bg-orange-800/5';
+                let borderPanel = 'border-orange-900/30';
+
+                const html = `
+                    <section class="reveal max-w-4xl mx-auto w-full relative">
+                        <div class="absolute -inset-4 ${blurTop} to-transparent rounded-3xl blur-xl pointer-events-none"></div>
+                        
+                        <div class="space-y-6 relative z-10">
+                            <div class="text-center mb-10">
+                                <h2 class="text-3xl md:text-5xl font-serif text-white leading-tight mb-6">${block.title}</h2>
+                                <div class="inline-block border-l-4 border-r-4 ${borderColor} px-6 py-4 italic text-slate-300 bg-[#1a0d00]/50 shadow-sm max-w-3xl rounded-sm">
+                                    "${block.verse}"
+                                </div>
+                            </div>
+                            
+                            <div class="bg-[#2a1300]/80 p-8 md:p-12 rounded-xl border ${borderPanel} transition shadow-2xl relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-64 h-64 ${blurTop} rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+                                <div class="absolute bottom-0 left-0 w-64 h-64 ${blurBottom} rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
+                                <div class="rich-text text-slate-300 text-[16px] md:text-lg leading-relaxed relative z-10 font-light">
+                                    ${block.exegesis}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+                mainContent.insertAdjacentHTML('beforeend', html);
+            });
+            resetObservers();
+        }
+
+        function carregarComentarios(capitulo) {
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '<p class="text-center text-slate-500 text-sm animate-pulse">Carregando comentários...</p>';
+
+            fetch(`api.php?acao=listar&capitulo=${capitulo}`)
+            .then(res => res.json())
+            .then(data => {
+                list.innerHTML = '';
+                if(data.length === 0) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
+                }
+                data.forEach(c => {
+                    let mediaHtml = '';
+                    if(c.foto) mediaHtml += `<img src="${c.foto}" onclick="openImage(this.src)" class="mt-4 rounded-lg max-h-48 border border-slate-700 cursor-pointer hover:scale-[1.02] transition shadow-lg">`;
+                    if(c.audio) mediaHtml += `<audio controls src="${c.audio}" class="mt-4 w-full"></audio>`;
+
+                    const jaCurtiu = localStorage.getItem(`reagiu_likes_${c.id}`);
+                    const jaAmem = localStorage.getItem(`reagiu_amem_${c.id}`);
+                    const jaGloria = localStorage.getItem(`reagiu_gloria_${c.id}`);
+
+                    let themeColor = 'text-orange-400';
+                    let panelBorder = 'hover:border-orange-500/50';
+
+                    const html = `
+                        <div class="glass-panel p-5 pb-12 rounded-xl border border-slate-800 relative group transition ${panelBorder} bg-[#140a00]/60">
+                            <div class="flex justify-between items-start mb-3 border-b border-slate-800 pb-2">
+                                <strong class="${themeColor} text-sm tracking-wide font-serif">${c.nome}</strong>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-widest">${new Date(c.data_envio).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed">${c.mensagem}</p>
+                            ${mediaHtml}
+                            
+                            <div class="absolute bottom-3 right-4 flex gap-2">
+                                <button onclick="reagirComentario(${c.id}, 'likes', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaCurtiu ? 'text-red-500 border-red-500/30' : 'text-slate-400 hover:text-red-400'}" ${jaCurtiu ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-heart"></i> <span class="count font-bold">${c.likes || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'amem', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaAmem ? 'text-orange-400 border-orange-400/30' : 'text-slate-400 hover:text-orange-400'}" ${jaAmem ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-hands-praying"></i> <span class="count font-bold">${c.amem || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'gloria', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaGloria ? 'text-amber-500 border-amber-500/30' : 'text-slate-400 hover:text-amber-500'}" ${jaGloria ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-fire"></i> <span class="count font-bold">${c.gloria || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', html);
+                });
+            })
+            .catch(err => {
+                list.innerHTML = '<p class="text-center text-red-400 text-xs">Erro ao carregar comentários.</p>';
+            });
+        }
+
+        function reagirComentario(id, tipo, btn) {
+            if(localStorage.getItem(`reagiu_${tipo}_${id}`)) return;
+
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('.count');
+            let count = parseInt(countSpan.innerText);
+
+            icon.classList.add('reacted-anim');
+            btn.classList.remove('text-slate-400');
+            
+            if(tipo === 'likes') btn.classList.add('text-red-500', 'border-red-500/30');
+            if(tipo === 'amem') btn.classList.add('text-orange-400', 'border-orange-400/30');
+            if(tipo === 'gloria') btn.classList.add('text-amber-500', 'border-amber-500/30');
+
+            countSpan.innerText = count + 1;
+            btn.disabled = true;
+
+            localStorage.setItem(`reagiu_${tipo}_${id}`, 'true');
+
+            const formData = new FormData();
+            formData.append('acao', 'reagir');
+            formData.append('id', id);
+            formData.append('tipo', tipo);
+
+            fetch('api.php', { method: 'POST', body: formData });
+        }
+
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+            formData.append('acao', 'salvar');
+            if(currentAudioBlob) {
+                formData.append('audio', currentAudioBlob, 'audio.wav');
+            }
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    this.reset();
+                    document.getElementById('filePreview').innerHTML = '';
+                    currentAudioBlob = null;
+                    document.getElementById('recordText').innerText = "Gravar Áudio";
+                    carregarComentarios(document.getElementById('formChapterKey').value);
+                } else {
+                    alert('Erro ao enviar.');
+                }
+            })
+            .catch(() => alert('Erro de conexão.'))
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        });
+
+        function previewFile(input) {
+            const preview = document.getElementById('filePreview');
+            if(input.files && input.files[0]) {
+                preview.innerHTML = `<i class="fa-solid fa-check text-green-400"></i> Imagem selecionada: ${input.files[0].name}`;
+                preview.classList.remove('hidden');
+            }
+        }
+
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.addEventListener('click', async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                    mediaRecorder.onstop = () => {
+                        currentAudioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        document.getElementById('filePreview').classList.remove('hidden');
+                        document.getElementById('filePreview').innerHTML += '<br><i class="fa-solid fa-microphone text-green-400"></i> Áudio gravado!';
+                    };
+                    mediaRecorder.start();
+                    recordBtn.classList.add('recording-pulse');
+                    document.getElementById('recordText').innerText = "Parar Gravação";
+                } catch (err) {
+                    alert("Permita o uso do microfone para gravar.");
+                }
+            } else {
+                mediaRecorder.stop();
+                recordBtn.classList.remove('recording-pulse');
+                document.getElementById('recordText').innerText = "Gravar Áudio";
+            }
+        });
+
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        function closeImage() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function resetObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<80; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(249, 115, 22, 0.15)"; /* Laranja */
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        loadChapter('intro_book');
+    </script>
+</body>
+</html>

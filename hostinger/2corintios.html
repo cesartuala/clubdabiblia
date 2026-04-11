@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>II Coríntios | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] },
+                    colors: { 
+                        divine: { 400: '#10b981' }, /* Emerald/Verde para 2 Coríntios */
+                        darkbg: '#021c13'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #021c13; color: #e2e8f0; overflow-x: hidden; }
+        
+        .glass-panel { background: rgba(6, 36, 26, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(16, 185, 129, 0.15); }
+        .emerald-glow { text-shadow: 0 0 15px rgba(16, 185, 129, 0.5); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .rich-text strong { color: #6ee7b7; font-weight: 700; }
+        .rich-text .ref { color: #34d399; font-size: 0.9em; font-family: monospace; background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .rich-text h3 { color: #10b981; font-weight: bold; margin-top: 2rem; margin-bottom: 0.75rem; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.15em; border-bottom: 1px solid rgba(16, 185, 129, 0.2); padding-bottom: 6px; }
+        .rich-text ul { list-style-type: none; padding-left: 0; margin-top: 15px; margin-bottom: 20px; }
+        .rich-text li { margin-bottom: 15px; line-height: 1.8; text-align: justify; border-left: 3px solid #10b981; padding-left: 20px; background: linear-gradient(to right, rgba(16,185,129,0.05), transparent); padding-top: 5px; padding-bottom: 5px; }
+        .rich-text p { margin-bottom: 20px; line-height: 2; text-align: justify; font-size: 1.05rem; color: #cbd5e1; }
+        .rich-text blockquote { border-left: 4px solid #10b981; padding-left: 20px; margin: 20px 0; font-style: italic; color: #6ee7b7; background: rgba(16, 185, 129, 0.05); padding: 15px; border-radius: 0 8px 8px 0; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #021c13; }
+        ::-webkit-scrollbar-thumb { background: #064e3b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #10b981; }
+
+        .recording-pulse { animation: recPulse 1.5s infinite; background-color: #ef4444; border-color: #ef4444; color: white; }
+        @keyframes recPulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @keyframes pop { 50% { transform: scale(1.4); } }
+        .reacted-anim { animation: pop 0.3s ease-out; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="fixed top-0 w-full z-50 p-4 md:p-6 flex flex-col md:flex-row justify-between items-center bg-gradient-to-b from-[#021c13]/95 to-[#021c13]/80 backdrop-blur-md border-b border-emerald-900/30 transition-all">
+        <div class="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto justify-between md:justify-start">
+            <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#06241a] border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500 hover:text-black transition-all shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:shadow-[0_0_20px_rgba(16,185,129,0.4)]" title="Voltar para a Capa">
+                <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+                <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-leaf text-emerald-500 text-xl md:text-2xl"></i>
+                <span class="font-serif text-white text-lg md:text-xl tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto justify-end">
+            <span class="hidden md:inline text-xs text-slate-400 uppercase tracking-widest">Navegar:</span>
+            <select id="chapterSelect" onchange="loadChapter(this.value)" class="w-full md:w-auto bg-[#06241a] text-emerald-400 border border-emerald-500/30 rounded px-4 py-2 text-sm uppercase tracking-widest focus:outline-none focus:border-emerald-500 cursor-pointer hover:bg-[#022c22] transition">
+                <option value="intro_book">★ Sobre o Livro</option>
+                <option value="intro_author">✎ Sobre o Autor</option>
+                <option disabled>──────────</option>
+                <option value="2corintios_1">Capítulo 01</option>
+                <option value="2corintios_2">Capítulo 02</option>
+                <option value="2corintios_3">Capítulo 03</option>
+                <option value="2corintios_4">Capítulo 04</option>
+                <option value="2corintios_5">Capítulo 05</option>
+                <option value="2corintios_6">Capítulo 06</option>
+                <option value="2corintios_7">Capítulo 07</option>
+                <option value="2corintios_8">Capítulo 08</option>
+                <option value="2corintios_9">Capítulo 09</option>
+                <option value="2corintios_10">Capítulo 10</option>
+                <option value="2corintios_11">Capítulo 11</option>
+                <option value="2corintios_12">Capítulo 12</option>
+                <option value="2corintios_13">Capítulo 13</option>
+            </select>
+        </div>
+    </nav>
+
+    <header class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-32 md:pt-20">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1473643069352-78d120a13e2f?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10 grayscale"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#021c13] via-[#021c13]/80 to-transparent"></div>
+        
+        <div class="z-10 reveal active space-y-4 max-w-5xl w-full">
+            <h2 class="text-emerald-500 tracking-[0.5em] text-[10px] md:text-sm uppercase animate-pulse mb-4 font-bold">Clube da Bíblia Apresenta</h2>
+            
+            <div id="dateBadge" class="hidden inline-flex items-center gap-2 border border-emerald-500/50 rounded-full px-4 py-1 mb-4 bg-emerald-500/10 backdrop-blur-sm transition-all duration-700 opacity-0">
+                <i class="fa-regular fa-calendar text-emerald-400 text-xs"></i>
+                <span class="text-emerald-300 text-xs tracking-widest uppercase font-bold">Leitura: <span id="dateValue" class="text-white"></span></span>
+            </div>
+
+            <h1 id="heroTitle" class="font-serif text-4xl md:text-7xl text-white mb-2 emerald-glow transition-all duration-700 uppercase leading-tight px-2"></h1>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 text-slate-400 mt-8 pt-8 border-t border-emerald-900/30 w-full max-w-3xl mx-auto">
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Idealizado por</p>
+                    <strong class="text-emerald-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-emerald-300 transition">Fellipe Gomes Andrade</strong>
+                </div>
+                <span class="hidden md:block h-8 w-[1px] bg-gradient-to-b from-transparent via-emerald-900 to-transparent"></span>
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Desenvolvido por</p>
+                    <strong class="text-emerald-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-emerald-300 transition">Cesar Tuala</strong>
+                </div>
+            </div>
+
+            <p id="heroDesc" class="text-sm md:text-xl text-slate-300 max-w-2xl mx-auto pt-8 font-light italic transition-all duration-700 px-4"></p>
+            
+            <div class="pt-10">
+                <button onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" class="animate-bounce text-emerald-500 text-2xl">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="content" class="max-w-4xl mx-auto px-4 py-10 md:py-20 space-y-20 md:space-y-32 min-h-screen">
+        </main>
+
+    <section id="community-section" class="w-full bg-[#01140e] border-t-4 border-emerald-600 py-16 mb-0 relative shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <h3 class="font-serif text-3xl md:text-4xl text-emerald-500 mb-2 uppercase tracking-widest emerald-glow">
+                    <i class="fa-solid fa-users-line mr-3"></i>Comunidade
+                </h3>
+                <p class="text-slate-400 text-sm italic">"Compartilhe o que Deus falou ao seu coração"</p>
+                <div class="h-1 w-24 bg-gradient-to-r from-transparent via-emerald-600 to-transparent mx-auto mt-4"></div>
+            </div>
+
+            <div class="glass-panel p-6 md:p-8 rounded-xl mb-12 border border-slate-800 shadow-2xl bg-[#031f16]/80">
+                <form id="commentForm" class="space-y-5">
+                    <input type="hidden" id="formChapterKey" name="capitulo">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="col-span-1">
+                            <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Nome</label>
+                            <input type="text" name="nome" required class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-emerald-500 focus:outline-none transition">
+                        </div>
+                        <div class="flex gap-3 col-span-1 md:col-span-2 items-end">
+                            <label class="flex-1 cursor-pointer bg-black/50 border border-slate-700 hover:border-emerald-500 hover:bg-[#062c20] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-camera group-hover:text-emerald-400"></i> Foto
+                                <input type="file" name="foto" accept="image/*" class="hidden" onchange="previewFile(this)">
+                            </label>
+                            <button type="button" id="recordBtn" class="flex-1 bg-black/50 border border-slate-700 hover:border-emerald-500 hover:bg-[#062c20] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-microphone group-hover:text-red-400"></i> <span id="recordText">Gravar Áudio</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="filePreview" class="text-xs text-emerald-400 hidden bg-black p-2 rounded border border-emerald-500/30"></div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Comentário</label>
+                        <textarea name="mensagem" class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-emerald-500 focus:outline-none h-28 resize-none transition"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-emerald-800 to-emerald-600 hover:from-emerald-600 hover:to-emerald-500 text-white font-bold py-4 rounded-lg transition uppercase tracking-[0.2em] text-sm shadow-lg shadow-black/50 transform hover:-translate-y-1">
+                        Publicar Comentário
+                    </button>
+                </form>
+            </div>
+            <div id="commentsList" class="space-y-6"></div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-800 bg-black py-12 text-center relative z-10">
+        <div class="flex flex-col items-center justify-center space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="fa-solid fa-leaf text-emerald-600 text-xl"></i>
+                <span class="font-serif text-slate-300 text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+            <p class="text-slate-700 text-[10px] tracking-widest uppercase mt-4">&copy; 2026 Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="imageModal" class="fixed inset-0 z-[100] bg-black/95 hidden flex justify-center items-center p-4 backdrop-blur-sm transition-opacity duration-300" onclick="closeImage()">
+        <div class="relative max-w-4xl w-full flex justify-center">
+            <button onclick="closeImage()" class="absolute -top-12 right-0 text-white text-3xl hover:text-emerald-500 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modalImg" src="" class="max-h-[85vh] max-w-full rounded-lg shadow-[0_0_50px_rgba(16,185,129,0.3)] border-2 border-emerald-500/20 object-contain">
+        </div>
+    </div>
+
+    <script>
+        // === DADOS DE 2 CORÍNTIOS ===
+        const bibleData = {
+            "intro_book": {
+                title: "SEGUNDA AOS CORÍNTIOS",
+                date: null,
+                desc: "<span class='text-xs uppercase tracking-[0.3em] text-emerald-500 not-italic block mb-4'>Introdução: Sobre o Livro</span>\"Porque, quando estou fraco, então sou forte.\"",
+                blocks: [
+                    {
+                        title: "O Coração Sangrando do Apóstolo",
+                        verse: "Bendito seja o Deus e Pai de nosso Senhor Jesus Cristo, o Pai das misericórdias e o Deus de toda a consolação. (2 Co 1:3)",
+                        exegesis: `
+                            <p>Se Romanos revela a mente brilhante de Paulo, 2 Coríntios revela o seu coração machucado e apaixonado. É o documento mais autobiográfico, íntimo e emocional de todo o Novo Testamento.</p>
+                            
+                            <h3>1. O Contexto de Dor e Rejeição</h3>
+                            <ul>
+                                <li>Para entender esta carta, precisamos saber o que aconteceu <em>depois</em> de 1 Coríntios. A primeira carta não resolveu os problemas; piorou. Falsos apóstolos (que Paulo ironicamente chama de "superapóstolos") se infiltraram em Corinto. Eles eram eloquentes, cobravam caro e exigiam cartas de recomendação. Eles começaram a assassinar o caráter de Paulo, dizendo que ele era inconstante, fraco na presença física e que seu ministério não tinha glória porque ele sofria demais.</li>
+                            </ul>
+                            
+                            <h3>2. A "Visita Dolorosa" e a "Carta das Lágrimas"</h3>
+                            <ul>
+                                <li>Paulo fez uma visita de emergência a Corinto (a "visita dolorosa", 2 Co 2:1), que foi um desastre. Alguém o ofendeu publicamente, e a igreja não o defendeu. Arrasado, ele voltou para Éfeso e escreveu uma carta extremamente severa (a "carta das lágrimas", que foi perdida), enviando-a pelas mãos de Tito. 2 Coríntios é a carta que ele escreve da Macedônia após se encontrar com Tito e receber a boa notícia de que a igreja, finalmente, havia se arrependido e voltado para ele.</li>
+                            </ul>
+
+                            <h3>3. A Teologia da Fraqueza</h3>
+                            <ul>
+                                <li>O tema central desta epístola é a <strong>Nova Aliança</strong> e o paradoxo do poder divino. Os falsos mestres mediam o sucesso por dinheiro, saúde e aplausos. Paulo inverte essa lógica diabólica. Ele prova sua autoridade apostólica não exibindo seus milagres, mas exibindo suas cicatrizes. Ele ensina que carregamos um tesouro inestimável dentro de "vasos de barro" frágeis, para provar que a excelência do poder vem de Deus, e não de nós.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "intro_author": {
+                title: "SOBRE O AUTOR",
+                date: null,
+                desc: "\"Paulo, apóstolo de Jesus Cristo, pela vontade de Deus...\"",
+                blocks: [
+                    {
+                        title: "O Embaixador em Cadeias",
+                        verse: "De sorte que somos embaixadores da parte de Cristo... (2 Co 5:20)",
+                        exegesis: `
+                            <p>Em 2 Coríntios, Paulo defende sua integridade e seu ministério de forma implacável, não por vaidade pessoal, mas porque atacar o mensageiro era uma estratégia de Satanás para destruir a mensagem.</p>
+
+                            <h3>1. O Sofrimento Extremo na Ásia</h3>
+                            <ul>
+                                <li>Paulo inicia a carta relatando que passou por uma tribulação na província da Ásia (provavelmente Éfeso) tão brutal e acima de suas forças que ele "desesperou até da própria vida". Ele sentiu a sentença de morte, para aprender a não confiar em si mesmo, mas no Deus que ressuscita os mortos. Paulo não era um "super-homem" imune à dor psicológica ou física; ele era um homem dependente da graça.</li>
+                            </ul>
+
+                            <h3>2. A Transparência de um Líder Real</h3>
+                            <ul>
+                                <li>Diferente dos líderes modernos que mascaram suas falhas para parecerem invencíveis, Paulo escancara suas vulnerabilidades. Ele fala de suas angústias, lágrimas, noites sem dormir, naufrágios, açoitamentos e, mais famoso de tudo, do seu "espinho na carne". Essa transparência é o que dá a esta epístola o seu poder avassalador de consolo.</li>
+                            </ul>
+
+                            <h3>3. O Ministério da Reconciliação</h3>
+                            <ul>
+                                <li>Apesar de toda a dor, Paulo entende perfeitamente sua função: ele é um ministro da Nova Aliança. Ele vê a si mesmo como um "embaixador", alguém que não fala por si mesmo, mas representa um Rei estrangeiro em território hostil, implorando às pessoas que se reconciliem com Deus.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "2corintios_1": {
+                title: "O DEUS DE TODO CONSOLO",
+                date: "23/03",
+                desc: "\"Que nos consola em toda a nossa tribulação, para que também possamos consolar os que estiverem em alguma tribulação.\"",
+                blocks: [
+                    {
+                        title: "A Escola do Sofrimento e o Sim de Deus",
+                        verse: "Porque todas quantas promessas há de Deus, são nele sim, e por ele o Amém... (2 Co 1:20)",
+                        exegesis: `
+                            <h3>1. A Economia do Consolo (Paraklesis)</h3>
+                            <ul>
+                                <li>A carta começa com a palavra <em>Paraklesis</em> (consolo, encorajamento, ajuda a quem chora), usada 10 vezes em poucos versículos. Paulo ensina uma teologia revolucionária do sofrimento: Deus não nos consola para que fiquemos confortáveis, mas para nos transformar em consoladores. O nosso sofrimento curado torna-se o remédio para os outros. As aflições de Cristo transbordam sobre nós, mas também o consolo transborda, criando uma corrente de empatia na igreja.</li>
+                            </ul>
+                            
+                            <h3>2. A Sentença de Morte e a Confiança</h3>
+                            <ul>
+                                <li>Paulo choca a igreja ao admitir que enfrentou pressões "acima das suas forças", chegando a desesperar da própria vida (v.8). Mas a teologia de Paulo encontra um propósito na tragédia: a sentença de morte em nós serve "para que não confiemos em nós mesmos, mas em Deus, que ressuscita os mortos". A dor extrema aniquila a autossuficiência, obrigando o homem a repousar no poder ressuscitador do Senhor.</li>
+                            </ul>
+
+                            <h3>3. O Cristo do "Sim" e do "Amém"</h3>
+                            <ul>
+                                <li>Os falsos mestres acusavam Paulo de ser inconstante e leviano por ter mudado seus planos de viagem a Corinto. Eles diziam que a palavra dele era "Sim e Não" (volúvel). Paulo defende sua integridade ligando-a ao próprio Cristo: O Evangelho que pregamos não é um "sim e não". Em Cristo Jesus, todas as milhares de promessas de Deus recebem o definitivo <strong>"SIM"</strong>. E, através de nós, soa o <strong>"AMÉM"</strong> (assim seja), para a glória de Deus, que nos ungiu e nos selou com o penhor do Espírito.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "2corintios_2": {
+                title: "PERDÃO E O BOM PERFUME",
+                date: "23/03",
+                desc: "\"Porque para Deus somos o bom perfume de Cristo, nos que se salvam e nos que se perdem.\"",
+                blocks: [
+                    {
+                        title: "Restauração e o Desfile Triunfal",
+                        verse: "E a quem perdoardes alguma coisa, também eu; porque... o fiz por amor de vós na presença de Cristo, para que não sejamos vencidos por Satanás. (2 Co 2:10-11)",
+                        exegesis: `
+                            <h3>1. O Perdão como Arma de Guerra</h3>
+                            <ul>
+                                <li>Paulo aborda o homem que o havia ofendido (provavelmente o líder da rebelião na "visita dolorosa"). A igreja, obedecendo a carta anterior de Paulo, havia disciplinado severamente esse homem, e ele se arrependeu. Agora, Paulo dá um comando perigoso para o ego humano: "Perdoem e consolem esse homem, para que ele não seja consumido por demasiada tristeza" (v.7). A disciplina na igreja não é um pelourinho para destruir, mas um bisturi para salvar. Reter o perdão é dar vantagem estratégica a Satanás ("não ignoramos os seus ardis").</li>
+                            </ul>
+                            
+                            <h3>2. O Desfile Triunfal (Thriambeuo)</h3>
+                            <ul>
+                                <li>No versículo 14, Paulo irrompe num louvor poético utilizando a imagem do desfile triunfal romano (<em>Thriambeuo</em>). Quando um general romano vencia uma guerra, ele desfilava por Roma exibindo seus tesouros e prisioneiros, queimando incenso pelas ruas. Paulo vê a si mesmo como um general vitorioso? Não! Ele é o prisioneiro conquistado e cativo no desfile de Cristo! E mesmo em suas fraquezas e cadeias, Deus o usa para espalhar a fragrância do conhecimento de Cristo.</li>
+                            </ul>
+
+                            <h3>3. O Aroma de Vida e Morte</h3>
+                            <ul>
+                                <li>No desfile romano, o cheiro do incenso significava festa para os cidadãos vencedores, mas significava morte iminente para os prisioneiros que seriam executados no fim do desfile. O Evangelho funciona exatamente assim: a mensagem da cruz cheira a morte e condenação para os que estão perecendo no seu orgulho; mas, para os que estão sendo salvos, é o perfume maravilhoso da vida eterna. "E para estas coisas, quem é idôneo?" (v.16). Ninguém. Apenas o poder de Deus pode produzir tal efeito.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "2corintios_3": {
+                title: "A NOVA ALIANÇA DA GLÓRIA",
+                date: "24/03",
+                desc: "\"A letra mata, mas o Espírito vivifica.\"",
+                blocks: [
+                    {
+                        title: "Epístolas Vivas e o Rosto Descoberto",
+                        verse: "Mas todos nós, com rosto descoberto, refletindo como um espelho a glória do Senhor, somos transformados de glória em glória... (2 Co 3:18)",
+                        exegesis: `
+                            <h3>1. Cartas de Recomendação Vivas</h3>
+                            <ul>
+                                <li>Os falsos apóstolos chegaram a Corinto exibindo cartas de recomendação para provar sua autoridade. Eles ironizavam Paulo por não ter tais cartas. A resposta de Paulo é brilhante: "Vós sois a nossa carta" (v.2). O papel e a tinta podem ser falsificados, mas a transformação moral e espiritual dos coríntios (de idólatras a santos) era uma carta de recomendação escrita pelo Espírito do Deus vivo nas tábuas de carne do coração.</li>
+                            </ul>
+                            
+                            <h3>2. A Letra Mata, o Espírito Vivifica</h3>
+                            <ul>
+                                <li>Paulo faz um contraste teológico colossal entre a Velha Aliança (Moisés) e a Nova Aliança (Cristo). A lei escrita em pedras é chamada de "ministério da morte" e "ministério da condenação". Por quê? Porque ela é perfeita, diz o que fazer, mas não dá a força para cumprir, terminando por condenar o transgressor. A Nova Aliança é o "ministério do Espírito" e "da justiça", que escreve a lei no coração e perdoa os pecados, não abolindo a justiça, mas concedendo a vida e o perdão divinos.</li>
+                            </ul>
+
+                            <h3>3. O Véu de Moisés e a Glória Contínua</h3>
+                            <ul>
+                                <li>Quando Moisés desceu do Sinai, seu rosto brilhava, mas a glória ia se desvanecendo. Ele colocou um véu. Paulo diz que, até hoje, quando os judeus leem a Torá, o "véu" continua sobre o coração deles, impedindo-os de ver que o fim da lei é Cristo. "Mas, quando se converterem ao Senhor, então o véu se tirará" (v.16). </li>
+                                <li>Para nós, na Nova Aliança, o véu foi rasgado. O cristão contempla a glória do Senhor "com o rosto descoberto", e o resultado de contemplar a Cristo é a metamorfose: somos transformados na mesma imagem, de uma glória desvanecente para uma glória progressiva e eterna, pelo poder do Espírito.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "2corintios_4": {
+                title: "TESOUROS EM VASOS DE BARRO",
+                date: "24/03",
+                desc: "\"Temos, porém, este tesouro em vasos de barro, para que a excelência do poder seja de Deus, e não de nós.\"",
+                blocks: [
+                    {
+                        title: "Luz, Barro e a Eternidade",
+                        verse: "Porque a nossa leve e momentânea tribulação produz para nós um peso eterno de glória mui excelente. (2 Co 4:17)",
+                        exegesis: `
+                            <h3>1. A Cegueira do Mundo e a Luz do Evangelho</h3>
+                            <ul>
+                                <li>Por que nem todos creem, já que o Evangelho é tão glorioso? Paulo não suaviza a mensagem para torná-la palatável; ele não anda "com astúcia, nem falsificando a palavra de Deus". O problema não é o Evangelho, é o ouvinte: "o deus deste século (Satanás) cegou o entendimento dos incrédulos, para que não lhes resplandeça a luz" (v.4). A conversão, diz Paulo, é equivalente ao Gênesis: o mesmo Deus que disse "Haja luz" nas trevas do universo, precisa dar uma ordem criadora para acender a luz do conhecimento da glória de Cristo no coração do pecador (v.6).</li>
+                            </ul>
+                            
+                            <h3>2. O Paradoxo dos Vasos de Barro (Ostrákinos)</h3>
+                            <ul>
+                                <li>Os líderes mundanos exibem força, ouro e beleza. Deus esconde a glória do Seu Evangelho em <em>Ostrákinos</em> (potes de barro baratos e descartáveis). A fragilidade de Paulo (seu corpo quebrado por doenças, prisões e surras) não era um sinal de que Deus o abandonou, mas uma estratégia divina proposital. A glória ofuscante só pode ser vista quando o vaso se quebra. "Trazendo sempre no corpo o morrer de Jesus, para que a vida de Jesus se manifeste em nossa carne mortífera" (v.10).</li>
+                            </ul>
+
+                            <h3>3. O Peso Eterno de Glória</h3>
+                            <ul>
+                                <li>Diante de espancamentos e perseguição constante, Paulo não desanima. Ele ensina a "matemática da fé": comparada à eternidade, uma vida inteira de dor na terra é apenas "uma leve e momentânea tribulação". O sofrimento não é em vão; ele está <em>produzindo</em> um "peso eterno de glória mui excelente". O segredo da resistência apostólica é o foco visual (v.18): "Não atentando nós nas coisas que se veem, mas nas que se não veem; porque as que se veem são temporais, e as que se não veem são eternas".</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "2corintios_5": {
+                title: "O TRIBUNAL E A RECONCILIAÇÃO",
+                date: "25/03",
+                desc: "\"De sorte que, se alguém está em Cristo, nova criatura é; as coisas velhas já passaram; eis que tudo se fez novo.\"",
+                blocks: [
+                    {
+                        title: "O Corpo Celeste e o Ministério dos Embaixadores",
+                        verse: "Àquele que não conheceu pecado, o fez pecado por nós; para que nele fôssemos feitos justiça de Deus. (2 Co 5:21)",
+                        exegesis: `
+                            <h3>1. A Tenda Terrestre e o Bema de Cristo</h3>
+                            <ul>
+                                <li>No capítulo anterior, Paulo falou da corrupção do vaso de barro. Agora ele o chama de "nossa casa terrestre", uma tenda de acampamento. O cristão geme sob o peso da doença e da morte física, mas tem uma garantia: se esta tenda for desfeita, temos um edifício (corpo glorificado) da parte de Deus. Por isso, a morte para o crente não é um terror, mas um transporte: "deixar este corpo, e habitar com o Senhor" (v.8).</li>
+                                <li>Com essa esperança, surge um dever solene: todos os crentes comparecerão perante o Tribunal (<em>Bema</em>) de Cristo (v.10). Não é um julgamento para condenação ao inferno (isso já foi resolvido na cruz), mas para receber a recompensa pelo que foi feito por meio do corpo, seja o bem ou o mal. O "temor do Senhor" impulsiona a vida santa.</li>
+                            </ul>
+                            
+                            <h3>2. A Nova Criação e o Fim das Medidas Carnais</h3>
+                            <ul>
+                                <li>Porque o amor de Cristo nos constrange, não avaliamos mais as pessoas com lentes carnais (status, riqueza, etnia). "Se alguém está em Cristo, nova criatura é" (<em>Kaine ktisis</em> - uma nova criação, um novo Gênesis). As coisas velhas passaram; tudo se fez novo (v.17). A justificação recria a identidade do homem.</li>
+                            </ul>
+
+                            <h3>3. O Ministério da Reconciliação (Katallage) e a Troca Justa</h3>
+                            <ul>
+                                <li>Deus estava em Cristo "reconciliando" (<em>Katallage</em> - mudando a inimizade para amizade) consigo o mundo, não imputando aos homens os seus pecados. A salvação é o fim da guerra. O milagre é que Deus confiou a nós, frágeis vasos de barro, a "palavra da reconciliação". O cristão atua como um <strong>Embaixador de Cristo</strong>, operando como o porta-voz do Rei no território estrangeiro, rogando: "Reconciliai-vos com Deus".</li>
+                                <li>O versículo 21 é a essência do Evangelho (A Grande Troca): Cristo, o perfeitamente inocente, foi tratado judicialmente como o próprio Pecado na cruz (Ele recebeu a nossa culpa), para que nós, totalmente culpados, recebêssemos o status legal da Sua Justiça de Deus.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "2corintios_6": {
+                title: "O JUGOS DESIGUAIS E AS ARMAS DA LUZ",
+                date: "25/03",
+                desc: "\"Não vos prendais a um jugo desigual com os infiéis...\"",
+                blocks: [
+                    {
+                        title: "A Conduta do Embaixador e a Separação Santa",
+                        verse: "Como contristados, mas sempre alegres; como pobres, mas enriquecendo a muitos; como nada tendo, e possuindo tudo. (2 Co 6:10)",
+                        exegesis: `
+                            <h3>1. A Apologia do Ministério em Meio ao Caos</h3>
+                            <ul>
+                                <li>Na qualidade de cooperadores de Deus, Paulo roga que a graça não seja recebida em vão. Ele inicia uma defesa poética e avassaladora de sua autenticidade. Os falsos apóstolos se gloriam de títulos; Paulo se gloria de suas cicatrizes. Ele lista suas "credenciais": muita paciência, aflições, açoites, prisões, tumultos, trabalhos, vigílias e jejuns (v.4-5).</li>
+                                <li>Ele continua com os paradoxos insanos da vida apostólica: São tidos como enganadores (pelos homens), mas são verdadeiros (para Deus); tidos como moribundos, mas vivem; castigados, mas não mortos. A frase "como pobres, mas enriquecendo a muitos; como nada tendo, e possuindo tudo" mostra que a verdadeira riqueza da igreja não está na prosperidade material, mas em dispensar os tesouros do Evangelho ao mundo.</li>
+                            </ul>
+                            
+                            <h3>2. O Coração Dilatado de Paulo</h3>
+                            <ul>
+                                <li>"Ó coríntios, a nossa boca está aberta para vós, o nosso coração está dilatado" (v.11). Apesar da rejeição e das críticas, Paulo não se fecha. Ele os ama de forma expansiva e ampla. O problema do distanciamento não estava em Paulo, mas neles: "estais estreitados nos vossos próprios afetos". Ele implora por reciprocidade.</li>
+                            </ul>
+
+                            <h3>3. O Jugo Desigual (Heterozygountes)</h3>
+                            <ul>
+                                <li>No versículo 14, Paulo dá um imperativo incisivo que transcende séculos: "Não vos prendais a um jugo desigual (<em>heterozygountes</em> - estar atrelado a um animal de outra espécie) com os infiéis". Ele usa cinco pares de opostos: Justiça x Injustiça; Luz x Trevas; Cristo x Belial; Crente x Infiel; Templo de Deus x Ídolos. A associação íntima e comprometedora (seja no casamento, em sociedades empresariais estreitas ou alianças de vida) com quem rejeita o Senhor inevitavelmente arrastará o crente para baixo. Nós somos o templo do Deus vivo; a nossa separação do mundo corrupto é o requisito para experimentar a paternidade divina de forma profunda.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "2corintios_7": {
+                title: "ARREPENDIMENTO VERDADEIRO",
+                date: "26/03",
+                desc: "\"Porque a tristeza segundo Deus opera arrependimento para a salvação...\"",
+                blocks: [
+                    {
+                        title: "O Consolo de Tito e a Tristeza Redentora",
+                        verse: "Mas Deus, que consola os abatidos, nos consolou com a chegada de Tito. (2 Co 7:6)",
+                        exegesis: `
+                            <h3>1. A Purificação das Promessas</h3>
+                            <ul>
+                                <li>Paulo amarra o argumento do capítulo anterior: visto que temos as promessas absolutas de que Deus será o nosso Pai, a nossa resposta deve ser nos "purificar de toda imundícia da carne e do espírito, aperfeiçoando a santificação no temor de Deus" (v.1). Santidade não é um pré-requisito para receber o amor de Deus, é a resposta grata por já tê-lo recebido.</li>
+                            </ul>
+                            
+                            <h3>2. O Encontro com Tito na Macedônia</h3>
+                            <ul>
+                                <li>Paulo retoma a narrativa de sua viagem. Ao chegar à Macedônia, seu corpo não teve repouso: "lutas por fora, temores por dentro". Mas o Deus que consola os abatidos usou meios humanos para reanimá-lo: a chegada de Tito. E mais importante, a notícia que Tito trouxe: a "Carta das Lágrimas" havia funcionado. A igreja de Corinto chorou e se voltou ardorosamente para defender o apóstolo Paulo contra os falsos mestres. A alegria de Paulo transborda.</li>
+                            </ul>
+
+                            <h3>3. Tristeza Segundo Deus vs Tristeza do Mundo</h3>
+                            <ul>
+                                <li>Paulo faz uma das distinções teológicas mais brilhantes e clinicamente precisas da Bíblia no versículo 10. Ele diz que não se arrepende de tê-los entristecido com sua carta, pois essa dor teve um propósito.</li>
+                                <li>A <strong>Tristeza segundo Deus</strong> é o horror pelo pecado por ter ofendido a santidade do Senhor. Ela quebra o orgulho e "opera arrependimento (<em>Metanoia</em>) para a salvação, da qual ninguém se arrepende". O fruto dela é justificação, zelo e temor a Deus.</li>
+                                <li>A <strong>Tristeza do mundo</strong> é apenas o remorso por ter sido pego ou pelas consequências amargas do erro. O foco continua no ego ("Como eu pude fazer isso? O que vão pensar de mim?"). A tristeza do mundo não produz vida, ela "opera a morte" (como no caso de Judas Iscariotes). A verdadeira confrontação evangélica produz vida.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "2corintios_8": {
+                title: "A GRAÇA DA CONTRIBUIÇÃO",
+                date: "26/03",
+                desc: "\"Porque já sabeis a graça de nosso Senhor Jesus Cristo, que, sendo rico, por amor de vós se fez pobre...\"",
+                blocks: [
+                    {
+                        title: "A Macedônia, o Pobre Rei e a Igualdade",
+                        verse: "Porque, no meio de muita prova de tribulação, manifestaram abundância de alegria, e a profunda pobreza deles superabundou em grande riqueza da sua generosidade. (2 Co 8:2)",
+                        exegesis: `
+                            <h3>1. O Milagre das Igrejas da Macedônia</h3>
+                            <ul>
+                                <li>Os capítulos 8 e 9 tratam magistralmente da teologia da contribuição. Havia uma fome terrível entre os santos pobres na Judeia. Para inspirar os ricos coríntios a ofertarem, Paulo não usa ameaças, mas usa o testemunho da província vizinha: as igrejas da Macedônia (Filipos, Tessalônica, Bereia).</li>
+                                <li>A Macedônia estava em "profunda pobreza" (no grego, <em>abissal</em>), agravada por severas perseguições. No entanto, a graça de Deus operou neles um milagre econômico invertido: a união da miséria com a alegria gerou "riqueza da sua generosidade". Eles deram além do que podiam e imploraram pelo privilégio de participar da coleta. O segredo? "A si mesmos se deram primeiramente ao Senhor" (v.5). Quem entrega o coração a Cristo não consegue segurar a carteira.</li>
+                            </ul>
+                            
+                            <h3>2. A Motivação Cristocêntrica Suprema</h3>
+                            <ul>
+                                <li>No versículo 9, Paulo ancora o dever de ofertar na própria essência do Evangelho. "Porque já sabeis a graça de nosso Senhor Jesus Cristo...". A lógica da cruz é financeira no sentido espiritual: Jesus era infinitamente rico (dono da glória cósmica); por amor a nós, Ele se fez pobre (encarnação, cruz, túmulo), para que nós, os falidos pecadores, fôssemos enriquecidos eternamente. A contribuição cristã não é uma taxa obrigatória; é uma imitação natural do sacrifício de Cristo.</li>
+                            </ul>
+
+                            <h3>3. O Princípio da Igualdade (Isonomia)</h3>
+                            <ul>
+                                <li>Paulo acalma os coríntios explicando que não quer que eles se aflijam para que outros fiquem folgados, mas que haja igualdade. Ele cita o milagre do maná no deserto (Êxodo 16): "O que muito colheu não teve demais, e o que pouco colheu não teve falta". Na comunidade do Evangelho, a abundância de um é provisão divina para suprir a escassez do outro, honrando a dignidade e a integridade de todos. Além disso, Paulo envia irmãos de reputação ilibada (como Tito e outro aprovado por todas as igrejas) para administrar o dinheiro, ensinando que a igreja deve evitar não apenas o mal, mas a <em>aparência</em> do mal (v.21).</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "2corintios_9": {
+                title: "A SEMEADURA ABUNDANTE",
+                date: "27/03",
+                desc: "\"Cada um contribua segundo propôs no seu coração; não com tristeza, ou por necessidade; porque Deus ama ao que dá com alegria.\"",
+                blocks: [
+                    {
+                        title: "Sementes, Pão e o Dom Inefável",
+                        verse: "E digo isto: Que o que semeia pouco, pouco também ceifará; e o que semeia em abundância, em abundância ceifará. (2 Co 9:6)",
+                        exegesis: `
+                            <h3>1. A Lei Natural e Espiritual da Semeadura</h3>
+                            <ul>
+                                <li>Paulo continua a instrução sobre a oferta. Ele usa o princípio da agricultura. Um fazendeiro que economiza sementes para não perdê-las na terra está, na verdade, garantindo o fracasso de sua colheita. A generosidade não é uma perda, é um investimento escatológico e prático no Reino de Deus. Plantar com mesquinhez resulta em colheita mesquinha.</li>
+                            </ul>
+                            
+                            <h3>2. O Doador Alegre (Hilaros)</h3>
+                            <ul>
+                                <li>O versículo 7 dita a lei máxima das finanças cristãs: "Cada um contribua segundo propôs no seu coração". Deus não está interessado no imposto cobrado sob coação ou remorso, nem na barganha egoísta. Ele não aceita ofertas dadas com "tristeza, ou por necessidade" (pressão psicológica). A frase monumental é: "Deus ama ao que dá com alegria". No grego, a palavra para alegria é <em>Hilaros</em> (de onde vem "hilariante"). Uma doação impulsionada pela graça é festiva, leve e contagiante.</li>
+                            </ul>
+
+                            <h3>3. O Deus que Dá Semente e a Glória a Ele</h3>
+                            <ul>
+                                <li>Para curar o medo da escassez que paralisa os coríntios, Paulo aponta para o Doador Original (v.8-10). Deus não apenas tem poder para fazer abundar toda a graça, mas é Ele quem dá a semente ao semeador e o pão para alimento. Se Deus nos deu sementes, não é para armazená-las no celeiro de nosso próprio luxo, mas para semeá-las na causa do evangelho e dos pobres, resultando em "frutos de vossa justiça". </li>
+                                <li>O resultado da generosidade da igreja nunca é o louvor aos homens, mas a explosão de <em>"muitas graças dadas a Deus"</em> pelos necessitados. Paulo, maravilhado com tudo o que escreveu, fica sem palavras e encerra o discurso econômico voltando ao Evangelho: <em>"Graças a Deus, pois, pelo seu dom inefável (indescritível)!"</em> (v.15). O nosso maior presente recebido, Jesus, nos impulsiona a sermos doadores.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "2corintios_10": {
+                title: "AS ARMAS DA NOSSA MILÍCIA",
+                date: "27/03",
+                desc: "\"Porque as armas da nossa milícia não são carnais, mas sim poderosas em Deus para destruição das fortalezas...\"",
+                blocks: [
+                    {
+                        title: "Derrubando Fortalezas e a Verdadeira Autoridade",
+                        verse: "Destruindo os conselhos, e toda a altivez que se levanta contra o conhecimento de Deus, e levando cativo todo o entendimento à obediência de Cristo. (2 Co 10:5)",
+                        exegesis: `
+                            <h3>1. A Mudança de Tom (A Defesa Apostólica)</h3>
+                            <ul>
+                                <li>No capítulo 10, a atmosfera da carta muda do consolo afetivo para um embate quase militar. Paulo lida agora com a minoria rebelde (os seguidores dos falsos "superapóstolos") que ainda resistia a ele em Corinto. Eles zombavam dele, dizendo que suas cartas eram duras e fortes, mas "a sua presença corporal é fraca, e a sua palavra desprezível" (v.10). Eles queriam um líder que parecesse um conquistador romano; mas Paulo era um servo humilde e paciente, à semelhança da mansidão de Cristo.</li>
+                            </ul>
+                            
+                            <h3>2. Guerra Espiritual e Estratégia de Batalha</h3>
+                            <ul>
+                                <li>Paulo concorda que anda "na carne" (como humano frágil), mas afirma categoricamente que não milita (não guerreia) segundo a carne (v.3-4). As armas dele não são a astúcia política, a retórica filosófica, a agressão física ou o carisma pessoal humano. A verdadeira guerra espiritual não se dá em disputas fúteis, mas na esfera do pensamento. </li>
+                                <li>As armas evangélicas são divinamente poderosas para "derrubar fortalezas" (<em>Ochuromata</em>). O que são essas fortalezas? Paulo define: são os "raciocínios", os sistemas filosóficos, e "toda a altivez (arrogância, muralhas de orgulho)" que o mundo constrói contra o conhecimento de Deus. O objetivo da pregação é intelectual e espiritual: invadir a mente rebelde do homem e levar cada um de seus pensamentos "cativo à obediência de Cristo" (v.5).</li>
+                            </ul>
+
+                            <h3>3. A Glória no Senhor, Não no Território</h3>
+                            <ul>
+                                <li>Os falsos apóstolos se glorificavam no trabalho que Paulo havia feito, tentando roubar a igreja de Corinto. Eles agiam fora de seus limites e se mediam por si mesmos (um jogo de narcisismo cego). Paulo se recusa a se gloriar em trabalho alheio; ele celebra a expansão da "esfera" de ação que Deus lhe designou. O capítulo encerra com a máxima final: <em>"Aquele, porém, que se gloria, glorie-se no Senhor"</em> (v.17). Porque não é aprovado quem recomenda a si mesmo nos currículos mundanos, mas apenas aquele a quem o Senhor recomenda e aprova.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "2corintios_11": {
+                title: "A LOUCURA DA GLÓRIA",
+                date: "28/03",
+                desc: "\"Porque, se alguém for pregar-vos outro Jesus que nós não temos pregado... bem o sofrereis.\"",
+                blocks: [
+                    {
+                        title: "Falsos Apóstolos e o Currículo da Dor",
+                        verse: "E não é maravilha, porque o próprio Satanás se transfigura em anjo de luz. (2 Co 11:14)",
+                        exegesis: `
+                            <h3>1. O Ciúme Divino pela Noiva</h3>
+                            <ul>
+                                <li>A angústia de Paulo cresce diante da credulidade da igreja. Ele se compara a um pai que desposou (prometeu) a igreja a um único marido, Cristo, como uma virgem pura. O medo dele é que a mente dos coríntios seja corrompida pela astúcia dos falsos mestres, da mesma forma que a serpente enganou Eva no Éden (v.2-3). A igreja estava tolerando falsos profetas que pregavam "outro Jesus" e "outro espírito" com uma facilidade assustadora, simplesmente porque falavam bonito e cobravam caro.</li>
+                            </ul>
+                            
+                            <h3>2. Os "Superapóstolos" e a Fantasia do Mal</h3>
+                            <ul>
+                                <li>Esses opositores não eram mensageiros confusos, mas "obreiros fraudulentos", disfarçando-se de apóstolos de Cristo. Paulo alerta que isso não deve nos chocar, afinal, o Diabo não se apresenta com chifres, mas "se transfigura em anjo de luz" (v.14). A falsificação teológica frequentemente tem a aparência de uma espiritualidade muito elevada.</li>
+                            </ul>
+
+                            <h3>3. O Louvor na Fraqueza (A "Loucura" de Paulo)</h3>
+                            <ul>
+                                <li>Constrangido por ter que se defender, Paulo entra num modo de "loucura" (v.21) para mostrar que, se o critério é credencial, ele é superior a todos eles. Ele é hebreu, israelita e semente de Abraão. Mas as provas de sua apostolicidade chocam o leitor moderno. Ele não se gloria de quantos milagres fez ou quantas igrejas fundou, mas de quanto apanhou: cinco vezes recebeu quarenta açoites menos um dos judeus, três vezes foi açoitado com varas pelos romanos, uma vez foi apedrejado, três vezes sofreu naufrágio, passou perigos em rios, entre salteadores, no deserto, no mar e entre falsos irmãos (v.23-27). O selo de autoridade do verdadeiro obreiro de Cristo são as cicatrizes que ele carrega por amor à noiva.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "2corintios_12": {
+                title: "O ESPINHO NA CARNE",
+                date: "28/03",
+                desc: "\"A minha graça te basta, porque o meu poder se aperfeiçoa na fraqueza.\"",
+                blocks: [
+                    {
+                        title: "O Terceiro Céu, o Espinho e a Força",
+                        verse: "Pelo que sinto prazer nas fraquezas, nas injúrias... por amor de Cristo. Porque quando estou fraco então sou forte. (2 Co 12:10)",
+                        exegesis: `
+                            <h3>1. A Visão do Paraíso (O Terceiro Céu)</h3>
+                            <ul>
+                                <li>Ainda no seu discurso de "loucura", Paulo decide "competir" com as visões místicas dos falsos apóstolos. Ele relata uma experiência (falando de si mesmo na terceira pessoa, por humildade) ocorrida 14 anos antes: ele foi "arrebatado ao terceiro céu" (o Paraíso, a morada de Deus). Lá, ele ouviu "palavras inefáveis" que não é lícito ao homem pronunciar (v.4). A verdadeira experiência mística de Paulo o levou ao silêncio e à reverência, não à autopromoção ou à venda de livros.</li>
+                            </ul>
+                            
+                            <h3>2. O Espinho na Carne (Skolops)</h3>
+                            <ul>
+                                <li>Experiências celestiais extremas geram o risco de orgulho demoníaco. Para proteger a alma de Paulo, Deus permitiu que algo terrível o atingisse: <em>"Foi-me dado um espinho na carne, a saber, um mensageiro de Satanás para me esbofetear"</em> (v.7). Há muito debate sobre o que seria esse espinho (doença ocular, malária, oposição constante, aflição psicológica), mas o foco é seu propósito: "para que não me exalte". Deus usa a ação de Satanás e a transforma em uma vacina contra a soberba do apóstolo.</li>
+                            </ul>
+
+                            <h3>3. A Graça que Basta</h3>
+                            <ul>
+                                <li>Paulo orou (rogou) três vezes para que Deus removesse o tormento. A resposta divina é a mais contra-intuitiva de toda a Bíblia: <strong>"A minha graça te basta, porque o meu poder se aperfeiçoa na fraqueza"</strong> (v.9). Deus não remove o problema, Ele aumenta a graça. A fraqueza humana é o palco perfeito onde a força de Cristo brilha mais forte. Assim, Paulo conclui com o paradoxo supremo da fé cristã: "Quando estou fraco, então sou forte" (v.10). A admissão de dependência total é o gatilho para a liberação do poder de Deus.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "2corintios_13": {
+                title: "EXAMINAI-VOS A VÓS MESMOS",
+                date: "29/03",
+                desc: "\"A graça do Senhor Jesus Cristo, e o amor de Deus, e a comunhão do Espírito Santo seja com todos vós.\"",
+                blocks: [
+                    {
+                        title: "O Teste da Fé e a Bênção Trinitária",
+                        verse: "Examinai-vos a vós mesmos, se permaneceis na fé; provai-vos a vós mesmos. (2 Co 13:5)",
+                        exegesis: `
+                            <h3>1. A Terceira Visita e a Advertência Final</h3>
+                            <ul>
+                                <li>Paulo encerra a carta avisando que está indo a Corinto pela terceira vez. Ele avisa que agirá com a autoridade rigorosa da Palavra: "Pela boca de duas ou três testemunhas se estabelecerá toda a palavra" (v.1). Ele promete não poupar os que pecaram e não se arrependeram, porque eles queriam uma prova de que Cristo falava por meio dele. Paulo adverte: Cristo foi crucificado em fraqueza, mas agora vive pelo poder de Deus, e nós também agiremos com poder sobre vós.</li>
+                            </ul>
+                            
+                            <h3>2. O Teste de Autenticidade</h3>
+                            <ul>
+                                <li>Os coríntios passaram a carta inteira julgando e examinando o apostolado de Paulo. Agora, ele vira a mesa: <em>"Examinai-vos a vós mesmos, se permaneceis na fé"</em> (v.5). O teste final de ortodoxia não é julgar a igreja alheia ou o pregador, mas olhar para dentro. O critério de aprovação é um só: "Não sabeis que Jesus Cristo está em vós?". Se a vida de Cristo (amor, pureza, arrependimento) não estiver operando no crente, ele é "reprovado". Contudo, a oração de Paulo não é pela reprovação deles, mas pelo "vosso aperfeiçoamento" e restauração (v.9).</li>
+                            </ul>
+
+                            <h3>3. A Bênção Trinitária</h3>
+                            <ul>
+                                <li>O livro termina com a mais famosa e recitada bênção de todo o Novo Testamento: <strong>"A graça do Senhor Jesus Cristo, e o amor de Deus, e a comunhão do Espírito Santo seja com todos vós. Amém."</strong> (v.14). Paulo não formula aqui a doutrina da Trindade em termos de um concílio teológico, mas na sua forma mais relacional e prática. Toda a nossa experiência cristã repousa nestes três pilares: O Pai (a fonte insondável do amor que enviou o Filho), o Filho (cuja graça na cruz conquistou nosso perdão) e o Espírito Santo (que une a igreja fraturada e frágil em perfeita e eterna comunhão).</li>
+                            </ul>
+                        `
+                    }
+                ]
+            }
+        };
+
+        // --- LÓGICA GERAL DE CARREGAMENTO (COMPARTILHADA) ---
+        let currentAudioBlob = null;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        function loadChapter(chapterKey) {
+            const data = bibleData[chapterKey];
+            if (!data) return;
+
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
+            const dateBadge = document.getElementById('dateBadge');
+            const dateValue = document.getElementById('dateValue');
+            const communitySection = document.getElementById('community-section');
+            const formChapterKey = document.getElementById('formChapterKey');
+            
+            heroTitle.style.opacity = '0';
+            heroDesc.style.opacity = '0';
+            dateBadge.style.opacity = '0';
+            
+            setTimeout(() => {
+                if (data.date) {
+                    dateValue.textContent = data.date;
+                    dateBadge.classList.remove('hidden');
+                    communitySection.classList.remove('hidden');
+                    formChapterKey.value = chapterKey;
+                    carregarComentarios(chapterKey);
+                    setTimeout(() => { dateBadge.style.opacity = '1'; }, 100);
+                } else {
+                    dateBadge.classList.add('hidden');
+                    communitySection.classList.add('hidden');
+                }
+
+                heroTitle.innerHTML = data.title;
+                heroDesc.innerHTML = data.desc;
+                heroTitle.style.opacity = '1';
+                heroDesc.style.opacity = '1';
+            }, 300);
+
+            const mainContent = document.getElementById('content');
+            mainContent.innerHTML = ''; 
+
+            data.blocks.forEach((block) => {
+                // Tema Emerald
+                let borderColor = 'border-emerald-600';
+                let blurTop = 'bg-emerald-600/5';
+                let blurBottom = 'bg-emerald-800/5';
+                let borderPanel = 'border-emerald-900/30';
+
+                const html = `
+                    <section class="reveal max-w-4xl mx-auto w-full relative">
+                        <div class="absolute -inset-4 ${blurTop} to-transparent rounded-3xl blur-xl pointer-events-none"></div>
+                        
+                        <div class="space-y-6 relative z-10">
+                            <div class="text-center mb-10">
+                                <h2 class="text-3xl md:text-5xl font-serif text-white leading-tight mb-6">${block.title}</h2>
+                                <div class="inline-block border-l-4 border-r-4 ${borderColor} px-6 py-4 italic text-slate-300 bg-[#021c13]/50 shadow-sm max-w-3xl rounded-sm">
+                                    "${block.verse}"
+                                </div>
+                            </div>
+                            
+                            <div class="bg-[#06241a]/80 p-8 md:p-12 rounded-xl border ${borderPanel} transition shadow-2xl relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-64 h-64 ${blurTop} rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+                                <div class="absolute bottom-0 left-0 w-64 h-64 ${blurBottom} rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
+                                <div class="rich-text text-slate-300 text-[16px] md:text-lg leading-relaxed relative z-10 font-light">
+                                    ${block.exegesis}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+                mainContent.insertAdjacentHTML('beforeend', html);
+            });
+            resetObservers();
+        }
+
+        function carregarComentarios(capitulo) {
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '<p class="text-center text-slate-500 text-sm animate-pulse">Carregando comentários...</p>';
+
+            fetch(`api.php?acao=listar&capitulo=${capitulo}`)
+            .then(res => res.json())
+            .then(data => {
+                list.innerHTML = '';
+                if(data.length === 0) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
+                }
+                data.forEach(c => {
+                    let mediaHtml = '';
+                    if(c.foto) mediaHtml += `<img src="${c.foto}" onclick="openImage(this.src)" class="mt-4 rounded-lg max-h-48 border border-slate-700 cursor-pointer hover:scale-[1.02] transition shadow-lg">`;
+                    if(c.audio) mediaHtml += `<audio controls src="${c.audio}" class="mt-4 w-full"></audio>`;
+
+                    const jaCurtiu = localStorage.getItem(`reagiu_likes_${c.id}`);
+                    const jaAmem = localStorage.getItem(`reagiu_amem_${c.id}`);
+                    const jaGloria = localStorage.getItem(`reagiu_gloria_${c.id}`);
+
+                    let themeColor = 'text-emerald-400';
+                    let panelBorder = 'hover:border-emerald-500/50';
+
+                    const html = `
+                        <div class="glass-panel p-5 pb-12 rounded-xl border border-slate-800 relative group transition ${panelBorder} bg-[#06241a]/60">
+                            <div class="flex justify-between items-start mb-3 border-b border-slate-800 pb-2">
+                                <strong class="${themeColor} text-sm tracking-wide font-serif">${c.nome}</strong>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-widest">${new Date(c.data_envio).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed">${c.mensagem}</p>
+                            ${mediaHtml}
+                            
+                            <div class="absolute bottom-3 right-4 flex gap-2">
+                                <button onclick="reagirComentario(${c.id}, 'likes', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaCurtiu ? 'text-red-500 border-red-500/30' : 'text-slate-400 hover:text-red-400'}" ${jaCurtiu ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-heart"></i> <span class="count font-bold">${c.likes || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'amem', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaAmem ? 'text-emerald-400 border-emerald-400/30' : 'text-slate-400 hover:text-emerald-400'}" ${jaAmem ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-hands-praying"></i> <span class="count font-bold">${c.amem || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'gloria', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaGloria ? 'text-amber-500 border-amber-500/30' : 'text-slate-400 hover:text-amber-500'}" ${jaGloria ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-fire"></i> <span class="count font-bold">${c.gloria || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', html);
+                });
+            })
+            .catch(err => {
+                list.innerHTML = '<p class="text-center text-red-400 text-xs">Erro ao carregar comentários.</p>';
+            });
+        }
+
+        function reagirComentario(id, tipo, btn) {
+            if(localStorage.getItem(`reagiu_${tipo}_${id}`)) return;
+
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('.count');
+            let count = parseInt(countSpan.innerText);
+
+            icon.classList.add('reacted-anim');
+            btn.classList.remove('text-slate-400');
+            
+            if(tipo === 'likes') btn.classList.add('text-red-500', 'border-red-500/30');
+            if(tipo === 'amem') btn.classList.add('text-emerald-400', 'border-emerald-400/30');
+            if(tipo === 'gloria') btn.classList.add('text-amber-500', 'border-amber-500/30');
+
+            countSpan.innerText = count + 1;
+            btn.disabled = true;
+
+            localStorage.setItem(`reagiu_${tipo}_${id}`, 'true');
+
+            const formData = new FormData();
+            formData.append('acao', 'reagir');
+            formData.append('id', id);
+            formData.append('tipo', tipo);
+
+            fetch('api.php', { method: 'POST', body: formData });
+        }
+
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+            formData.append('acao', 'salvar');
+            if(currentAudioBlob) {
+                formData.append('audio', currentAudioBlob, 'audio.wav');
+            }
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    this.reset();
+                    document.getElementById('filePreview').innerHTML = '';
+                    currentAudioBlob = null;
+                    document.getElementById('recordText').innerText = "Gravar Áudio";
+                    carregarComentarios(document.getElementById('formChapterKey').value);
+                } else {
+                    alert('Erro ao enviar.');
+                }
+            })
+            .catch(() => alert('Erro de conexão.'))
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        });
+
+        function previewFile(input) {
+            const preview = document.getElementById('filePreview');
+            if(input.files && input.files[0]) {
+                preview.innerHTML = `<i class="fa-solid fa-check text-green-400"></i> Imagem selecionada: ${input.files[0].name}`;
+                preview.classList.remove('hidden');
+            }
+        }
+
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.addEventListener('click', async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                    mediaRecorder.onstop = () => {
+                        currentAudioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        document.getElementById('filePreview').classList.remove('hidden');
+                        document.getElementById('filePreview').innerHTML += '<br><i class="fa-solid fa-microphone text-green-400"></i> Áudio gravado!';
+                    };
+                    mediaRecorder.start();
+                    recordBtn.classList.add('recording-pulse');
+                    document.getElementById('recordText').innerText = "Parar Gravação";
+                } catch (err) {
+                    alert("Permita o uso do microfone para gravar.");
+                }
+            } else {
+                mediaRecorder.stop();
+                recordBtn.classList.remove('recording-pulse');
+                document.getElementById('recordText').innerText = "Gravar Áudio";
+            }
+        });
+
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        function closeImage() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function resetObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<80; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(16, 185, 129, 0.15)"; /* Emerald particles */
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        loadChapter('intro_book');
+    </script>
+</body>
+</html>

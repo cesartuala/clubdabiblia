@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clube da Bíblia | Início</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f172a; color: #e2e8f0; overflow-x: hidden; }
+        
+        .glass-card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); transition: all 0.4s ease; }
+        .glass-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); border-color: rgba(255, 255, 255, 0.15); }
+        
+        .gold-glow { text-shadow: 0 0 15px rgba(251, 192, 45, 0.4); }
+        .cyan-glow { text-shadow: 0 0 15px rgba(34, 211, 238, 0.4); }
+        .red-glow { text-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+        .purple-glow { text-shadow: 0 0 15px rgba(168, 85, 247, 0.4); }
+        .emerald-glow { text-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+        .orange-glow { text-shadow: 0 0 15px rgba(249, 115, 22, 0.4); }
+        .indigo-glow { text-shadow: 0 0 15px rgba(129, 140, 248, 0.4); }
+
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .action-btn { transition: all 0.3s ease; }
+        .action-btn:hover { transform: translateY(-3px); filter: brightness(1.2); }
+
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <header class="py-12 px-4 text-center relative z-10">
+        <div class="inline-flex items-center gap-3 mb-4 animate-bounce">
+            <i class="fa-solid fa-book-bible text-amber-500 text-4xl"></i>
+        </div>
+        <h1 class="font-serif text-4xl md:text-6xl text-white mb-2 gold-glow uppercase tracking-widest font-bold">Clube da Bíblia</h1>
+        <p class="text-slate-400 text-sm md:text-lg italic font-light tracking-wide">"Examinai as Escrituras..."</p>
+    </header>
+
+    <main class="flex-grow flex items-start justify-center p-4 relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[100rem] w-full items-start">
+            
+            <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-indigo-500/40 shadow-[0_0_30px_rgba(129,140,248,0.15)] transform lg:-translate-y-4">
+                <div class="h-1 w-full bg-gradient-to-r from-indigo-600 via-purple-500 to-blue-500"></div>
+                
+                <div class="absolute top-0 right-0 bg-indigo-600 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-bl-xl shadow-[0_0_15px_rgba(129,140,248,0.6)] animate-pulse z-20">
+                    <i class="fa-solid fa-circle-play mr-1"></i> Leitura Atual
+                </div>
+
+                <div class="p-6 flex flex-col items-center text-center flex-grow justify-center">
+                    <div class="w-16 h-16 rounded-full bg-indigo-500/10 flex items-center justify-center mb-4 border border-indigo-500/20 group-hover:border-indigo-500/50 transition duration-500">
+                        <i class="fa-solid fa-church text-indigo-400 text-2xl group-hover:text-indigo-300"></i>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-2 mb-4">
+                        <div class="inline-flex items-center gap-2 border border-indigo-500/30 bg-slate-900 rounded-full px-3 py-1 shadow-sm">
+                            <i class="fa-regular fa-calendar text-indigo-400 text-[10px]"></i>
+                            <span class="text-[10px] text-slate-300 uppercase tracking-widest font-bold">06 Abr - 10 Abr</span>
+                        </div>
+                        <div class="inline-flex items-center gap-2">
+                            <span class="text-[9px] text-indigo-300 uppercase tracking-[0.2em] font-bold bg-indigo-900/30 px-2 py-1 rounded border border-indigo-500/20">
+                                <i class="fa-solid fa-play mr-1"></i> 1 Capítulo/Dia
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <h2 class="font-serif text-3xl text-white mb-2 indigo-glow">Efésios</h2>
+                    <p class="text-slate-400 text-xs mb-6 leading-relaxed">
+                        As Riquezas Incompreensíveis de Cristo e a Unidade da Igreja.
+                    </p>
+
+                    <div class="w-full mt-auto mb-6">
+                        <a href="efesios.html" class="action-btn w-full flex flex-col items-center justify-center bg-gradient-to-b from-indigo-900/30 to-black/60 border border-indigo-500/30 hover:border-indigo-500 p-3 rounded-xl group/btn shadow-lg">
+                            <i class="fa-solid fa-book-open text-indigo-400 mb-2 text-lg group-hover/btn:scale-110 transition"></i>
+                            <span class="text-[9px] md:text-[10px] uppercase tracking-widest text-slate-200 font-bold">Guia para a Leitura</span>
+                        </a>
+                    </div>
+
+                    <div class="w-full bg-slate-900/40 rounded-lg p-4 border border-slate-700/50 shadow-inner opacity-60">
+                        <h3 class="text-[10px] uppercase tracking-widest text-indigo-400/80 mb-3 flex items-center justify-center gap-2 font-bold border-b border-slate-800 pb-2">
+                            <i class="fa-solid fa-lock"></i> Quiz & Ranking
+                        </h3>
+                        <p class="text-xs text-slate-500 text-center py-5 italic">Disponível Sábado</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group opacity-95 hover:opacity-100">
+                <div class="h-1 w-full bg-gradient-to-r from-orange-600 via-amber-500 to-yellow-500"></div>
+                
+                <div class="absolute top-0 right-0 bg-orange-600 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-bl-xl shadow-[0_0_15px_rgba(249,115,22,0.6)] animate-pulse z-20">
+                    <i class="fa-solid fa-trophy mr-1"></i> Desafio Aberto
+                </div>
+
+                <div class="p-6 flex flex-col items-center text-center flex-grow justify-center">
+                    <div class="w-16 h-16 rounded-full bg-orange-500/10 flex items-center justify-center mb-4 border border-orange-500/20 group-hover:border-orange-500/50 transition duration-500">
+                        <i class="fa-solid fa-dove text-orange-400 text-2xl group-hover:text-orange-300"></i>
+                    </div>
+
+                    <div class="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-full px-3 py-1 mb-4 shadow-sm opacity-70">
+                        <i class="fa-regular fa-calendar-check text-slate-400 text-[10px]"></i>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold line-through">30 Mar - 05 Abr</span>
+                    </div>
+                    
+                    <h2 class="font-serif text-2xl text-white mb-2 group-hover:text-orange-400 transition">Gálatas</h2>
+                    <p class="text-slate-400 text-xs mb-6 leading-relaxed">A Magna Carta da Liberdade Cristã.</p>
+
+                    <div class="grid grid-cols-2 gap-3 w-full mt-auto mb-6">
+                        <a href="galatas.html" class="action-btn flex flex-col items-center justify-center bg-gradient-to-b from-orange-900/20 to-black/60 border border-orange-500/20 hover:border-orange-500 p-3 rounded-xl group/btn shadow-lg">
+                            <i class="fa-solid fa-book-open text-orange-400/80 mb-2 text-lg group-hover/btn:scale-110 transition"></i>
+                            <span class="text-[8px] md:text-[9px] uppercase tracking-widest text-slate-400 group-hover:text-slate-200 font-bold">Leitura</span>
+                        </a>
+
+                        <a href="quiz_galatas.html" class="action-btn flex flex-col items-center justify-center bg-gradient-to-b from-amber-900/20 to-black/60 border border-amber-500/20 hover:border-amber-500 p-3 rounded-xl group/btn shadow-lg relative">
+                            <i class="fa-solid fa-trophy text-amber-400/80 mb-2 text-lg group-hover/btn:scale-110 transition"></i>
+                            <span class="text-[8px] md:text-[9px] uppercase tracking-widest text-slate-400 group-hover:text-slate-200 font-bold">Quiz</span>
+                        </a>
+                    </div>
+
+                    <div class="w-full bg-slate-900/80 rounded-lg p-4 border border-slate-700/50 shadow-inner">
+                        <h3 class="text-[10px] uppercase tracking-widest text-orange-400 mb-3 flex items-center justify-center gap-2 font-bold border-b border-slate-800 pb-2">
+                            <i class="fa-solid fa-list-ol"></i> Ranking Gálatas
+                        </h3>
+                        <ul id="rankingGalatas" class="space-y-2 text-xs text-slate-300 max-h-32 overflow-y-auto custom-scroll pr-2">
+                            <li class="text-center animate-pulse opacity-50">Carregando ranking...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group opacity-90 hover:opacity-100">
+                <div class="h-1 w-full bg-gradient-to-r from-emerald-600 via-teal-500 to-green-500"></div>
+                
+                <div class="p-6 flex flex-col items-center text-center flex-grow justify-center">
+                    <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mb-4 border border-emerald-500/20 group-hover:border-emerald-500/50 transition duration-500">
+                        <i class="fa-solid fa-leaf text-emerald-400 text-2xl group-hover:text-emerald-300"></i>
+                    </div>
+
+                    <div class="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-full px-3 py-1 mb-4 shadow-sm opacity-70">
+                        <i class="fa-regular fa-calendar-check text-slate-400 text-[10px]"></i>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold line-through">23 Mar - 29 Mar</span>
+                    </div>
+                    
+                    <h2 class="font-serif text-2xl text-white mb-2 group-hover:text-emerald-400 transition">II Coríntios</h2>
+                    <p class="text-slate-400 text-xs mb-6 leading-relaxed">A força na fraqueza. Consolo divino.</p>
+
+                    <div class="grid grid-cols-2 gap-3 w-full mt-auto mb-6">
+                        <a href="2corintios.html" class="action-btn flex flex-col items-center justify-center bg-gradient-to-b from-emerald-900/20 to-black/60 border border-emerald-500/20 hover:border-emerald-500 p-3 rounded-xl group/btn shadow-lg">
+                            <i class="fa-solid fa-book-open text-emerald-400/80 mb-2 text-lg group-hover/btn:scale-110 transition"></i>
+                            <span class="text-[8px] md:text-[9px] uppercase tracking-widest text-slate-400 group-hover:text-slate-200 font-bold">Leitura</span>
+                        </a>
+
+                        <a href="quiz_2corintios.html" class="action-btn flex flex-col items-center justify-center bg-gradient-to-b from-teal-900/20 to-black/60 border border-teal-500/20 hover:border-teal-500 p-3 rounded-xl group/btn shadow-lg relative">
+                            <i class="fa-solid fa-trophy text-teal-400/80 mb-2 text-lg group-hover/btn:scale-110 transition"></i>
+                            <span class="text-[8px] md:text-[9px] uppercase tracking-widest text-slate-400 group-hover:text-slate-200 font-bold">Quiz</span>
+                        </a>
+                    </div>
+
+                    <div class="w-full bg-slate-900/80 rounded-lg p-4 border border-slate-700/50 shadow-inner">
+                        <h3 class="text-[10px] uppercase tracking-widest text-emerald-400 mb-3 flex items-center justify-center gap-2 font-bold border-b border-slate-800 pb-2">
+                            <i class="fa-solid fa-list-ol"></i> Ranking II Coríntios
+                        </h3>
+                        <ul id="ranking2Corintios" class="space-y-2 text-xs text-slate-300 max-h-32 overflow-y-auto custom-scroll pr-2"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group opacity-80 hover:opacity-100">
+                <div class="h-1 w-full bg-gradient-to-r from-purple-600 via-fuchsia-500 to-pink-500"></div>
+                
+                <div class="p-6 flex flex-col items-center text-center flex-grow justify-center">
+                    <div class="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center mb-4 border border-purple-500/20 group-hover:border-purple-500/50 transition duration-500">
+                        <i class="fa-solid fa-crown text-purple-400 text-2xl group-hover:text-purple-300"></i>
+                    </div>
+
+                    <div class="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-full px-3 py-1 mb-4 shadow-sm opacity-70">
+                        <i class="fa-regular fa-calendar-check text-slate-400 text-[10px]"></i>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold line-through">12 Mar - 21 Mar</span>
+                    </div>
+                    
+                    <h2 class="font-serif text-2xl text-white mb-2 group-hover:text-purple-400 transition">I Coríntios</h2>
+                    <p class="text-slate-400 text-xs mb-6 leading-relaxed">A loucura da cruz e a sabedoria.</p>
+
+                    <div class="grid grid-cols-2 gap-3 w-full mt-auto mb-6">
+                        <a href="corintios.html" class="action-btn flex flex-col items-center justify-center bg-gradient-to-b from-purple-900/20 to-black/60 border border-purple-500/20 hover:border-purple-500 p-3 rounded-xl group/btn shadow-lg">
+                            <i class="fa-solid fa-book-open text-purple-400/80 mb-2 text-lg group-hover/btn:scale-110 transition"></i>
+                            <span class="text-[8px] md:text-[9px] uppercase tracking-widest text-slate-400 group-hover:text-slate-200 font-bold">Leitura</span>
+                        </a>
+
+                        <a href="quiz_corintios.html" class="action-btn flex flex-col items-center justify-center bg-gradient-to-b from-fuchsia-900/20 to-black/60 border border-fuchsia-500/20 hover:border-fuchsia-500 p-3 rounded-xl group/btn shadow-lg">
+                            <i class="fa-solid fa-trophy text-fuchsia-400/80 mb-2 text-lg group-hover/btn:scale-110 transition"></i>
+                            <span class="text-[8px] md:text-[9px] uppercase tracking-widest text-slate-400 group-hover:text-slate-200 font-bold">Quiz</span>
+                        </a>
+                    </div>
+
+                    <div class="w-full bg-slate-900/80 rounded-lg p-4 border border-slate-700/50 shadow-inner">
+                        <h3 class="text-[10px] uppercase tracking-widest text-purple-400 mb-3 flex items-center justify-center gap-2 font-bold border-b border-slate-800 pb-2">
+                            <i class="fa-solid fa-list-ol"></i> Ranking I Coríntios
+                        </h3>
+                        <ul id="rankingCorintios" class="space-y-2 text-xs text-slate-300 max-h-32 overflow-y-auto custom-scroll pr-2"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group opacity-70 hover:opacity-100">
+                <div class="h-1 w-full bg-gradient-to-r from-red-600 via-rose-500 to-orange-600"></div>
+                
+                <div class="p-6 flex flex-col items-center text-center flex-grow justify-center">
+                    <div class="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-4 border border-red-500/20 group-hover:border-red-500/50 transition duration-500">
+                        <i class="fa-solid fa-cross text-red-500 text-2xl group-hover:text-red-400"></i>
+                    </div>
+
+                    <div class="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-full px-3 py-1 mb-4 shadow-sm opacity-70">
+                        <i class="fa-regular fa-calendar-check text-slate-500 text-[10px]"></i>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold line-through">02 Mar - 11 Mar</span>
+                    </div>
+                    
+                    <h2 class="font-serif text-2xl text-white/90 mb-2 group-hover:text-red-400 transition">Aos Romanos</h2>
+                    <p class="text-slate-500 text-xs mb-6 leading-relaxed">A Magna Carta da fé cristã.</p>
+
+                    <div class="grid grid-cols-2 gap-3 w-full mt-auto mb-6">
+                        <a href="romanos.html" class="action-btn flex flex-col items-center justify-center bg-gradient-to-b from-red-900/20 to-black/60 border border-red-500/20 hover:border-red-500 p-3 rounded-xl group/btn shadow-lg">
+                            <i class="fa-solid fa-book-open text-red-400/80 mb-2 text-lg group-hover/btn:scale-110 transition"></i>
+                            <span class="text-[8px] md:text-[9px] uppercase tracking-widest text-slate-400 group-hover:text-slate-200 font-bold">Leitura</span>
+                        </a>
+
+                        <a href="quiz_romanos.html" class="action-btn flex flex-col items-center justify-center bg-gradient-to-b from-orange-900/20 to-black/60 border border-orange-500/20 hover:border-orange-500 p-3 rounded-xl group/btn shadow-lg">
+                            <i class="fa-solid fa-trophy text-orange-400/80 mb-2 text-lg group-hover/btn:scale-110 transition"></i>
+                            <span class="text-[8px] md:text-[9px] uppercase tracking-widest text-slate-400 group-hover:text-slate-200 font-bold">Quiz</span>
+                        </a>
+                    </div>
+
+                    <div class="w-full bg-slate-900/80 rounded-lg p-4 border border-slate-700/50 shadow-inner">
+                        <h3 class="text-[10px] uppercase tracking-widest text-red-400 mb-3 flex items-center justify-center gap-2 font-bold border-b border-slate-800 pb-2">
+                            <i class="fa-solid fa-list-ol"></i> Ranking Romanos
+                        </h3>
+                        <ul id="rankingRomanos" class="space-y-2 text-xs text-slate-300 max-h-32 overflow-y-auto custom-scroll pr-2"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group opacity-60 hover:opacity-100">
+                <div class="h-1 w-full bg-gradient-to-r from-cyan-600 via-blue-500 to-indigo-600"></div>
+                
+                <div class="p-6 flex flex-col items-center text-center flex-grow justify-center">
+                    <div class="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mb-4 border border-blue-500/20 group-hover:border-cyan-500/50 transition duration-500">
+                        <i class="fa-solid fa-fire text-cyan-400 text-2xl group-hover:text-cyan-300"></i>
+                    </div>
+
+                    <div class="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-full px-3 py-1 mb-4 shadow-sm opacity-70">
+                        <i class="fa-regular fa-calendar-check text-slate-500 text-[10px]"></i>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold line-through">09 Fev - 26 Fev</span>
+                    </div>
+                    
+                    <h2 class="font-serif text-2xl text-white/90 mb-2 group-hover:text-cyan-400 transition">Atos</h2>
+                    <p class="text-slate-500 text-xs mb-6 leading-relaxed">Nascimento da igreja.</p>
+
+                    <div class="grid grid-cols-2 gap-3 w-full mt-auto mb-6">
+                        <a href="atos.html" class="action-btn flex flex-col items-center justify-center bg-gradient-to-b from-cyan-900/20 to-black/60 border border-cyan-500/20 hover:border-cyan-500 p-3 rounded-xl group/btn shadow-lg">
+                            <i class="fa-solid fa-book-open text-cyan-400/80 mb-2 text-lg group-hover/btn:scale-110 transition"></i>
+                            <span class="text-[8px] md:text-[9px] uppercase tracking-widest text-slate-400 group-hover:text-slate-200 font-bold">Leitura</span>
+                        </a>
+
+                        <a href="quiz_atos.html" class="action-btn flex flex-col items-center justify-center bg-gradient-to-b from-blue-900/20 to-black/60 border border-blue-500/20 hover:border-blue-500 p-3 rounded-xl group/btn shadow-lg">
+                            <i class="fa-solid fa-trophy text-blue-400/80 mb-2 text-lg group-hover/btn:scale-110 transition"></i>
+                            <span class="text-[8px] md:text-[9px] uppercase tracking-widest text-slate-400 group-hover:text-slate-200 font-bold">Quiz</span>
+                        </a>
+                    </div>
+
+                    <div class="w-full bg-slate-900/80 rounded-lg p-4 border border-slate-700/50 shadow-inner">
+                        <h3 class="text-[10px] uppercase tracking-widest text-cyan-400 mb-3 flex items-center justify-center gap-2 font-bold border-b border-slate-800 pb-2">
+                            <i class="fa-solid fa-list-ol"></i> Ranking Atos
+                        </h3>
+                        <ul id="rankingAtos" class="space-y-2 text-xs text-slate-300 max-h-32 overflow-y-auto custom-scroll pr-2"></ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 text-slate-400 py-8 border-t border-white/5 w-full max-w-3xl mx-auto relative z-10">
+        <div class="flex flex-col items-center group">
+            <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Idealizado por</p>
+            <strong class="text-orange-400 text-xs md:text-sm font-serif tracking-widest group-hover:text-orange-300 transition">Fellipe Gomes Andrade</strong>
+        </div>
+        <span class="hidden md:block h-8 w-[1px] bg-gradient-to-b from-transparent via-slate-600 to-transparent"></span>
+        <div class="flex flex-col items-center group">
+            <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Desenvolvido por</p>
+            <strong class="text-orange-400 text-xs md:text-sm font-serif tracking-widest group-hover:text-orange-300 transition">Cesar Tuala</strong>
+        </div>
+    </div>
+
+    <footer class="text-center py-6 text-slate-700 text-[10px] tracking-widest relative z-10 uppercase">
+        &copy; 2026 CLUBE DA BÍBLIA - Todos os direitos reservados.
+    </footer>
+
+    <script>
+        function renderRanking(data, elementId, colorClassTop) {
+            const list = document.getElementById(elementId);
+            list.innerHTML = ''; 
+
+            if (data.length === 0) {
+                list.innerHTML = '<li class="text-center text-slate-500 italic py-4">Seja o primeiro a pontuar!</li>';
+                return;
+            }
+
+            let currentRank = 1;
+
+            data.forEach((p, index) => {
+                if (index > 0 && p.pontos < data[index - 1].pontos) {
+                    currentRank++;
+                }
+
+                let icon = currentRank + 'º';
+                let colorClass = 'text-slate-400';
+                let rowBg = '';
+                
+                if(currentRank === 1) { icon = '🥇'; colorClass = colorClassTop; rowBg = 'bg-slate-700/30'; }
+                else if(currentRank === 2) { icon = '🥈'; colorClass = 'text-slate-200'; rowBg = 'bg-slate-700/10'; }
+                else if(currentRank === 3) { icon = '🥉'; colorClass = 'text-amber-700'; rowBg = 'bg-slate-800/20'; }
+
+                list.innerHTML += `
+                    <li class="flex justify-between items-center border-b border-slate-800/50 py-1.5 px-2 rounded hover:bg-slate-800 transition ${rowBg}">
+                        <div class="flex items-center gap-2 overflow-hidden">
+                            <span class="w-6 text-right ${colorClass}">${icon}</span>
+                            <span class="text-slate-300 truncate font-medium text-[11px] w-24 md:w-28">${p.nome}</span>
+                        </div>
+                        <span class="font-mono text-white font-bold text-[10px] bg-slate-900 px-2 py-0.5 rounded border border-slate-600/50">${p.pontos}</span>
+                    </li>
+                `;
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('api.php?acao=ranking_galatas')
+                .then(res => res.json())
+                .then(data => renderRanking(data, 'rankingGalatas', 'text-orange-400 font-bold'))
+                .catch(() => document.getElementById('rankingGalatas').innerHTML = '<li class="text-center text-red-900">Erro</li>');
+
+            fetch('api.php?acao=ranking_2corintios')
+                .then(res => res.json())
+                .then(data => renderRanking(data, 'ranking2Corintios', 'text-emerald-400 font-bold'))
+                .catch(() => document.getElementById('ranking2Corintios').innerHTML = '<li class="text-center text-red-900">Erro</li>');
+
+            fetch('api.php?acao=ranking_corintios')
+                .then(res => res.json())
+                .then(data => renderRanking(data, 'rankingCorintios', 'text-purple-400 font-bold'))
+                .catch(() => document.getElementById('rankingCorintios').innerHTML = '<li class="text-center text-red-900">Erro</li>');
+
+            fetch('api.php?acao=ranking_romanos')
+                .then(res => res.json())
+                .then(data => renderRanking(data, 'rankingRomanos', 'text-red-400 font-bold'))
+                .catch(() => document.getElementById('rankingRomanos').innerHTML = '<li class="text-center text-red-900">Erro</li>');
+
+            fetch('api.php?acao=ranking_atos')
+                .then(res => res.json())
+                .then(data => renderRanking(data, 'rankingAtos', 'text-cyan-400 font-bold'))
+                .catch(() => document.getElementById('rankingAtos').innerHTML = '<li class="text-center text-red-900">Erro</li>');
+                
+            fetch('api.php?acao=ranking')
+                .then(res => res.json())
+                .then(data => renderRanking(data, 'rankingJoao', 'text-yellow-400 font-bold'))
+                .catch(() => document.getElementById('rankingJoao').innerHTML = '<li class="text-center text-red-900">Erro</li>');
+        });
+
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<40; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+    </script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = { theme: { extend: { fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }, colors: { divine: '#FBC02D' } } } }
+    </script>
+    <style>
+        body { background-color: #0f172a; color: #e2e8f0; }
+        .glass-panel { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .option-btn:hover { border-color: #FBC02D; background: rgba(251, 192, 45, 0.1); }
+        .correct { background: #065f46 !important; border-color: #34d399 !important; }
+        .wrong { background: #7f1d1d !important; border-color: #f87171 !important; }
+        /* Animação Confete */
+        @keyframes celebrate { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .celebration { animation: celebrate 0.5s ease-in-out infinite; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-[url('https://images.unsplash.com/photo-1507692049790-de58293a469d?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat bg-fixed">
+    <div class="absolute inset-0 bg-slate-900/90"></div>
+
+    <div class="relative z-10 w-full max-w-2xl">
+        
+        <div id="startScreen" class="glass-panel p-8 rounded-2xl text-center shadow-2xl border-t-4 border-divine">
+            <i class="fa-solid fa-scroll text-5xl text-amber-500 mb-6"></i>
+            <h1 class="font-serif text-3xl md:text-4xl text-white mb-2">Quiz de João</h1>
+            <p class="text-slate-400 mb-8">Prove seus conhecimentos. São 10 perguntas valendo 100 pontos!</p>
+            
+            <input type="text" id="playerName" placeholder="Digite seu Nome" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-4 text-white text-center text-lg focus:border-amber-500 focus:outline-none mb-4">
+            
+            <button onclick="startQuiz()" class="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-black font-bold py-4 rounded-lg uppercase tracking-widest transition transform hover:scale-[1.02]">
+                Começar Desafio
+            </button>
+            <a href="index.html" class="block mt-4 text-xs text-slate-500 hover:text-amber-500 underline">Voltar ao Início</a>
+        </div>
+
+        <div id="quizScreen" class="hidden glass-panel p-6 md:p-8 rounded-2xl shadow-2xl">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-700/50 pb-4">
+                <span class="text-xs uppercase tracking-widest text-slate-400">Questão <span id="currentQ">1</span>/10</span>
+                <span class="text-amber-500 font-bold"><span id="scoreVal">0</span> Pts</span>
+            </div>
+
+            <h2 id="questionText" class="text-xl md:text-2xl text-white font-serif mb-8 leading-relaxed"></h2>
+
+            <div id="optionsContainer" class="space-y-3">
+                </div>
+        </div>
+
+        <div id="resultScreen" class="hidden glass-panel p-8 rounded-2xl text-center shadow-2xl">
+            <i id="resultIcon" class="fa-solid fa-crown text-6xl text-amber-500 mb-4 block"></i>
+            <h2 class="font-serif text-3xl text-white mb-2">Fim de Jogo!</h2>
+            <p class="text-slate-400 mb-6">Você fez <span id="finalScore" class="text-amber-400 font-bold text-2xl"></span> pontos.</p>
+
+            <div class="bg-slate-900/80 rounded-lg p-4 mb-6 text-left max-h-60 overflow-y-auto border border-slate-700">
+                <h3 class="text-xs uppercase tracking-widest text-slate-500 mb-3 border-b border-slate-700 pb-1">Top Ranking</h3>
+                <ul id="rankingList" class="space-y-2 text-sm">
+                    </ul>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="location.reload()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-3 rounded-lg font-bold">Jogar Novamente</button>
+                <a href="joao.html" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white py-3 rounded-lg font-bold flex items-center justify-center">Ir para Leitura</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // === BANCO DE 50 PERGUNTAS (FÁCEIS/MÉDIAS) ===
+        const allQuestions = [
+            { q: "Quem escreveu o Evangelho de João?", options: ["Pedro", "João Batista", "João, o Apóstolo", "Paulo"], c: 2 },
+            { q: "Como Jesus é chamado no primeiro versículo do livro?", options: ["O Verbo", "O Rei", "O Profeta", "O Anjo"], c: 0 },
+            { q: "Qual foi o primeiro milagre de Jesus registrado por João?", options: ["Cura do Cego", "Multiplicação dos Pães", "Água em Vinho", "Andar sobre as águas"], c: 2 },
+            { q: "Para quem Jesus disse: 'Necessário vos é nascer de novo'?", options: ["Pedro", "Nicodemos", "Tomé", "Pilatos"], c: 1 },
+            { q: "Quem Jesus encontrou no poço de Jacó?", options: ["Uma mulher samaritana", "Maria Madalena", "Sua mãe", "Marta"], c: 0 },
+            { q: "O que Jesus disse que Ele é, no capítulo 6?", options: ["A luz da lua", "O pão da vida", "O rio Jordão", "A videira seca"], c: 1 },
+            { q: "Quem Jesus ressuscitou após quatro dias morto?", options: ["Jairo", "Lázaro", "O filho da viúva", "Estêvão"], c: 1 },
+            { q: "O que Jesus fez com os pés dos discípulos antes da ceia?", options: ["Lavou-os", "Ungiu com óleo", "Cobriu com areia", "Nada"], c: 0 },
+            { q: "Quem negou Jesus três vezes?", options: ["Judas", "João", "Pedro", "Tomé"], c: 2 },
+            { q: "Qual foi a última palavra de Jesus na cruz segundo João?", options: ["Tenho sede", "Pai, perdoa-lhes", "Está consumado", "Deus meu, Deus meu"], c: 2 },
+            { q: "O que saiu do lado de Jesus quando foi furado pela lança?", options: ["Apenas sangue", "Sangue e água", "Apenas água", "Nada"], c: 1 },
+            { q: "Quem duvidou da ressurreição até tocar nas feridas de Jesus?", options: ["Pedro", "Filipe", "André", "Tomé"], c: 3 },
+            { q: "Quantos peixes os discípulos pescaram na pesca milagrosa (João 21)?", options: ["100", "120", "153", "50"], c: 2 },
+            { q: "O que significa a palavra 'Rabi'?", options: ["Rei", "Mestre", "Senhor", "Servo"], c: 1 },
+            { q: "Onde Jesus curou o filho de um oficial (João 4)?", options: ["Caná", "Belém", "Jerusalém", "Nazaré"], c: 0 },
+            { q: "Quanto tempo o paralítico de Betesda esperava pela cura?", options: ["10 anos", "38 anos", "12 anos", "5 anos"], c: 1 },
+            { q: "O que Jesus usou para curar o cego de nascença?", options: ["Apenas palavra", "Lodo com saliva", "Água benta", "Azeite"], c: 1 },
+            { q: "Jesus disse: 'Eu sou o bom...'", options: ["Rei", "Pastor", "Amigo", "Mestre"], c: 1 },
+            { q: "Quem ungiu os pés de Jesus com perfume caro?", options: ["Marta", "Maria (irmã de Lázaro)", "Salomé", "Isabel"], c: 1 },
+            { q: "Jesus disse: 'Eu sou a videira, vós sois as...'", options: ["Folhas", "Raízes", "Varas (Ramos)", "Uvas"], c: 2 },
+            { q: "Qual o novo mandamento que Jesus deu?", options: ["Guardar o sábado", "Amar uns aos outros", "Jejuar sempre", "Pagar o dízimo"], c: 1 },
+            { q: "Quem era o pai da mentira segundo Jesus?", options: ["Pilatos", "Caifás", "O Diabo", "Judas"], c: 2 },
+            { q: "O que Jesus disse ser a 'verdade'?", options: ["A Lei", "A Palavra de Deus", "A tradição", "A filosofia"], c: 1 },
+            { q: "Quem cortou a orelha do servo do sumo sacerdote?", options: ["João", "Tiago", "Pedro", "André"], c: 2 },
+            { q: "Diante de quem Jesus disse 'O meu reino não é deste mundo'?", options: ["Herodes", "Pilatos", "Caifás", "Anás"], c: 1 },
+            { q: "Quem ajudou Jesus a carregar a cruz em João?", options: ["Simão Cireneu", "Ninguém (Ele carregou só)", "Pedro", "João"], c: 1 }, 
+            { q: "O que estava escrito na placa acima da cruz?", options: ["Este é o criminoso", "Jesus Nazareno, Rei dos Judeus", "Blasfemador", "Filho de Deus"], c: 1 },
+            { q: "Quem foi a primeira pessoa a ver Jesus ressuscitado?", options: ["Pedro", "João", "Maria Madalena", "Tomé"], c: 2 },
+            { q: "O que Jesus perguntou a Pedro três vezes na praia?", options: ["Por que me negaste?", "Tu me amas?", "Vais me seguir?", "Onde estavas?"], c: 1 },
+            { q: "Qual discípulo é chamado de 'aquele a quem Jesus amava'?", options: ["Pedro", "Tiago", "João", "André"], c: 2 },
+            { q: "O que Jesus disse sobre o templo de seu corpo?", options: ["Seria destruído e refeito em 3 dias", "Era de pedra", "Era eterno", "Seria queimado"], c: 0 },
+            { q: "Por que os judeus queriam apedrejar Jesus?", options: ["Porque ele curava", "Por blasfêmia (se fazer Deus)", "Porque ele não pagava imposto", "Porque ele era pobre"], c: 1 },
+            { q: "O que significa 'Siloé'?", options: ["Enviado", "Curado", "Limpado", "Amado"], c: 0 },
+            { q: "Jesus disse: 'Eu sou a luz do...'", options: ["Céu", "Mundo", "Templo", "Israel"], c: 1 },
+            { q: "Quem disse: 'Senhor, para quem iremos nós? Tu tens as palavras de vida eterna'?", options: ["Tomé", "João", "Pedro", "Judas"], c: 2 },
+            { q: "Qual era a festa judaica quando Jesus gritou sobre a Água Viva?", options: ["Páscoa", "Tabernáculos", "Pentecostes", "Purim"], c: 1 },
+            { q: "O Espírito Santo é chamado por Jesus de...", options: ["Anjo", "Consolador (Parácleto)", "Vento", "Fogo"], c: 1 },
+            { q: "O que acontece com a vara que não dá fruto?", options: ["É limpa", "É cortada e lançada fora", "É enxertada", "É regada"], c: 1 },
+            { q: "Jesus orou no capítulo 17 para que seus discípulos fossem...", options: ["Ricos", "Famosos", "Um (Unidos)", "Poderosos"], c: 2 },
+            { q: "Quem era o sogro de Caifás?", options: ["Anás", "Nicodemos", "José de Arimateia", "Gamaliel"], c: 0 },
+            { q: "O que os soldados fizeram com a túnica de Jesus?", options: ["Rasgaram", "Lançaram sortes", "Queimaram", "Levaram para o templo"], c: 1 },
+            { q: "Quem pediu o corpo de Jesus para sepultar?", options: ["Pedro", "José de Arimateia", "Nicodemos", "Lázaro"], c: 1 },
+            { q: "Jesus soprou sobre os discípulos e disse...", options: ["Recebei o Espírito Santo", "Ide e pregai", "Tende bom ânimo", "Paz seja convosco"], c: 0 },
+            { q: "O que Tomé disse que precisava fazer para crer?", options: ["Ver um anjo", "Ver e tocar as marcas dos pregos", "Ouvir a voz de Deus", "Ver Lázaro"], c: 1 },
+            { q: "Qual o propósito do Evangelho segundo João (20:31)?", options: ["Contar história", "Para que creiais que Jesus é o Cristo", "Fundar uma religião", "Condenar o mundo"], c: 1 },
+            { q: "Onde Jesus estava 'no princípio'?", options: ["Em Belém", "Com Deus", "Na Terra", "No deserto"], c: 1 },
+            { q: "O que João Batista chamou Jesus?", options: ["Leão de Judá", "Cordeiro de Deus", "Filho de Davi", "Profeta"], c: 1 },
+            { q: "Jesus disse a Natanael que o viu debaixo de que árvore?", options: ["Oliveira", "Figueira", "Carvalho", "Videira"], c: 1 },
+            { q: "Quantas talhas de pedra havia no casamento em Caná?", options: ["3", "12", "6", "7"], c: 2 },
+            { q: "Quem disse 'Pode vir alguma coisa boa de Nazaré'?", options: ["Filipe", "Natanael", "André", "Pedro"], c: 1 }
+        ];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let userName = "";
+
+        function startQuiz() {
+            const nameInput = document.getElementById('playerName');
+            if (nameInput.value.trim() === "") {
+                alert("Por favor, digite seu nome para entrar no Ranking!");
+                return;
+            }
+            userName = nameInput.value;
+
+            const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
+            currentQuestions = shuffled.slice(0, 10);
+            
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = currentQuestions[currentIndex];
+            document.getElementById('currentQ').innerText = currentIndex + 1;
+            document.getElementById('questionText').innerText = q.q;
+            
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full bg-slate-800/80 border border-slate-600 rounded-lg p-4 text-left text-slate-300 transition duration-300 font-sans text-lg";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(btn, idx, q.c);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.disabled = true);
+
+            if (selected === correct) {
+                btn.classList.add('correct', 'text-white', 'font-bold');
+                score += 10;
+                document.getElementById('scoreVal').innerText = score;
+            } else {
+                btn.classList.add('wrong', 'text-white');
+                buttons[correct].classList.add('correct', 'text-white');
+            }
+
+            setTimeout(() => {
+                currentIndex++;
+                if (currentIndex < 10) {
+                    loadQuestion();
+                } else {
+                    finishQuiz();
+                }
+            }, 1500);
+        }
+
+        function finishQuiz() {
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+            
+            const finalEl = document.getElementById('finalScore');
+            finalEl.innerText = score;
+
+            if (score === 100) {
+                document.getElementById('resultIcon').classList.add('celebration');
+            }
+
+            saveScore();
+        }
+
+        function saveScore() {
+            const formData = new FormData();
+            formData.append('acao', 'salvar_quiz');
+            formData.append('nome', userName);
+            formData.append('pontos', score);
+            formData.append('acertos', score / 10);
+
+            fetch('api.php', { method: 'POST', body: formData })
+                .then(() => loadRanking());
+        }
+
+        function loadRanking() {
+            fetch('api.php?acao=ranking')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById('rankingList');
+                    list.innerHTML = '';
+                    
+                    let currentRank = 1;
+
+                    data.forEach((p, index) => {
+                        // Lógica de Empate Inteligente
+                        if (index > 0 && p.pontos < data[index - 1].pontos) {
+                            currentRank++;
+                        }
+
+                        let rankIcon = currentRank + 'º';
+                        let myClass = p.nome === userName ? 'text-amber-400 font-bold' : 'text-slate-300';
+                        
+                        if(currentRank === 1) rankIcon = '🥇';
+                        if(currentRank === 2) rankIcon = '🥈';
+                        if(currentRank === 3) rankIcon = '🥉';
+                        
+                        list.innerHTML += `
+                            <li class="flex justify-between items-center border-b border-slate-800 py-2 ${myClass}">
+                                <span>${rankIcon} ${p.nome}</span>
+                                <span>${p.pontos} pts</span>
+                            </li>
+                        `;
+                    });
+                });
+        }
+    </script>

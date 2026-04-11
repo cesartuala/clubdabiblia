@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Coríntios | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] },
+                    colors: { divine: { 400: '#a855f7' } } /* Púrpura/Roxo */
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0b0510; color: #e2e8f0; overflow-x: hidden; }
+        
+        .glass-panel { background: rgba(20, 5, 30, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(168, 85, 247, 0.2); }
+        .purple-glow { text-shadow: 0 0 15px rgba(168, 85, 247, 0.5); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .rich-text strong { color: #d8b4fe; font-weight: 700; }
+        .rich-text .ref { color: #c084fc; font-size: 0.9em; font-family: monospace; background: rgba(168, 85, 247, 0.15); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(168, 85, 247, 0.3); }
+        .rich-text h3 { color: #a855f7; font-weight: bold; margin-top: 2rem; margin-bottom: 0.75rem; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.15em; border-bottom: 1px solid rgba(168, 85, 247, 0.3); padding-bottom: 6px; }
+        .rich-text ul { list-style-type: none; padding-left: 0; margin-top: 15px; margin-bottom: 20px; }
+        .rich-text li { margin-bottom: 15px; line-height: 1.8; text-align: justify; border-left: 3px solid #a855f7; padding-left: 20px; background: linear-gradient(to right, rgba(168,85,247,0.05), transparent); padding-top: 5px; padding-bottom: 5px; }
+        .rich-text p { margin-bottom: 20px; line-height: 2; text-align: justify; font-size: 1.05rem; color: #cbd5e1; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0b0510; }
+        ::-webkit-scrollbar-thumb { background: #2a103c; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a855f7; }
+
+        .recording-pulse { animation: recPulse 1.5s infinite; background-color: #ef4444; border-color: #ef4444; color: white; }
+        @keyframes recPulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="fixed top-0 w-full z-50 p-4 md:p-6 flex flex-col md:flex-row justify-between items-center bg-gradient-to-b from-[#0b0510]/95 to-[#0b0510]/80 backdrop-blur-md border-b border-purple-900/40 transition-all">
+        <div class="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto justify-between md:justify-start">
+            <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#120818] border border-purple-500/50 text-purple-400 hover:bg-purple-500 hover:text-black transition-all shadow-[0_0_15px_rgba(168,85,247,0.1)]">
+                <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+                <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-crown text-purple-500 text-xl md:text-2xl"></i>
+                <span class="font-serif text-white text-lg md:text-xl tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto justify-end">
+            <span class="hidden md:inline text-xs text-slate-400 uppercase tracking-widest">Navegar:</span>
+            <select id="chapterSelect" onchange="loadChapter(this.value)" class="w-full md:w-auto bg-[#120818] text-purple-400 border border-purple-500/40 rounded px-4 py-2 text-sm uppercase tracking-widest focus:outline-none focus:border-purple-500 cursor-pointer">
+                <option value="intro_book">★ Sobre o Livro</option>
+                <option value="intro_author">✎ Sobre o Autor</option>
+                <option disabled>──────────</option>
+                <option value="corintios_1">Capítulo 01</option>
+                <option value="corintios_2">Capítulo 02</option>
+                <option value="corintios_3">Capítulo 03</option>
+                <option value="corintios_4">Capítulo 04</option>
+                <option value="corintios_5">Capítulo 05</option>
+                <option value="corintios_6">Capítulo 06</option>
+                <option value="corintios_7">Capítulo 07</option>
+                <option value="corintios_8">Capítulo 08</option>
+                <option value="corintios_9">Capítulo 09</option>
+                <option value="corintios_10">Capítulo 10</option>
+                <option value="corintios_11">Capítulo 11</option>
+                <option value="corintios_12">Capítulo 12</option>
+                <option value="corintios_13">Capítulo 13</option>
+                <option value="corintios_14">Capítulo 14</option>
+                <option value="corintios_15">Capítulo 15</option>
+                <option value="corintios_16">Capítulo 16</option>
+            </select>
+        </div>
+    </nav>
+
+    <header class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-32 md:pt-20">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1574068560057-c3ce4b96cb50?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0b0510] via-[#0b0510]/80 to-transparent"></div>
+        
+        <div class="z-10 reveal active space-y-4 max-w-5xl w-full">
+            <h2 class="text-purple-400 tracking-[0.5em] text-[10px] md:text-sm uppercase animate-pulse mb-4 font-bold">Clube da Bíblia Apresenta</h2>
+            
+            <div id="dateBadge" class="hidden inline-flex items-center gap-2 border border-purple-500/50 rounded-full px-4 py-1 mb-4 bg-purple-500/10 backdrop-blur-sm transition-all duration-700 opacity-0">
+                <i class="fa-regular fa-calendar text-purple-400 text-xs"></i>
+                <span class="text-purple-300 text-xs tracking-widest uppercase font-bold">Leitura: <span id="dateValue" class="text-white"></span></span>
+            </div>
+
+            <h1 id="heroTitle" class="font-serif text-4xl md:text-7xl text-white mb-2 purple-glow transition-all duration-700 uppercase leading-tight px-2"></h1>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 text-slate-400 mt-8 pt-8 border-t border-purple-900/40 w-full max-w-3xl mx-auto">
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Idealizado por</p>
+                    <strong class="text-purple-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-purple-300 transition">Fellipe Gomes Andrade</strong>
+                </div>
+                <span class="hidden md:block h-8 w-[1px] bg-gradient-to-b from-transparent via-purple-900 to-transparent"></span>
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Desenvolvido por</p>
+                    <strong class="text-purple-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-purple-300 transition">Cesar Tuala</strong>
+                </div>
+            </div>
+
+            <p id="heroDesc" class="text-sm md:text-xl text-slate-300 max-w-2xl mx-auto pt-8 font-light italic transition-all duration-700 px-4"></p>
+            
+            <div class="pt-10">
+                <button onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" class="animate-bounce text-purple-500 text-2xl">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="content" class="max-w-4xl mx-auto px-4 py-10 md:py-20 space-y-20 md:space-y-32 min-h-screen"></main>
+
+    <section id="community-section" class="w-full bg-[#0d0714] border-t-4 border-purple-600 py-16 mb-0 relative shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <h3 class="font-serif text-3xl md:text-4xl text-purple-500 mb-2 uppercase tracking-widest purple-glow">
+                    <i class="fa-solid fa-users-line mr-3"></i>Comunidade
+                </h3>
+                <p class="text-slate-400 text-sm italic">"Compartilhe o que Deus falou ao seu coração"</p>
+                <div class="h-1 w-24 bg-gradient-to-r from-transparent via-purple-600 to-transparent mx-auto mt-4"></div>
+            </div>
+
+            <div class="glass-panel p-6 md:p-8 rounded-xl mb-12 border border-slate-800 shadow-2xl bg-[#120818]/80">
+                <form id="commentForm" class="space-y-5">
+                    <input type="hidden" id="formChapterKey" name="capitulo">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="col-span-1">
+                            <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Nome</label>
+                            <input type="text" name="nome" required class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-purple-500 focus:outline-none transition">
+                        </div>
+                        <div class="flex gap-3 col-span-1 md:col-span-2 items-end">
+                            <label class="flex-1 cursor-pointer bg-black/50 border border-slate-700 hover:border-purple-500 hover:bg-[#1a0c24] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-camera group-hover:text-purple-400"></i> Foto
+                                <input type="file" name="foto" accept="image/*" class="hidden" onchange="previewFile(this)">
+                            </label>
+                            <button type="button" id="recordBtn" class="flex-1 bg-black/50 border border-slate-700 hover:border-red-500 hover:bg-[#1a0c24] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-microphone group-hover:text-red-400"></i> <span id="recordText">Gravar Áudio</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="filePreview" class="text-xs text-purple-400 hidden bg-black p-2 rounded border border-purple-500/30"></div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Comentário</label>
+                        <textarea name="mensagem" class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-purple-500 focus:outline-none h-28 resize-none transition"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-purple-800 to-purple-600 hover:from-purple-600 hover:to-purple-500 text-white font-bold py-4 rounded-lg transition uppercase tracking-[0.2em] text-sm shadow-lg shadow-black/50 transform hover:-translate-y-1">
+                        Publicar Comentário
+                    </button>
+                </form>
+            </div>
+            <div id="commentsList" class="space-y-6"></div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-800 bg-black py-12 text-center relative z-10">
+        <div class="flex flex-col items-center justify-center space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="fa-solid fa-crown text-purple-600 text-xl"></i>
+                <span class="font-serif text-slate-300 text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+            <p class="text-slate-700 text-[10px] tracking-widest uppercase mt-4">&copy; 2026 Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="imageModal" class="fixed inset-0 z-[100] bg-black/95 hidden flex justify-center items-center p-4 backdrop-blur-sm transition-opacity duration-300" onclick="closeImage()">
+        <div class="relative max-w-4xl w-full flex justify-center">
+            <button onclick="closeImage()" class="absolute -top-12 right-0 text-white text-3xl hover:text-purple-500 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modalImg" src="" class="max-h-[85vh] max-w-full rounded-lg shadow-[0_0_50px_rgba(168,85,247,0.3)] border-2 border-purple-500/20 object-contain">
+        </div>
+    </div>
+
+    <script>
+        const bibleData = {
+            "intro_book": {
+                title: "PRIMEIRA AOS CORÍNTIOS",
+                date: null,
+                desc: "<span class='text-xs uppercase tracking-[0.3em] text-purple-500 not-italic block mb-4'>Introdução: Sobre o Livro</span>\"Porque a palavra da cruz é loucura para os que perecem; mas para nós é o poder de Deus.\"",
+                blocks: [
+                    {
+                        title: "Uma Igreja Carnal em uma Cidade Mundana",
+                        verse: "À igreja de Deus que está em Corinto, aos santificados em Cristo Jesus... (1 Co 1:2)",
+                        exegesis: `
+                            <p>I Coríntios é, de longe, a carta mais pastoral, corretiva e prática do Novo Testamento. Enquanto Romanos é um tratado teológico denso escrito para uma igreja que Paulo não conhecia, 1 Coríntios é uma "carta de resgate" escrita para uma igreja que ele fundou, amava e que estava desmoronando moralmente.</p>
+                            
+                            <h3>1. A Cidade de Corinto (A "Las Vegas" da Antiguidade)</h3>
+                            <ul>
+                                <li>Para entender a carta, é preciso entender a cidade. Corinto era a capital comercial da Grécia (Acaia), famosa por seus dois portos. Era uma cidade incrivelmente rica, cosmopolita, obcecada por status, intelectualidade e, acima de tudo, sexo. O templo de Afrodite possuía mil sacerdotisas cultuais prostitutas. Havia um termo na época: <em>"Corintianizar"</em>, que significava viver uma vida de extrema imoralidade. Foi nesse caldeirão de paganismo que Paulo plantou uma igreja.</li>
+                            </ul>
+                            
+                            <h3>2. O Propósito da Carta</h3>
+                            <ul>
+                                <li>Paulo escreveu esta carta de Éfeso, por volta de 55 d.C. Ele tinha duas razões: primeiro, a família de Cloe lhe trouxe relatórios assustadores de que a igreja estava rachada em facções de culto à personalidade (venerando oradores como Apolos ou Pedro). Segundo, a própria igreja enviou a Paulo uma carta cheia de dúvidas sobre casamento, carne sacrificada a ídolos, culto e dons espirituais. Paulo responde a esses relatórios ponto a ponto.</li>
+                            </ul>
+
+                            <h3>3. A Estrutura da Resposta</h3>
+                            <ul>
+                                <li>A genialidade de Paulo é que ele não dá "dicas morais" para os problemas; ele aplica o Evangelho a cada situação. Para as divisões (Caps 1-4), ele aplica a teologia da Cruz (a loucura de Deus). Para a imoralidade (Caps 5-6), a teologia do Corpo como Templo. Para o caos nos cultos e os dons espirituais (Caps 12-14), ele injeta o poema supremo do Amor (Cap 13). E para o cinismo grego, a majestade da Ressurreição (Cap 15).</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "intro_author": {
+                title: "SOBRE O AUTOR",
+                date: null,
+                desc: "\"Paulo, chamado apóstolo de Jesus Cristo, pela vontade de Deus...\"",
+                blocks: [
+                    {
+                        title: "O Pai Espiritual Ferido",
+                        verse: "Porque ainda que tivésseis dez mil aios em Cristo, não teríeis, contudo, muitos pais... (1 Co 4:15)",
+                        exegesis: `
+                            <p>Nenhuma outra epístola revela tanto do coração pastoral, ensanguentado e amoroso de Paulo quanto suas cartas aos coríntios.</p>
+
+                            <h3>1. A Chegada em Fraqueza</h3>
+                            <ul>
+                                <li>Quando Paulo chegou a Corinto pela primeira vez (Atos 18), ele estava traumatizado. Ele vinha de um fracasso aparente em Atenas, onde o Areópago zombou da ressurreição. Ele admite em 1 Co 2 que chegou em Corinto "em fraqueza, e em temor, e em grande tremor". Ele tomou uma decisão radical: não usar eloquência humana para impressionar os coríntios, mas pregar apenas o Cristo crucificado, para que a fé deles não se apoiasse na sabedoria dos homens, mas no poder de Deus.</li>
+                            </ul>
+
+                            <h3>2. O Fazedor de Tendas</h3>
+                            <ul>
+                                <li>Diferente dos filósofos e "sofistas" gregos que cobravam caro por suas palestras nas praças de Corinto, Paulo recusou-se a receber dinheiro da igreja para não ser acusado de mercenário. Ele trabalhou manualmente com couro fazendo tendas (com Áquila e Priscila). Para a cultura aristocrática de Corinto, o trabalho manual era coisa de escravos. A humildade de Paulo era vista por muitos na igreja como falta de autoridade espiritual.</li>
+                            </ul>
+
+                            <h3>3. A Autoridade do Amor</h3>
+                            <ul>
+                                <li>Paulo teve que bater de frente com a soberba da igreja. Os coríntios se achavam "espirituais, ricos e sábios", enquanto Paulo passava fome, frio e era tratado como o lixo do mundo. Em vez de odiá-los, Paulo os corrige não como um déspota, mas como um pai que chora pelo filho rebelde: <em>"Não escrevo estas coisas para vos envergonhar, mas para vos admoestar como a filhos meus amados"</em>.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "corintios_1": {
+                title: "A LOUCURA DA CRUZ",
+                date: "12/03",
+                desc: "\"Porque a palavra da cruz é loucura para os que perecem...\"",
+                blocks: [
+                    {
+                        title: "Divisões e a Sabedoria de Deus",
+                        verse: "Digo isto, porque cada um de vós diz: Eu sou de Paulo, e eu de Apolo, e eu de Cefas, e eu de Cristo. (1 Co 1:12)",
+                        exegesis: `
+                            <h3>1. Santidade Posicional vs. Carnalidade Prática</h3>
+                            <ul>
+                                <li>Paulo começa a carta chamando uma igreja absolutamente confusa e imoral de "santificados em Cristo Jesus" (v.2). Esta é uma distinção vital: a posição deles em Cristo (status legal) é santa, embora o comportamento deles (status prático) estivesse um caos. Paulo apela para o que eles *são* em Cristo para consertar o que eles *fazem* na terra.</li>
+                            </ul>
+                            
+                            <h3>2. O Fã-Clube Gospel (Facções)</h3>
+                            <ul>
+                                <li>A cultura grega era obcecada por oradores brilhantes e filosofia. A igreja importou essa cultura mundana e transformou os apóstolos em celebridades ("fã-clubes"). Uns diziam "Eu sou de Paulo" (os conservadores fundadores), outros de Apolo (o orador eloquente), outros de Cefas/Pedro (os legalistas judeus). Paulo abomina essa idolatria pastoral: "Acaso Cristo está dividido? Foi Paulo crucificado por vós?". A centralidade deve ser a cruz, não o púlpito.</li>
+                            </ul>
+
+                            <h3>3. O Escândalo (Skandalon) da Cruz</h3>
+                            <ul>
+                                <li>Para curar o orgulho intelectual dos coríntios, Paulo apresenta a suprema contradição do universo: A Cruz. Para os judeus, que pediam sinais milagrosos de um Messias guerreiro, um Cristo crucificado era <em>Skandalon</em> (uma pedra de tropeço repugnante). Para os gregos, que pediam discursos lógicos e filosofia, a cruz era <em>Moria</em> (loucura/idiotice absoluta). </li>
+                                <li>Mas Deus, em Sua genialidade, escolheu salvar o mundo pelo que a sociedade considera lixo ("as coisas fracas, vis e desprezíveis"). Por quê? "Para que nenhuma carne se glorie perante ele" (v.29). A salvação elimina o orgulho humano do início ao fim.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "corintios_2": {
+                title: "O HOMEM ESPIRITUAL",
+                date: "12/03",
+                desc: "\"As coisas que o olho não viu, e o ouvido não ouviu... são as que Deus preparou para os que o amam.\"",
+                blocks: [
+                    {
+                        title: "A Mente de Cristo",
+                        verse: "Ora, o homem natural não compreende as coisas do Espírito de Deus, porque lhe parecem loucura... (1 Co 2:14)",
+                        exegesis: `
+                            <h3>1. A Metodologia de Paulo</h3>
+                            <ul>
+                                <li>Paulo relembra sua chegada a Corinto. Ele não usou técnicas de retórica, "sabedoria humana" ou persuasão psicológica para convertê-los. Ele usou a mensagem bruta da cruz, "em demonstração de Espírito e de poder". A fé dos coríntios não podia estar ancorada num argumento inteligente que outro filósofo pudesse refutar amanhã, mas no poder irrevogável de Deus.</li>
+                            </ul>
+                            
+                            <h3>2. A Sabedoria Oculta</h3>
+                            <ul>
+                                <li>O versículo 9 ("Nem olhos viram...") é frequentemente citado sobre o Céu, mas Paulo está falando sobre o Evangelho aqui e agora! Ele cita Isaías para dizer que a mente humana brilhante jamais poderia inventar ou deduzir o plano da salvação da cruz. Tinha que ser revelado pelo Espírito. "Se os príncipes deste mundo soubessem, nunca crucificariam o Senhor da glória" (v.8) — Satanás e Pilatos assinaram sua própria derrota ao matar Jesus.</li>
+                            </ul>
+
+                            <h3>3. Homem Natural vs. Homem Espiritual</h3>
+                            <ul>
+                                <li>Paulo faz uma divisão antropológica crucial. O homem natural (<em>Psychikos</em> - governado pela alma/sentidos terrenos) simplesmente não tem o "hardware" espiritual para fazer o download das coisas de Deus; para ele é tudo fanatismo ou loucura. O homem espiritual (<em>Pneumatikos</em>), habitado pelo Espírito Santo, consegue julgar e discernir as realidades celestiais. O capítulo encerra com uma garantia ousada: nós temos a "Mente de Cristo".</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "corintios_3": {
+                title: "LEITE E FUNDAMENTOS",
+                date: "13/03",
+                desc: "\"Ninguém pode pôr outro fundamento além do que já está posto, o qual é Jesus Cristo.\"",
+                blocks: [
+                    {
+                        title: "Bebês Espirituais e o Tribunal de Fogo",
+                        verse: "E eu, irmãos, não vos pude falar como a espirituais, mas como a carnais, como a meninos em Cristo. (1 Co 3:1)",
+                        exegesis: `
+                            <h3>1. O Cristão Carnal (Sarkikos)</h3>
+                            <ul>
+                                <li>Paulo dá uma bronca severa. Embora eles devessem ser crentes maduros, ele tem que alimentá-los com "leite" e não "carne" (teologia sólida). A prova de que são "carnais" (<em>Sarkikos</em>) não é apenas imoralidade, mas as invejas, partidarismos e divisões infantis entre eles. A divisão na igreja é a maior prova de imaturidade espiritual.</li>
+                            </ul>
+                            
+                            <h3>2. O Edifício de Deus e o Fogo Provador</h3>
+                            <ul>
+                                <li>Paulo muda a metáfora de agricultura ("eu plantei, Apolo regou") para arquitetura ("sois edifício de Deus"). O único alicerce válido da igreja é Cristo. Mas os pastores e crentes constroem em cima desse alicerce com materiais diferentes: ouro/prata (doutrina pura, caráter santo) ou madeira/feno/palha (modismos, entretenimento, carnalidade).</li>
+                                <li>O "Dia" do Tribunal de Cristo (Bema) testará a obra de cada um com fogo. Obras de madeira virarão cinzas; o crente ainda será salvo (pois o alicerce é Cristo), mas "sofrerá perda" (ficará sem galardão), escapando "como que pelo fogo" (v.15). É um alerta contra o ministério raso.</li>
+                            </ul>
+
+                            <h3>3. O Templo do Espírito (Naos)</h3>
+                            <ul>
+                                <li>Paulo lança um aviso mortal: <em>"Não sabeis vós que sois o templo (Naos) de Deus?"</em>. A palavra <em>Naos</em> refere-se ao Santo dos Santos, o local habitado pela glória. A igreja de Corinto (como comunidade) é o santuário de Deus na Terra. Quem tentar destruir a igreja local com fofoca, heresias ou divisões, "Deus o destruirá". A igreja é a noiva intocável do Senhor.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "corintios_4": {
+                title: "MINISTROS E ESPETÁCULOS",
+                date: "13/03",
+                desc: "\"Porque o reino de Deus não consiste em palavras, mas em poder.\"",
+                blocks: [
+                    {
+                        title: "A Humildade Apostólica vs O Orgulho Coríntio",
+                        verse: "Porque acho que Deus a nós, apóstolos, nos pôs por últimos, como condenados à morte; pois somos feitos espetáculo ao mundo... (1 Co 4:9)",
+                        exegesis: `
+                            <h3>1. Despenseiros dos Mistérios (Oikonomos)</h3>
+                            <ul>
+                                <li>A igreja julgava duramente a aparência e a oratória de Paulo. Ele diz que um apóstolo é apenas um "despenseiro" (um administrador dos bens do mestre). A única coisa requerida do despenseiro não é fama, sucesso ou aplauso, mas ser achado <strong>fiel</strong>. Paulo diz que não se importa minimamente com o julgamento do tribunal humano (ou o de Corinto), pois só Deus sonda os corações (v.1-4).</li>
+                            </ul>
+                            
+                            <h3>2. A Ironia Cortante de Paulo</h3>
+                            <ul>
+                                <li>A partir do verso 8, Paulo usa a ironia mais ácida do Novo Testamento. "Já estais fartos! Já estais ricos! Sem nós reinais!". Os coríntios achavam que já viviam a glória e o reinado do céu aqui na terra (Triunfalismo). Eles queriam o cristianismo sem a cruz.</li>
+                                <li>Para quebrar essa bolha de ilusão, Paulo mostra o contraste da vida apostólica: enquanto a igreja de Corinto brinca de "realeza", os apóstolos verdadeiros são "espetáculo (<em>Theatron</em>) aos anjos e homens". A imagem é a de cativos de guerra desfilando na arena do Coliseu para serem mortos pelas feras. Eles passam fome, frio, são esbofeteados e tratados como o "lixo e a escória do mundo". A cruz precede a coroa.</li>
+                            </ul>
+
+                            <h3>3. Aios vs Pais</h3>
+                            <ul>
+                                <li>Paulo abranda o tom. O objetivo dele não era envergonhá-los com a ironia, mas despertá-los como um pai. Em Corinto, as crianças ricas tinham "aios" (tutores escravos que batiam com varas). Paulo diz: vocês têm muitos aios na fé, mas só eu sou seu pai espiritual. O reino de Deus não é discurso arrogante, mas o poder da vida transformada (v.20).</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "corintios_5": {
+                title: "O JULGAMENTO DA IMORALIDADE",
+                date: "16/03",
+                desc: "\"Lançai fora o velho fermento, para que sejais uma nova massa...\"",
+                blocks: [
+                    {
+                        title: "Disciplina, Santidade e a Páscoa",
+                        verse: "Geralmente se ouve que há entre vós fornicação... que alguém abuse da mulher de seu pai. (1 Co 5:1)",
+                        exegesis: `
+                            <h3>1. O Escândalo do Incesto (Porneia)</h3>
+                            <ul>
+                                <li>Paulo trata de um caso chocante de imoralidade na igreja: um homem estava vivendo maritalmente com a madrasta (uma ofensa que até os pagãos romanos puniam com rigor). O mais assustador para Paulo não era o pecado do indivíduo, mas a reação da igreja. Em vez de lamentarem, eles estavam "inchados" (orgulhosos). Provavelmente justificavam o pecado usando uma falsa ideia de "hiper-graça" e liberdade cristã.</li>
+                            </ul>
+                            
+                            <h3>2. A Disciplina Eclesiástica: Entregue a Satanás</h3>
+                            <ul>
+                                <li>Paulo dá uma ordem apostólica drástica, a ser executada quando a congregação estivesse reunida: "Seja entregue a Satanás para destruição da carne" (v.5). Isso significa excomungar o membro impenitente, removendo-o da proteção espiritual da comunhão da igreja e devolvendo-o ao mundo (o domínio de Satanás). O propósito dessa exclusão nunca é vingança, mas redentivo: que o choque da perda o leve ao arrependimento, "para que o espírito seja salvo no dia do Senhor".</li>
+                            </ul>
+
+                            <h3>3. O Fermento e a Nossa Páscoa</h3>
+                            <ul>
+                                <li>Paulo usa a metáfora do fermento. Um pouco de fermento leveda toda a massa. Tolerar o pecado aberto destrói a santidade de toda a comunidade. Ele ordena: "Lançai fora o velho fermento" (referência à purificação das casas judaicas antes da festa). A razão cristã é gloriosa: "Cristo, nossa Páscoa, foi sacrificado por nós". Já que fomos comprados pelo Cordeiro, devemos viver uma vida sem o fermento da maldade e da corrupção.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "corintios_6": {
+                title: "TRIBUNAIS E O TEMPLO",
+                date: "16/03",
+                desc: "\"Ou não sabeis que o vosso corpo é o templo do Espírito Santo...\"",
+                blocks: [
+                    {
+                        title: "Litígios e a Santidade do Corpo",
+                        verse: "Porque não sofreis antes a injustiça? Por que não sofreis antes o dano? (1 Co 6:7)",
+                        exegesis: `
+                            <h3>1. Litígios Perante os Incrédulos</h3>
+                            <ul>
+                                <li>Os coríntios estavam processando uns aos outros em tribunais pagãos romanos. Paulo acha isso um absurdo teológico. Se os santos julgarão o mundo (e até os anjos) no fim dos tempos, como são incapazes de resolver disputas financeiras cotidianas? Ele sugere uma ética radical: é melhor sofrer a fraude e sair no prejuízo do que expor a vergonha da noiva de Cristo diante de um juiz descrente. O testemunho do Evangelho vale mais que o direito financeiro.</li>
+                            </ul>
+                            
+                            <h3>2. A Lavagem da Graça (Apolousasthe)</h3>
+                            <ul>
+                                <li>Paulo lista estilos de vida que excluem as pessoas do Reino de Deus (imorais, idólatras, adúlteros, homossexuais, ladrões, avarentos). Corinto estava cheia deles. Mas o verso 11 é o triunfo da redenção: "E é o que <em>fôsseis alguns de vós</em>. Mas vós vos lavastes, mas fostes santificados, mas fostes justificados". A graça não esconde o passado, ela o purifica. A identidade deles mudou da imoralidade para a justificação em Cristo.</li>
+                            </ul>
+
+                            <h3>3. O Corpo como Santuário (Naos)</h3>
+                            <ul>
+                                <li>Respondendo ao ditado grego "Todas as coisas me são lícitas" (uma desculpa para a imoralidade sexual), Paulo estabelece que a liberdade não pode ser escravidão aos instintos. O corpo humano não é uma casca descartável; ele ressuscitará. Mais ainda, Paulo chama o corpo do cristão de <em>Naos</em> (Santuário/Lugar Santíssimo) habitado pelo Espírito Santo. O pecado sexual (<em>porneia</em>) é único porque peca contra o próprio santuário de Deus. Fomos comprados por alto preço (o sangue); nosso corpo não é nosso, é de Deus.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "corintios_7": {
+                title: "CASAMENTO E CELIBATO",
+                date: "17/03",
+                desc: "\"Cada um ande como Deus o chamou...\"",
+                blocks: [
+                    {
+                        title: "Deveres Conjugais e Foco Eterno",
+                        verse: "A mulher não tem poder sobre o seu próprio corpo, mas tem-no o marido; e também de igual modo o marido... (1 Co 7:4)",
+                        exegesis: `
+                            <h3>1. A Reciprocidade Conjugal</h3>
+                            <ul>
+                                <li>Respondendo a perguntas sobre celibato, Paulo surpreende a cultura da época. Para evitar a prostituição (comum em Corinto), ele ordena a vida conjugal e estabelece um princípio de total igualdade e reciprocidade sexual: o corpo do marido pertence à esposa, e o da esposa ao marido. Ninguém deve usar a intimidade física como arma de barganha, exceto por mutuo consentimento temporário para jejum e oração, para que Satanás não os tente pela incontinência.</li>
+                            </ul>
+                            
+                            <h3>2. Casamentos Mistos e o Chamado</h3>
+                            <ul>
+                                <li>O que acontece quando apenas um dos cônjuges se converte? Paulo diz que o crente não deve pedir o divórcio se o incrédulo quiser continuar casado. O cônjuge incrédulo é "santificado" (separado para influência da graça) pelo crente, garantindo que os filhos cresçam num ambiente tocado pela bênção de Deus. A paz e a esperança de salvação justificam a permanência. Se o incrédulo, porém, abandonar o lar, o crente está livre.</li>
+                            </ul>
+
+                            <h3>3. O Celibato e o Tempo Breve</h3>
+                            <ul>
+                                <li>Paulo expõe a vantagem do celibato não porque o sexo no casamento seja sujo, mas por uma questão escatológica e prática: "o tempo se abrevia" (v.29). O solteiro pode se dedicar às coisas do Senhor sem distrações, enquanto o casado, licitamente, precisa cuidar das coisas deste mundo e de agradar ao cônjuge. Ambos (casamento e celibato) são dons (<em>charismata</em>) concedidos por Deus; cada um deve andar como foi chamado.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "corintios_8": {
+                title: "A LIBERDADE E O AMOR",
+                date: "17/03",
+                desc: "\"A ciência incha, mas o amor edifica.\"",
+                blocks: [
+                    {
+                        title: "Ídolos, Conhecimento e a Pedra de Tropeço",
+                        verse: "Mas vede que essa liberdade não seja de alguma maneira escândalo para os fracos. (1 Co 8:9)",
+                        exegesis: `
+                            <h3>1. A Ciência Incha, o Amor Edifica</h3>
+                            <ul>
+                                <li>A questão era: os cristãos podem comer carne que foi oferecida em templos pagãos antes de ir para o mercado? Os cristãos "fortes" argumentavam com conhecimento teológico correto: "Um ídolo não é nada, existe apenas um só Deus, logo, a carne é neutra". Paulo concorda com a teologia, mas ataca a atitude. O conhecimento (<em>Gnosis</em>) puro apenas incha o ego; é o amor (<em>Agape</em>) que edifica a comunidade.</li>
+                            </ul>
+                            
+                            <h3>2. A Realidade do Irmão Fraco</h3>
+                            <ul>
+                                <li>Nem todos tinham esse conhecimento. Alguns recém-convertidos, ainda traumatizados pelo seu passado idólatra, sentiam que comer daquela carne era participar da adoração a demônios. Se eles comessem, sua consciência "fraca" seria contaminada e ferida, sentindo-se pecadores. A teologia fria não leva o irmão em conta.</li>
+                            </ul>
+
+                            <h3>3. A Pedra de Tropeço (Skandalon)</h3>
+                            <ul>
+                                <li>O limite da minha liberdade cristã é a salvação do meu irmão. Paulo estabelece o princípio da renúncia: se o uso do meu direito (como comer carne) leva meu irmão por quem Cristo morreu a tropeçar e pecar, eu estou pecando contra Cristo (v.12). O amor abre mão dos seus direitos: "Se a comida escandaliza a meu irmão, nunca mais comerei carne" (v.13).</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "corintios_9": {
+                title: "A RENÚNCIA APOSTÓLICA",
+                date: "18/03",
+                desc: "\"Fiz-me tudo para todos, para por todos os meios chegar a salvar alguns.\"",
+                blocks: [
+                    {
+                        title: "Direitos, Salário e a Corrida do Atleta",
+                        verse: "Não sabeis vós que os que correm no estádio, todos, na verdade, correm, mas um só leva o prêmio? Correi de tal maneira que o alcanceis. (1 Co 9:24)",
+                        exegesis: `
+                            <h3>1. O Direito do Obreiro</h3>
+                            <ul>
+                                <li>Para provar que ele pratica o que ensina (abrir mão de direitos), Paulo defende sua apostolicidade. Ele tinha o direito bíblico e óbvio de receber salário da igreja de Corinto. Ele usa a lei ("Não atarás a boca ao boi que debulha"), a natureza (o lavrador come do que planta) e a ordem de Cristo ("Aos que anunciam o evangelho, que vivam do evangelho").</li>
+                            </ul>
+                            
+                            <h3>2. A Renúncia Voluntária por Amor</h3>
+                            <ul>
+                                <li>Apesar de ter todos os direitos para exigir sustento, Paulo "de nenhuma destas coisas usou" (v.15). Por quê? Para não colocar nenhum obstáculo ao avanço do Evangelho. Sua maior recompensa era oferecer o evangelho gratuitamente. Ele adaptava seus métodos culturais ("Fiz-me como judeu... fiz-me como fraco") sem comprometer a mensagem, tornando-se "tudo para todos" a fim de salvar alguns.</li>
+                            </ul>
+
+                            <h3>3. O Atleta de Cristo e a Disciplina</h3>
+                            <ul>
+                                <li>Paulo usa os famosos Jogos Ístmicos de Corinto como ilustração. Um atleta sofre privações severas para ganhar uma coroa corruptível de folhas. O cristão corre para uma coroa incorruptível. Por isso, a vida cristã exige disciplina brutal. Paulo esmurra o próprio corpo (seus instintos e vontades) e o reduz à servidão, com o pavor de, após ter pregado aos outros, ser ele mesmo reprovado e desqualificado no final da corrida.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "corintios_10": {
+                title: "AVISOS E A MESA DO SENHOR",
+                date: "18/03",
+                desc: "\"Portanto, quer comais quer bebais, ou façais outra qualquer coisa, fazei tudo para glória de Deus.\"",
+                blocks: [
+                    {
+                        title: "O Exemplo do Deserto e a Fuga da Idolatria",
+                        verse: "Não podeis beber o cálice do Senhor e o cálice dos demônios... (1 Co 10:21)",
+                        exegesis: `
+                            <h3>1. A Falsa Segurança dos Sacramentos</h3>
+                            <ul>
+                                <li>Os coríntios achavam que, por serem batizados e participarem da Ceia, estavam imunes a pecar. Paulo destrói esse mito usando a história de Israel. Todos os judeus no deserto foram "batizados" na nuvem e no mar Vermelho, todos comeram do maná (pão espiritual) e beberam da Rocha (Cristo). Contudo, Deus não se agradou da maioria deles, e seus corpos caíram no deserto por causa da idolatria e murmuração. O sacramento não é um passe livre para a imoralidade. "Aquele, pois, que cuida estar em pé, olhe não caia" (v.12).</li>
+                            </ul>
+                            
+                            <h3>2. A Mesa dos Demônios</h3>
+                            <ul>
+                                <li>A carne no mercado é neutra, mas participar de festas de sacrifício dentro dos templos pagãos é outra história. Paulo revela uma realidade espiritual chocante: por trás de cada ídolo de madeira ou pedra existe uma entidade demoníaca. Participar do culto pagão é ter "comunhão com os demônios" (v.20). É uma afronta impossível e provocadora de ciúmes divinos tentar partilhar do cálice do Senhor e do cálice das trevas simultaneamente.</li>
+                            </ul>
+
+                            <h3>3. O Princípio Máximo: A Glória de Deus</h3>
+                            <ul>
+                                <li>Ao concluir as diretrizes sobre liberdade e comida, Paulo resume tudo num comando monumental (v.31): Todas as nossas ações, desde as mais litúrgicas até as mais banais (comer e beber), devem ter um único filtro: Isso traz glória a Deus? O critério não é apenas a permissão ("tudo me é lícito"), mas o proveito, a edificação e o bem do outro.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "corintios_11": {
+                title: "A ORDEM NO CULTO E A CEIA",
+                date: "19/03",
+                desc: "\"Porque todas as vezes que comerdes este pão e beberdes este cálice anunciais a morte do Senhor...\"",
+                blocks: [
+                    {
+                        title: "O Princípio de Liderança e o Corpo Discernido",
+                        verse: "Examine-se, pois, o homem a si mesmo, e assim coma deste pão e beba deste cálice. (1 Co 11:28)",
+                        exegesis: `
+                            <h3>1. Liderança e Honra Cultural (Kephale)</h3>
+                            <ul>
+                                <li>Paulo aborda os costumes no culto, lidando com a questão do véu. Ele estabelece um princípio teológico de autoridade e ordem: "A cabeça (<em>Kephale</em> - fonte/autoridade) do homem é Cristo, da mulher é o homem, e de Cristo é Deus". O uso do véu, na cultura coríntia, era o símbolo de respeito à criação e à modéstia, distinguindo os crentes das prostitutas cultuais que andavam com cabeças rapadas ou cabelos soltos provocativos. O princípio é a decência e a interdependência (v.11), não a inferioridade.</li>
+                            </ul>
+                            
+                            <h3>2. A Profanação da Ceia do Senhor</h3>
+                            <ul>
+                                <li>O problema mais grave do capítulo: A igreja transformou a Ceia (que ocorria junto com uma refeição chamada Ágape) num banquete egoísta. Os ricos chegavam cedo, se empanturravam e se embriagavam, enquanto os escravos e pobres chegavam depois e passavam fome. Paulo diz horrorizado: "Isso não é comer a ceia do Senhor" (v.20). Eles estavam envergonhando os que não tinham nada e profanando o sacramento da comunhão.</li>
+                            </ul>
+
+                            <h3>3. Discernindo o Corpo de Cristo</h3>
+                            <ul>
+                                <li>Paulo relembra a instituição solene da Ceia: o pão partido e o cálice da Nova Aliança. Ele decreta que quem come "indignamente" (neste contexto, dividindo a igreja e desprezando o pobre) é culpado do corpo e do sangue de Jesus. "Discernir o corpo" não é apenas reverenciar o pão, é reconhecer os irmãos na igreja como o Corpo Místico de Cristo. A falta de amor gerou julgamento físico real sobre a congregação de Corinto: "Por causa disso há entre vós muitos fracos e doentes, e muitos que dormem (morreram)" (v.30).</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "corintios_12": {
+                title: "OS DONS DO ESPÍRITO",
+                date: "19/03",
+                desc: "\"Ora, há diversidade de dons, mas o Espírito é o mesmo.\"",
+                blocks: [
+                    {
+                        title: "Diversidade, Soberania e o Corpo Místico",
+                        verse: "Mas um só e o mesmo Espírito opera todas estas coisas, repartindo particularmente a cada um como quer. (1 Co 12:11)",
+                        exegesis: `
+                            <h3>1. A Fonte dos Dons (Charismata)</h3>
+                            <ul>
+                                <li>Os coríntios eram obcecados por manifestações espirituais (especialmente o dom de línguas), usando isso como símbolo de status e dividindo a igreja entre os "muito espirituais" e os "comuns". Paulo corrige o foco: ninguém pode declarar que Jesus é Senhor senão pelo Espírito Santo (v.3). Os dons (<em>Charismata</em> - dons de graça) são variados, mas a fonte é a mesma. O Espírito Santo distribui dons de cura, sabedoria, fé, milagres e línguas <strong>"como Ele quer"</strong>. O dom não é troféu de mérito, é ferramenta soberana de serviço "para o que for útil" (v.7).</li>
+                            </ul>
+                            
+                            <h3>2. A Analogia do Corpo e a Interdependência</h3>
+                            <ul>
+                                <li>Paulo usa a mais bela metáfora para a Igreja: O Corpo de Cristo. Se todos fossem olho (o dom de profecia, por exemplo), onde estaria o ouvido? A diversidade não é um defeito, é a engenharia genial de Deus. O pé não tem o direito de se sentir inútil por não ser mão, e o olho não pode dispensar a mão por se achar autossuficiente (v.21). No Corpo de Cristo, a independência é uma ilusão e a competição é um suicídio espiritual.</li>
+                            </ul>
+
+                            <h3>3. Honra aos Membros Fracos</h3>
+                            <ul>
+                                <li>Para esmagar a arrogância coríntia, Paulo estabelece uma lei da graça: os membros que parecem mais fracos e menos honrosos (os ministérios de bastidores, o serviço invisível) são, na verdade, os mais necessários. Deus dispôs o corpo para que haja igualdade de cuidado, e para que, "se um membro sofre, todos os membros sofrem com ele; se um é honrado, todos se alegram" (v.26). O capítulo pavimenta o caminho para mostrar "um caminho ainda mais excelente" (v.31) — o Amor.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "corintios_13": {
+                title: "A SUPREMACIA DO AMOR",
+                date: "20/03",
+                desc: "\"O amor nunca falha...\"",
+                blocks: [
+                    {
+                        title: "O Ruído, a Ação e a Eternidade do Ágape",
+                        verse: "Ainda que eu falasse as línguas dos homens e dos anjos, e não tivesse amor, seria como o metal que soa ou como o sino que tine. (1 Co 13:1)",
+                        exegesis: `
+                            <h3>1. A Falência do Poder sem Caráter</h3>
+                            <ul>
+                                <li>Este é o poema mais majestoso já escrito, mas seu contexto não é romântico (casamento); é uma reprimenda a uma igreja arrogante. Paulo declara que o dom espiritual levado ao seu limite máximo (falar a língua dos anjos, ter fé para mover montanhas literais, dar o próprio corpo para ser queimado no martírio) é equivalente a <strong>"NADA"</strong> se a motivação não for o <em>Ágape</em>. Dons sem amor são apenas ruído irritante (o sino que tine). A ortodoxia e o sacrifício, desprovidos de amor, valem zero na contabilidade divina.</li>
+                            </ul>
+                            
+                            <h3>2. O Perfil do Amor (Ágape) em Ação</h3>
+                            <ul>
+                                <li>O amor cristão não é um sentimento passivo ou emoção visceral, é uma atitude e uma ação deliberada. Paulo usa 15 verbos no grego para descrevê-lo. O amor "é sofredor" (suporta pessoas difíceis), "é benigno" (age com doçura). Ele não arde em ciúmes, não se incha de orgulho, não busca seus próprios interesses (o oposto da cultura coríntia). O amor não contabiliza o mal sofrido ("não suspeita mal") e "tudo sofre, tudo crê, tudo espera, tudo suporta". É o retrato perfeito do próprio Jesus Cristo.</li>
+                            </ul>
+
+                            <h3>3. O Que Resta na Eternidade</h3>
+                            <ul>
+                                <li>Paulo contrasta o provisório com o eterno. Os dons espirituais que a igreja tanto idolatrava (profecias, línguas, ciência) são andaimes: têm uma função temporal e passarão quando vier o que é perfeito (a glória de Cristo). Agora vemos por espelho em enigma (como um reflexo ofuscado em metal polido); mas na eternidade, veremos face a face. As três grandes virtudes permanecem: Fé, Esperança e Amor. Mas a maior de todas é o Amor, porque no Céu a fé se tornará visão e a esperança será realidade consumada; somente o Amor continuará sendo a essência da vida para todo o sempre.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "corintios_14": {
+                title: "PROFECIA, LÍNGUAS E ORDEM",
+                date: "20/03",
+                desc: "\"Porque Deus não é Deus de confusão, senão de paz...\"",
+                blocks: [
+                    {
+                        title: "Inteligibilidade e Ordem no Culto",
+                        verse: "Mas faça-se tudo decentemente e com ordem. (1 Co 14:40)",
+                        exegesis: `
+                            <h3>1. A Busca pela Edificação da Igreja (Profecia vs Línguas)</h3>
+                            <ul>
+                                <li>Paulo aplica o princípio do Amor (Cap 13) ao funcionamento prático do culto. O dom de línguas edifica o próprio indivíduo no seu espírito, mas a <strong>profecia</strong> (a fala inspirada, inteligível e aplicável à congregação) edifica, exorta e consola a igreja toda (v.3). Paulo prefere que se fale cinco palavras com entendimento para instruir os outros, do que dez mil palavras em língua desconhecida sem intérprete. O egoísmo busca o espetáculo individual; o amor busca o que os outros podem entender e receber.</li>
+                            </ul>
+                            
+                            <h3>2. O Foco no Não-Crente e a Inteligibilidade</h3>
+                            <ul>
+                                <li>Se a igreja se reunir e todos falarem em línguas ao mesmo tempo, e um incrédulo entrar, ele achará que todos estão loucos. Mas se a igreja estiver declarando as verdades de Deus com clareza (profetizando), o coração do visitante será exposto, ele cairá de joelhos e confessará que "Deus está verdadeiramente entre vós" (v.25). O culto não é um show caótico de experiências místicas irracionais, mas um ambiente onde a mente e o espírito cooperam na revelação da glória de Deus.</li>
+                            </ul>
+
+                            <h3>3. Deus de Paz e a Ordem Cultual (Euschemonos)</h3>
+                            <ul>
+                                <li>Para curar o caos de pessoas falando juntas e disputando o microfone, Paulo dita regras estritas de vez, silêncio e ordem (se não houver intérprete, cale-se; falem dois ou três e julguem os demais). O princípio teológico por trás da organização é a própria natureza do Criador: <em>"Porque Deus não é Deus de confusão, senão de paz"</em> (v.33). Ele encerra instruindo que as mulheres não devem interromper o culto com disputas ou perguntas desordenadas, mantendo a honra. O imperativo de ouro do culto público se estabelece: <strong>"Faça-se tudo decentemente (Euschemonos - forma bela e respeitosa) e com ordem (Taxis - arranjo coordenado)"</strong>.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "corintios_15": {
+                title: "A RESSURREIÇÃO DOS MORTOS",
+                date: "21/03",
+                desc: "\"E, se Cristo não ressuscitou, logo é vã a nossa pregação, e também é vã a vossa fé.\"",
+                blocks: [
+                    {
+                        title: "A Garantia da Fé e o Corpo Glorificado",
+                        verse: "Porque primeiramente vos entreguei o que também recebi: que Cristo morreu por nossos pecados... E que foi sepultado, e que ressuscitou ao terceiro dia, segundo as Escrituras. (1 Co 15:3-4)",
+                        exegesis: `
+                            <h3>1. O Kerygma e a Centralidade da Ressurreição</h3>
+                            <ul>
+                                <li>O capítulo 15 é o tratado mais longo e profundo sobre a ressurreição em toda a Bíblia. Paulo lista as provas históricas: Cristo apareceu a Cefas, aos Doze, a mais de quinhentos irmãos de uma vez (a maioria ainda viva na época para confirmar o fato) e, por fim, a ele mesmo. A ressurreição física de Jesus não é um mito espiritual ou uma alegoria; é o <em>Kerygma</em> (a proclamação central, os fatos brutos) do Evangelho. Sem o túmulo vazio, o cristianismo é uma mentira absoluta.</li>
+                            </ul>
+                            
+                            <h3>2. Se os Mortos não Ressuscitam</h3>
+                            <ul>
+                                <li>Alguns crentes em Corinto estavam sendo influenciados pela filosofia dualista grega, que via o corpo físico como a 'prisão da alma' e, portanto, negava a ressurreição do corpo. Paulo destrói essa ideia com um silogismo implacável: Se não há ressurreição dos mortos, então Cristo não ressuscitou. Se Cristo não ressuscitou, a fé de vocês é inútil, vocês ainda estão mortos nos seus pecados, os cristãos que já morreram estão perdidos para sempre, e nós (os que sofremos pela fé) somos os seres mais miseráveis e dignos de pena da Terra. Mas o fato estrondoso é: Cristo <em>verdadeiramente</em> ressuscitou, tornando-se as 'primícias' (os primeiros frutos da colheita que garantem o resto da safra) dos que dormem.</li>
+                            </ul>
+
+                            <h3>3. O Mistério do Corpo Espiritual</h3>
+                            <ul>
+                                <li>Como ressuscitaremos? Paulo usa a metáfora agrícola da semente. O que você planta (a semente nua) não é o corpo majestoso que nascerá. Semeia-se o corpo em fraqueza, desonra e corrupção (a morte natural); ele ressuscita em poder e glória (um corpo espiritual - <em>soma pneumatikon</em>, perfeitamente adaptado para o céu). Num abrir e fechar de olhos, ao soar da última trombeta, a mortalidade será revestida de imortalidade. A morte, o último inimigo, será engolida na vitória! Apoiado nisso, Paulo zomba do nosso maior algoz: "Onde está, ó morte, o teu aguilhão?".</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "corintios_16": {
+                title: "COLETA E SAUDAÇÕES",
+                date: "21/03",
+                desc: "\"Todas as vossas coisas sejam feitas com amor.\"",
+                blocks: [
+                    {
+                        title: "Missões, Mordomia e o Maranata",
+                        verse: "Vigiai, estai firmes na fé, portai-vos varonilmente, e fortalecei-vos. Todas as vossas coisas sejam feitas com amor. (1 Co 16:13-14)",
+                        exegesis: `
+                            <h3>1. A Coleta para os Santos</h3>
+                            <ul>
+                                <li>A espiritualidade de Paulo era altamente prática. Ele instrui a igreja sobre a administração financeira, estabelecendo o princípio da contribuição sistemática cristã: "No primeiro dia da semana (Domingo), cada um de vós ponha de parte o que puder ajuntar, conforme a sua prosperidade". A coleta não era para enriquecer os líderes locais, mas para socorrer os cristãos na Judeia que enfrentavam uma fome devastadora. A generosidade financeira é o termômetro que prova se o Evangelho realmente mudou o coração da igreja.</li>
+                            </ul>
+                            
+                            <h3>2. Portas Abertas e Adversários</h3>
+                            <ul>
+                                <li>O apóstolo compartilha seus planos de viagem. Ele decide permanecer em Éfeso até a festa do Pentecostes, e a justificativa revela a coragem inabalável do coração missionário: <em>"Porque uma porta grande e eficaz se me abriu; e há muitos adversários"</em> (v.9). A oposição feroz e as lutas não eram um sinal para Paulo fugir ou recuar, mas a confirmação exata de que Deus estava operando ali com poder. Onde a luz brilha mais intensamente, as trevas atacam com maior fúria.</li>
+                            </ul>
+
+                            <h3>3. O Imperativo Final e o Maranata</h3>
+                            <ul>
+                                <li>Paulo conclui a epístola com uma série de imperativos em tom militar: "Vigiai, estai firmes, portai-vos varonilmente (corajosamente)". A igreja de Corinto estava sob pesado ataque moral, filosófico e espiritual, e precisava urgentemente de resiliência. No entanto, essa força marcial deve ser governada por um único princípio supremo: "Tudo seja feito com amor". Antes de assinar a carta com o seu próprio punho, Paulo profere uma advertência severa ("Se alguém não ama ao Senhor, seja anátema/amaldiçoado") e sela o livro com a expressão aramaica <em>Maranata</em> ("O Senhor Vem!"). É a tensão escatológica e a esperança do retorno do Rei que sustentam a Igreja até o fim.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            }
+        };
+
+        // === LÓGICA GERAL ===
+        let currentAudioBlob = null;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        function loadChapter(chapterKey) {
+            const data = bibleData[chapterKey];
+            if (!data) return;
+
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
+            const dateBadge = document.getElementById('dateBadge');
+            const dateValue = document.getElementById('dateValue');
+            const communitySection = document.getElementById('community-section');
+            const formChapterKey = document.getElementById('formChapterKey');
+            
+            heroTitle.style.opacity = '0';
+            heroDesc.style.opacity = '0';
+            dateBadge.style.opacity = '0';
+            
+            setTimeout(() => {
+                if (data.date) {
+                    dateValue.textContent = data.date;
+                    dateBadge.classList.remove('hidden');
+                    communitySection.classList.remove('hidden');
+                    formChapterKey.value = chapterKey;
+                    carregarComentarios(chapterKey);
+                    setTimeout(() => { dateBadge.style.opacity = '1'; }, 100);
+                } else {
+                    dateBadge.classList.add('hidden');
+                    communitySection.classList.add('hidden');
+                }
+
+                heroTitle.innerHTML = data.title;
+                heroDesc.innerHTML = data.desc;
+                heroTitle.style.opacity = '1';
+                heroDesc.style.opacity = '1';
+            }, 300);
+
+            const mainContent = document.getElementById('content');
+            mainContent.innerHTML = ''; 
+
+            data.blocks.forEach((block) => {
+                const isRomanos = chapterKey.includes('romanos');
+                const isCorintios = chapterKey.includes('corintios');
+                
+                let borderColor = isCorintios ? 'border-purple-600' : 'border-red-600';
+                let blurTop = isCorintios ? 'bg-purple-600/5' : 'bg-red-600/5';
+                let blurBottom = isCorintios ? 'bg-purple-800/5' : 'bg-red-800/5';
+                let borderPanel = isCorintios ? 'border-purple-900/30' : 'border-red-900/30';
+
+                const html = `
+                    <section class="reveal max-w-4xl mx-auto w-full relative">
+                        <div class="absolute -inset-4 ${blurTop} to-transparent rounded-3xl blur-xl pointer-events-none"></div>
+                        
+                        <div class="space-y-6 relative z-10">
+                            <div class="text-center mb-10">
+                                <h2 class="text-3xl md:text-5xl font-serif text-white leading-tight mb-6">${block.title}</h2>
+                                <div class="inline-block border-l-4 border-r-4 ${borderColor} px-6 py-4 italic text-slate-300 bg-[#120808]/50 shadow-sm max-w-3xl rounded-sm">
+                                    "${block.verse}"
+                                </div>
+                            </div>
+                            
+                            <div class="bg-[#0b0510]/80 p-8 md:p-12 rounded-xl border ${borderPanel} transition shadow-2xl relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-64 h-64 ${blurTop} rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+                                <div class="absolute bottom-0 left-0 w-64 h-64 ${blurBottom} rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
+                                <div class="rich-text text-slate-300 text-[16px] md:text-lg leading-relaxed relative z-10 font-light">
+                                    ${block.exegesis}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+                mainContent.insertAdjacentHTML('beforeend', html);
+            });
+            resetObservers();
+        }
+
+        function carregarComentarios(capitulo) {
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '<p class="text-center text-slate-500 text-sm animate-pulse">Carregando comentários...</p>';
+
+            fetch(`api.php?acao=listar&capitulo=${capitulo}`)
+            .then(res => res.json())
+            .then(data => {
+                list.innerHTML = '';
+                if(data.length === 0) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
+                }
+                data.forEach(c => {
+                    let mediaHtml = '';
+                    if(c.foto) mediaHtml += `<img src="${c.foto}" onclick="openImage(this.src)" class="mt-4 rounded-lg max-h-48 border border-slate-700 cursor-pointer hover:scale-[1.02] transition shadow-lg">`;
+                    if(c.audio) mediaHtml += `<audio controls src="${c.audio}" class="mt-4 w-full"></audio>`;
+
+                    const jaCurtiu = localStorage.getItem(`reagiu_likes_${c.id}`);
+                    const jaAmem = localStorage.getItem(`reagiu_amem_${c.id}`);
+                    const jaGloria = localStorage.getItem(`reagiu_gloria_${c.id}`);
+
+                    const isCorintios = capitulo.includes('corintios');
+                    let themeColor = isCorintios ? 'text-purple-400' : 'text-red-400';
+                    let panelBorder = isCorintios ? 'hover:border-purple-500/50' : 'hover:border-red-500/50';
+
+                    const html = `
+                        <div class="glass-panel p-5 pb-12 rounded-xl border border-slate-800 relative group transition ${panelBorder} bg-[#120808]/60">
+                            <div class="flex justify-between items-start mb-3 border-b border-slate-800 pb-2">
+                                <strong class="${themeColor} text-sm tracking-wide font-serif">${c.nome}</strong>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-widest">${new Date(c.data_envio).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed">${c.mensagem}</p>
+                            ${mediaHtml}
+                            
+                            <div class="absolute bottom-3 right-4 flex gap-2">
+                                <button onclick="reagirComentario(${c.id}, 'likes', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaCurtiu ? 'text-red-500 border-red-500/30' : 'text-slate-400 hover:text-red-400'}" ${jaCurtiu ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-heart"></i> <span class="count font-bold">${c.likes || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'amem', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaAmem ? 'text-cyan-400 border-cyan-400/30' : 'text-slate-400 hover:text-cyan-400'}" ${jaAmem ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-hands-praying"></i> <span class="count font-bold">${c.amem || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'gloria', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaGloria ? 'text-orange-500 border-orange-500/30' : 'text-slate-400 hover:text-orange-500'}" ${jaGloria ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-fire"></i> <span class="count font-bold">${c.gloria || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', html);
+                });
+            })
+            .catch(err => {
+                list.innerHTML = '<p class="text-center text-red-400 text-xs">Erro ao carregar comentários.</p>';
+            });
+        }
+
+        function reagirComentario(id, tipo, btn) {
+            if(localStorage.getItem(`reagiu_${tipo}_${id}`)) return;
+
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('.count');
+            let count = parseInt(countSpan.innerText);
+
+            icon.classList.add('reacted-anim');
+            btn.classList.remove('text-slate-400');
+            
+            if(tipo === 'likes') btn.classList.add('text-red-500', 'border-red-500/30');
+            if(tipo === 'amem') btn.classList.add('text-cyan-400', 'border-cyan-400/30');
+            if(tipo === 'gloria') btn.classList.add('text-orange-500', 'border-orange-500/30');
+
+            countSpan.innerText = count + 1;
+            btn.disabled = true;
+
+            localStorage.setItem(`reagiu_${tipo}_${id}`, 'true');
+
+            const formData = new FormData();
+            formData.append('acao', 'reagir');
+            formData.append('id', id);
+            formData.append('tipo', tipo);
+
+            fetch('api.php', { method: 'POST', body: formData });
+        }
+
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+            formData.append('acao', 'salvar');
+            if(currentAudioBlob) {
+                formData.append('audio', currentAudioBlob, 'audio.wav');
+            }
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    this.reset();
+                    document.getElementById('filePreview').innerHTML = '';
+                    currentAudioBlob = null;
+                    document.getElementById('recordText').innerText = "Gravar Áudio";
+                    carregarComentarios(document.getElementById('formChapterKey').value);
+                } else {
+                    alert('Erro ao enviar.');
+                }
+            })
+            .catch(() => alert('Erro de conexão.'))
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        });
+
+        function previewFile(input) {
+            const preview = document.getElementById('filePreview');
+            if(input.files && input.files[0]) {
+                preview.innerHTML = `<i class="fa-solid fa-check text-green-400"></i> Imagem selecionada: ${input.files[0].name}`;
+                preview.classList.remove('hidden');
+            }
+        }
+
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.addEventListener('click', async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                    mediaRecorder.onstop = () => {
+                        currentAudioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        document.getElementById('filePreview').classList.remove('hidden');
+                        document.getElementById('filePreview').innerHTML += '<br><i class="fa-solid fa-microphone text-green-400"></i> Áudio gravado!';
+                    };
+                    mediaRecorder.start();
+                    recordBtn.classList.add('recording-pulse');
+                    document.getElementById('recordText').innerText = "Parar Gravação";
+                } catch (err) {
+                    alert("Permita o uso do microfone para gravar.");
+                }
+            } else {
+                mediaRecorder.stop();
+                recordBtn.classList.remove('recording-pulse');
+                document.getElementById('recordText').innerText = "Gravar Áudio";
+            }
+        });
+
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        function closeImage() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function resetObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<80; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(168, 85, 247, 0.15)"; /* Púrpura */
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        loadChapter('intro_book');
+    </script>
+</body>
+</html>
