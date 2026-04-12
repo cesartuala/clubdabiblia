@@ -20,69 +20,46 @@ async function iniciarAutomacao() {
         return;
     }
 
+    // --- BLOCO DE DIAGNÓSTICO ---
+    console.log("Verificando modelos disponíveis para sua chave...");
+    // Forçamos a versão 'v1' da API que é a mais estável para os modelos 1.5
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: 'v1' });
+    // ----------------------------
+
     const indexAtual = fs.readFileSync(path.join(hostingerDir, 'index.html'), 'utf8');
     const apiAtual = fs.readFileSync(path.join(hostingerDir, 'api.php'), 'utf8');
 
     console.log(`Gerando conteúdo para: ${tarefa.livro}...`);
 
-    console.log("Conectando à Inteligência Artificial...");
-    
-    // Testaremos o nome mais atualizado para 2026
-    const modelName = "gemini-1.5-flash-latest"; 
-    
-    const model = genAI.getGenerativeModel({ 
-        model: modelName 
-    });
-
-    // O resto do prompt continua igual...
-
     const promptMestre = `
-        Aja como Arquiteto de Software e Erudito Bíblico. Responda APENAS com um objeto JSON válido.
-        
+        Aja como Arquiteto de Software. Responda APENAS com JSON.
         TAREFA: Gerar arquivos para o livro de ${tarefa.livro}.
-        - Capítulos: ${tarefa.capitulos}
-        - Período de Leitura: ${tarefa.periodo_leitura}
-        - Data do Quiz: ${tarefa.data_quiz}
-        
-        MANUAL E REGRAS:
-        ${manualContexto}
-
-        CÓDIGO BASE (REESCRITA COMPLETA):
-        --- INDEX.HTML ---
-        ${indexAtual}
-        --- API.PHP ---
-        ${apiAtual}
-
-        RESPONDA NESSE FORMATO JSON:
-        {
-            "livro_html": "código completo",
-            "quiz_html": "código completo",
-            "index_html": "código completo",
-            "api_php": "código completo"
-        }
+        REGRAS: ${manualContexto}
+        HTML BASE: ${indexAtual}
+        PHP BASE: ${apiAtual}
+        FORMATO DE RESPOSTA: {"livro_html": "", "quiz_html": "", "index_html": "", "api_php": ""}
     `;
 
-    const result = await model.generateContent(promptMestre);
-    let text = result.response.text();
-    
-    // Limpeza de Markdown caso a IA envie
-    text = text.replace(/```json/g, "").replace(/```/g, "").trim();
-    
-    const resposta = JSON.parse(text);
+    try {
+        const result = await model.generateContent(promptMestre);
+        let text = result.response.text();
+        text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+        const resposta = JSON.parse(text);
 
-    fs.writeFileSync(path.join(hostingerDir, `${tarefa.livro.toLowerCase()}.html`), resposta.livro_html);
-    fs.writeFileSync(path.join(hostingerDir, `quiz_${tarefa.livro.toLowerCase()}.html`), resposta.quiz_html);
-    fs.writeFileSync(path.join(hostingerDir, 'index.html'), resposta.index_html);
-    fs.writeFileSync(path.join(hostingerDir, 'api.php'), resposta.api_php);
+        fs.writeFileSync(path.join(hostingerDir, `${tarefa.livro.toLowerCase()}.html`), resposta.livro_html);
+        fs.writeFileSync(path.join(hostingerDir, `quiz_${tarefa.livro.toLowerCase()}.html`), resposta.quiz_html);
+        fs.writeFileSync(path.join(hostingerDir, 'index.html'), resposta.index_html);
+        fs.writeFileSync(path.join(hostingerDir, 'api.php'), resposta.api_php);
 
-    tarefa.status = "concluido";
-    fs.writeFileSync(cronogramaPath, JSON.stringify(cronograma, null, 2));
-    
-    console.log("Sucesso! Arquivos criados localmente.");
+        tarefa.status = "concluido";
+        fs.writeFileSync(cronogramaPath, JSON.stringify(cronograma, null, 2));
+        console.log("Sucesso absoluto!");
+    } catch (error) {
+        console.error("Erro na chamada da IA. Detalhes técnicos:", error.message);
+        throw error;
+    }
 }
 
-// O segredo está aqui: process.exit(1) faz o GitHub Actions entender o erro
 iniciarAutomacao().catch(err => {
-    console.error("ERRO FATAL:", err);
-    process.exit(1); 
+    process.exit(1);
 });
