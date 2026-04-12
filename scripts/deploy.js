@@ -1,51 +1,67 @@
-const ftp = require("basic-ftp");
-const fs = require("fs");
-const path = require("path");
+const ftp = require('basic-ftp');
+const path = require('path');
+const fs = require('fs');
 
 async function executarDeploy() {
-    const cliente = new ftp.Client();
-    // Aumentamos o tempo limite para conexões mais lentas
-    cliente.ftp.timeout = 120000; 
+    const localDir = path.join(__dirname, '..', 'hostinger');
+    const remoteDir = 'public_html';
+    const maxRetries = 5;
 
-    try {
-        console.log("🔗 Conectando ao FTP da Hostinger...");
-        await cliente.access({
-            host: process.env.FTP_HOST,
-            user: process.env.FTP_USER,
-            password: process.env.FTP_PASS,
-            secure: false 
-        });
+    // Lista de arquivos para ignorar (opcional)
+    const IGNORAR = ['.git', 'node_modules'];
 
-        const localDir = "hostinger";
-        const remoteDir = "public_html";
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        const cliente = new ftp.Client();
+        cliente.ftp.timeout = 120000; // 2 minutos de timeout
 
-        // LOG 1: Verificar o que o robô está vendo na pasta local
-        if (!fs.existsSync(localDir)) {
-            throw new Error(`A pasta local '${localDir}' não foi encontrada!`);
-        }
-        const arquivosLocais = fs.readdirSync(localDir);
-        console.log(`📂 Arquivos detectados na pasta local: [${arquivosLocais.join(", ")}]`);
+        try {
+            console.log(`[Tentativa ${attempt}/${maxRetries}] 🔗 Conectando ao FTP da Hostinger...`);
+            
+            await cliente.access({
+                host: process.env.FTP_HOST,
+                user: process.env.FTP_USER,
+                password: process.env.FTP_PASS,
+                secure: false // Altere para true se o seu host exigir FTPS
+            });
 
-        console.log(`🚚 Iniciando sincronização para ${remoteDir}...`);
+            console.log(`📂 Acessando diretório remoto: ${remoteDir}`);
+            await cliente.ensureDir(remoteDir);
 
-        // LOG 2: Rastrear o progresso de cada arquivo individualmente
-        cliente.trackProgress(info => {
-            if (info.type === "upload") {
-                // Este log aparecerá para cada arquivo enviado
-                console.log(`📤 [UPLOAD] Enviando: ${info.name} | Tamanho: ${info.bytesOverall} bytes`);
+            // Lógica de Upload Individual (Mais rápido e estável que o sync)
+            const itens = fs.readdirSync(localDir);
+            console.log(`🚀 Iniciando upload de ${itens.length} itens...`);
+
+            for (const item of itens) {
+                if (IGNORAR.includes(item)) continue;
+
+                const fullPath = path.join(localDir, item);
+                const stat = fs.statSync(fullPath);
+
+                if (stat.isDirectory()) {
+                    console.log(`  📁 Subindo pasta: ${item}/`);
+                    await cliente.uploadFromDir(fullPath, item);
+                } else {
+                    console.log(`  📄 Subindo arquivo: ${item}`);
+                    await cliente.uploadFrom(fullPath, item);
+                }
             }
-        });
 
-        // O comando uploadFromDir sincroniza a pasta. 
-        // Se arquivos novos não subirem, ele forçará a verificação.
-        await cliente.uploadFromDir(localDir, remoteDir);
+            console.log("✅ DEPLOY CONCLUÍDO COM SUCESSO!");
+            cliente.close();
+            return; // Sai do loop de tentativas em caso de sucesso
 
-        console.log("✅ Deploy finalizado! Verifique o site agora.");
-    } catch (err) {
-        console.error("❌ Erro Crítico no Deploy:", err.message);
-        process.exit(1);
-    } finally {
-        cliente.close();
+        } catch (err) {
+            console.error(`❌ Erro na tentativa ${attempt}:`, err.message);
+            cliente.close();
+
+            if (attempt < maxRetries) {
+                console.log("⏳ Aguardando 5 segundos para redefinir conexão...");
+                await new Promise(r => setTimeout(r, 5000));
+            } else {
+                console.error("💀 Falha crítica: Todas as tentativas de deploy falharam.");
+                process.exit(1);
+            }
+        }
     }
 }
 
