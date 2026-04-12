@@ -5,21 +5,20 @@ Este documento é a diretriz mestre para a automação via API. Qualquer arquivo
 ---
 
 ## 1. Protocolo de Integridade Absoluta (Anti-Simplificação)
-* **Regra de Reescrita Integral:** A API deve devolver sempre o código completo. É terminantemente proibido o uso de placeholders como `// ... resto do código` ou `/* código anterior */`.
-* **Preservação de Conexões:** No arquivo `api.php`, as variáveis de conexão com o banco de dados (`$host`, `$db`, `$user`, `$pass`) e a instância PDO são **IMUTÁVEIS**. Devem ser repetidas caractere por caractere.
-* **Segurança SQL:** Uso obrigatório de **Prepared Statements**. É proibida a concatenação direta de variáveis em strings SQL.
-
+* **Regra de Reescrita Integral: A API deve devolver sempre o código completo. É terminantemente proibido o uso de placeholders como // ... resto do código.
+* **Escopo de Geração: A IA é responsável por gerar o arquivo do livro ([livro].html), o arquivo do quiz (quiz_[livro].html) e atualizar o index.html.
+* **Preservação de Back-End: O arquivo api.php não deve ser modificado pela IA, pois já contém todas as rotas para os 66 livros da Bíblia.
 ---
 
 ## 2. Padrões de Conteúdo (Exegese Teológica Profunda)
-Cada arquivo de leitura ([livro].html) deve seguir esta estrutura de conteúdo:
-* **Estrutura por Capítulo:** Exatamente **3 blocos de conteúdo (H3)** detalhados por capítulo:
+Cada ficheiro de leitura ([livro].html) deve seguir esta estrutura:
+* **Estrutura por Capítulo:** Exatamente **3 blocos de conteúdo (H3)** detalhados:
     1. **Contexto e Exegese:** Fundo histórico e significado original.
     2. **Análise Teológica:** Doutrina e análise de termos.
     3. **Aplicação Prática:** Como aplicar o ensinamento hoje.
-* **Rigor Linguístico:** Inclusão obrigatória de no mínimo **2 termos em Grego** (Novo Testamento) ou **Hebraico** (Antigo Testamento) por capítulo.
+* **Rigor Linguístico:** Inclusão obrigatória de no mínimo **2 termos em Grego ou Hebraico** por capítulo.
     * **Formato:** *(Termo Original - Transliteração - Significado)*.
-    * **Estilo:** Aplicar itálico `<i>` ou `<em>` nos termos originais.
+    * **Estilo:** Aplicar itálico `<i>` nos termos originais.
 
 ---
 
@@ -34,15 +33,17 @@ A interface deve ser idêntica aos modelos `efesios.html` e `corintios.html`:
 
 ## 4. Lógica de Atualização Dinâmica
 
-### Arquivo: index.html
-1. **Leitura Atual:** O card do novo livro assume a seção de destaque (topo). O botão de Quiz deve ter `opacity-60` e link desativado até a data de término da leitura.
-2. **Histórico:** O livro anterior deve ser movido para a seção "Desafios Abertos" com o Quiz e Ranking totalmente ativos.
-3. **Scripts:** Injetar a chamada de `fetch` para o ranking do novo livro dentro da função de inicialização do site.
+## 4. Lógica de Status do index.html (Os 3 Status)
+O `index.html` deve ser reorganizado dinamicamente a cada novo livro seguindo esta hierarquia:
 
-### Arquivo: api.php
-1. **Novas Rotas:** Adicionar os `case` para `ranking_[livro]` e `salvar_quiz_[livro]` dentro do switch principal.
-2. **Auto-Gerenciamento SQL:** Incluir o comando `CREATE TABLE IF NOT EXISTS ranking_[livro]` no início das rotas do novo livro.
-
+1. **STATUS "LEITURA ATUAL" (Topo):**
+   - O novo livro assume o topo. Selo: "Leitura Atual". 
+   - Botão de Quiz: Desativado (`opacity-50`, `pointer-events-none`).
+2. **STATUS "DESAFIO ABERTO":**
+   - O livro que estava no topo desce para esta seção. Selo: "Desafio Aberto". 
+   - Botão de Quiz: 100% Ativo. Ranking: Visível.
+3. **STATUS "ARQUIVO/CONCLUÍDO":**
+   - Livros antigos perdem os selos de destaque, permanecendo disponíveis na biblioteca.
 ---
 
 ## 5. Matriz Visual de Referência
@@ -154,16 +155,16 @@ A interface deve ser idêntica aos modelos `efesios.html` e `corintios.html`:
 ---
 
 ## 6. Quiz Engine
-* **Volume de Dados:** Cada `quiz_[livro].html` deve conter um array interno com **15 perguntas**.
-* **Lógica de Sorteio:** O JavaScript deve selecionar aleatoriamente apenas **10 perguntas** por rodada.
-* **Persistência:** Enviar resultados via POST para `api.php` com os campos: `nome`, `pontos`, `acertos`.
-
+* **Perguntas:** Cada `quiz_[livro].html` deve conter um array interno com **15 perguntas**.
+* **Sorteio:** O JavaScript deve selecionar aleatoriamente apenas **10 perguntas** por rodada.
+* **Integração:** Os dados devem ser enviados via POST para `api.php` usando a rota `salvar_quiz_[livro]`.
+  
 ---
 
 ## 7. Estrutura de Diretórios e Arquivos (Atualização)
 
 * **Repositório Local (GitHub):** Todos os arquivos do site devem ser gerados e mantidos dentro de uma pasta raiz chamada `/hostinger`. 
-* **Servidor (Hostinger):** O conteúdo da pasta `/hostinger` do repositório espelha exatamente a pasta `/public_html/` do servidor.
+* **Servidor (Hostinger):** O conteúdo da pasta `/hostinger` do repositório espelha exatamente a pasta `/public_html/public` do servidor.
 * Os arquivos `index.html`, `api.php`, `[livro].html` e `quiz_[livro].html` ficam todos soltos na raiz dessa pasta, junto com o diretório `/uploads/`.
 
 ---
