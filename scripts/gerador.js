@@ -1,65 +1,37 @@
-const fs = require('fs');
-const path = require('path');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-async function iniciarAutomacao() {
-    const cronogramaPath = path.join(__dirname, '..', 'cronograma.json');
-    const manualPath = path.join(__dirname, '..', 'site-context.md');
-    const hostingerDir = path.join(__dirname, '..', 'hostinger');
-
-    const cronograma = JSON.parse(fs.readFileSync(cronogramaPath, 'utf8'));
-    const manualContexto = fs.readFileSync(manualPath, 'utf8');
+async function diagnostico() {
+    console.log("Iniciando Raio-X da Chave de API...");
+    const apiKey = process.env.GEMINI_API_KEY;
     
-    const hoje = new Date().toLocaleString("en-CA", {timeZone: "America/Sao_Paulo"}).split(',')[0];
-    const tarefa = cronograma.agenda.find(t => t.data_criacao === hoje && t.status === "pendente");
-
-    if (!tarefa) {
-        console.log("Nada agendado para hoje.");
-        return;
+    if (!apiKey) {
+        console.error("ERRO: A chave da API não foi carregada pelo GitHub!");
+        process.exit(1);
     }
 
-    // --- BLOCO DE DIAGNÓSTICO ---
-    console.log("Verificando modelos disponíveis para sua chave...");
-    // Forçamos a versão 'v1' da API que é a mais estável para os modelos 1.5
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: 'v1' });
-    // ----------------------------
-
-    const indexAtual = fs.readFileSync(path.join(hostingerDir, 'index.html'), 'utf8');
-    const apiAtual = fs.readFileSync(path.join(hostingerDir, 'api.php'), 'utf8');
-
-    console.log(`Gerando conteúdo para: ${tarefa.livro}...`);
-
-    const promptMestre = `
-        Aja como Arquiteto de Software. Responda APENAS com JSON.
-        TAREFA: Gerar arquivos para o livro de ${tarefa.livro}.
-        REGRAS: ${manualContexto}
-        HTML BASE: ${indexAtual}
-        PHP BASE: ${apiAtual}
-        FORMATO DE RESPOSTA: {"livro_html": "", "quiz_html": "", "index_html": "", "api_php": ""}
-    `;
-
+    // Usando o fetch nativo do Node.js para perguntar os modelos direto na fonte
+    const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+    
     try {
-        const result = await model.generateContent(promptMestre);
-        let text = result.response.text();
-        text = text.replace(/```json/g, "").replace(/```/g, "").trim();
-        const resposta = JSON.parse(text);
-
-        fs.writeFileSync(path.join(hostingerDir, `${tarefa.livro.toLowerCase()}.html`), resposta.livro_html);
-        fs.writeFileSync(path.join(hostingerDir, `quiz_${tarefa.livro.toLowerCase()}.html`), resposta.quiz_html);
-        fs.writeFileSync(path.join(hostingerDir, 'index.html'), resposta.index_html);
-        fs.writeFileSync(path.join(hostingerDir, 'api.php'), resposta.api_php);
-
-        tarefa.status = "concluido";
-        fs.writeFileSync(cronogramaPath, JSON.stringify(cronograma, null, 2));
-        console.log("Sucesso absoluto!");
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        console.log("\n=== MODELOS AUTORIZADOS PARA A SUA CHAVE ===");
+        if (data.models) {
+            // Pega apenas os nomes dos modelos e imprime um em cada linha
+            const nomes = data.models.map(m => m.name);
+            console.log(nomes.join('\n'));
+        } else {
+            console.log("Resposta inesperada do Google:", data);
+        }
+        console.log("============================================\n");
+        
+        // Força a parada do robô para lermos o log
+        console.error("RAIO-X CONCLUÍDO. Me envie a lista que apareceu acima!");
+        process.exit(1); 
+        
     } catch (error) {
-        console.error("Erro na chamada da IA. Detalhes técnicos:", error.message);
-        throw error;
+        console.error("Falha no diagnóstico:", error);
+        process.exit(1);
     }
 }
 
-iniciarAutomacao().catch(err => {
-    process.exit(1);
-});
+diagnostico();
