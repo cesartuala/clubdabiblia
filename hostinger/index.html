@@ -412,7 +412,7 @@
                 .catch(() => document.getElementById('ranking2Corintios').innerHTML = '<li class="text-center text-red-900">Erro</li>');
                 
             // Fetch for I Corintios
-            fetch('api.php?acao=ranking_1corintios') // Corrected ID to match quiz_1corintios for consistency, assuming 1corintios maps to this API call.
+            fetch('api.php?acao=ranking_1corintios') 
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingCorintios', 'text-purple-400 font-bold'))
                 .catch(() => document.getElementById('rankingCorintios').innerHTML = '<li class="text-center text-red-900">Erro</li>');
