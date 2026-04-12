@@ -12,7 +12,6 @@ async function iniciarAutomacao() {
     const cronograma = JSON.parse(fs.readFileSync(cronogramaPath, 'utf8'));
     const manualContexto = fs.readFileSync(manualPath, 'utf8');
     
-    // Pega a data de hoje (Fuso Brasília)
     const hoje = new Date().toLocaleString("en-CA", {timeZone: "America/Sao_Paulo"}).split(',')[0];
     const tarefa = cronograma.agenda.find(t => t.data_criacao === hoje && t.status === "pendente");
 
@@ -21,70 +20,61 @@ async function iniciarAutomacao() {
         return;
     }
 
-    // Lendo arquivos atuais para reescrita completa
     const indexAtual = fs.readFileSync(path.join(hostingerDir, 'index.html'), 'utf8');
     const apiAtual = fs.readFileSync(path.join(hostingerDir, 'api.php'), 'utf8');
 
     console.log(`Gerando conteúdo para: ${tarefa.livro}...`);
 
-    console.log("Conectando à Inteligência Artificial...");
-    // Ajustado para o nome de modelo mais estável
-    const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-pro" 
-    });
+    // Usando o modelo FLASH para maior estabilidade e velocidade na API
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const promptMestre = `
-        Aja como Arquiteto de Software e Erudito Bíblico. Com base no MANUAL DE IDENTIDADE anexo, gere os arquivos para o livro de ${tarefa.livro}.
+        Aja como Arquiteto de Software e Erudito Bíblico. Responda APENAS com um objeto JSON válido.
         
-        DADOS DA TAREFA:
-        - Livro: ${tarefa.livro}
+        TAREFA: Gerar arquivos para o livro de ${tarefa.livro}.
         - Capítulos: ${tarefa.capitulos}
         - Período de Leitura: ${tarefa.periodo_leitura}
         - Data do Quiz: ${tarefa.data_quiz}
         
-        REGRAS CRICIAIS DO MANUAL:
-        1. Use a COR e ÍCONE da Matriz para ${tarefa.livro}.
-        2. EXEGESE: Use termos em Grego/Hebraico itálico. 3 tópicos (H3) por capítulo.
-        3. REESCRITA: Atualize o index.html (mova o livro anterior para desafios e coloque ${tarefa.livro} como atual).
-        4. API: Adicione rotas PDO para ranking_${tarefa.livro.toLowerCase()}.
-        5. QUIZ: Gere o arquivo com 15 perguntas (mostrando 10 aleatórias).
-        
-        CONTEÚDO ATUAL PARA REFERÊNCIA (REESCRITA COMPLETA):
-        --- INDEX.HTML ATUAL ---
-        ${indexAtual}
-        --- API.PHP ATUAL ---
-        ${apiAtual}
-        --- MANUAL ---
+        MANUAL E REGRAS:
         ${manualContexto}
 
-        RESPONDA EXCLUSIVAMENTE NO FORMATO JSON ABAIXO:
+        CÓDIGO BASE (REESCRITA COMPLETA):
+        --- INDEX.HTML ---
+        ${indexAtual}
+        --- API.PHP ---
+        ${apiAtual}
+
+        RESPONDA NESSE FORMATO JSON:
         {
-            "livro_html": "conteúdo completo do arquivo ${tarefa.livro.toLowerCase()}.html",
-            "quiz_html": "conteúdo completo do arquivo quiz_${tarefa.livro.toLowerCase()}.html",
-            "index_html": "conteúdo completo do index.html atualizado",
-            "api_php": "conteúdo completo do api.php atualizado"
+            "livro_html": "código completo",
+            "quiz_html": "código completo",
+            "index_html": "código completo",
+            "api_php": "código completo"
         }
     `;
 
     const result = await model.generateContent(promptMestre);
     let text = result.response.text();
     
-    // Limpeza para garantir que pegamos apenas o JSON, caso a IA mande markdown
+    // Limpeza de Markdown caso a IA envie
     text = text.replace(/```json/g, "").replace(/```/g, "").trim();
     
     const resposta = JSON.parse(text);
 
-    // Salvando os arquivos gerados
     fs.writeFileSync(path.join(hostingerDir, `${tarefa.livro.toLowerCase()}.html`), resposta.livro_html);
     fs.writeFileSync(path.join(hostingerDir, `quiz_${tarefa.livro.toLowerCase()}.html`), resposta.quiz_html);
     fs.writeFileSync(path.join(hostingerDir, 'index.html'), resposta.index_html);
     fs.writeFileSync(path.join(hostingerDir, 'api.php'), resposta.api_php);
 
-    // Marcar como concluído
     tarefa.status = "concluido";
     fs.writeFileSync(cronogramaPath, JSON.stringify(cronograma, null, 2));
     
-    console.log("Arquivos gerados e cronograma atualizado!");
+    console.log("Sucesso! Arquivos criados localmente.");
 }
 
-iniciarAutomacao().catch(console.error);
+// O segredo está aqui: process.exit(1) faz o GitHub Actions entender o erro
+iniciarAutomacao().catch(err => {
+    console.error("ERRO FATAL:", err);
+    process.exit(1); 
+});
