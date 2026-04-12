@@ -111,6 +111,7 @@
                     </div>
             
                     <div class="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-full px-3 py-1 mb-4 shadow-sm opacity-70">
+                        <i class="fa-regular fa-calendar-check text-slate-400 text-[10px]"></i>
                         <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold line-through">06 Abr - 10 Abr</span>
                     </div>
                     
@@ -386,36 +387,43 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
+            // Fetch for Filipenses
             fetch('api.php?acao=ranking_filipenses')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingFilipenses', 'text-pink-400 font-bold'))
                 .catch(() => document.getElementById('rankingFilipenses').innerHTML = '<li class="text-center text-red-900">Erro ao carregar ranking.</li>');
 
+            // Fetch for Efesios
             fetch('api.php?acao=ranking_efesios')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingEfesios', 'text-indigo-400 font-bold'))
                 .catch(() => document.getElementById('rankingEfesios').innerHTML = '<li class="text-center text-red-900">Erro ao carregar ranking.</li>');
 
+            // Fetch for Galatas
             fetch('api.php?acao=ranking_galatas')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingGalatas', 'text-orange-400 font-bold'))
                 .catch(() => document.getElementById('rankingGalatas').innerHTML = '<li class="text-center text-red-900">Erro ao carregar ranking.</li>');
 
+            // Fetch for II Corintios
             fetch('api.php?acao=ranking_2corintios')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'ranking2Corintios', 'text-emerald-400 font-bold'))
                 .catch(() => document.getElementById('ranking2Corintios').innerHTML = '<li class="text-center text-red-900">Erro</li>');
                 
-            fetch('api.php?acao=ranking_corintios')
+            // Fetch for I Corintios
+            fetch('api.php?acao=ranking_1corintios') // Corrected ID to match quiz_1corintios for consistency, assuming 1corintios maps to this API call.
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingCorintios', 'text-purple-400 font-bold'))
                 .catch(() => document.getElementById('rankingCorintios').innerHTML = '<li class="text-center text-red-900">Erro</li>');
 
+            // Fetch for Romanos
             fetch('api.php?acao=ranking_romanos')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingRomanos', 'text-red-400 font-bold'))
                 .catch(() => document.getElementById('rankingRomanos').innerHTML = '<li class="text-center text-red-900">Erro ao carregar ranking.</li>');
 
+            // Fetch for Atos
             fetch('api.php?acao=ranking_atos')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingAtos', 'text-cyan-400 font-bold'))
