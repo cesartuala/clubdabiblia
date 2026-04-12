@@ -30,10 +30,9 @@ async function iniciarAutomacao() {
         return;
     }
 
-    // Leitura dos arquivos base
+    // Leitura dos arquivos base (Removido api.php do contexto por segurança)
     const manualContexto = fs.readFileSync(manualPath, 'utf8');
     const indexAtual = fs.readFileSync(path.join(hostingerDir, 'index.html'), 'utf8');
-    const apiAtual = fs.readFileSync(path.join(hostingerDir, 'api.php'), 'utf8');
     const moldeDesign = fs.readFileSync(path.join(hostingerDir, 'efesios.html'), 'utf8');
 
     console.log(`📖 Processando: ${tarefa.livro}...`);
@@ -53,24 +52,21 @@ async function iniciarAutomacao() {
         1. NOVO CARD: Crie o card de ${tarefa.livro} no topo com selo "Leitura Atual". Quiz desativado (opacity-50).
         2. MOVER ANTERIOR: O card que estava no topo agora desce para "Desafios Abertos". Mude selo para "Desafio Aberto" e ATIVE o quiz/ranking.
         3. ARQUIVAR ANTIGOS: Remova selos de destaque de qualquer outro livro que já esteja na seção de desafios.
-        4. JAVASCRIPT: Atualize a função de fetch de rankings para incluir o novo livro.
+        4. JAVASCRIPT: No final do index.html, verifique se a função de fetch de rankings precisa ser atualizada para apontar para a nova rota 'ranking_${tarefa.livro.toLowerCase()}'.
 
-        --- LÓGICA DO API.PHP ---
-        1. NÃO CRIE TABELAS (A tabela ranking_${tarefa.livro.toLowerCase()} já existe).
-        2. Apenas adicione os 'case' no switch para salvar e listar o ranking do novo livro.
-        3. MANTENHA as credenciais de conexão do banco exatamente como estão.
+        --- INFORMAÇÃO TÉCNICA DO BACK-END ---
+        O arquivo api.php já possui todas as rotas prontas (ranking_${tarefa.livro.toLowerCase()} e salvar_quiz_${tarefa.livro.toLowerCase()}). 
+        Não é necessário gerar código PHP.
 
         --- REFERÊNCIAS ---
-        MOLDE: ${moldeDesign}
+        MOLDE DESIGN: ${moldeDesign}
         INDEX ATUAL: ${indexAtual}
-        API ATUAL: ${apiAtual}
 
         RESPONDA APENAS JSON:
         {
-            "livro_html": "...",
-            "quiz_html": "...",
-            "index_html": "...",
-            "api_php": "..."
+            "livro_html": "código html completo do novo livro",
+            "quiz_html": "código html completo do quiz",
+            "index_html": "index.html atualizado com os novos status"
         }
     `;
 
@@ -82,17 +78,16 @@ async function iniciarAutomacao() {
         if (!jsonMatch) throw new Error("IA não devolveu JSON.");
         const resposta = JSON.parse(jsonMatch[0]);
 
-        // Escrita dos arquivos
+        // Escrita dos arquivos (api.php não é mais sobrescrito aqui)
         fs.writeFileSync(path.join(hostingerDir, `${tarefa.livro.toLowerCase()}.html`), resposta.livro_html);
         fs.writeFileSync(path.join(hostingerDir, `quiz_${tarefa.livro.toLowerCase()}.html`), resposta.quiz_html);
         fs.writeFileSync(path.join(hostingerDir, 'index.html'), resposta.index_html);
-        fs.writeFileSync(path.join(hostingerDir, 'api.php'), resposta.api_php);
 
         // Update Cronograma
         tarefa.status = "concluido";
         fs.writeFileSync(cronogramaPath, JSON.stringify(cronograma, null, 2));
         
-        console.log(`✅ Sucesso! Arquivos de ${tarefa.livro} gerados e deploy pronto.`);
+        console.log(`✅ Sucesso! Conteúdo de ${tarefa.livro} gerado. O api.php permanece intacto.`);
     } catch (err) {
         console.error("❌ Erro:", err.message);
         process.exit(1);
