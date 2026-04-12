@@ -45,7 +45,7 @@ async function iniciarAutomacao() {
         systemInstruction: "Você é um Arquiteto de Software e Erudito Sênior. Responda apenas com os blocos marcados pelos separadores."
     });
 
-    const promptMestre = `
+    let promptMestre = `
         MANUAL DE REGRAS: 
         ${manualContexto}
 
@@ -80,7 +80,6 @@ async function iniciarAutomacao() {
         (index.html atualizado)
         [FIM_INDEX]
     `;
-    let promptMestre = "";
     let tarefaAtual = tarefaCriacao || tarefaQuiz;
 
     if (tarefaCriacao) {
