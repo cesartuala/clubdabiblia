@@ -3,7 +3,7 @@ const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 // ============================================================================
-// CONFIGURAÇÃO DE SEGURANÇA
+// CONFIGURAÇÃO DE SEGURANÇA E API
 // ============================================================================
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
@@ -14,7 +14,7 @@ const genAI = new GoogleGenerativeAI(apiKey);
 
 async function iniciarAutomacao() {
     console.log("==================================================");
-    console.log("🚀 INICIANDO GERADOR CLUBE DA BÍBLIA (V. FINAL)");
+    console.log("🚀 INICIANDO GERADOR CLUBE DA BÍBLIA (V. ANTI-FALHA)");
     console.log("==================================================");
 
     const cronogramaPath = path.join(__dirname, '..', 'cronograma.json');
@@ -30,61 +30,86 @@ async function iniciarAutomacao() {
         return;
     }
 
-    // Leitura dos arquivos base (Removido api.php do contexto por segurança)
+    // Leitura dos arquivos base
     const manualContexto = fs.readFileSync(manualPath, 'utf8');
     const indexAtual = fs.readFileSync(path.join(hostingerDir, 'index.html'), 'utf8');
     const moldeDesign = fs.readFileSync(path.join(hostingerDir, 'efesios.html'), 'utf8');
 
-    console.log(`📖 Processando: ${tarefa.livro}...`);
+    console.log(`📖 Processando: ${tarefa.livro}... Isso pode levar até 3 minutos.`);
 
     const model = genAI.getGenerativeModel({ 
         model: "gemini-2.5-flash",
-        systemInstruction: "Você é um Engenheiro de Software Sênior. Sua saída deve ser EXCLUSIVAMENTE JSON. Proibido resumir código ou usar placeholders."
+        systemInstruction: "Você é um Arquiteto de Software e Erudito Sênior. É expressamente PROIBIDO o uso de placeholders (ex: // resto do código). Gere os arquivos por completo."
     });
 
     const promptMestre = `
-        Aja como Arquiteto de Software e Erudito Bíblico Sênior.
-        Gere os arquivos completos para o livro: ${tarefa.livro}.
-        
-        REGRAS DE OURO:
-        1. REESCRITA INTEGRAL: Nunca use "// ... resto do código" ou placeholders. 
-        2. BIBLE DATA: A constante 'const bibleData' dentro do <script> deve ser TOTALMENTE preenchida com o conteúdo real de ${tarefa.livro} (Introdução, Autor e capítulos 1 a ${tarefa.capitulos}).
-        3. EXEGESE PROFUNDA: Cada capítulo deve ter Contexto, Análise Teológica e Aplicação, com pelo menos 2 termos em Grego/Hebraico originais.
-        4. SINCRONIA: O 'chapterSelect' deve ter opções que correspondam exatamente às chaves do seu 'bibleData'.
+        MANUAL DE REGRAS: 
+        ${manualContexto}
 
-        --- ARQUIVOS BASE PARA MANTER O PADRÃO ---
+        --- TAREFA ---
+        Gerar arquivos completos para o livro: ${tarefa.livro}. Capítulos: ${tarefa.capitulos}.
+        O objeto 'const bibleData' DEVE ser totalmente preenchido com a exegese teológica.
+        
+        --- LÓGICA DE MANIPULAÇÃO DO INDEX.HTML (3 STATUS) ---
+        1. NOVO CARD: Crie o card de ${tarefa.livro} no topo com selo "Leitura Atual". Quiz desativado (opacity-50).
+        2. MOVER ANTERIOR: O card no topo desce para "Desafios Abertos". Mude selo para "Desafio Aberto" e ATIVE o quiz/ranking.
+        3. ARQUIVAR ANTIGOS: Remova selos de destaque dos demais.
+        4. JAVASCRIPT: Atualize o fetch de rankings no final do index.html.
+
+        --- REFERÊNCIAS ---
         MOLDE DESIGN: ${moldeDesign}
         INDEX ATUAL: ${indexAtual}
 
-        RESPONDA EXCLUSIVAMENTE COM O JSON:
-        {
-            "livro_html": "código completo do arquivo .html com bibleData preenchido",
-            "quiz_html": "código completo do quiz",
-            "index_html": "index atualizado",
-            "api_php": "api.php completo"
-        }
+        --- FORMATO EXATO DE RESPOSTA ---
+        NÃO UTILIZE JSON! Envie a sua resposta usando estritamente os separadores abaixo. Não adicione blocos de código markdown (\`\`\`) antes ou depois dos separadores.
+
+        [INICIO_LIVRO]
+        (insira aqui o código HTML completo do livro com o bibleData preenchido)
+        [FIM_LIVRO]
+
+        [INICIO_QUIZ]
+        (insira aqui o código HTML completo do quiz)
+        [FIM_QUIZ]
+
+        [INICIO_INDEX]
+        (insira aqui o código HTML completo do index.html atualizado)
+        [FIM_INDEX]
     `;
 
     try {
         const result = await model.generateContent(promptMestre);
         const text = result.response.text();
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
         
-        if (!jsonMatch) throw new Error("IA não devolveu JSON.");
-        const resposta = JSON.parse(jsonMatch[0]);
+        console.log("✅ Resposta recebida da IA. Extraindo arquivos...");
 
-        // Escrita dos arquivos (api.php não é mais sobrescrito aqui)
-        fs.writeFileSync(path.join(hostingerDir, `${tarefa.livro.toLowerCase()}.html`), resposta.livro_html);
-        fs.writeFileSync(path.join(hostingerDir, `quiz_${tarefa.livro.toLowerCase()}.html`), resposta.quiz_html);
-        fs.writeFileSync(path.join(hostingerDir, 'index.html'), resposta.index_html);
+        // Usando Regex para capturar o conteúdo entre os separadores
+        const livroMatch = text.match(/\[INICIO_LIVRO\]([\s\S]*?)\[FIM_LIVRO\]/);
+        const quizMatch = text.match(/\[INICIO_QUIZ\]([\s\S]*?)\[FIM_QUIZ\]/);
+        const indexMatch = text.match(/\[INICIO_INDEX\]([\s\S]*?)\[FIM_INDEX\]/);
+
+        if (!livroMatch || !quizMatch || !indexMatch) {
+            console.error("❌ ERRO: A IA não utilizou os separadores corretamente.");
+            console.error("Início do retorno gerado:", text.substring(0, 500));
+            process.exit(1);
+        }
+
+        // Limpeza de possíveis formatações markdown (```html) que a IA teima em colocar
+        const livroHtml = livroMatch[1].replace(/^```html/i, '').replace(/```$/, '').trim();
+        const quizHtml = quizMatch[1].replace(/^```html/i, '').replace(/```$/, '').trim();
+        const indexHtml = indexMatch[1].replace(/^```html/i, '').replace(/```$/, '').trim();
+
+        // Escrita dos arquivos
+        fs.writeFileSync(path.join(hostingerDir, `${tarefa.livro.toLowerCase()}.html`), livroHtml);
+        fs.writeFileSync(path.join(hostingerDir, `quiz_${tarefa.livro.toLowerCase()}.html`), quizHtml);
+        fs.writeFileSync(path.join(hostingerDir, 'index.html'), indexHtml);
 
         // Update Cronograma
         tarefa.status = "concluido";
         fs.writeFileSync(cronogramaPath, JSON.stringify(cronograma, null, 2));
         
-        console.log(`✅ Sucesso! Conteúdo de ${tarefa.livro} gerado. O api.php permanece intacto.`);
+        console.log(`🎉 Sucesso! Conteúdo de ${tarefa.livro} gerado perfeitamente.`);
     } catch (err) {
-        console.error("❌ Erro:", err.message);
+        console.error("❌ Erro Crítico:", err.message);
         process.exit(1);
     }
 }
