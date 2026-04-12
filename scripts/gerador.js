@@ -27,9 +27,10 @@ async function iniciarAutomacao() {
 
     console.log(`Gerando conteúdo para: ${tarefa.livro}...`);
 
+    console.log("Conectando à Inteligência Artificial...");
+    // Ajustado para o nome de modelo mais estável
     const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-pro",
-        generationConfig: { responseMimeType: "application/json" } // Força a IA a responder em JSON
+        model: "gemini-1.5-pro" 
     });
 
     const promptMestre = `
