@@ -43,30 +43,25 @@ async function iniciarAutomacao() {
     });
 
     const promptMestre = `
-        MANUAL DE REGRAS: ${manualContexto}
-
-        --- TAREFA ---
-        Gerar arquivos para ${tarefa.livro}. Capítulos: ${tarefa.capitulos}.
+        Aja como Arquiteto de Software e Erudito Bíblico Sênior.
+        Gere os arquivos completos para o livro: ${tarefa.livro}.
         
-        --- LÓGICA DE MANIPULAÇÃO DO INDEX.HTML (3 STATUS) ---
-        1. NOVO CARD: Crie o card de ${tarefa.livro} no topo com selo "Leitura Atual". Quiz desativado (opacity-50).
-        2. MOVER ANTERIOR: O card que estava no topo agora desce para "Desafios Abertos". Mude selo para "Desafio Aberto" e ATIVE o quiz/ranking.
-        3. ARQUIVAR ANTIGOS: Remova selos de destaque de qualquer outro livro que já esteja na seção de desafios.
-        4. JAVASCRIPT: No final do index.html, verifique se a função de fetch de rankings precisa ser atualizada para apontar para a nova rota 'ranking_${tarefa.livro.toLowerCase()}'.
+        REGRAS DE OURO:
+        1. REESCRITA INTEGRAL: Nunca use "// ... resto do código" ou placeholders. 
+        2. BIBLE DATA: A constante 'const bibleData' dentro do <script> deve ser TOTALMENTE preenchida com o conteúdo real de ${tarefa.livro} (Introdução, Autor e capítulos 1 a ${tarefa.capitulos}).
+        3. EXEGESE PROFUNDA: Cada capítulo deve ter Contexto, Análise Teológica e Aplicação, com pelo menos 2 termos em Grego/Hebraico originais.
+        4. SINCRONIA: O 'chapterSelect' deve ter opções que correspondam exatamente às chaves do seu 'bibleData'.
 
-        --- INFORMAÇÃO TÉCNICA DO BACK-END ---
-        O arquivo api.php já possui todas as rotas prontas (ranking_${tarefa.livro.toLowerCase()} e salvar_quiz_${tarefa.livro.toLowerCase()}). 
-        Não é necessário gerar código PHP.
-
-        --- REFERÊNCIAS ---
+        --- ARQUIVOS BASE PARA MANTER O PADRÃO ---
         MOLDE DESIGN: ${moldeDesign}
         INDEX ATUAL: ${indexAtual}
 
-        RESPONDA APENAS JSON:
+        RESPONDA EXCLUSIVAMENTE COM O JSON:
         {
-            "livro_html": "código html completo do novo livro",
-            "quiz_html": "código html completo do quiz",
-            "index_html": "index.html atualizado com os novos status"
+            "livro_html": "código completo do arquivo .html com bibleData preenchido",
+            "quiz_html": "código completo do quiz",
+            "index_html": "index atualizado",
+            "api_php": "api.php completo"
         }
     `;
 
