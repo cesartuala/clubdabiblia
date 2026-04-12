@@ -2,10 +2,10 @@ name: Automação Clube da Bíblia (Geração e Deploy)
 
 on:
   schedule:
-    # O horário 'cron' usa o fuso horário UTC. 01:00 UTC equivale às 22:00 no Horário de Brasília.
-    - cron: '0 1 * * *' 
-  workflow_dispatch: # Esse botão permite que você rode manualmente clicando no GitHub, sem precisar esperar dar 22h!
-
+    # O horário é em UTC. 03:00 UTC é meia-noite no Brasil (Brasília).
+    - cron: '0 3 * * *' 
+  workflow_dispatch:
+    # Isso permite que você ainda rode o botão "Run workflow" manualmente quando quiser.
 jobs:
   executar_rotina:
     runs-on: ubuntu-latest
