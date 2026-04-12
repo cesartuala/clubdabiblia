@@ -1,6 +1,6 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-hp_header("Content-Type: application/json; charset=UTF-8");
+header("Content-Type: application/json; charset=UTF-8");
 
 // Configurações do Banco de Dados
 $host = "localhost";
@@ -104,8 +104,4 @@ if ($acao == 'ranking_galatas') { listarRanking($conn, 'ranking_galatas'); }
 
 if ($acao == 'salvar_quiz_efesios') { salvarQuiz($conn, 'ranking_efesios'); }
 if ($acao == 'ranking_efesios') { listarRanking($conn, 'ranking_efesios'); }
-
-// NOVAS ROTAS PARA FILIPENSES
-if ($acao == 'salvar_quiz_filipenses') { salvarQuiz($conn, 'ranking_filipenses'); }
-if ($acao == 'ranking_filipenses') { listarRanking($conn, 'ranking_filipenses'); }
 ?>
