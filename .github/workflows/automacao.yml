@@ -27,13 +27,6 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
-      - name: 🚀 Fazer o Deploy para a Hostinger
-        run: node scripts/deploy.js
-        env:
-          FTP_HOST: ${{ secrets.FTP_HOST }}
-          FTP_USER: ${{ secrets.FTP_USER }}
-          FTP_PASS: ${{ secrets.FTP_PASS }}
-
       - name: 💾 Salvar histórico no GitHub (Commit)
         run: |
           git config user.name "Robô Clube da Bíblia"
@@ -41,3 +34,12 @@ jobs:
           git add .
           git commit -m "Automação: Arquivos gerados e cronograma atualizado" || echo "Nenhuma alteração para salvar hoje."
           git push
+
+      - name: 🚀 Fazer o Deploy para a Hostinger
+        run: node scripts/deploy.js
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+
+      
