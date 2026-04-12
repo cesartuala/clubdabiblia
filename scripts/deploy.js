@@ -2,8 +2,9 @@ const ftp = require('basic-ftp');
 const path = require('path');
 
 async function upload() {
-  const client = new ftp.Client();
-  client.ftp.verbose = true;
+    const client = new ftp.Client();
+    // Aumentamos o timeout para 60 segundos (60000ms)
+    client.ftp.timeout = 60000;
   
   try {
     console.log("Conectando ao FTP da Hostinger...");
@@ -30,9 +31,10 @@ async function upload() {
     console.log('Upload concluído! Arquivos do site atualizados e pasta uploads preservada.');
   } catch (err) {
     console.error('Erro no upload:', err.message);
-    process.exit(1);
-  }
-  client.close();
+    throw err;
+    } finally {
+        client.close();
+    }
 }
 
 upload();
