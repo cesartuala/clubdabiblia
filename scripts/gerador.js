@@ -2,9 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// ============================================================================
-// CONFIGURAÇÃO DE SEGURANÇA E API
-// ============================================================================
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
     console.error("❌ ERRO: GEMINI_API_KEY não configurada.");
@@ -14,7 +11,7 @@ const genAI = new GoogleGenerativeAI(apiKey);
 
 async function iniciarAutomacao() {
     console.log("==================================================");
-    console.log("🚀 INICIANDO GERADOR CLUBE DA BÍBLIA (V. ANTI-FALHA)");
+    console.log("🚀 INICIANDO GERADOR CLUBE DA BÍBLIA (V. AGENDADOR)");
     console.log("==================================================");
 
     const cronogramaPath = path.join(__dirname, '..', 'cronograma.json');
@@ -22,11 +19,20 @@ async function iniciarAutomacao() {
     const hostingerDir = path.join(__dirname, '..', 'hostinger');
 
     const cronograma = JSON.parse(fs.readFileSync(cronogramaPath, 'utf8'));
-    const hoje = new Date().toLocaleString("en-CA", {timeZone: "America/Sao_Paulo"}).split(',')[0];
-    const tarefa = cronograma.agenda.find(t => t.data_criacao === hoje && t.status === "pendente");
+    
+    // Datas para comparação
+    const hojeOriginal = new Date().toLocaleString("en-CA", {timeZone: "America/Sao_Paulo"}).split(',')[0]; 
+    const hojeFormatado = new Date().toLocaleDateString("pt-BR", {timeZone: "America/Sao_Paulo"}).substring(0, 5); 
 
-    if (!tarefa) {
-        console.log(`☕ Nada agendado para hoje (${hoje}).`);
+    // 1. TAREFA DE CRIAÇÃO (Novo Livro)
+    const tarefaCriacao = cronograma.agenda.find(t => t.data_criacao === hojeOriginal && t.status === "pendente");
+
+    // 2. TAREFA DE DESBLOQUEIO (Ativar Quiz que já existe)
+    // Procuramos um livro que já foi concluído, cuja data de quiz seja hoje e que ainda não tenha tido o quiz ativado no index
+    const tarefaQuiz = cronograma.agenda.find(t => t.data_quiz === hojeFormatado && t.status === "concluido" && t.quiz_ativo !== true);
+
+    if (!tarefaCriacao && !tarefaQuiz) {
+        console.log(`☕ Nada para criar ou desbloquear hoje (${hojeOriginal}).`);
         return;
     }
 
@@ -34,11 +40,9 @@ async function iniciarAutomacao() {
     const indexAtual = fs.readFileSync(path.join(hostingerDir, 'index.html'), 'utf8');
     const moldeDesign = fs.readFileSync(path.join(hostingerDir, 'efesios.html'), 'utf8');
 
-    console.log(`📖 Processando: ${tarefa.livro}... Isso pode levar até 3 minutos.`);
-
     const model = genAI.getGenerativeModel({ 
         model: "gemini-2.5-flash",
-        systemInstruction: "Você é um Arquiteto de Software e Erudito Sênior. É expressamente PROIBIDO o uso de placeholders. Gere arquivos com código robusto e resiliente a erros de banco de dados."
+        systemInstruction: "Você é um Arquiteto de Software e Erudito Sênior. Responda apenas com os blocos marcados pelos separadores."
     });
 
     const promptMestre = `
@@ -76,34 +80,66 @@ async function iniciarAutomacao() {
         (index.html atualizado)
         [FIM_INDEX]
     `;
+    let promptMestre = "";
+    let tarefaAtual = tarefaCriacao || tarefaQuiz;
+
+    if (tarefaCriacao) {
+        console.log(`📖 Criando novo livro: ${tarefaCriacao.livro}...`);
+        promptMestre = `
+            ${manualContexto}
+            TAREFA: Gerar arquivos para o novo livro ${tarefaCriacao.livro}.
+            1. Crie o card no topo do index.html como 'Leitura Atual' e QUIZ BLOQUEADO (opacity-50).
+            2. Mova o livro anterior para 'Desafios Abertos' e ATIVE o quiz dele.
+            3. Gere o arquivo ${tarefaCriacao.livro.toLowerCase()}.html e quiz_${tarefaCriacao.livro.toLowerCase()}.html.
+            
+            REFERÊNCIAS: Molde: ${moldeDesign} | Index: ${indexAtual}
+            USE OS SEPARADORES: [INICIO_LIVRO], [FIM_LIVRO], [INICIO_QUIZ], [FIM_QUIZ], [INICIO_INDEX], [FIM_INDEX].
+        `;
+    } else if (tarefaQuiz) {
+        console.log(`🔓 Desbloqueando Quiz de: ${tarefaQuiz.livro}...`);
+        promptMestre = `
+            ${manualContexto}
+            TAREFA: Apenas desbloquear o quiz do livro ${tarefaQuiz.livro} no index.html.
+            1. Localize o card de ${tarefaQuiz.livro}.
+            2. Remova 'opacity-50' e 'pointer-events-none' do botão de Quiz.
+            3. Mude o selo de 'Leitura Atual' para 'Desafio Aberto'.
+            4. Garanta que no JavaScript o fetch para 'ranking_${tarefaQuiz.livro.toLowerCase()}' esteja funcionando.
+            
+            REFERÊNCIA: Index Atual: ${indexAtual}
+            RETORNE APENAS O INDEX: [INICIO_INDEX] ... [FIM_INDEX].
+        `;
+    }
 
     try {
         const result = await model.generateContent(promptMestre);
         const text = result.response.text();
         
-        const livroMatch = text.match(/\[INICIO_LIVRO\]([\s\S]*?)\[FIM_LIVRO\]/);
-        const quizMatch = text.match(/\[INICIO_QUIZ\]([\s\S]*?)\[FIM_QUIZ\]/);
+        // Extração do Index (sempre presente)
         const indexMatch = text.match(/\[INICIO_INDEX\]([\s\S]*?)\[FIM_INDEX\]/);
-
-        if (!livroMatch || !quizMatch || !indexMatch) {
-            console.error("❌ ERRO: A IA falhou nos separadores.");
-            process.exit(1);
+        if (indexMatch) {
+            fs.writeFileSync(path.join(hostingerDir, 'index.html'), indexMatch[1].trim());
         }
 
-        const livroHtml = livroMatch[1].replace(/^```html/i, '').replace(/```$/, '').trim();
-        const quizHtml = quizMatch[1].replace(/^```html/i, '').replace(/```$/, '').trim();
-        const indexHtml = indexMatch[1].replace(/^```html/i, '').replace(/```$/, '').trim();
+        // Extração de Livro e Quiz (apenas se for criação)
+        if (tarefaCriacao) {
+            const livroMatch = text.match(/\[INICIO_LIVRO\]([\s\S]*?)\[FIM_LIVRO\]/);
+            const quizMatch = text.match(/\[INICIO_QUIZ\]([\s\S]*?)\[FIM_QUIZ\]/);
+            if (livroMatch) fs.writeFileSync(path.join(hostingerDir, `${tarefaCriacao.livro.toLowerCase()}.html`), livroMatch[1].trim());
+            if (quizMatch) fs.writeFileSync(path.join(hostingerDir, `quiz_${tarefaCriacao.livro.toLowerCase()}.html`), quizMatch[1].trim());
+            
+            tarefaCriacao.status = "concluido";
+        }
 
-        fs.writeFileSync(path.join(hostingerDir, `${tarefa.livro.toLowerCase()}.html`), livroHtml);
-        fs.writeFileSync(path.join(hostingerDir, `quiz_${tarefa.livro.toLowerCase()}.html`), quizHtml);
-        fs.writeFileSync(path.join(hostingerDir, 'index.html'), indexHtml);
+        if (tarefaQuiz) {
+            tarefaQuiz.quiz_ativo = true; // Marca como ativo para não repetir amanhã
+        }
 
-        tarefa.status = "concluido";
+        // Salva o novo estado do cronograma
         fs.writeFileSync(cronogramaPath, JSON.stringify(cronograma, null, 2));
-        
-        console.log(`🎉 Sucesso! Código de ${tarefa.livro} gerado com travas de segurança.`);
+        console.log(`✅ Operação concluída com sucesso para ${tarefaAtual.livro}.`);
+
     } catch (err) {
-        console.error("❌ Erro Crítico:", err.message);
+        console.error("❌ Erro:", err.message);
         process.exit(1);
     }
 }
