@@ -1,0 +1,24 @@
+{
+  "agenda": [
+    { "data": "2026-04-12", "livro": "Filipenses", "status": "pendente" },
+    { "data": "2026-04-19", "livro": "Colossenses", "status": "pendente" },
+    { "data": "2026-04-26", "livro": "1 Tessalonicenses", "status": "pendente" },
+    { "data": "2026-05-03", "livro": "2 Tessalonicenses", "status": "pendente" },
+    { "data": "2026-05-06", "livro": "1 Timóteo", "status": "pendente" },
+    { "data": "2026-05-17", "livro": "2 Timóteo", "status": "pendente" },
+    { "data": "2026-05-24", "livro": "Tito", "status": "pendente" },
+    { "data": "2026-05-27", "livro": "Filemon", "status": "pendente" },
+    { "data": "2026-05-28", "livro": "Hebreus", "status": "pendente" },
+    { "data": "2026-06-17", "livro": "Tiago", "status": "pendente" },
+    { "data": "2026-06-24", "livro": "1 Pedro", "status": "pendente" },
+    { "data": "2026-07-01", "livro": "2 Pedro", "status": "pendente" },
+    { "data": "2026-07-05", "livro": "1 João", "status": "pendente" },
+    { "data": "2026-07-12", "livro": "2 João", "status": "pendente" },
+    { "data": "2026-07-13", "livro": "3 João", "status": "pendente" },
+    { "data": "2026-07-14", "livro": "Judas", "status": "pendente" },
+    { "data": "2026-07-15", "livro": "Mateus", "status": "pendente" },
+    { "data": "2026-08-23", "livro": "Marcos", "status": "pendente" },
+    { "data": "2026-09-13", "livro": "Lucas", "status": "pendente" },
+    { "data": "2026-10-18", "livro": "Apocalipse", "status": "pendente" }
+  ]
+}
