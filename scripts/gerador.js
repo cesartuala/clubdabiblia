@@ -67,7 +67,12 @@ async function iniciarAutomacao() {
     `;
 
     const result = await model.generateContent(promptMestre);
-    const resposta = JSON.parse(result.response.text());
+    let text = result.response.text();
+    
+    // Limpeza para garantir que pegamos apenas o JSON, caso a IA mande markdown
+    text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+    
+    const resposta = JSON.parse(text);
 
     // Salvando os arquivos gerados
     fs.writeFileSync(path.join(hostingerDir, `${tarefa.livro.toLowerCase()}.html`), resposta.livro_html);
