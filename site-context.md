@@ -1,42 +1,51 @@
-# Manual de Identidade e Regras do Projeto: Clube da Bíblia
-Este documento serve como guia mestre para a automação no GitHub Actions gerar novos arquivos (Leitura e Quizzes) mantendo o padrão visual e arquitetural exato do site.
+# 📜 Manual de Identidade e Regras: Clube da Bíblia (v3.0)
 
-## 1. Padrões de Conteúdo e Profundidade Teológica
-
-### Diretrizes de Exegese
-O conteúdo não deve ser um resumo devocional simples, mas uma **Exegese Técnica e Pastoral**. A automação deve estruturar o texto para responder: *O que o autor quis dizer originalmente?* e *Como isso se aplica hoje?*
-
-### Uso de Línguas Originais (Grego e Hebraico)
-É obrigatória a inclusão de termos nos originais para enriquecer o estudo de palavras-chave.
-* **Formatação:** `(Termo Original - Transliteração - Significado)`.
-* **Exemplo:** "A palavra usada para amor aqui é *Agápē* (ἀγάπη), que define o amor sacrificial e incondicional de Deus."
-* **Estilo:** No HTML, os termos originais devem estar sempre em *itálico* para destaque visual.
-
-### Estrutura de Tópicos por Capítulo
-Para manter a consistência do layout e o tempo de leitura do usuário, cada capítulo deve seguir rigorosamente esta divisão:
-1.  **Título do Bloco:** Um nome impactante e teológico para a seção.
-2.  **Versículo de Destaque:** O texto bíblico "âncora" daquela seção.
-3.  **Desenvolvimento:** Exatamente **3 tópicos (H3)** detalhados por capítulo.
-    * Cada tópico deve conter uma lista (`<ul>`) ou parágrafos explicando o contexto histórico, a análise teológica e a aplicação prática.
+Este documento é a diretriz mestre para a automação via API. Qualquer arquivo gerado deve seguir rigorosamente estes padrões para garantir a integridade técnica, visual e teológica do projeto.
 
 ---
 
-## 2. Padrões de Estilo e UI/UX (Interface Premium)
+## 1. Protocolo de Integridade Absoluta (Anti-Simplificação)
+* **Regra de Reescrita Integral:** A API deve devolver sempre o código completo. É terminantemente proibido o uso de placeholders como `// ... resto do código` ou `/* código anterior */`.
+* **Preservação de Conexões:** No arquivo `api.php`, as variáveis de conexão com o banco de dados (`$host`, `$db`, `$user`, `$pass`) e a instância PDO são **IMUTÁVEIS**. Devem ser repetidas caractere por caractere.
+* **Segurança SQL:** Uso obrigatório de **Prepared Statements**. É proibida a concatenação direta de variáveis em strings SQL.
 
-### Visão Geral
-Estética "Modern Dark Premium" com foco em **imersão e legibilidade**.
+---
 
-### Regras Base de Estilo
-* **Background Primário:** Tons escuros profundos (ex: `#050510` para Efésios, `#1a0d00` para Gálatas).
-* **Painéis (Glass-panels):** Fundo `rgba(15, 15, 25, 0.6)` com `backdrop-blur(10px)` e bordas semi-transparentes de `1px`.
-* **Tipografia:** * **Títulos:** `Cinzel` (Serif) - Uppercase, tracking espaçado e efeito `glow` na cor do tema.
-    * **Corpo:** `Lato` (Sans-serif) - Peso 300 ou 400.
-    * 
-### Matriz de Temas e Acentos (Restrito aos Livros Atuais)
-Cada livro possui uma identidade visual única injetada nas classes do Tailwind, no FontAwesome e no CSS (Glow e Blur).
+## 2. Padrões de Conteúdo (Exegese Teológica Profunda)
+Cada arquivo de leitura ([livro].html) deve seguir esta estrutura de conteúdo:
+* **Estrutura por Capítulo:** Exatamente **3 blocos de conteúdo (H3)** detalhados por capítulo:
+    1. **Contexto e Exegese:** Fundo histórico e significado original.
+    2. **Análise Teológica:** Doutrina e análise de termos.
+    3. **Aplicação Prática:** Como aplicar o ensinamento hoje.
+* **Rigor Linguístico:** Inclusão obrigatória de no mínimo **2 termos em Grego** (Novo Testamento) ou **Hebraico** (Antigo Testamento) por capítulo.
+    * **Formato:** *(Termo Original - Transliteração - Significado)*.
+    * **Estilo:** Aplicar itálico `<i>` ou `<em>` nos termos originais.
 
-# Matriz de Identidade Visual: Todos os Livros da Bíblia
-Esta tabela define as constantes de estilo que o script de automação deve injetar no `tailwind.config` e nos elementos de UI (Glow, Borders, Icons) de cada página gerada.
+---
+
+## 3. Arquitetura Front-End (Modern Dark Premium)
+A interface deve ser idêntica aos modelos `efesios.html` e `corintios.html`:
+* **Glassmorphism:** Cards com `bg-slate-900/60`, `backdrop-blur-xl` e `border-white/10`.
+* **Tipografia:** Títulos em fonte `Cinzel` (Serif/Uppercase) com efeito de brilho (text-shadow) na cor do tema. Corpo em `Lato` (Sans-serif).
+* **Animação de Partículas:** Todo arquivo `.html` deve conter a inicialização do `particles.js` ao final, com as partículas configuradas na cor Hex correspondente ao livro.
+* **Componentes Obrigatórios:** Sistema de comentários PHP com suporte a upload de imagem/áudio para a pasta `/uploads/`.
+
+---
+
+## 4. Lógica de Atualização Dinâmica
+
+### Arquivo: index.html
+1. **Leitura Atual:** O card do novo livro assume a seção de destaque (topo). O botão de Quiz deve ter `opacity-60` e link desativado até a data de término da leitura.
+2. **Histórico:** O livro anterior deve ser movido para a seção "Desafios Abertos" com o Quiz e Ranking totalmente ativos.
+3. **Scripts:** Injetar a chamada de `fetch` para o ranking do novo livro dentro da função de inicialização do site.
+
+### Arquivo: api.php
+1. **Novas Rotas:** Adicionar os `case` para `ranking_[livro]` e `salvar_quiz_[livro]` dentro do switch principal.
+2. **Auto-Gerenciamento SQL:** Incluir o comando `CREATE TABLE IF NOT EXISTS ranking_[livro]` no início das rotas do novo livro.
+
+---
+
+## 5. Matriz Visual de Referência
 
 ## 1. Antigo Testamento
 ### Pentateuco (A Lei) - Tons de Azul e Índigo (Fundação)
@@ -142,8 +151,16 @@ Esta tabela define as constantes de estilo que o script de automação deve inje
 
 ---
 
+---
 
-## 3. Estrutura de Diretórios e Arquivos (Atualização)
+## 6. Quiz Engine
+* **Volume de Dados:** Cada `quiz_[livro].html` deve conter um array interno com **15 perguntas**.
+* **Lógica de Sorteio:** O JavaScript deve selecionar aleatoriamente apenas **10 perguntas** por rodada.
+* **Persistência:** Enviar resultados via POST para `api.php` com os campos: `nome`, `pontos`, `acertos`.
+
+---
+
+## 7. Estrutura de Diretórios e Arquivos (Atualização)
 
 * **Repositório Local (GitHub):** Todos os arquivos do site devem ser gerados e mantidos dentro de uma pasta raiz chamada `/hostinger`. 
 * **Servidor (Hostinger):** O conteúdo da pasta `/hostinger` do repositório espelha exatamente a pasta `/public_html/` do servidor.
@@ -151,14 +168,14 @@ Esta tabela define as constantes de estilo que o script de automação deve inje
 
 ---
 
-## 4. Diretrizes de Banco de Dados (Atualização)
+## 8. Diretrizes de Banco de Dados (Atualização)
 
 * **Back-End Exclusivo:** O sistema utiliza unicamente o banco de dados MySQL hospedado na Hostinger.
 * **Sem dependências externas:** Não há uso do Supabase para processamento de dados neste fluxo; tudo é resolvido via PHP/PDO localmente.
 
 ---
 
-## 5. Fluxo de Atualização de Código (Reescrita Completa)
+## 9. Fluxo de Atualização de Código (Reescrita Completa)
 
 A automação não utilizará âncoras ou marcadores de injeção. O fluxo de atualização para arquivos existentes (`index.html` e `api.php`) será:
 1. O script lerá o conteúdo integral do arquivo atual.
@@ -168,7 +185,7 @@ A automação não utilizará âncoras ou marcadores de injeção. O fluxo de at
 
 ---
 
-## 6. Estrutura Técnica e Código
+## 10. Estrutura Técnica e Código
 
 ### Tags e Classes Estratégicas (HTML/CSS)
 * **Classe `.rich-text`:** Estilização obrigatória para o corpo da exegese.
@@ -184,7 +201,7 @@ A automação não utilizará âncoras ou marcadores de injeção. O fluxo de at
 
 ---
 
-## 7. Deploy
+## 11. Deploy
 
 * O deploy é feito via Node.js utilizando a biblioteca `basic-ftp`.
 * O script de upload lê a pasta local `/hostinger` e faz o espelhamento para a pasta `/public_html` no servidor FTP.
@@ -194,3 +211,7 @@ A automação não utilizará âncoras ou marcadores de injeção. O fluxo de at
 * **Comentários:** Armazenados no MySQL local (Hostinger).
 * **Mídias:** Salvas na pasta `/uploads/`.
 * **Chat:** Conexão direta com Supabase (Real-time).
+
+
+
+**Instrução para a IA:** Ao gerar os arquivos, priorize a fidelidade visual aos arquivos existentes na pasta `/hostinger`. Não tente "simplificar" o design ou a lógica de programação.
