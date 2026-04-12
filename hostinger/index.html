@@ -238,7 +238,7 @@
                             <span class="text-[8px] md:text-[9px] uppercase tracking-widest text-slate-400 group-hover:text-slate-200 font-bold">Leitura</span>
                         </a>
 
-                        <a href="quiz_corintios.html" class="action-btn flex flex-col items-center justify-center bg-gradient-to-b from-fuchsia-900/20 to-black/60 border border-fuchsia-500/20 hover:border-fuchsia-500 p-3 rounded-xl group/btn shadow-lg">
+                        <a href="quiz_1corintios.html" class="action-btn flex flex-col items-center justify-center bg-gradient-to-b from-fuchsia-900/20 to-black/60 border border-fuchsia-500/20 hover:border-fuchsia-500 p-3 rounded-xl group/btn shadow-lg">
                             <i class="fa-solid fa-trophy text-fuchsia-400/80 mb-2 text-lg group-hover/btn:scale-110 transition"></i>
                             <span class="text-[8px] md:text-[9px] uppercase tracking-widest text-slate-400 group-hover:text-slate-200 font-bold">Quiz</span>
                         </a>
@@ -404,12 +404,12 @@
             fetch('api.php?acao=ranking_2corintios')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'ranking2Corintios', 'text-emerald-400 font-bold'))
-                .catch(() => document.getElementById('ranking2Corintios').innerHTML = '<li class="text-center text-red-900">Erro ao carregar ranking.</li>');
-
+                .catch(() => document.getElementById('ranking2Corintios').innerHTML = '<li class="text-center text-red-900">Erro</li>');
+                
             fetch('api.php?acao=ranking_corintios')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingCorintios', 'text-purple-400 font-bold'))
-                .catch(() => document.getElementById('rankingCorintios').innerHTML = '<li class="text-center text-red-900">Erro ao carregar ranking.</li>');
+                .catch(() => document.getElementById('rankingCorintios').innerHTML = '<li class="text-center text-red-900">Erro</li>');
 
             fetch('api.php?acao=ranking_romanos')
                 .then(res => res.json())
