@@ -1,0 +1,43 @@
+name: Automação Clube da Bíblia (Geração e Deploy)
+
+on:
+  schedule:
+    # O horário 'cron' usa o fuso horário UTC. 01:00 UTC equivale às 22:00 no Horário de Brasília.
+    - cron: '0 1 * * *' 
+  workflow_dispatch: # Esse botão permite que você rode manualmente clicando no GitHub, sem precisar esperar dar 22h!
+
+jobs:
+  executar_rotina:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v3
+
+      - name: Configurar o Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar dependências (FTP e Gemini API)
+        run: npm install basic-ftp @google/generative-ai
+
+      - name: 🧠 Executar o Cérebro (Gerador de Conteúdo IA)
+        run: node scripts/gerador.js
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: 🚀 Fazer o Deploy para a Hostinger
+        run: node scripts/deploy.js
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+
+      - name: 💾 Salvar histórico no GitHub (Commit)
+        run: |
+          git config user.name "Robô Clube da Bíblia"
+          git config user.email "robo@clubedabiblia.com"
+          git add .
+          git commit -m "Automação: Arquivos gerados e cronograma atualizado" || echo "Nenhuma alteração para salvar hoje."
+          git push
