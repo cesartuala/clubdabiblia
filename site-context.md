@@ -1,19 +1,37 @@
 # Manual de Identidade e Regras do Projeto: Clube da Bíblia
 Este documento serve como guia mestre para a automação no GitHub Actions gerar novos arquivos (Leitura e Quizzes) mantendo o padrão visual e arquitetural exato do site.
 
+## 1. Padrões de Conteúdo e Profundidade Teológica
 
-## 1. Padrões de Estilo e UI/UX (Interface Premium)
+### Diretrizes de Exegese
+O conteúdo não deve ser um resumo devocional simples, mas uma **Exegese Técnica e Pastoral**. A automação deve estruturar o texto para responder: *O que o autor quis dizer originalmente?* e *Como isso se aplica hoje?*
+
+### Uso de Línguas Originais (Grego e Hebraico)
+É obrigatória a inclusão de termos nos originais para enriquecer o estudo de palavras-chave.
+* **Formatação:** `(Termo Original - Transliteração - Significado)`.
+* **Exemplo:** "A palavra usada para amor aqui é *Agápē* (ἀγάπη), que define o amor sacrificial e incondicional de Deus."
+* **Estilo:** No HTML, os termos originais devem estar sempre em *itálico* para destaque visual.
+
+### Estrutura de Tópicos por Capítulo
+Para manter a consistência do layout e o tempo de leitura do usuário, cada capítulo deve seguir rigorosamente esta divisão:
+1.  **Título do Bloco:** Um nome impactante e teológico para a seção.
+2.  **Versículo de Destaque:** O texto bíblico "âncora" daquela seção.
+3.  **Desenvolvimento:** Exatamente **3 tópicos (H3)** detalhados por capítulo.
+    * Cada tópico deve conter uma lista (`<ul>`) ou parágrafos explicando o contexto histórico, a análise teológica e a aplicação prática.
+
+---
+
+## 2. Padrões de Estilo e UI/UX (Interface Premium)
+
 ### Visão Geral
-O design utiliza uma estética "Modern Dark Premium" focada em imersão, utilizando princípios de **Glassmorphism**, fundos animados com partículas e efeitos de brilho (Glow).
+Estética "Modern Dark Premium" com foco em **imersão e legibilidade**.
 
 ### Regras Base de Estilo
-* **Background Primário:** Tons escuros profundos que variam sutilmente conforme o livro (ex: `#1a0d00` para laranja, `#050510` para índigo, `#0f172a` para neutro).
-* **Painéis (Glass-cards/Glass-panels):** Fundo translúcido (ex: `rgba(15, 15, 25, 0.6)`) combinado com `backdrop-blur(10px)` ou `12px` e bordas semi-transparentes mapeadas com a cor do tema.
-* **Fundo Animado:** Uso obrigatório da biblioteca `particles.js` (desenhada via canvas no final do body) com partículas na cor primária do tema em baixa opacidade (`rgba(..., 0.15)`).
-* **Tipografia:**
-    * **Títulos:** `Cinzel` (Serif) - Em maiúsculas (uppercase), tracking espaçado (`tracking-widest`) e sombras brilhantes (`[cor]-glow`).
-    * **Corpo do Texto:** `Lato` (Sans-serif) - Peso leve (`font-light`), textos na cor `text-slate-300` ou `text-slate-400`, com espaçamento entrelinhas elevado (`leading-relaxed`).
-
+* **Background Primário:** Tons escuros profundos (ex: `#050510` para Efésios, `#1a0d00` para Gálatas).
+* **Painéis (Glass-panels):** Fundo `rgba(15, 15, 25, 0.6)` com `backdrop-blur(10px)` e bordas semi-transparentes de `1px`.
+* **Tipografia:** * **Títulos:** `Cinzel` (Serif) - Uppercase, tracking espaçado e efeito `glow` na cor do tema.
+    * **Corpo:** `Lato` (Sans-serif) - Peso 300 ou 400.
+    * 
 ### Matriz de Temas e Acentos (Restrito aos Livros Atuais)
 Cada livro possui uma identidade visual única injetada nas classes do Tailwind, no FontAwesome e no CSS (Glow e Blur).
 
@@ -125,7 +143,7 @@ Esta tabela define as constantes de estilo que o script de automação deve inje
 ---
 
 
-## 2. Estrutura de Diretórios e Arquivos (Atualização)
+## 3. Estrutura de Diretórios e Arquivos (Atualização)
 
 * **Repositório Local (GitHub):** Todos os arquivos do site devem ser gerados e mantidos dentro de uma pasta raiz chamada `/hostinger`. 
 * **Servidor (Hostinger):** O conteúdo da pasta `/hostinger` do repositório espelha exatamente a pasta `/public_html/` do servidor.
@@ -133,14 +151,14 @@ Esta tabela define as constantes de estilo que o script de automação deve inje
 
 ---
 
-## 3. Diretrizes de Banco de Dados (Atualização)
+## 4. Diretrizes de Banco de Dados (Atualização)
 
 * **Back-End Exclusivo:** O sistema utiliza unicamente o banco de dados MySQL hospedado na Hostinger.
 * **Sem dependências externas:** Não há uso do Supabase para processamento de dados neste fluxo; tudo é resolvido via PHP/PDO localmente.
 
 ---
 
-## 4. Fluxo de Atualização de Código (Reescrita Completa)
+## 5. Fluxo de Atualização de Código (Reescrita Completa)
 
 A automação não utilizará âncoras ou marcadores de injeção. O fluxo de atualização para arquivos existentes (`index.html` e `api.php`) será:
 1. O script lerá o conteúdo integral do arquivo atual.
@@ -150,8 +168,29 @@ A automação não utilizará âncoras ou marcadores de injeção. O fluxo de at
 
 ---
 
-## 5. Deploy
+## 6. Estrutura Técnica e Código
+
+### Tags e Classes Estratégicas (HTML/CSS)
+* **Classe `.rich-text`:** Estilização obrigatória para o corpo da exegese.
+    * `strong`: Cor em tom pastel da cor do tema (ex: `text-indigo-300`).
+    * `li`: Borda lateral esquerda de `3px` com a cor do tema.
+    * `blockquote`: Fundo sutil `rgba(..., 0.05)` e fonte itálica.
+* **Componente de Comunidade:** Todo arquivo de leitura deve incluir o formulário de comentários com suporte a **Upload de Imagem** e **Gravação de Áudio**.
+
+### Back-End (PHP + PDO)
+* Todo processamento de dados (rankings e comentários) deve passar pelo `api.php`.
+* **Segurança:** Uso obrigatório de Prepared Statements para evitar injeção de SQL.
+* **Ranking:** Cada livro deve ter sua própria tabela `ranking_[nome_do_livro]`.
+
+---
+
+## 7. Deploy
 
 * O deploy é feito via Node.js utilizando a biblioteca `basic-ftp`.
 * O script de upload lê a pasta local `/hostinger` e faz o espelhamento para a pasta `/public_html` no servidor FTP.
+* Quiz Engine:** O arquivo `quiz_[livro].html` deve conter **15 perguntas** no banco de dados interno (`quizData`), mas exibir apenas **10 perguntas aleatórias** por rodada para aumentar o fator de desafio.
 * **Segurança:** O script de deploy não deve conter credenciais expostas no código. Deve utilizar variáveis de ambiente (`process.env.FTP_USER`, `process.env.FTP_PASS`, `process.env.FTP_HOST`).
+  ### Integração de Dados
+* **Comentários:** Armazenados no MySQL local (Hostinger).
+* **Mídias:** Salvas na pasta `/uploads/`.
+* **Chat:** Conexão direta com Supabase (Real-time).
