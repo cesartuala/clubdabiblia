@@ -45,41 +45,7 @@ async function iniciarAutomacao() {
         systemInstruction: "Você é um Arquiteto de Software e Erudito Sênior. Responda apenas com os blocos marcados pelos separadores."
     });
 
-    let promptMestre = `
-        MANUAL DE REGRAS: 
-        ${manualContexto}
-
-        --- TAREFA ---
-        Gerar arquivos completos para o livro: ${tarefa.livro}. Capítulos: ${tarefa.capitulos}.
-        
-        --- REGRAS DE CÓDIGO (CRÍTICO) ---
-        1. JAVASCRIPT SEGURO: Na função carregarComentarios, SEMPRE verifique se os dados recebidos são um Array antes de usar .forEach() (Ex: if(!Array.isArray(data)) return). Isso evita que o site trave se o banco falhar.
-        2. VISIBILIDADE: No HTML gerado para as seções de conteúdo, certifique-se de que a classe 'active' seja adicionada ou que o script de 'IntersectionObserver' seja resiliente para que o texto não fique invisível (opacity-0).
-        3. ESCAPE DE CARACTERES: Não utilize crases (backticks \`) dentro das strings de exegese no objeto 'bibleData', pois isso quebra o JavaScript. Use aspas simples ou duplas.
-        4. BIBLE DATA: Preencha o objeto 'const bibleData' integralmente com conteúdo teológico profundo.
-
-        --- LÓGICA DO INDEX.HTML ---
-        Atualize os 3 status (Leitura Atual, Desafio Aberto e Arquivo) conforme o manual.
-
-        --- REFERÊNCIAS ---
-        MOLDE DESIGN: ${moldeDesign}
-        INDEX ATUAL: ${indexAtual}
-
-        --- FORMATO EXATO DE RESPOSTA ---
-        NÃO UTILIZE JSON! Use os separadores:
-
-        [INICIO_LIVRO]
-        (código HTML do livro)
-        [FIM_LIVRO]
-
-        [INICIO_QUIZ]
-        (código HTML do quiz)
-        [FIM_QUIZ]
-
-        [INICIO_INDEX]
-        (index.html atualizado)
-        [FIM_INDEX]
-    `;
+    let promptMestre = "";
     let tarefaAtual = tarefaCriacao || tarefaQuiz;
 
     if (tarefaCriacao) {
