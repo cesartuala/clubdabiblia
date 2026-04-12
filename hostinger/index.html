@@ -354,6 +354,13 @@
             const list = document.getElementById(elementId);
             list.innerHTML = ''; 
 
+            // Robustness check: Ensure data is an array
+            if (!Array.isArray(data)) {
+                list.innerHTML = `<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>`;
+                console.error(`Erro: Dados de ranking para ${elementId} não são um array.`, data);
+                return;
+            }
+
             if (data.length === 0) {
                 list.innerHTML = '<li class="text-center text-slate-500 italic py-4">Seja o primeiro a pontuar!</li>';
                 return;
@@ -391,43 +398,64 @@
             fetch('api.php?acao=ranking_filipenses')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingFilipenses', 'text-pink-400 font-bold'))
-                .catch(() => document.getElementById('rankingFilipenses').innerHTML = '<li class="text-center text-red-900">Erro ao carregar ranking.</li>');
+                .catch(err => {
+                    document.getElementById('rankingFilipenses').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de Filipenses.</li>';
+                    console.error("Erro ao carregar ranking de Filipenses:", err);
+                });
 
             // Fetch for Efesios
             fetch('api.php?acao=ranking_efesios')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingEfesios', 'text-indigo-400 font-bold'))
-                .catch(() => document.getElementById('rankingEfesios').innerHTML = '<li class="text-center text-red-900">Erro ao carregar ranking.</li>');
+                .catch(err => {
+                    document.getElementById('rankingEfesios').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de Efésios.</li>';
+                    console.error("Erro ao carregar ranking de Efésios:", err);
+                });
 
             // Fetch for Galatas
             fetch('api.php?acao=ranking_galatas')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingGalatas', 'text-orange-400 font-bold'))
-                .catch(() => document.getElementById('rankingGalatas').innerHTML = '<li class="text-center text-red-900">Erro ao carregar ranking.</li>');
+                .catch(err => {
+                    document.getElementById('rankingGalatas').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de Gálatas.</li>';
+                    console.error("Erro ao carregar ranking de Gálatas:", err);
+                });
 
             // Fetch for II Corintios
             fetch('api.php?acao=ranking_2corintios')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'ranking2Corintios', 'text-emerald-400 font-bold'))
-                .catch(() => document.getElementById('ranking2Corintios').innerHTML = '<li class="text-center text-red-900">Erro</li>');
+                .catch(err => {
+                    document.getElementById('ranking2Corintios').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de II Coríntios.</li>';
+                    console.error("Erro ao carregar ranking de II Coríntios:", err);
+                });
                 
             // Fetch for I Corintios
             fetch('api.php?acao=ranking_1corintios') 
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingCorintios', 'text-purple-400 font-bold'))
-                .catch(() => document.getElementById('rankingCorintios').innerHTML = '<li class="text-center text-red-900">Erro</li>');
+                .catch(err => {
+                    document.getElementById('rankingCorintios').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de I Coríntios.</li>';
+                    console.error("Erro ao carregar ranking de I Coríntios:", err);
+                });
 
             // Fetch for Romanos
             fetch('api.php?acao=ranking_romanos')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingRomanos', 'text-red-400 font-bold'))
-                .catch(() => document.getElementById('rankingRomanos').innerHTML = '<li class="text-center text-red-900">Erro ao carregar ranking.</li>');
+                .catch(err => {
+                    document.getElementById('rankingRomanos').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de Romanos.</li>';
+                    console.error("Erro ao carregar ranking de Romanos:", err);
+                });
 
             // Fetch for Atos
             fetch('api.php?acao=ranking_atos')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingAtos', 'text-cyan-400 font-bold'))
-                .catch(() => document.getElementById('rankingAtos').innerHTML = '<li class="text-center text-red-900">Erro ao carregar ranking.</li>');
+                .catch(err => {
+                    document.getElementById('rankingAtos').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de Atos.</li>';
+                    console.error("Erro ao carregar ranking de Atos:", err);
+                });
         });
 
         const canvas = document.getElementById("particles-js");
