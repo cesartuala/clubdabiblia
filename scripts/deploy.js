@@ -1,28 +1,32 @@
 const ftp = require("basic-ftp");
+const path = require("path");
 
-async function upload() {
-    const client = new ftp.Client();
-    // Aumentamos o timeout para 60 segundos (60000ms)
-    client.ftp.timeout = 60000; 
+async function executarDeploy() {
+    const cliente = new ftp.Client();
+    // Aumentamos o tempo limite para 2 minutos (120000ms)
+    cliente.ftp.timeout = 120000; 
 
     try {
-        await client.access({
+        console.log("🔗 Conectando ao FTP da Hostinger...");
+        await cliente.access({
             host: process.env.FTP_HOST,
             user: process.env.FTP_USER,
             password: process.env.FTP_PASS,
-            secure: false // Tente mudar para true se seu servidor suportar FTPS
+            secure: false // Mantenha false se não tiver SSL no FTP
         });
 
-        console.log("🚚 Enviando arquivos para a Hostinger...");
-        // Garanta que está enviando a pasta correta
-        await client.uploadFromDir("hostinger", "public_html"); 
+        console.log("🚚 Enviando arquivos da pasta /hostinger para /public_html...");
         
+        // O comando 'uploadFromDir' garante que arquivos novos e editados subam
+        await cliente.uploadFromDir("hostinger", "public_html");
+
+        console.log("✅ Deploy finalizado com sucesso!");
     } catch (err) {
-        console.error("❌ Erro no deploy:", err.message);
-        throw err;
+        console.error("❌ Erro no upload:", err.message);
+        process.exit(1); // Força o erro para o GitHub nos avisar
     } finally {
-        client.close();
+        cliente.close();
     }
 }
 
-upload();
+executarDeploy();
