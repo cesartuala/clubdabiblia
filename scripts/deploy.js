@@ -18,7 +18,7 @@ async function upload() {
     const localDir = path.join(__dirname, '..', 'hostinger'); 
     
     // Garantimos que estamos na pasta correta
-    await client.ensureDir('/public_html');
+    await client.ensureDir('/public_html/public');
     
     console.log("Iniciando upload seletivo (ignorando pasta uploads)...");
     
