@@ -3,136 +3,100 @@ const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 // ============================================================================
-// CONFIGURAÇÃO INICIAL E CREDENCIAIS
+// CONFIGURAÇÃO DE SEGURANÇA
 // ============================================================================
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
-    console.error("❌ ERRO FATAL: Chave da API (GEMINI_API_KEY) não encontrada no ambiente.");
+    console.error("❌ ERRO: GEMINI_API_KEY não configurada.");
     process.exit(1);
 }
 const genAI = new GoogleGenerativeAI(apiKey);
 
 async function iniciarAutomacao() {
     console.log("==================================================");
-    console.log("🤖 INICIANDO AUTOMAÇÃO: CLUBE DA BÍBLIA");
+    console.log("🚀 INICIANDO GERADOR CLUBE DA BÍBLIA (V. FINAL)");
     console.log("==================================================");
 
-    // 1. Definição de Caminhos
     const cronogramaPath = path.join(__dirname, '..', 'cronograma.json');
     const manualPath = path.join(__dirname, '..', 'site-context.md');
     const hostingerDir = path.join(__dirname, '..', 'hostinger');
 
-    // 2. Leitura do Cronograma e Verificação de Data
     const cronograma = JSON.parse(fs.readFileSync(cronogramaPath, 'utf8'));
     const hoje = new Date().toLocaleString("en-CA", {timeZone: "America/Sao_Paulo"}).split(',')[0];
     const tarefa = cronograma.agenda.find(t => t.data_criacao === hoje && t.status === "pendente");
 
     if (!tarefa) {
-        console.log(`☕ Nenhuma tarefa pendente para hoje (${hoje}). O robô voltará a dormir.`);
+        console.log(`☕ Nada agendado para hoje (${hoje}).`);
         return;
     }
 
-    console.log(`📖 Tarefa Encontrada: Gerar conteúdo para ${tarefa.livro}...`);
-
-    // 3. Carregando o Contexto e os Arquivos Base
+    // Leitura dos arquivos base
     const manualContexto = fs.readFileSync(manualPath, 'utf8');
     const indexAtual = fs.readFileSync(path.join(hostingerDir, 'index.html'), 'utf8');
     const apiAtual = fs.readFileSync(path.join(hostingerDir, 'api.php'), 'utf8');
-    
-    // Usamos Efésios como o "molde dourado" de design e funcionalidades
     const moldeDesign = fs.readFileSync(path.join(hostingerDir, 'efesios.html'), 'utf8');
 
-    // 4. Configuração do Modelo de Inteligência Artificial
+    console.log(`📖 Processando: ${tarefa.livro}...`);
+
     const model = genAI.getGenerativeModel({ 
         model: "gemini-2.5-flash",
-        systemInstruction: "Você é um Arquiteto Full-Stack Sênior. Sua saída deve ser EXCLUSIVAMENTE um objeto JSON válido. É TERMINANTEMENTE PROIBIDO resumir código, omitir variáveis ou usar placeholders como '// resto do código'."
+        systemInstruction: "Você é um Engenheiro de Software Sênior. Sua saída deve ser EXCLUSIVAMENTE JSON. Proibido resumir código ou usar placeholders."
     });
 
-    // 5. O Prompt Mestre (Com a lógica dos 3 Status)
     const promptMestre = `
-        MANUAL DE REGRAS MESTRE: 
-        ${manualContexto}
+        MANUAL DE REGRAS: ${manualContexto}
 
-        --- DADOS DA TAREFA ATUAL ---
-        Livro: ${tarefa.livro}
-        Capítulos: ${tarefa.capitulos}
-        Data do Quiz: ${tarefa.data_quiz}
-
-        --- 🛠️ REGRAS DE MANIPULAÇÃO DO INDEX.HTML (OS 3 STATUS) ---
-        Você deve reescrever o index.html organizando os cards de livros em 3 categorias exatas:
-        1. STATUS "LEITURA ATUAL": 
-           - Crie o card do livro de ${tarefa.livro} e coloque-o no TOPO (primeiro da lista).
-           - O selo (badge) deve dizer "Leitura Atual".
-           - O botão de Quiz DEVE estar desativado (adicione classes como opacity-50, cursor-not-allowed, pointer-events-none).
+        --- TAREFA ---
+        Gerar arquivos para ${tarefa.livro}. Capítulos: ${tarefa.capitulos}.
         
-        2. STATUS "DESAFIO ABERTO":
-           - Pegue o livro que estava como "Leitura Atual" no código base e mova-o para a seção de Desafios.
-           - Altere o selo (badge) dele para "Desafio Aberto".
-           - O botão de Quiz DEVE estar 100% ativo e o Ranking visível.
-        
-        3. STATUS "ARQUIVO/CONCLUÍDO":
-           - Qualquer outro livro mais antigo que já estava nos Desafios deve perder o selo de destaque.
-           - O botão de Quiz continua ativo, mas ele não é mais o foco principal.
+        --- LÓGICA DE MANIPULAÇÃO DO INDEX.HTML (3 STATUS) ---
+        1. NOVO CARD: Crie o card de ${tarefa.livro} no topo com selo "Leitura Atual". Quiz desativado (opacity-50).
+        2. MOVER ANTERIOR: O card que estava no topo agora desce para "Desafios Abertos". Mude selo para "Desafio Aberto" e ATIVE o quiz/ranking.
+        3. ARQUIVAR ANTIGOS: Remova selos de destaque de qualquer outro livro que já esteja na seção de desafios.
+        4. JAVASCRIPT: Atualize a função de fetch de rankings para incluir o novo livro.
 
-        Lembre-se de adicionar a chamada "fetchRanking" do novo livro no script no final do index.html.
+        --- LÓGICA DO API.PHP ---
+        1. NÃO CRIE TABELAS (A tabela ranking_${tarefa.livro.toLowerCase()} já existe).
+        2. Apenas adicione os 'case' no switch para salvar e listar o ranking do novo livro.
+        3. MANTENHA as credenciais de conexão do banco exatamente como estão.
 
-        --- 🛠️ REGRAS DE MANIPULAÇÃO DO API.PHP ---
-        1. MANTENHA INTACTAS as variáveis $host, $dbname, $username e $password originais. Nunca as apague.
-        2. Adicione os novos cases no final do switch($action): 'ranking_${tarefa.livro.toLowerCase()}' e 'salvar_quiz_${tarefa.livro.toLowerCase()}'.
-        3. Dentro do case do ranking, INCLUA OBRIGATORIAMENTE O SQL DE CRIAÇÃO: "CREATE TABLE IF NOT EXISTS ranking_${tarefa.livro.toLowerCase()} (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255), pontos INT, acertos INT, data_jogo TIMESTAMP DEFAULT CURRENT_TIMESTAMP)".
+        --- REFERÊNCIAS ---
+        MOLDE: ${moldeDesign}
+        INDEX ATUAL: ${indexAtual}
+        API ATUAL: ${apiAtual}
 
-        --- ARQUIVOS PARA PROCESSAMENTO ---
-        [MOLDE DESIGN EFÉSIOS]: ${moldeDesign}
-        [INDEX.HTML ATUAL]: ${indexAtual}
-        [API.PHP ATUAL]: ${apiAtual}
-
-        --- FORMATO DA RESPOSTA ---
-        Responda APENAS com o JSON abaixo. Nenhuma palavra fora das chaves.
+        RESPONDA APENAS JSON:
         {
-            "livro_html": "código completo do novo html do livro",
-            "quiz_html": "código completo do novo quiz",
-            "index_html": "código completo do index.html atualizado",
-            "api_php": "código completo do api.php atualizado"
+            "livro_html": "...",
+            "quiz_html": "...",
+            "index_html": "...",
+            "api_php": "..."
         }
     `;
 
     try {
-        console.log("🧠 Conectando à IA e processando (Isso pode levar alguns segundos)...");
         const result = await model.generateContent(promptMestre);
-        let text = result.response.text();
-        
-        // 6. Limpeza Extrema: Garante que vamos pegar apenas o JSON, mesmo se a IA falar algo antes
+        const text = result.response.text();
         const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) {
-            throw new Error("A resposta da IA não continha um JSON válido.");
-        }
         
+        if (!jsonMatch) throw new Error("IA não devolveu JSON.");
         const resposta = JSON.parse(jsonMatch[0]);
-        console.log("✅ Código gerado com sucesso pela IA! Salvando arquivos...");
 
-        // 7. Salvando arquivos gerados
+        // Escrita dos arquivos
         fs.writeFileSync(path.join(hostingerDir, `${tarefa.livro.toLowerCase()}.html`), resposta.livro_html);
         fs.writeFileSync(path.join(hostingerDir, `quiz_${tarefa.livro.toLowerCase()}.html`), resposta.quiz_html);
         fs.writeFileSync(path.join(hostingerDir, 'index.html'), resposta.index_html);
         fs.writeFileSync(path.join(hostingerDir, 'api.php'), resposta.api_php);
 
-        // 8. Atualizando o cronograma
+        // Update Cronograma
         tarefa.status = "concluido";
         fs.writeFileSync(cronogramaPath, JSON.stringify(cronograma, null, 2));
         
-        console.log(`🎉 Automação concluída! Arquivos de ${tarefa.livro} prontos para o deploy.`);
-        console.log("==================================================");
-
-    } catch (error) {
-        console.error("\n❌ ERRO DURANTE A GERAÇÃO:");
-        console.error(error.message);
-        console.log("Verifique se o manual e os arquivos base estão formatados corretamente.");
+        console.log(`✅ Sucesso! Arquivos de ${tarefa.livro} gerados e deploy pronto.`);
+    } catch (err) {
+        console.error("❌ Erro:", err.message);
         process.exit(1);
     }
 }
 
-// Inicia o processo e garante que qualquer erro não tratado derrube a action
-iniciarAutomacao().catch((err) => {
-    console.error("❌ Erro Global não tratado:", err);
-    process.exit(1);
-});
+iniciarAutomacao();
