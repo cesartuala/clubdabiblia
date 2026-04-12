@@ -3,427 +3,609 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clube da Bíblia | Filipenses</title>
+    <title>Filipenses | Clube da Bíblia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        serif: ['Cinzel', 'serif'],
-                        sans: ['Lato', 'sans-serif']
-                    },
-                    colors: {
-                        'theme-accent': '#ec4899'
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] },
+                    colors: { 
+                        divine: { 400: '#ec4899' } /* Pink */
                     }
                 }
             }
         }
     </script>
+
     <style>
-        body {
-            background-color: #0d0000; /* Darker, slightly reddish brown for immersive feel */
-            color: #e2e8f0;
-            font-family: 'Lato', sans-serif;
-            line-height: 1.7;
-        }
-        .glass-panel {
-            background: rgba(15, 15, 25, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-color: rgba(236, 72, 153, 0.4);
-            box-shadow: 0 0 30px rgba(236, 72, 153, 0.15);
-        }
-        .cinzel {
-            font-family: 'Cinzel', serif;
-        }
-        .pink-glow {
-            text-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
-        }
-        .rich-text strong {
-            color: #f9a8d4; /* pink-300 */
-            font-weight: 700;
-        }
-        .rich-text ul {
-            list-style: none;
-            padding-left: 0;
-        }
-        .rich-text li {
-            border-left: 3px solid #ec4899; /* pink-500 */
-            padding-left: 10px;
-            margin-bottom: 8px;
-            position: relative;
-        }
-        .rich-text li:before {
-            content: '';
-            position: absolute;
-            left: -8px; /* Ajuste para alinhar com a borda */
-            top: 50%;
-            transform: translateY(-50%);
-            width: 8px;
-            height: 8px;
-            background-color: #ec4899; /* pink-500 */
-            border-radius: 50%;
-            opacity: 0.7;
-        }
-        .rich-text blockquote {
-            background: rgba(15, 15, 25, 0.05);
-            border-left: 5px solid #ec4899;
-            padding: 15px;
-            margin: 20px 0;
-            font-style: italic;
-            color: #cbd5e1;
-            border-radius: 0 8px 8px 0;
-        }
-        .custom-scroll::-webkit-scrollbar {
-            width: 8px;
-        }
-        .custom-scroll::-webkit-scrollbar-track {
-            background: #1a0d00;
-            border-radius: 4px;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-            background: #ec4899;
-            border-radius: 4px;
-            border: 2px solid #1a0d00;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb:hover {
-            background: #f9a8d4;
-        }
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        
+        .glass-panel { background: rgba(10, 5, 25, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(236, 72, 153, 0.2); }
+        .pink-glow { text-shadow: 0 0 15px rgba(236, 72, 153, 0.5); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .rich-text strong { color: #f472b6; font-weight: 700; }
+        .rich-text .ref { color: #ec4899; font-size: 0.9em; font-family: monospace; background: rgba(236, 72, 153, 0.15); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(236, 72, 153, 0.3); }
+        .rich-text h3 { color: #ec4899; font-weight: bold; margin-top: 2rem; margin-bottom: 0.75rem; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.15em; border-bottom: 1px solid rgba(236, 72, 153, 0.3); padding-bottom: 6px; }
+        .rich-text ul { list-style-type: none; padding-left: 0; margin-top: 15px; margin-bottom: 20px; }
+        .rich-text li { margin-bottom: 15px; line-height: 1.8; text-align: justify; border-left: 3px solid #ec4899; padding-left: 20px; background: linear-gradient(to right, rgba(236,72,153,0.05), transparent); padding-top: 5px; padding-bottom: 5px; }
+        .rich-text p { margin-bottom: 20px; line-height: 2; text-align: justify; font-size: 1.05rem; color: #cbd5e1; }
+        .rich-text blockquote { border-left: 4px solid #ec4899; padding-left: 20px; margin: 20px 0; font-style: italic; color: #f472b6; background: rgba(236, 72, 153, 0.05); padding: 15px; border-radius: 0 8px 8px 0; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050510; }
+        ::-webkit-scrollbar-thumb { background: #2f0a1c; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ec4899; }
+
+        .recording-pulse { animation: recPulse 1.5s infinite; background-color: #ef4444; border-color: #ef4444; color: white; }
+        @keyframes recPulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @keyframes pop { 50% { transform: scale(1.4); } }
+        .reacted-anim { animation: pop 0.3s ease-out; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased">
+<body class="font-sans antialiased">
 
-    <header class="w-full p-4 flex flex-col md:flex-row items-center justify-between glass-panel sticky top-0 z-50">
-        <div class="flex items-center gap-3">
-            <i class="fa-solid fa-face-smile text-theme-accent text-3xl pink-glow"></i>
-            <h1 class="cinzel text-3xl text-white uppercase tracking-widest pink-glow">Filipenses</h1>
+    <canvas id="particles-js"></canvas>
+
+    <nav class="fixed top-0 w-full z-50 p-4 md:p-6 flex flex-col md:flex-row justify-between items-center bg-gradient-to-b from-[#050510]/95 to-[#050510]/80 backdrop-blur-md border-b border-pink-900/40 transition-all">
+        <div class="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto justify-between md:justify-start">
+            <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0f0a1a] border border-pink-500/50 text-pink-400 hover:bg-pink-500 hover:text-black transition-all shadow-[0_0_15px_rgba(236,72,153,0.1)]">
+                <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+                <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-face-smile text-pink-500 text-xl md:text-2xl"></i>
+                <span class="font-serif text-white text-lg md:text-xl tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
         </div>
-        <nav class="mt-4 md:mt-0">
-            <ul class="flex gap-4 text-sm font-bold">
-                <li><a href="#capitulo1" class="text-slate-300 hover:text-theme-accent transition">Cap. 1</a></li>
-                <li><a href="#capitulo2" class="text-slate-300 hover:text-theme-accent transition">Cap. 2</a></li>
-                <li><a href="#capitulo3" class="text-slate-300 hover:text-theme-accent transition">Cap. 3</a></li>
-                <li><a href="#capitulo4" class="text-slate-300 hover:text-theme-accent transition">Cap. 4</a></li>
-                <li><a href="index.html" class="text-slate-300 hover:text-theme-accent transition">Início</a></li>
-            </ul>
-        </nav>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto justify-end">
+            <span class="hidden md:inline text-xs text-slate-400 uppercase tracking-widest">Navegar:</span>
+            <select id="chapterSelect" onchange="loadChapter(this.value)" class="w-full md:w-auto bg-[#0f0a1a] text-pink-400 border border-pink-500/40 rounded px-4 py-2 text-sm uppercase tracking-widest focus:outline-none focus:border-pink-500 cursor-pointer">
+                <option value="intro_book">★ Sobre o Livro</option>
+                <option value="intro_author">✎ Sobre o Autor</option>
+                <option disabled>──────────</option>
+                <option value="filipenses_1">Capítulo 01</option>
+                <option value="filipenses_2">Capítulo 02</option>
+                <option value="filipenses_3">Capítulo 03</option>
+                <option value="filipenses_4">Capítulo 04</option>
+            </select>
+        </div>
+    </nav>
+
+    <header class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-32 md:pt-20">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1510411899146-2410a0c2049e?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#050510] via-[#050510]/80 to-transparent"></div>
+        
+        <div class="z-10 reveal active space-y-4 max-w-5xl w-full">
+            <h2 class="text-pink-400 tracking-[0.5em] text-[10px] md:text-sm uppercase animate-pulse mb-4 font-bold">Clube da Bíblia Apresenta</h2>
+            
+            <div id="dateBadge" class="hidden inline-flex items-center gap-2 border border-pink-500/50 rounded-full px-4 py-1 mb-4 bg-pink-500/10 backdrop-blur-sm transition-all duration-700 opacity-0">
+                <i class="fa-regular fa-calendar text-pink-400 text-xs"></i>
+                <span class="text-pink-300 text-xs tracking-widest uppercase font-bold">Leitura: <span id="dateValue" class="text-white"></span></span>
+            </div>
+
+            <h1 id="heroTitle" class="font-serif text-4xl md:text-7xl text-white mb-2 pink-glow transition-all duration-700 uppercase leading-tight px-2"></h1>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 text-slate-400 mt-8 pt-8 border-t border-pink-900/40 w-full max-w-3xl mx-auto">
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Idealizado por</p>
+                    <strong class="text-pink-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-pink-300 transition">Fellipe Gomes Andrade</strong>
+                </div>
+                <span class="hidden md:block h-8 w-[1px] bg-gradient-to-b from-transparent via-pink-900 to-transparent"></span>
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Desenvolvido por</p>
+                    <strong class="text-pink-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-pink-300 transition">Cesar Tuala</strong>
+                </div>
+            </div>
+
+            <p id="heroDesc" class="text-sm md:text-xl text-slate-300 max-w-2xl mx-auto pt-8 font-light italic transition-all duration-700 px-4"></p>
+            
+            <div class="pt-10">
+                <button onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" class="animate-bounce text-pink-500 text-2xl">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
     </header>
 
-    <main class="flex-grow container mx-auto p-6 md:p-8 lg:p-12">
-        <section id="introducao" class="glass-panel rounded-lg p-6 mb-8">
-            <h2 class="cinzel text-3xl text-theme-accent uppercase mb-4 pink-glow">Alegria em Cristo: Uma Carta da Prisão</h2>
-            <p class="text-slate-300 leading-relaxed">
-                A Epístola aos Filipenses, escrita pelo apóstolo Paulo enquanto estava preso (provavelmente em Roma), é uma das cartas mais pessoais e afetuosas do Novo Testamento. Diferente de muitas outras epístolas que abordam correções doutrinárias ou morais, Filipenses é permeada por um tom de alegria, gratidão e encorajamento.
-                Paulo expressa sua profunda afeição pelos filipenses, uma igreja que o apoiou financeiramente e em oração, demonstrando um verdadeiro companheirismo no evangelho. A carta enfatiza a união, a humildade (tomando Cristo como o modelo supremo), e a resiliência através da alegria e da paz que só se encontram em Cristo, mesmo diante de sofrimento e adversidades. É um chamado a viver de forma consistente com a cidadania celestial, focando na supremacia de Cristo sobre todas as coisas.
-            </p>
-        </section>
+    <main id="content" class="max-w-4xl mx-auto px-4 py-10 md:py-20 space-y-20 md:space-y-32 min-h-screen"></main>
 
-        <article class="space-y-12">
-            <!-- Capítulo 1 -->
-            <section id="capitulo1" class="glass-panel rounded-lg p-6 md:p-8">
-                <h2 class="cinzel text-3xl text-theme-accent mb-4 pink-glow">Capítulo 1: Alegria em Meio à Luta</h2>
-                <blockquote class="border-l-4 border-theme-accent pl-4 text-slate-200 italic mb-6">"Porque para mim o viver é Cristo e o morrer é ganho." (Filipenses 1:21)</blockquote>
-                <div class="rich-text text-slate-300">
-                    <h3 class="text-xl font-bold text-theme-accent mb-3">A Gratidão de Paulo pelos Filipenses (Filipenses 1:1-11)</h3>
-                    <ul>
-                        <li><strong>Contexto Histórico:</strong> Paulo escreve da prisão (provavelmente em Roma) para a igreja em Filipos, uma colônia romana. Esta igreja se destacava por seu apoio financeiro e companheirismo com Paulo, desde o início de seu ministério na Macedônia. Ele não está escrevendo para repreender, mas para encorajar e agradecer.</li>
-                        <li><strong>Análise Teológica:</strong> A oração de Paulo por eles (vv. 9-11) revela seu coração pastoral e sua visão para o crescimento espiritual da igreja: amor que transborda em conhecimento (*epígnōsis* - ἐπίγνωσις - conhecimento pleno, preciso) e discernimento (*aisthēsis* - αἴσθησις - percepção moral e espiritual), levando-os a serem irrepreensíveis e frutíferos para a glória de Deus.</li>
-                        <li><strong>Aplicação Prática:</strong> Nossa gratidão por outros cristãos deve ser acompanhada de oração fervorosa pelo seu amadurecimento em amor, conhecimento e discernimento, para que suas vidas reflitam a justiça de Cristo.</li>
-                    </ul>
+    <section id="community-section" class="w-full bg-[#07030f] border-t-4 border-pink-600 py-16 mb-0 relative shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <h3 class="font-serif text-3xl md:text-4xl text-pink-500 mb-2 uppercase tracking-widest pink-glow">
+                    <i class="fa-solid fa-users-line mr-3"></i>Comunidade
+                </h3>
+                <p class="text-slate-400 text-sm italic">"Compartilhe o que Deus falou ao seu coração"</p>
+                <div class="h-1 w-24 bg-gradient-to-r from-transparent via-pink-600 to-transparent mx-auto mt-4"></div>
+            </div>
 
-                    <h3 class="text-xl font-bold text-theme-accent mb-3">Cristo Proclamado em Qualquer Circunstância (Filipenses 1:12-26)</h3>
-                    <ul>
-                        <li><strong>Contexto Histórico:</strong> A prisão de Paulo não impediu a pregação do evangelho; ao contrário, serviu para seu avanço. Mesmo aqueles que pregavam por inveja ou rivalidade, indiretamente, contribuíam para a divulgação da mensagem de Cristo.</li>
-                        <li><strong>Análise Teológica:</strong> Paulo demonstra uma profunda confiança e foco em Cristo, expressando que "viver é Cristo e morrer é ganho" (*kerdos* - κέρδος - lucro, vantagem). Sua prisão tornou-se um testemunho para a guarda pretoriana e para todos, mostrando que a fé não se abala sob pressão. O principal para Paulo não era sua liberdade, mas que Cristo fosse magnificado.</li>
-                        <li><strong>Aplicação Prática:</strong> Mesmo em adversidades ou quando enfrentamos oposição, nosso propósito principal deve ser glorificar a Cristo. Nossa perspectiva sobre a vida e a morte deve ser moldada pela supremacia de Cristo, transformando desafios em oportunidades de testemunho.</li>
-                    </ul>
-
-                    <h3 class="text-xl font-bold text-theme-accent mb-3">Vivendo de Modo Digno do Evangelho (Filipenses 1:27-30)</h3>
-                    <ul>
-                        <li><strong>Contexto Histórico:</strong> Filipos era uma cidade com forte identidade romana. Paulo usa essa analogia para exortar os crentes a viverem como cidadãos do céu, de maneira coerente com o evangelho que professavam, especialmente diante da perseguição.</li>
-                        <li><strong>Análise Teológica:</strong> O termo "portem-se" ou "vivam dignamente" vem de *politeuomai* (πολιτεύομαι), que significa "conduzir-se como cidadão". Paulo os chama a viver de forma unida e corajosa, não se intimidando pelos adversários, o que seria um sinal da salvação para os crentes e da condenação para os oponentes. Sofrer por Cristo é um privilégio, não um castigo.</li>
-                        <li><strong>Aplicação Prática:</strong> Nossa identidade primária é em Cristo, e isso deve influenciar todas as áreas da nossa vida. Devemos nos manter firmes na fé, unidos como corpo de Cristo, e não nos acovardar diante das pressões ou perseguições, lembrando que o sofrimento por amor a Cristo faz parte da jornada cristã e tem propósito divino.</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Capítulo 2 -->
-            <section id="capitulo2" class="glass-panel rounded-lg p-6 md:p-8">
-                <h2 class="cinzel text-3xl text-theme-accent mb-4 pink-glow">Capítulo 2: A Mente de Cristo e a Humildade</h2>
-                <blockquote class="border-l-4 border-theme-accent pl-4 text-slate-200 italic mb-6">"Tende em vós o mesmo sentimento que houve também em Cristo Jesus." (Filipenses 2:5)</blockquote>
-                <div class="rich-text text-slate-300">
-                    <h3 class="text-xl font-bold text-theme-accent mb-3">A Exortação à Unidade e Humildade (Filipenses 2:1-4)</h3>
-                    <ul>
-                        <li><strong>Contexto Histórico:</strong> Embora a igreja de Filipos fosse em grande parte exemplar, havia indícios de tensões ou desunião (como vemos mais adiante com Evódia e Síntique). Paulo apela para o fundamento da fé cristã (comunhão com o Espírito, amor e compaixão) como base para a unidade.</li>
-                        <li><strong>Análise Teológica:</strong> A base para a unidade é a humildade. Paulo exorta os crentes a não fazerem nada por rivalidade ou vanglória (*kenodoxía* - κενοδοξία - glória vazia, orgulho), mas a considerarem os outros superiores a si mesmos. Esta é uma inversão radical da mentalidade greco-romana, que valorizava a honra pessoal e a competição.</li>
-                        <li><strong>Aplicação Prática:</strong> A verdadeira unidade e o amor fraternal na igreja nascem da humildade. Precisamos renunciar ao egoísmo e à busca por reconhecimento, priorizando o bem-estar e os interesses dos outros, buscando edificar e servir em vez de competir.</li>
-                    </ul>
-
-                    <h3 class="text-xl font-bold text-theme-accent mb-3">O Exemplo Máximo de Humildade: Cristo Jesus (Filipenses 2:5-11)</h3>
-                    <ul>
-                        <li><strong>Contexto Histórico:</strong> Este é um dos mais profundos hinos cristológicos do Novo Testamento, descrevendo a encarnação e exaltação de Cristo. Paulo usa o exemplo de Jesus não como uma sugestão, mas como um mandamento para a atitude dos crentes.</li>
-                        <li><strong>Análise Teológica:</strong> Jesus, sendo em forma (*morphē* - μορφή - natureza, essência) de Deus, não considerou o ser igual a Deus algo a que se apegar, mas esvaziou-se (*kenoō* - κενόω - literalmente "esvaziar", "despojar-se") a si mesmo, tomando a forma de servo e humilhando-se até a morte de cruz. Por essa obediência, Deus o exaltou soberanamente, dando-lhe o nome que está acima de todo nome.</li>
-                        <li><strong>Aplicação Prática:</strong> A humildade de Cristo é o nosso modelo supremo. Devemos estar dispostos a abrir mão de nossos direitos, status ou conforto para servir a Deus e ao próximo, mesmo que isso implique sacrifício. A verdadeira exaltação vem da humilhação voluntária e da obediência a Deus.</li>
-                    </ul>
-
-                    <h3 class="text-xl font-bold text-theme-accent mb-3">Trabalhando a Salvação com Temor e Tremor (Filipenses 2:12-18)</h3>
-                    <ul>
-                        <li><strong>Contexto Histórico:</strong> A exortação para "desenvolver a sua salvação" não é sobre ganhar a salvação por obras, mas sobre vivê-la e praticá-la ativamente. A igreja de Filipos era um "farol" em meio a uma geração perversa, e Paulo os encoraja a manter esse testemunho.</li>
-                        <li><strong>Análise Teológica:</strong> "Trabalhai a vossa salvação" (*katergazomai* - κατεργάζομαι - operar, realizar, levar a termo) significa dar expressão prática e visível à fé que já possuem. Deus é quem opera (*energeō* - ἐνεργέω - agir, operar) neles, capacitando-os a querer e a fazer. É uma sinergia divina-humana, onde a obra de Deus nos capacita a responder em obediência. A vida cristã deve ser irrepreensível e sincera, brilhando como luzeiros no mundo.</li>
-                        <li><strong>Aplicação Prática:</strong> Nossa fé não é passiva. Devemos viver de forma consistente com a salvação que recebemos, manifestando um caráter cristão que se destaca em um mundo sombrio. Isso requer obediência diária, sem murmurações ou discussões, confiando que é Deus quem nos capacita e trabalha em nós.</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Capítulo 3 -->
-            <section id="capitulo3" class="glass-panel rounded-lg p-6 md:p-8">
-                <h2 class="cinzel text-3xl text-theme-accent mb-4 pink-glow">Capítulo 3: O Conhecimento Supremo de Cristo</h2>
-                <blockquote class="border-l-4 border-theme-accent pl-4 text-slate-200 italic mb-6">"Mas o que para mim era ganho, isto considerei perda por causa de Cristo." (Filipenses 3:7)</blockquote>
-                <div class="rich-text text-slate-300">
-                    <h3 class="text-xl font-bold text-theme-accent mb-3">A Advertência Contra os Falsos Mestres (Filipenses 3:1-3)</h3>
-                    <ul>
-                        <li><strong>Contexto Histórico:</strong> Paulo adverte contra os judaizantes, que insistiam na necessidade da circuncisão e da observância da Lei para a salvação, minando a doutrina da graça pela fé em Cristo.</li>
-                        <li><strong>Análise Teológica:</strong> Paulo os chama de "cães", "maus obreiros" e "falsos circuncisos" (*katatomē* - κατατομή - mutilação, corte), em contraste com a verdadeira circuncisão, que é espiritual, feita no coração pelo Espírito Santo. A adoração genuína é no Espírito, a glória em Cristo Jesus, sem confiança na carne.</li>
-                        <li><strong>Aplicação Prática:</strong> Devemos estar sempre vigilantes contra ensinos que desviam do evangelho puro da graça, que busca adicionar obras humanas como requisito para a salvação ou para a justificação. Nossa segurança e nossa glória estão unicamente em Cristo e em sua obra redentora.</li>
-                    </ul>
-
-                    <h3 class="text-xl font-bold text-theme-accent mb-3">A Incomparável Supremacia de Cristo (Filipenses 3:4-11)</h3>
-                    <ul>
-                        <li><strong>Contexto Histórico:</strong> Paulo usa sua própria biografia como exemplo. Ele tinha todos os "créditos" religiosos e sociais que um judeu podia desejar, superando seus oponentes em termos de linhagem e observância da Lei.</li>
-                        <li><strong>Análise Teológica:</strong> Apesar de seu impressionante currículo, Paulo considera tudo isso "perda" (*zēmía* - ζημία - dano, prejuízo) e "lixo" (*skybala* - σκύβαλα - esterco, refugo) em comparação com o "excelência do conhecimento de Cristo Jesus". Seu objetivo é conhecer a Cristo, o poder da sua ressurreição e a participação nos seus sofrimentos, conformando-se à sua morte para alcançar a ressurreição dos mortos.</li>
-                        <li><strong>Aplicação Prática:</strong> Nada em nossa vida — conquistas, herança, méritos — deve se comparar à preciosidade de Cristo. Nosso maior anseio deve ser conhecê-Lo mais profundamente, experimentar o poder de Sua vida e estar dispostos a partilhar de Seus sofrimentos, na esperança da ressurreição.</li>
-                    </ul>
-
-                    <h3 class="text-xl font-bold text-theme-accent mb-3">A Perseguição e a Cidadania Celestial (Filipenses 3:12-21)</h3>
-                    <ul>
-                        <li><strong>Contexto Histórico:</strong> Paulo, mesmo com tudo o que já havia alcançado e sofrido, continua a "prosseguir para o alvo", indicando que a vida cristã é uma jornada contínua de crescimento e amadurecimento, não um destino estático.</li>
-                        <li><strong>Análise Teológica:</strong> Ele não se considera perfeito ou já tendo alcançado, mas esquece o passado e avança para o futuro, visando o prêmio da soberana vocação de Deus em Cristo Jesus. Em contraste com os "inimigos da cruz" que vivem para os prazeres terrenos, os crentes têm sua cidadania (*políteuma* - πολίτευμα - comunidade, governo, cidadania) nos céus, de onde esperam o Salvador, que transformará nosso corpo humilhado em corpo de glória, conforme seu corpo glorioso.</li>
-                        <li><strong>Aplicação Prática:</strong> A vida cristã é uma corrida de perseverança. Não devemos viver presos ao passado (erros ou sucessos), mas olhar para frente, em direção a Cristo. Nossa verdadeira identidade e esperança estão nos céus, e essa expectativa deve nos motivar a viver de forma santa e aspirar à glorificação futura.</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Capítulo 4 -->
-            <section id="capitulo4" class="glass-panel rounded-lg p-6 md:p-8">
-                <h2 class="cinzel text-3xl text-theme-accent mb-4 pink-glow">Capítulo 4: Alegria, Paz e Conteúdo em Cristo</h2>
-                <blockquote class="border-l-4 border-theme-accent pl-4 text-slate-200 italic mb-6">"Regozijai-vos sempre no Senhor; outra vez digo: regozijai-vos!" (Filipenses 4:4)</blockquote>
-                <div class="rich-text text-slate-300">
-                    <h3 class="text-xl font-bold text-theme-accent mb-3">A Exortação à Alegria e à Paz (Filipenses 4:1-7)</h3>
-                    <ul>
-                        <li><strong>Contexto Histórico:</strong> Paulo trata de uma questão específica de desentendimento entre duas mulheres da igreja, Evódia e Síntique, e também dá conselhos gerais para a vida cristã. A ênfase é na alegria, mesmo em face de ansiedade.</li>
-                        <li><strong>Análise Teológica:</strong> A alegria cristã (*chará* - χαρά - alegria, regozijo) não é baseada em circunstâncias, mas na presença e no governo do Senhor. Paulo exorta à moderação (*epieikés* - ἐπιεικές - razoabilidade, clemência, paciência) e a lançar todas as ansiedades sobre Deus em oração, com ações de graças. O resultado é a "paz de Deus, que excede todo o entendimento" (*eirḗnē* - εἰρήνη - paz, tranquilidade), guardando corações e mentes em Cristo.</li>
-                        <li><strong>Aplicação Prática:</strong> A alegria no Senhor é uma escolha e um mandamento, não apenas um sentimento. Devemos cultivar uma atitude de moderação e gratidão, entregando nossas preocupações a Deus em oração. A paz que resulta dessa confiança transcende a lógica humana e protege nossa alma.</li>
-                    </ul>
-
-                    <h3 class="text-xl font-bold text-theme-accent mb-3">Pensando no que é Nobre e Virtuoso (Filipenses 4:8-9)</h3>
-                    <ul>
-                        <li><strong>Contexto Histórico:</strong> Paulo oferece um guia prático para o pensamento cristão, fundamental para a saúde espiritual e emocional dos crentes.</li>
-                        <li><strong>Análise Teológica:</strong> A mente cristã deve ser preenchida com coisas que são verdadeiras, respeitáveis (*semnós* - σεμνός - digno de reverência, honorável), justas, puras, amáveis, de boa fama, e onde haja virtude e louvor. A prática desses princípios, juntamente com o que Paulo ensinou e exemplificou, traria a presença do "Deus de paz".</li>
-                        <li><strong>Aplicação Prática:</strong> Nossos pensamentos moldam nossa realidade interior. Devemos ser intencionais em direcionar nossa mente para o que é edificante e moralmente excelente. Isso envolve filtrar o que consumimos e cultivar hábitos de pensamento que honrem a Deus, resultando em uma vida de paz e coerência.</li>
-                    </ul>
-
-                    <h3 class="text-xl font-bold text-theme-accent mb-3">O Segredo da Contentamento e da Força (Filipenses 4:10-20)</h3>
-                    <ul>
-                        <li><strong>Contexto Histórico:</strong> Paulo agradece a oferta financeira dos filipenses, mas aproveita para ensinar sobre o contentamento e a dependência de Deus em todas as situações.</li>
-                        <li><strong>Análise Teológica:</strong> Paulo aprendeu o "segredo" (*mueō* - μυέω - ser iniciado em um mistério, aprender) de estar contente em todas as circunstâncias, seja na abundância ou na necessidade. Seu contentamento não dependia de recursos externos, mas de sua suficiência em Cristo: "Posso todas as coisas naquele que me fortalece" (*endunamoō* - ἐνδυναμόω - fortalecer, capacitar). Ele reitera o apoio dos filipenses como uma "oferta de aroma suave", um sacrifício aceitável e aprazível a Deus.</li>
-                        <li><strong>Aplicação Prática:</strong> O contentamento genuíno não é ausência de desejos, mas uma profunda confiança na provisão e capacitação de Deus. Devemos aprender a depender de Cristo para nossa força em todas as situações da vida, reconhecendo que Ele supre todas as nossas necessidades de acordo com Sua riqueza em glória. A generosidade em ofertar é um ato de adoração que agrada a Deus.</li>
-                    </ul>
-                </div>
-            </section>
-        </article>
-
-        <!-- Seção de Comentários -->
-        <section id="comentarios" class="glass-panel rounded-lg p-6 md:p-8 mt-12">
-            <h2 class="cinzel text-3xl text-theme-accent mb-6 text-center pink-glow">Comunidade e Compartilhamento</h2>
-            <form id="comment-form" class="mb-8 p-4 bg-slate-900/50 rounded-lg border border-theme-accent/30">
-                <p class="text-slate-400 text-sm mb-4">Deixe seu comentário, uma foto ou um áudio sobre sua experiência com o capítulo!</p>
-                <input type="hidden" id="capitulo-atual" value="Filipenses">
-                <div class="mb-4">
-                    <label for="nome" class="block text-slate-400 text-sm font-bold mb-2">Seu Nome:</label>
-                    <input type="text" id="nome" name="nome" required
-                           class="shadow appearance-none border rounded w-full py-2 px-3 bg-slate-800 text-white leading-tight focus:outline-none focus:shadow-outline border-theme-accent/20">
-                </div>
-                <div class="mb-4">
-                    <label for="mensagem" class="block text-slate-400 text-sm font-bold mb-2">Mensagem:</label>
-                    <textarea id="mensagem" name="mensagem" rows="4" required
-                              class="shadow appearance-none border rounded w-full py-2 px-3 bg-slate-800 text-white leading-tight focus:outline-none focus:shadow-outline border-theme-accent/20"></textarea>
-                </div>
-                <div class="mb-4 flex items-center space-x-4">
-                    <div class="flex-1">
-                        <label for="foto" class="block text-slate-400 text-sm font-bold mb-2">Upload de Imagem:</label>
-                        <input type="file" id="foto" name="foto" accept="image/*"
-                               class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-theme-accent/20 file:text-theme-accent hover:file:bg-theme-accent/30">
+            <div class="glass-panel p-6 md:p-8 rounded-xl mb-12 border border-slate-800 shadow-2xl bg-[#0a0514]/80">
+                <form id="commentForm" class="space-y-5">
+                    <input type="hidden" id="formChapterKey" name="capitulo">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="col-span-1">
+                            <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Nome</label>
+                            <input type="text" name="nome" required class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-pink-500 focus:outline-none transition">
+                        </div>
+                        <div class="flex gap-3 col-span-1 md:col-span-2 items-end">
+                            <label class="flex-1 cursor-pointer bg-black/50 border border-slate-700 hover:border-pink-500 hover:bg-[#110a24] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-camera group-hover:text-pink-400"></i> Foto
+                                <input type="file" name="foto" accept="image/*" class="hidden" onchange="previewFile(this)">
+                            </label>
+                            <button type="button" id="recordBtn" class="flex-1 bg-black/50 border border-slate-700 hover:border-red-500 hover:bg-[#110a24] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-microphone group-hover:text-red-400"></i> <span id="recordText">Gravar Áudio</span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="flex-1 flex flex-col items-center">
-                        <label for="audio" class="block text-slate-400 text-sm font-bold mb-2">Gravar Áudio:</label>
-                        <button type="button" id="recordButton" class="bg-theme-accent/20 hover:bg-theme-accent/30 text-theme-accent font-bold py-2 px-4 rounded-full inline-flex items-center transition">
-                            <i class="fa-solid fa-microphone mr-2"></i> <span id="recordText">Gravar Áudio</span>
-                        </button>
-                        <input type="file" id="audio" name="audio" accept="audio/*" style="display:none;">
-                        <audio id="audioPlayback" controls class="mt-2 w-full" style="display:none;"></audio>
+                    <div id="filePreview" class="text-xs text-pink-400 hidden bg-black p-2 rounded border border-pink-500/30"></div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Comentário</label>
+                        <textarea name="mensagem" class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-pink-500 focus:outline-none h-28 resize-none transition"></textarea>
                     </div>
-                </div>
-                <button type="submit" class="bg-theme-accent hover:bg-pink-600 text-white font-bold py-2 px-6 rounded-full transition">
-                    Enviar Comentário
-                </button>
-            </form>
+                    <button type="submit" class="w-full bg-gradient-to-r from-pink-800 to-pink-600 hover:from-pink-600 hover:to-pink-500 text-white font-bold py-4 rounded-lg transition uppercase tracking-[0.2em] text-sm shadow-lg shadow-black/50 transform hover:-translate-y-1">
+                        Publicar Comentário
+                    </button>
+                </form>
+            </div>
+            <div id="commentsList" class="space-y-6"></div>
+        </div>
+    </section>
 
-            <h3 class="cinzel text-2xl text-theme-accent mb-4">Comentários Anteriores:</h3>
-            <div id="comments-list" class="space-y-6"></div>
-        </section>
-    </main>
-
-    <footer class="text-center py-6 text-slate-700 text-[10px] tracking-widest relative z-10 uppercase">
-        &copy; 2026 CLUBE DA BÍBLIA - Todos os direitos reservados.
+    <footer class="border-t border-slate-800 bg-black py-12 text-center relative z-10">
+        <div class="flex flex-col items-center justify-center space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="fa-solid fa-face-smile text-pink-600 text-xl"></i>
+                <span class="font-serif text-slate-300 text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+            <p class="text-slate-700 text-[10px] tracking-widest uppercase mt-4">&copy; 2026 Todos os direitos reservados.</p>
+        </div>
     </footer>
 
-    <script>
-        const capituloAtual = document.getElementById('capitulo-atual').value;
-        const commentsList = document.getElementById('comments-list');
-        const commentForm = document.getElementById('comment-form');
-        const recordButton = document.getElementById('recordButton');
-        const recordText = document.getElementById('recordText');
-        const audioInput = document.getElementById('audio');
-        const audioPlayback = document.getElementById('audioPlayback');
+    <div id="imageModal" class="fixed inset-0 z-[100] bg-black/95 hidden flex justify-center items-center p-4 backdrop-blur-sm transition-opacity duration-300" onclick="closeImage()">
+        <div class="relative max-w-4xl w-full flex justify-center">
+            <button onclick="closeImage()" class="absolute -top-12 right-0 text-white text-3xl hover:text-pink-500 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modalImg" src="" class="max-h-[85vh] max-w-full rounded-lg shadow-[0_0_50px_rgba(236,72,153,0.3)] border-2 border-pink-500/20 object-contain">
+        </div>
+    </div>
 
+    <script>
+        const bibleData = {
+            "intro_book": {
+                title: "A CARTA AOS FILIPENSES",
+                date: null,
+                desc: "<span class='text-xs uppercase tracking-[0.3em] text-pink-400 not-italic block mb-4'>Introdução: Sobre o Livro</span>\"A Epístola da alegria inesgotável, escrita das algemas, para a vida cristã vitoriosa.\"",
+                blocks: [
+                    {
+                        title: "Alegria em Meio às Algemas",
+                        verse: "Sempre em todas as minhas orações faço súplicas com alegria por todos vós. (Filipenses 1:4)",
+                        exegesis: `
+                            <p>Filipenses é frequentemente chamada de a "Epístola da Alegria". É notável porque Paulo a escreveu enquanto estava acorrentado em uma prisão romana, por volta de 60-62 d.C. Mesmo em circunstâncias tão adversas, a palavra "alegria" ou "regozijar-se" aparece mais de 16 vezes. Esta carta não é uma defesa teológica complexa, mas uma efusão de afeto, encorajamento e instrução prática para uma igreja que Paulo amava profundamente.</p>
+                            
+                            <h3>1. O Contexto e a Oração de Paulo</h3>
+                            <ul>
+                                <li>A igreja em Filipos foi a primeira fundada por Paulo na Europa (Atos 16). Era uma igreja missionária, que o havia apoiado financeiramente mais do que qualquer outra. A carta reflete o profundo vínculo entre Paulo e os filipenses. Ele começa com uma oração de gratidão e alegria pela <span class="rich-text"><i>koinonia</i> - κοινωνία - Comunhão</span> deles no Evangelho. A verdadeira alegria cristã não depende das circunstâncias externas, mas da nossa posição <span class="rich-text"><i>en Christo</i> - ἐν Χριστῷ - em Cristo</span>.</li>
+                            </ul>
+                            
+                            <h3>2. Viver é Cristo, Morrer é Lucro</h3>
+                            <ul>
+                                <li>No capítulo 1, Paulo compartilha seu dilema pessoal: ele está "entre a espada e a parede", entre a vida e a morte. Se viver, é para servir a Cristo; se morrer, é para estar com Ele, o que é "muito melhor". Esta perspectiva radical transforma o sofrimento e a morte em oportunidades de glorificar a Cristo. Sua preocupação não é com seu próprio bem-estar, mas com o avanço do Evangelho, seja pela sua vida ou pela sua morte.</li>
+                            </ul>
+
+                            <h3>3. Permanecer Firme e Proclamar</h3>
+                            <ul>
+                                <li>Paulo os exorta a "permanecer firmes em um só espírito, com uma só alma, lutando juntos pela fé do evangelho" (Filipenses 1:27). Esta unidade e coragem são essenciais diante da oposição. A vida cristã é uma parceria ativa no Evangelho, que se manifesta na perseverança e na proclamação ousada, mesmo que isso signifique sofrimento por amor a Cristo.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "intro_author": {
+                title: "SOBRE O AUTOR",
+                date: null,
+                desc: "\"Paulo e Timóteo, servos de Cristo Jesus, a todos os santos em Cristo Jesus que estão em Filipos...\"",
+                blocks: [
+                    {
+                        title: "De Perseguidor a Prisioneiro de Cristo",
+                        verse: "Porque a vós vos foi concedido, em relação a Cristo, não somente crer nele, como também padecer por ele. (Filipenses 1:29)",
+                        exegesis: `
+                            <p>A história de Paulo, o autor desta carta, é um testemunho vívido da transformação que ele prega. De um fariseu zeloso e perseguidor de cristãos a um apóstolo aprisionado por causa do Evangelho, a vida de Paulo é o palco onde a verdade da justificação pela fé é demonstrada.</p>
+
+                            <h3>1. O Contexto de Escrita: Prisão Domiciliar em Roma</h3>
+                            <ul>
+                                <li>Filipenses é uma das "Cartas da Prisão", escrita enquanto Paulo estava em prisão domiciliar em Roma (c. 60-62 d.C.), aguardando seu julgamento perante César. Essa condição de aprisionamento, paradoxalmente, serviu para o "progresso do evangelho" (Filipenses 1:12). Sua prisão tornou-se um púlpito, e seus guardas pretorianos, sua audiência cativa. A carta revela um Paulo não abatido, mas transbordando de alegria e esperança, focado não em suas dores, mas na glória de <span class="rich-text"><i>Christos</i> - Χριστός - Ungido</span>.</li>
+                            </ul>
+
+                            <h3>2. A Comunidade de Filipos: Um Vínculo Especial</h3>
+                            <ul>
+                                <li>Ao contrário de algumas de suas outras cartas que abordavam heresias ou divisões, Filipenses é marcada por um tom de carinho e profunda afeição. Paulo tinha um relacionamento único com os filipenses, que o haviam apoiado consistentemente em suas missões. Ele os via como seus "cooperadores" no Evangelho. A igreja em Filipos era um farol de fé e generosidade, e Paulo os usa como exemplo de vida cristã.</li>
+                            </ul>
+
+                            <h3>3. A Mensagem Central do Autor: Cristo é Tudo</h3>
+                            <ul>
+                                <li>Para Paulo, a essência da vida cristã era Cristo. Seja para viver ou para morrer, Cristo era o centro. Ele exemplifica a renúncia de todos os privilégios e realizações pessoais para "ganhar a Cristo" (Filipenses 3:8). Sua autoridade como apóstolo não vinha de sua ascendência ou educação, mas de sua vocação divina e de seu sofrimento por Cristo. A carta é um reflexo do coração de um homem que encontrou sua completa satisfação e propósito em Jesus.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "filipenses_1": {
+                title: "A RIQUEZA DA SALVAÇÃO EM SOFRIMENTO",
+                date: "11/04 (Segunda)",
+                desc: "\"Porque para mim o viver é Cristo, e o morrer é lucro.\"",
+                blocks: [
+                    {
+                        title: "Parceria no Evangelho e o Dilema de Paulo",
+                        verse: "Dou graças ao meu Deus todas as vezes que me lembro de vós. (Filipenses 1:3)",
+                        exegesis: `
+                            <h3>1. Ação de Graças pela <span class="rich-text"><i>Koinonia</i> - κοινωνία - Comunhão</span></h3>
+                            <ul>
+                                <li>Paulo inicia a carta expressando sua profunda gratidão e alegria pelos filipenses, lembrando-se da <span class="rich-text"><i>koinonia</i> - κοινωνia - Comunhão/Parceria</span> deles no Evangelho "desde o primeiro dia até agora". Isso sugere que a igreja de Filipos não apenas creu no Evangelho, mas ativamente o apoiou e participou de sua propagação. Esta parceria não era meramente financeira, mas uma união espiritual no propósito de Deus.</li>
+                            </ul>
+                            
+                            <h3>2. O Dilema de Paulo: Viver ou Morrer</h3>
+                            <ul>
+                                <li>Em meio à sua prisão, Paulo enfrenta um dilema existencial. Para ele, "o viver é Cristo, e o morrer é lucro" (Filipenses 1:21). Sua vida tinha um único propósito: magnificar a <span class="rich-text"><i>Christos</i> - Χριστός - Ungido</span>. A morte não era um fim, mas um caminho para uma união ainda mais íntima com o Senhor. Ele anseia estar com Cristo, mas reconhece que sua permanência na terra é mais necessária para o "progresso e gozo da fé" dos filipenses.</li>
+                            </ul>
+
+                            <h3>3. Dignos do Evangelho e Sofrimento Compartilhado</h3>
+                            <ul>
+                                <li>Paulo exorta os filipenses a "andarem como é digno do evangelho de <span class="rich-text"><i>Christos</i> - Χριστός - Ungido</span>" (Filipenses 1:27). Isso implica unidade, coragem e firmeza diante da oposição. Ele lembra que o privilégio de crer em Cristo também inclui o privilégio de sofrer por Ele. O sofrimento por Cristo não é um sinal de fraqueza, mas uma demonstração de força e autenticidade da fé, unindo os crentes em uma luta comum pelo Evangelho.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "filipenses_2": {
+                title: "HUMILDADE E A MENTE DE CRISTO",
+                date: "12/04 (Terça)",
+                desc: "\"Nada façais por partidarismo ou por vanglória; mas com humildade, considerando cada um os outros superiores a si mesmo.\"",
+                blocks: [
+                    {
+                        title: "A <span class="rich-text"><i>Kenosis</i> - κένωσις - Esvaziamento</span> de Cristo e a Unidade",
+                        verse: "Tende em vós o mesmo sentimento que houve também em Cristo Jesus. (Filipenses 2:5)",
+                        exegesis: `
+                            <h3>1. A Exortação à Unidade e Humildade</h3>
+                            <ul>
+                                <li>Com base na alegria e consolo em Cristo, Paulo faz uma poderosa exortação à unidade. Ele os insta a ter o mesmo "sentimento" ou "disposição mental" (φρονέω - phroneō) que Cristo. Isso significa nada fazer por ambição egoísta ou vaidade, mas com humildade, considerando os outros superiores a si mesmos. A humildade é o alicerce para a verdadeira unidade cristã.</li>
+                            </ul>
+                            
+                            <h3>2. O Hino de <span class="rich-text"><i>Kenosis</i> - κένωσις - Esvaziamento</span> de Cristo</h3>
+                            <ul>
+                                <li>Os versículos 6-11 contêm um dos trechos mais profundos do Novo Testamento, descrevendo a encarnação e exaltação de Cristo. Embora tivesse a <span class="rich-text"><i>morphe</i> - μορφή - Forma/Natureza</span> divina, Ele não considerou o ser igual a Deus algo a ser retido. Ele se esvaziou, assumindo a <span class="rich-text"><i>morphe</i> - μορφή - Forma/Natureza</span> de servo, tornando-se obediente até a morte de cruz. Este é o exemplo máximo de humildade e serviço que os crentes devem imitar.</li>
+                            </ul>
+
+                            <h3>3. Trabalhando a Salvação com Temor e Tremor</h3>
+                            <ul>
+                                <li>Após apresentar o exemplo de Cristo, Paulo instrui os crentes a "desenvolverem a sua salvação com temor e tremor" (Filipenses 2:12). Isso não significa ganhar a salvação por obras, mas viver de acordo com a salvação já recebida, com reverência e seriedade. Deus está operando neles tanto o querer quanto o efetuar, reforçando a soberania divina e a responsabilidade humana. Eles devem brilhar como "luminares no mundo", contrastando com a geração "perversa e corrupta" ao redor.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "filipenses_3": {
+                title: "GANHAR A CRISTO E AVANÇAR NA FÉ",
+                date: "13/04 (Quarta)",
+                desc: "\"Mas o que para mim era lucro, isto considerei perda por causa de Cristo.\"",
+                blocks: [
+                    {
+                        title: "Cuidado com os Falsos Mestres e a <span class="rich-text"><i>Dikaiosyne</i> - δικαιοσύνη - Justiça</span> de Deus",
+                        verse: "Tendo por perda todas as coisas, pela excelência do conhecimento de Cristo Jesus, meu Senhor. (Filipenses 3:8)",
+                        exegesis: `
+                            <h3>1. A Advertência Contra o Legalismo</h3>
+                            <ul>
+                                <li>Paulo adverte severamente contra os "cães" e os "maus obreiros", que são os judaizantes, legalistas que insistiam na circuncisão e na obediência à lei para a salvação. Ele os chama de "mutiladores" (Filipenses 3:2). Em contraste, Paulo descreve a verdadeira "circuncisão" como sendo aqueles que adoram a Deus no Espírito, se gloriam em Cristo Jesus e não depositam confiança na carne.</li>
+                            </ul>
+                            
+                            <h3>2. A Renúncia das Realizações Pessoais: Tudo é <span class="rich-text"><i>Skubala</i> - σκύβαλα - Lixo</span></h3>
+                            <ul>
+                                <li>Para ilustrar seu ponto, Paulo lista suas próprias credenciais judaicas impecáveis: circuncidado ao oitavo dia, da tribo de Benjamim, fariseu exemplar, perseguidor da igreja e irrepreensível na justiça da lei. No entanto, ele declara que todas essas coisas, que antes considerava lucro, agora as tem por "perda" e <span class="rich-text"><i>skubala</i> - σκύβαλα - lixo/esterco</span> por causa da "excelência do conhecimento de Cristo Jesus". Sua maior aspiração é "ganhar a Cristo e ser achado Nele", tendo a <span class="rich-text"><i>dikaiosyne</i> - δικαιοσύνη - justiça</span> que vem de Deus, pela fé.</li>
+                            </ul>
+
+                            <h3>3. A Corrida para o Alvo</h3>
+                            <ul>
+                                <li>Paulo usa a metáfora de uma corrida para descrever a vida cristã. Ele "esquece as coisas que ficam para trás e avança para as que estão adiante" (Filipenses 3:13). Ele não considera ter já alcançado a perfeição, mas "prosseguirá para o alvo, pelo prêmio da soberana vocação de Deus em Cristo Jesus". Sua vida é um exemplo de busca contínua por Cristo, e ele os encoraja a imitá-lo, com os olhos fixos na "cidadania celestial" e na esperança da transformação do corpo humilhado.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "filipenses_4": {
+                title: "ALEGRIA, PAZ E CONTENTAMENTO",
+                date: "14/04 (Quinta)",
+                desc: "\"Alegrai-vos sempre no Senhor; outra vez digo, alegrai-vos!\"",
+                blocks: [
+                    {
+                        title: "A Paz que Excede Todo Entendimento e o Contentamento",
+                        verse: "Não andeis ansiosos por coisa alguma; antes em tudo sejam os vossos pedidos conhecidos diante de Deus pela oração e súplica com ações de graças. (Filipenses 4:6)",
+                        exegesis: `
+                            <h3>1. Exortações Finais à Unidade e Alegria</h3>
+                            <ul>
+                                <li>Paulo conclui sua carta com exortações práticas e poderosas. Ele começa com um apelo direto a Evódia e Síntique, duas mulheres na igreja, para que se "harmonizem no Senhor", indicando uma possível desavença que ameaçava a unidade. Ele reitera o tema central: "Alegrai-vos sempre no Senhor; outra vez digo, alegrai-vos!" (Filipenses 4:4). Esta alegria é um mandamento e uma fonte de força, independente das circunstâncias.</li>
+                            </ul>
+                            
+                            <h3>2. A Superação da Ansiedade com a <span class="rich-text"><i>Eirene</i> - εἰρήνη - Paz</span> de Deus</h3>
+                            <ul>
+                                <li>Contra a ansiedade que assola a vida humana, Paulo oferece uma solução divina: "Não andeis ansiosos por coisa alguma; antes em tudo sejam os vossos pedidos conhecidos diante de Deus pela oração e súplica com ações de graças" (Filipenses 4:6). A promessa é que a "<span class="rich-text"><i>eirene</i> - εἰρήνη - Paz</span> de Deus, que excede todo o entendimento", guardará os corações e mentes em <span class="rich-text"><i>Christos</i> - Χριστός - Ungido</span> Jesus. Esta paz é um muro protetor contra as preocupações e medos.</li>
+                            </ul>
+
+                            <h3>3. O Contentamento e o Poder em Cristo</h3>
+                            <ul>
+                                <li>Paulo os exorta a "<span class="rich-text"><i>logizomai</i> - λογίζομαι - Pensar/Considerar</span> em tudo que é verdadeiro, nobre, justo, puro, amável, de boa fama" (Filipenses 4:8), direcionando a mente para a santidade. Ele também revela o segredo de seu contentamento: "aprendi a adaptar-me a toda e qualquer circunstância" (Filipenses 4:11). Seja na abundância ou na escassez, a fonte de sua força é a famosa declaração: "Posso todas as coisas naquele que me fortalece" (Filipenses 4:13). Ele agradece a generosidade dos filipenses, vendo-a como um "sacrifício aceitável e agradável a Deus", e garante que "o meu Deus, segundo as suas riquezas em glória, há de suprir cada uma de vossas necessidades em Cristo Jesus".</li>
+                            </ul>
+                        `
+                    }
+                ]
+            }
+        };
+
+        // === LÓGICA GERAL ===
+        let currentAudioBlob = null;
         let mediaRecorder;
         let audioChunks = [];
-        let audioBlob = null;
 
-        // Carregar comentários
-        async function loadComments() {
-            commentsList.innerHTML = '<p class="text-center text-slate-400 italic">Carregando comentários...</p>';
-            try {
-                const response = await fetch(`api.php?acao=listar&capitulo=${capituloAtual}`);
-                const comments = await response.json();
-                commentsList.innerHTML = '';
-                if (comments.length === 0) {
-                    commentsList.innerHTML = '<p class="text-center text-slate-500 italic">Nenhum comentário ainda. Seja o primeiro a compartilhar!</p>';
-                    return;
+        function loadChapter(chapterKey) {
+            const data = bibleData[chapterKey];
+            if (!data) return;
+
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
+            const dateBadge = document.getElementById('dateBadge');
+            const dateValue = document.getElementById('dateValue');
+            const communitySection = document.getElementById('community-section');
+            const formChapterKey = document.getElementById('formChapterKey');
+            
+            heroTitle.style.opacity = '0';
+            heroDesc.style.opacity = '0';
+            dateBadge.style.opacity = '0';
+            
+            setTimeout(() => {
+                if (data.date) {
+                    dateValue.textContent = data.date;
+                    dateBadge.classList.remove('hidden');
+                    communitySection.classList.remove('hidden');
+                    formChapterKey.value = chapterKey;
+                    carregarComentarios(chapterKey);
+                    setTimeout(() => { dateBadge.style.opacity = '1'; }, 100);
+                } else {
+                    dateBadge.classList.add('hidden');
+                    communitySection.classList.add('hidden');
                 }
-                comments.forEach(comment => {
-                    const commentElement = `
-                        <div class="glass-panel p-4 rounded-lg flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                <img src="${comment.foto ? comment.foto : 'https://via.placeholder.com/50/ec4899/ffffff?text=U'}" alt="Foto de perfil" class="w-12 h-12 rounded-full object-cover border-2 border-theme-accent/50">
+
+                heroTitle.innerHTML = data.title;
+                heroDesc.innerHTML = data.desc;
+                heroTitle.style.opacity = '1';
+                heroDesc.style.opacity = '1';
+            }, 300);
+
+            const mainContent = document.getElementById('content');
+            mainContent.innerHTML = ''; 
+
+            data.blocks.forEach((block) => {
+                let borderColor = 'border-pink-600';
+                let blurTop = 'bg-pink-600/5';
+                let blurBottom = 'bg-pink-800/5';
+                let borderPanel = 'border-pink-900/30';
+
+                const html = `
+                    <section class="reveal max-w-4xl mx-auto w-full relative">
+                        <div class="absolute -inset-4 ${blurTop} to-transparent rounded-3xl blur-xl pointer-events-none"></div>
+                        
+                        <div class="space-y-6 relative z-10">
+                            <div class="text-center mb-10">
+                                <h2 class="text-3xl md:text-5xl font-serif text-white leading-tight mb-6">${block.title}</h2>
+                                <div class="inline-block border-l-4 border-r-4 ${borderColor} px-6 py-4 italic text-slate-300 bg-[#0a0514]/50 shadow-sm max-w-3xl rounded-sm">
+                                    "${block.verse}"
+                                </div>
                             </div>
-                            <div class="flex-grow">
-                                <p class="font-bold text-theme-accent">${comment.nome}</p>
-                                <p class="text-slate-300 text-sm mt-1">${comment.mensagem}</p>
-                                ${comment.audio ? `<audio controls src="${comment.audio}" class="mt-2 w-full"></audio>` : ''}
-                                <div class="flex items-center space-x-4 mt-3 text-xs text-slate-400">
-                                    <span class="text-[10px]">${new Date(comment.data_envio).toLocaleDateString()}</span>
-                                    <button class="flex items-center hover:text-white transition" onclick="reactToComment(${comment.id}, 'likes')">
-                                        <i class="fa-solid fa-heart mr-1"></i> ${comment.likes}
-                                    </button>
-                                    <button class="flex items-center hover:text-white transition" onclick="reactToComment(${comment.id}, 'amem')">
-                                        <i class="fa-solid fa-hands-clapping mr-1"></i> ${comment.amem}
-                                    </button>
-                                    <button class="flex items-center hover:text-white transition" onclick="reactToComment(${comment.id}, 'gloria')">
-                                        <i class="fa-solid fa-star mr-1"></i> ${comment.gloria}
-                                    </button>
+                            
+                            <div class="bg-[#050510]/80 p-8 md:p-12 rounded-xl border ${borderPanel} transition shadow-2xl relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-64 h-64 ${blurTop} rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+                                <div class="absolute bottom-0 left-0 w-64 h-64 ${blurBottom} rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
+                                <div class="rich-text text-slate-300 text-[16px] md:text-lg leading-relaxed relative z-10 font-light">
+                                    ${block.exegesis}
                                 </div>
                             </div>
                         </div>
-                    `;
-                    commentsList.innerHTML += commentElement;
-                });
-            } catch (error) {
-                console.error('Erro ao carregar comentários:', error);
-                commentsList.innerHTML = '<p class="text-center text-red-500">Erro ao carregar comentários.</p>';
-            }
+                    </section>
+                `;
+                mainContent.insertAdjacentHTML('beforeend', html);
+            });
+            resetObservers();
         }
 
-        // Reagir a um comentário
-        async function reactToComment(id, tipo) {
-            try {
-                await fetch('api.php', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    body: `acao=reagir&id=${id}&tipo=${tipo}`
-                });
-                loadComments(); // Recarregar para mostrar a atualização
-            } catch (error) {
-                console.error('Erro ao reagir:', error);
-            }
-        }
+        function carregarComentarios(capitulo) {
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '<p class="text-center text-slate-500 text-sm animate-pulse">Carregando comentários...</p>';
 
-        // Enviar formulário de comentário
-        commentForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const formData = new FormData();
-            formData.append('acao', 'salvar');
-            formData.append('capitulo', capituloAtual);
-            formData.append('nome', document.getElementById('nome').value);
-            formData.append('mensagem', document.getElementById('mensagem').value);
-            if (document.getElementById('foto').files.length > 0) {
-                formData.append('foto', document.getElementById('foto').files[0]);
-            }
-            if (audioBlob) {
-                formData.append('audio', audioBlob, 'audio.wav');
-            }
-
-            try {
-                const response = await fetch('api.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-                if (result.sucesso) {
-                    alert('Comentário enviado com sucesso!');
-                    commentForm.reset();
-                    audioBlob = null; // Reset audio blob
-                    audioPlayback.style.display = 'none';
-                    recordText.textContent = 'Gravar Áudio';
-                    recordButton.classList.remove('bg-red-500/20', 'text-red-500');
-                    recordButton.classList.add('bg-theme-accent/20', 'text-theme-accent');
-                    loadComments();
-                } else {
-                    alert('Erro ao enviar comentário.');
+            fetch(`api.php?acao=listar&capitulo=${capitulo}`)
+            .then(res => res.json())
+            .then(data => {
+                list.innerHTML = '';
+                if(data.length === 0) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
                 }
-            } catch (error) {
-                console.error('Erro ao enviar comentário:', error);
-                alert('Erro na requisição. Verifique sua conexão.');
+                data.forEach(c => {
+                    let mediaHtml = '';
+                    if(c.foto) mediaHtml += `<img src="${c.foto}" onclick="openImage(this.src)" class="mt-4 rounded-lg max-h-48 border border-slate-700 cursor-pointer hover:scale-[1.02] transition shadow-lg">`;
+                    if(c.audio) mediaHtml += `<audio controls src="${c.audio}" class="mt-4 w-full"></audio>`;
+
+                    const jaCurtiu = localStorage.getItem(`reagiu_likes_${c.id}`);
+                    const jaAmem = localStorage.getItem(`reagiu_amem_${c.id}`);
+                    const jaGloria = localStorage.getItem(`reagiu_gloria_${c.id}`);
+
+                    let themeColor = 'text-pink-400';
+                    let panelBorder = 'hover:border-pink-500/50';
+
+                    const html = `
+                        <div class="glass-panel p-5 pb-12 rounded-xl border border-slate-800 relative group transition ${panelBorder} bg-[#0a0514]/60">
+                            <div class="flex justify-between items-start mb-3 border-b border-slate-800 pb-2">
+                                <strong class="${themeColor} text-sm tracking-wide font-serif">${c.nome}</strong>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-widest">${new Date(c.data_envio).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed">${c.mensagem}</p>
+                            ${mediaHtml}
+                            
+                            <div class="absolute bottom-3 right-4 flex gap-2">
+                                <button onclick="reagirComentario(${c.id}, 'likes', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaCurtiu ? 'text-red-500 border-red-500/30' : 'text-slate-400 hover:text-red-400'}" ${jaCurtiu ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-heart"></i> <span class="count font-bold">${c.likes || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'amem', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaAmem ? 'text-pink-400 border-pink-400/30' : 'text-slate-400 hover:text-pink-400'}" ${jaAmem ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-hands-praying"></i> <span class="count font-bold">${c.amem || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'gloria', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaGloria ? 'text-blue-500 border-blue-500/30' : 'text-slate-400 hover:text-blue-500'}" ${jaGloria ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-fire"></i> <span class="count font-bold">${c.gloria || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', html);
+                });
+            })
+            .catch(err => {
+                list.innerHTML = '<p class="text-center text-red-400 text-xs">Erro ao carregar comentários.</p>';
+            });
+        }
+
+        function reagirComentario(id, tipo, btn) {
+            if(localStorage.getItem(`reagiu_${tipo}_${id}`)) return;
+
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('.count');
+            let count = parseInt(countSpan.innerText);
+
+            icon.classList.add('reacted-anim');
+            btn.classList.remove('text-slate-400');
+            
+            if(tipo === 'likes') btn.classList.add('text-red-500', 'border-red-500/30');
+            if(tipo === 'amem') btn.classList.add('text-pink-400', 'border-pink-400/30');
+            if(tipo === 'gloria') btn.classList.add('text-blue-500', 'border-blue-500/30');
+
+            countSpan.innerText = count + 1;
+            btn.disabled = true;
+
+            localStorage.setItem(`reagiu_${tipo}_${id}`, 'true');
+
+            const formData = new FormData();
+            formData.append('acao', 'reagir');
+            formData.append('id', id);
+            formData.append('tipo', tipo);
+
+            fetch('api.php', { method: 'POST', body: formData });
+        }
+
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+            formData.append('acao', 'salvar');
+            if(currentAudioBlob) {
+                formData.append('audio', currentAudioBlob, 'audio.wav');
             }
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    this.reset();
+                    document.getElementById('filePreview').innerHTML = '';
+                    currentAudioBlob = null;
+                    document.getElementById('recordText').innerText = "Gravar Áudio";
+                    carregarComentarios(document.getElementById('formChapterKey').value);
+                } else {
+                    alert('Erro ao enviar.');
+                }
+            })
+            .catch(() => alert('Erro de conexão.'))
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
         });
 
-        // Lógica de gravação de áudio
-        recordButton.addEventListener('click', async () => {
-            if (mediaRecorder && mediaRecorder.state === 'recording') {
-                mediaRecorder.stop();
-                recordText.textContent = 'Gravar Áudio';
-                recordButton.classList.remove('bg-red-500/20', 'text-red-500');
-                recordButton.classList.add('bg-theme-accent/20', 'text-theme-accent');
-            } else {
+        function previewFile(input) {
+            const preview = document.getElementById('filePreview');
+            if(input.files && input.files[0]) {
+                preview.innerHTML = `<i class="fa-solid fa-check text-green-400"></i> Imagem selecionada: ${input.files[0].name}`;
+                preview.classList.remove('hidden');
+            }
+        }
+
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.addEventListener('click', async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     mediaRecorder = new MediaRecorder(stream);
-                    mediaRecorder.ondataavailable = event => {
-                        audioChunks.push(event.data);
-                    };
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
                     mediaRecorder.onstop = () => {
-                        audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                        audioChunks = [];
-                        const audioUrl = URL.createObjectURL(audioBlob);
-                        audioPlayback.src = audioUrl;
-                        audioPlayback.style.display = 'block';
+                        currentAudioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        document.getElementById('filePreview').classList.remove('hidden');
+                        document.getElementById('filePreview').innerHTML += '<br><i class="fa-solid fa-microphone text-green-400"></i> Áudio gravado!';
                     };
                     mediaRecorder.start();
-                    recordText.textContent = 'Gravando...';
-                    recordButton.classList.remove('bg-theme-accent/20', 'text-theme-accent');
-                    recordButton.classList.add('bg-red-500/20', 'text-red-500');
+                    recordBtn.classList.add('recording-pulse');
+                    document.getElementById('recordText').innerText = "Parar Gravação";
                 } catch (err) {
-                    console.error('Erro ao acessar microfone:', err);
-                    alert('Não foi possível acessar o microfone. Verifique as permissões.');
+                    alert("Permita o uso do microfone para gravar.");
                 }
+            } else {
+                mediaRecorder.stop();
+                recordBtn.classList.remove('recording-pulse');
+                document.getElementById('recordText').innerText = "Gravar Áudio";
             }
         });
 
-        // Carregar comentários ao carregar a página
-        document.addEventListener('DOMContentLoaded', loadComments);
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        function closeImage() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function resetObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        const particleColor = "rgba(236, 72, 153, 0.15)"; /* Pink */
+        for(let i=0; i<80; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = particleColor; 
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        loadChapter('intro_book');
     </script>
 </body>
 </html>
