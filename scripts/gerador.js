@@ -30,7 +30,6 @@ async function iniciarAutomacao() {
         return;
     }
 
-    // Leitura dos arquivos base
     const manualContexto = fs.readFileSync(manualPath, 'utf8');
     const indexAtual = fs.readFileSync(path.join(hostingerDir, 'index.html'), 'utf8');
     const moldeDesign = fs.readFileSync(path.join(hostingerDir, 'efesios.html'), 'utf8');
@@ -39,7 +38,7 @@ async function iniciarAutomacao() {
 
     const model = genAI.getGenerativeModel({ 
         model: "gemini-2.5-flash",
-        systemInstruction: "Você é um Arquiteto de Software e Erudito Sênior. É expressamente PROIBIDO o uso de placeholders (ex: // resto do código). Gere os arquivos por completo."
+        systemInstruction: "Você é um Arquiteto de Software e Erudito Sênior. É expressamente PROIBIDO o uso de placeholders. Gere arquivos com código robusto e resiliente a erros de banco de dados."
     });
 
     const promptMestre = `
@@ -48,31 +47,33 @@ async function iniciarAutomacao() {
 
         --- TAREFA ---
         Gerar arquivos completos para o livro: ${tarefa.livro}. Capítulos: ${tarefa.capitulos}.
-        O objeto 'const bibleData' DEVE ser totalmente preenchido com a exegese teológica.
         
-        --- LÓGICA DE MANIPULAÇÃO DO INDEX.HTML (3 STATUS) ---
-        1. NOVO CARD: Crie o card de ${tarefa.livro} no topo com selo "Leitura Atual". Quiz desativado (opacity-50).
-        2. MOVER ANTERIOR: O card no topo desce para "Desafios Abertos". Mude selo para "Desafio Aberto" e ATIVE o quiz/ranking.
-        3. ARQUIVAR ANTIGOS: Remova selos de destaque dos demais.
-        4. JAVASCRIPT: Atualize o fetch de rankings no final do index.html.
+        --- REGRAS DE CÓDIGO (CRÍTICO) ---
+        1. JAVASCRIPT SEGURO: Na função carregarComentarios, SEMPRE verifique se os dados recebidos são um Array antes de usar .forEach() (Ex: if(!Array.isArray(data)) return). Isso evita que o site trave se o banco falhar.
+        2. VISIBILIDADE: No HTML gerado para as seções de conteúdo, certifique-se de que a classe 'active' seja adicionada ou que o script de 'IntersectionObserver' seja resiliente para que o texto não fique invisível (opacity-0).
+        3. ESCAPE DE CARACTERES: Não utilize crases (backticks \`) dentro das strings de exegese no objeto 'bibleData', pois isso quebra o JavaScript. Use aspas simples ou duplas.
+        4. BIBLE DATA: Preencha o objeto 'const bibleData' integralmente com conteúdo teológico profundo.
+
+        --- LÓGICA DO INDEX.HTML ---
+        Atualize os 3 status (Leitura Atual, Desafio Aberto e Arquivo) conforme o manual.
 
         --- REFERÊNCIAS ---
         MOLDE DESIGN: ${moldeDesign}
         INDEX ATUAL: ${indexAtual}
 
         --- FORMATO EXATO DE RESPOSTA ---
-        NÃO UTILIZE JSON! Envie a sua resposta usando estritamente os separadores abaixo. Não adicione blocos de código markdown (\`\`\`) antes ou depois dos separadores.
+        NÃO UTILIZE JSON! Use os separadores:
 
         [INICIO_LIVRO]
-        (insira aqui o código HTML completo do livro com o bibleData preenchido)
+        (código HTML do livro)
         [FIM_LIVRO]
 
         [INICIO_QUIZ]
-        (insira aqui o código HTML completo do quiz)
+        (código HTML do quiz)
         [FIM_QUIZ]
 
         [INICIO_INDEX]
-        (insira aqui o código HTML completo do index.html atualizado)
+        (index.html atualizado)
         [FIM_INDEX]
     `;
 
@@ -80,34 +81,27 @@ async function iniciarAutomacao() {
         const result = await model.generateContent(promptMestre);
         const text = result.response.text();
         
-        console.log("✅ Resposta recebida da IA. Extraindo arquivos...");
-
-        // Usando Regex para capturar o conteúdo entre os separadores
         const livroMatch = text.match(/\[INICIO_LIVRO\]([\s\S]*?)\[FIM_LIVRO\]/);
         const quizMatch = text.match(/\[INICIO_QUIZ\]([\s\S]*?)\[FIM_QUIZ\]/);
         const indexMatch = text.match(/\[INICIO_INDEX\]([\s\S]*?)\[FIM_INDEX\]/);
 
         if (!livroMatch || !quizMatch || !indexMatch) {
-            console.error("❌ ERRO: A IA não utilizou os separadores corretamente.");
-            console.error("Início do retorno gerado:", text.substring(0, 500));
+            console.error("❌ ERRO: A IA falhou nos separadores.");
             process.exit(1);
         }
 
-        // Limpeza de possíveis formatações markdown (```html) que a IA teima em colocar
         const livroHtml = livroMatch[1].replace(/^```html/i, '').replace(/```$/, '').trim();
         const quizHtml = quizMatch[1].replace(/^```html/i, '').replace(/```$/, '').trim();
         const indexHtml = indexMatch[1].replace(/^```html/i, '').replace(/```$/, '').trim();
 
-        // Escrita dos arquivos
         fs.writeFileSync(path.join(hostingerDir, `${tarefa.livro.toLowerCase()}.html`), livroHtml);
         fs.writeFileSync(path.join(hostingerDir, `quiz_${tarefa.livro.toLowerCase()}.html`), quizHtml);
         fs.writeFileSync(path.join(hostingerDir, 'index.html'), indexHtml);
 
-        // Update Cronograma
         tarefa.status = "concluido";
         fs.writeFileSync(cronogramaPath, JSON.stringify(cronograma, null, 2));
         
-        console.log(`🎉 Sucesso! Conteúdo de ${tarefa.livro} gerado perfeitamente.`);
+        console.log(`🎉 Sucesso! Código de ${tarefa.livro} gerado com travas de segurança.`);
     } catch (err) {
         console.error("❌ Erro Crítico:", err.message);
         process.exit(1);
