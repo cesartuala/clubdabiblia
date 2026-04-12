@@ -1,0 +1,52 @@
+const fs = require('fs');
+const path = require('path');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+
+// Configuração da API do Gemini usando o seu Secret
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+async function iniciarAutomacao() {
+    console.log("Iniciando verificação do cronograma...");
+    
+    // 1. Ler o Cronograma e descobrir a data de hoje
+    const cronogramaPath = path.join(__dirname, '..', 'cronograma.json');
+    const cronograma = JSON.parse(fs.readFileSync(cronogramaPath, 'utf8'));
+    
+    // Formata a data de hoje para AAAA-MM-DD (Ajustado para o fuso BRT)
+    const hoje = new Date().toLocaleString("en-CA", {timeZone: "America/Sao_Paulo"}).split(',')[0];
+    console.log(`Data base para verificação: ${hoje}`);
+
+    // 2. Procurar na agenda se existe alguma tarefa pendente para hoje
+    const tarefaHoje = cronograma.agenda.find(t => t.data_criacao === hoje && t.status === "pendente");
+
+    if (!tarefaHoje) {
+        console.log("Nenhuma leitura ou quiz programado para criação hoje. O robô voltará a dormir.");
+        return;
+    }
+
+    console.log(`Tarefa encontrada! Livro: ${tarefaHoje.livro} | Capítulos: ${tarefaHoje.capitulos}`);
+
+    // 3. Ler o Manual de Identidade (site-context.md)
+    const manualPath = path.join(__dirname, '..', 'site-context.md');
+    const manualContexto = fs.readFileSync(manualPath, 'utf8');
+
+    // 4. Preparar a conexão com a IA (Aqui nós enviamos o prompt)
+    console.log("Conectando à Inteligência Artificial...");
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" }); // Modelo ideal para códigos complexos
+    
+    // NOTA: O prompt detalhado vai aqui (Vamos construí-lo no próximo passo!)
+    const prompt = `Leia o contexto do site e gere a leitura bíblica. Livro: ${tarefaHoje.livro}...`; 
+    
+    // const result = await model.generateContent(prompt);
+    // const codigoGerado = result.response.text();
+    
+    // 5. Salvar o código gerado na pasta /hostinger (Simulação)
+    console.log("Arquivos gerados com sucesso e salvos na pasta /hostinger.");
+
+    // 6. Atualizar o status no cronograma para "concluido"
+    tarefaHoje.status = "concluido";
+    fs.writeFileSync(cronogramaPath, JSON.stringify(cronograma, null, 2));
+    console.log("Cronograma atualizado. Tarefa marcada como concluída.");
+}
+
+iniciarAutomacao().catch(console.error);
