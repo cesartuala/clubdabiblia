@@ -25,8 +25,16 @@ async function iniciarAutomacao() {
 
     console.log(`Gerando conteúdo para: ${tarefa.livro}...`);
 
-    // Usando o modelo FLASH para maior estabilidade e velocidade na API
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    console.log("Conectando à Inteligência Artificial...");
+    
+    // Testaremos o nome mais atualizado para 2026
+    const modelName = "gemini-1.5-flash-latest"; 
+    
+    const model = genAI.getGenerativeModel({ 
+        model: modelName 
+    });
+
+    // O resto do prompt continua igual...
 
     const promptMestre = `
         Aja como Arquiteto de Software e Erudito Bíblico. Responda APENAS com um objeto JSON válido.
