@@ -15,41 +15,42 @@ async function executarDeploy() {
             secure: false
         });
 
-        // --- DIAGNÓSTICO INICIAL ---
-        console.log("📍 Localização inicial no servidor: " + await cliente.pwd());
+        // 📍 LOCALIZAÇÃO E ALVO
+        // O comando cd("/") garante que estamos na raiz real do servidor antes de começar
+        await cliente.cd("/"); 
         
-        // Se o seu site estiver na pasta 'public', mude a linha abaixo para 'public_html/public'
-        const remoteDir = 'public_html'; 
+        const remoteTarget = 'public_html'; 
+        console.log(`📂 Entrando na pasta principal: ${remoteTarget}`);
+        await cliente.ensureDir(remoteTarget);
         
-        await cliente.ensureDir(remoteDir);
-        console.log("📂 Pasta de destino confirmada: " + await cliente.pwd());
-
+        // Caminho local onde os arquivos gerados pelo robô estão (pasta /hostinger)
         const localDir = path.join(__dirname, '..', 'hostinger');
         const itens = fs.readdirSync(localDir);
 
-        console.log(`🚀 Fazendo upload de ${itens.length} itens...`);
+        console.log(`🚀 Iniciando upload de ${itens.length} itens diretamente em ${await cliente.pwd()}...`);
 
         for (const item of itens) {
             const fullPath = path.join(localDir, item);
-            if (fs.statSync(fullPath).isDirectory()) {
+            const stat = fs.statSync(fullPath);
+
+            if (stat.isDirectory()) {
+                // Se for uma pasta (como /uploads), cria ela dentro da public_html
+                console.log(`  📁 Subindo pasta: ${item}/`);
                 await cliente.uploadFromDir(fullPath, item);
             } else {
-                console.log(`  📄 Subindo: ${item}`);
+                // Se for um arquivo, sobe diretamente na pasta atual
+                console.log(`  📄 Subindo arquivo: ${item}`);
+                // Ao passar apenas o nome 'item', ele salva na pasta onde o cliente está (public_html)
                 await cliente.uploadFrom(fullPath, item);
             }
         }
 
-        // --- DIAGNÓSTICO FINAL ---
-        console.log("\n👀 Verificação Pós-Upload:");
-        const listaRemota = await cliente.list();
-        console.log("Arquivos que o servidor enxerga agora:");
-        console.table(listaRemota.map(f => ({ arquivo: f.name, tamanho: f.size })));
-
-        console.log("✅ DEPLOY CONCLUÍDO!");
+        console.log("\n✅ DEPLOY FINALIZADO COM SUCESSO!");
+        console.log(`🔗 Verifique em: http://clubdabiblia.com.br/filipenses.html`);
         cliente.close();
 
     } catch (err) {
-        console.error("❌ Erro:", err.message);
+        console.error("❌ Erro no Deploy:", err.message);
         cliente.close();
         process.exit(1);
     }
