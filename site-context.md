@@ -194,10 +194,10 @@ A automação não utilizará âncoras ou marcadores de injeção. O fluxo de at
     * `blockquote`: Fundo sutil `rgba(..., 0.05)` e fonte itálica.
 * **Componente de Comunidade:** Todo arquivo de leitura deve incluir o formulário de comentários com suporte a **Upload de Imagem** e **Gravação de Áudio**.
 
-### Back-End (PHP + PDO)
-* Todo processamento de dados (rankings e comentários) deve passar pelo `api.php`.
-* **Segurança:** Uso obrigatório de Prepared Statements para evitar injeção de SQL.
-* **Ranking:** Cada livro deve ter sua própria tabela `ranking_[nome_do_livro]`.
+## Regras de Back-End e Banco de Dados (Hostinger/MySQL)
+* **Estrutura:** O banco de dados já possui as tabelas pré-criadas no padrão `ranking_[nome_do_livro]`.
+* **Responsabilidade da API:** A IA não deve gerar comandos `CREATE TABLE`. Ela deve apenas gerar os `case` no `api.php` para realizar o `INSERT` (salvar quiz) e o `SELECT` (buscar ranking).
+* **Segurança:** Uso obrigatório de Prepared Statements. Nunca remova ou altere as variáveis de conexão existentes no topo do arquivo.
 
 ---
 
