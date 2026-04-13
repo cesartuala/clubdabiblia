@@ -2,7 +2,7 @@ name: Automação Clube da Bíblia (Geração e Deploy)
 
 on:
   schedule:
-  - cron: '35 1 * * *'
+  - cron: '5 3 * * *'
   workflow_dispatch:
     # Isso permite que você ainda rode o botão "Run workflow" manualmente quando quiser.
 jobs:
