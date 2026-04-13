@@ -6,7 +6,8 @@
       "capitulos": 4,
       "periodo_leitura": "13/04 a 16/04",
       "data_quiz": "17/04",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-04-19",
@@ -14,7 +15,8 @@
       "capitulos": 4,
       "periodo_leitura": "20/04 a 23/04",
       "data_quiz": "24/04",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-04-26",
@@ -22,7 +24,8 @@
       "capitulos": 5,
       "periodo_leitura": "27/04 a 01/05",
       "data_quiz": "02/05",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-05-03",
@@ -30,7 +33,8 @@
       "capitulos": 3,
       "periodo_leitura": "04/05 a 06/05",
       "data_quiz": "06/05",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-05-06",
@@ -38,7 +42,8 @@
       "capitulos": 6,
       "periodo_leitura": "07/05 a 14/05",
       "data_quiz": "15/05",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-05-17",
@@ -46,7 +51,8 @@
       "capitulos": 4,
       "periodo_leitura": "18/05 a 21/05",
       "data_quiz": "22/05",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-05-24",
@@ -54,7 +60,8 @@
       "capitulos": 3,
       "periodo_leitura": "25/05 a 27/05",
       "data_quiz": "27/05",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-05-27",
@@ -62,7 +69,8 @@
       "capitulos": 1,
       "periodo_leitura": "28/05",
       "data_quiz": "28/05",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-05-28",
@@ -70,7 +78,8 @@
       "capitulos": 13,
       "periodo_leitura": "29/05 a 17/06",
       "data_quiz": "17/06",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-06-17",
@@ -78,7 +87,8 @@
       "capitulos": 5,
       "periodo_leitura": "18/06 a 24/06",
       "data_quiz": "24/06",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-06-24",
@@ -86,7 +96,8 @@
       "capitulos": 5,
       "periodo_leitura": "25/06 a 01/07",
       "data_quiz": "01/07",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-07-01",
@@ -94,7 +105,8 @@
       "capitulos": 3,
       "periodo_leitura": "02/07 a 04/07",
       "data_quiz": "04/07",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-07-05",
@@ -102,7 +114,8 @@
       "capitulos": 5,
       "periodo_leitura": "06/07 a 10/07",
       "data_quiz": "11/07",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-07-12",
@@ -110,7 +123,8 @@
       "capitulos": 1,
       "periodo_leitura": "13/07",
       "data_quiz": "13/07",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-07-13",
@@ -118,7 +132,8 @@
       "capitulos": 1,
       "periodo_leitura": "14/07",
       "data_quiz": "14/07",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-07-14",
@@ -126,7 +141,8 @@
       "capitulos": 1,
       "periodo_leitura": "15/07",
       "data_quiz": "15/07",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-07-15",
@@ -134,7 +150,8 @@
       "capitulos": 28,
       "periodo_leitura": "16/07 a 22/08",
       "data_quiz": "22/08",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-08-23",
@@ -142,7 +159,8 @@
       "capitulos": 16,
       "periodo_leitura": "24/08 a 12/09",
       "data_quiz": "12/09",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-09-13",
@@ -150,7 +168,8 @@
       "capitulos": 24,
       "periodo_leitura": "14/09 a 15/10",
       "data_quiz": "16/10",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     },
     {
       "data_criacao": "2026-10-18",
@@ -158,7 +177,8 @@
       "capitulos": 22,
       "periodo_leitura": "19/10 a 17/11",
       "data_quiz": "17/11",
-      "status": "pendente"
+      "status": "pendente",
+      "quiz_ativo": false
     }
   ]
 }
