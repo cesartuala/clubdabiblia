@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Filipenses | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] },
+                    colors: { 
+                        divine: { 400: '#ec4899' } /* Pink-500 */
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0f172a; color: #e2e8f0; overflow-x: hidden; }
+        .glass-panel { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(236, 72, 153, 0.15); }
+        .pink-glow { text-shadow: 0 0 15px rgba(236, 72, 153, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #4a051d; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #db2777; }
+        .selected-answer { background-color: rgba(236, 72, 153, 0.3) !important; border-color: #ec4899 !important; }
+        .correct-answer { background-color: rgba(34, 197, 94, 0.3) !important; border-color: #22c55e !important; }
+        .wrong-answer { background-color: rgba(239, 68, 68, 0.3) !important; border-color: #ef4444 !important; }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="fixed top-0 w-full z-50 p-4 md:p-6 flex justify-between items-center bg-gradient-to-b from-[#0f172a]/95 to-[#0f172a]/80 backdrop-blur-md border-b border-pink-900/40">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1a202c] border border-pink-500/50 text-pink-400 hover:bg-pink-500 hover:text-black transition-all shadow-[0_0_15px_rgba(236,72,153,0.1)]">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-face-smile text-pink-500 text-xl md:text-2xl"></i>
+            <span class="font-serif text-white text-lg md:text-xl tracking-widest font-bold">QUIZ FILIPENSES</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4 md:p-8 relative z-10 pt-28">
+        <div id="quiz-container" class="glass-panel p-6 md:p-10 rounded-2xl shadow-xl border-pink-700/30 max-w-3xl w-full reveal">
+            <h2 class="font-serif text-3xl text-white mb-6 text-center pink-glow uppercase tracking-widest">Desafio de Conhecimento</h2>
+            <p class="text-slate-300 text-center mb-8">Teste seus conhecimentos sobre a Epístola aos Filipenses!</p>
+
+            <div id="quiz-content">
+                <!-- Perguntas e opções serão carregadas aqui -->
+            </div>
+
+            <button id="submit-quiz" class="mt-10 w-full bg-gradient-to-r from-pink-800 to-pink-600 hover:from-pink-600 hover:to-pink-500 text-white font-bold py-4 rounded-lg transition uppercase tracking-[0.2em] text-sm shadow-lg shadow-black/50 transform hover:-translate-y-1">
+                Ver Resultado
+            </button>
+        </div>
+
+        <div id="result-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex justify-center items-center p-4 hidden">
+            <div class="glass-panel p-8 rounded-2xl shadow-2xl border-pink-700/30 text-center max-w-md w-full">
+                <h3 class="font-serif text-3xl text-white mb-4 pink-glow uppercase tracking-widest">Seu Resultado</h3>
+                <p id="score-text" class="text-xl text-slate-200 mb-6"></p>
+                <input type="text" id="player-name" placeholder="Seu nome" class="w-full bg-slate-900 border border-slate-700 rounded px-4 py-3 text-white mb-4 focus:border-pink-500 focus:outline-none transition">
+                <button id="save-score" class="w-full bg-gradient-to-r from-pink-700 to-pink-500 hover:from-pink-500 hover:to-pink-400 text-white font-bold py-3 rounded-lg transition uppercase tracking-[0.1em] text-sm transform hover:-translate-y-1">
+                    Salvar Pontuação
+                </button>
+                <button id="retake-quiz" class="mt-4 w-full bg-slate-700/50 hover:bg-slate-600/50 text-white font-bold py-3 rounded-lg transition uppercase tracking-[0.1em] text-sm">
+                    Tentar Novamente
+                </button>
+            </div>
+        </div>
+
+        <div id="ranking-section" class="glass-panel p-6 md:p-8 rounded-2xl shadow-xl border-pink-700/30 max-w-3xl w-full mt-8 reveal">
+            <h3 class="font-serif text-2xl text-white mb-4 text-center pink-glow uppercase tracking-widest">Ranking Filipenses</h3>
+            <ul id="ranking-list" class="space-y-3 text-sm text-slate-300 max-h-60 overflow-y-auto custom-scroll pr-2">
+                <li class="text-center animate-pulse text-slate-400">Carregando ranking...</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer class="text-center py-6 text-slate-700 text-[10px] tracking-widest relative z-10 uppercase mt-auto">
+        &copy; 2026 CLUBE DA BÍBLIA - Todos os direitos reservados.
+    </footer>
+
+    <script>
+        const quizData = [
+            {
+                question: "Qual é o tema principal da Epístola aos Filipenses?",
+                options: [
+                    "A justificação pela fé",
+                    "A alegria em Cristo, mesmo em meio ao sofrimento",
+                    "A lei e a graça",
+                    "A organização da igreja"
+                ],
+                correct: 1
+            },
+            {
+                question: "Em que situação Paulo estava ao escrever a carta aos Filipenses?",
+                options: [
+                    "Em uma viagem missionária",
+                    "Em liberdade, descansando",
+                    "Preso em Roma",
+                    "Em sua casa em Tarso"
+                ],
+                correct: 2
+            },
+            {
+                question: "Qual termo grego é usado para descrever o 'esvaziamento' de Cristo em Filipenses 2?",
+                options: [
+                    "<i>Agape</i> (amor)",
+                    "<i>Koinonia</i> (comunhão)",
+                    "<i>Kenosis</i> (esvaziamento)",
+                    "<i>Dikaiosyne</i> (justiça)"
+                ],
+                correct: 2
+            },
+            {
+                question: "O que Paulo exorta os filipenses a ter em comum, imitando a Cristo?",
+                options: [
+                    "A mesma riqueza material",
+                    "O mesmo cargo na igreja",
+                    "O mesmo sentimento (mente)",
+                    "O mesmo nível de conhecimento teológico"
+                ],
+                correct: 2
+            },
+            {
+                question: "Qual o nome do companheiro de Paulo que estava doente e foi enviado de volta à Filipos com a carta?",
+                options: [
+                    "Timóteo",
+                    "Lucas",
+                    "Epafrodito",
+                    "Silas"
+                ],
+                correct: 2
+            },
+            {
+                question: "No capítulo 4, quais duas mulheres Paulo exorta a ter 'o mesmo sentir no Senhor'?",
+                options: [
+                    "Maria e Marta",
+                    "Priscila e Áquila",
+                    "Euódia e Síntique",
+                    "Lídia e Febe"
+                ],
+                correct: 2
+            },
+            {
+                question: "O que Paulo considera como 'esterco' (<i>skubala</i>) no capítulo 3, em comparação com o conhecimento de Cristo?",
+                options: [
+                    "A religião judaica",
+                    "Suas credenciais farisaicas e justiça própria",
+                    "Os dons espirituais",
+                    "O sacrifício de Cristo"
+                ],
+                correct: 1
+            },
+            {
+                question: "Qual promessa de Deus está em Filipenses 4:7 para aqueles que oram com ações de graças?",
+                options: [
+                    "Riquezas e prosperidade",
+                    "Fama e reconhecimento",
+                    "A paz de Deus que excede todo o entendimento",
+                    "A remoção de todos os problemas"
+                ],
+                correct: 2
+            },
+            {
+                question: "Qual a atitude de Paulo sobre viver ou morrer, conforme Filipenses 1:21?",
+                options: [
+                    "Viver é Cristo, morrer é ganho",
+                    "Viver é sofrer, morrer é descansar",
+                    "Viver é difícil, morrer é libertação",
+                    "Viver é trabalhar, morrer é para os fracos"
+                ],
+                correct: 0
+            },
+            {
+                question: "O que Paulo instrui os filipenses a fazerem em relação à sua salvação em Filipenses 2:12?",
+                options: [
+                    "Guardar em segredo",
+                    "Trabalhar para conquistá-la",
+                    "Desenvolver (operar) com temor e tremor",
+                    "Exibir com orgulho"
+                ],
+                correct: 2
+            },
+            {
+                question: "Qual a declaração de Paulo sobre sua suficiência em Filipenses 4:13?",
+                options: [
+                    "Sou forte em todas as coisas, por mim mesmo.",
+                    "Posso todas as coisas naquele que me fortalece.",
+                    "Nada posso fazer sem a ajuda de vocês.",
+                    "Minha força vem dos desafios que supero."
+                ],
+                correct: 1
+            },
+            {
+                question: "Qual a instrução de Paulo sobre a ansiedade em Filipenses 4:6?",
+                options: [
+                    "Não se preocupe, pois Deus resolverá tudo sem sua intervenção.",
+                    "Esteja inquieto por coisa alguma; antes as vossas petições sejam conhecidas diante de Deus.",
+                    "Apenas confie, sem orar.",
+                    "Ignore os problemas e eles desaparecerão."
+                ],
+                correct: 1
+            },
+            {
+                question: "A quem Paulo se refere com os termos 'cães' e 'maus obreiros' no capítulo 3?",
+                options: [
+                    "Aos gentios",
+                    "Aos Romanos",
+                    "Aos mestres judaizantes",
+                    "Aos oponentes políticos"
+                ],
+                correct: 2
+            },
+            {
+                question: "Qual é o papel da igreja em Filipos na pregação do evangelho, segundo o capítulo 1?",
+                options: [
+                    "Apenas ouvintes passivos",
+                    "Financiadores da obra missionária de Paulo",
+                    "Parceiros ativos na propagação da mensagem",
+                    "Ambos os itens B e C"
+                ],
+                correct: 3
+            },
+            {
+                question: "O que Paulo recomenda que os filipenses pensem em Filipenses 4:8?",
+                options: [
+                    "Somente em seus próprios problemas",
+                    "No que lhes traz fama e poder",
+                    "Em tudo que é verdadeiro, honesto, justo, puro, amável, de boa fama",
+                    "Nas riquezas terrenas"
+                ],
+                correct: 2
+            }
+        ];
+
+        let currentQuestions = [];
+        let userAnswers = [];
+        let score = 0;
+        const NUM_QUESTIONS_TO_DISPLAY = 10;
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function startQuiz() {
+            shuffleArray(quizData);
+            currentQuestions = quizData.slice(0, NUM_QUESTIONS_TO_DISPLAY);
+            userAnswers = Array(NUM_QUESTIONS_TO_DISPLAY).fill(null);
+            score = 0;
+            displayQuestions();
+            document.getElementById('submit-quiz').classList.remove('hidden');
+            document.getElementById('result-modal').classList.add('hidden');
+            document.getElementById('player-name').value = '';
+        }
+
+        function displayQuestions() {
+            const quizContent = document.getElementById('quiz-content');
+            quizContent.innerHTML = '';
+
+            currentQuestions.forEach((q, qIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8 glass-panel p-5 rounded-lg border border-slate-700/50';
+                questionDiv.innerHTML = `<p class="font-bold text-lg mb-4 text-pink-300">Questão ${qIndex + 1}: ${q.question}</p>`;
+                
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'space-y-3';
+                
+                q.options.forEach((option, oIndex) => {
+                    const button = document.createElement('button');
+                    button.className = 'block w-full text-left p-3 rounded-md border border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700 hover:border-pink-500 transition duration-200';
+                    button.innerHTML = option;
+                    button.onclick = () => selectAnswer(qIndex, oIndex, button);
+                    optionsDiv.appendChild(button);
+                });
+                questionDiv.appendChild(optionsDiv);
+                quizContent.appendChild(questionDiv);
+            });
+            resetObservers();
+        }
+
+        function selectAnswer(qIndex, oIndex, selectedButton) {
+            userAnswers[qIndex] = oIndex;
+            const optionsDiv = selectedButton.parentNode;
+            Array.from(optionsDiv.children).forEach(btn => {
+                btn.classList.remove('selected-answer');
+                btn.classList.remove('correct-answer');
+                btn.classList.remove('wrong-answer');
+            });
+            selectedButton.classList.add('selected-answer');
+        }
+
+        document.getElementById('submit-quiz').addEventListener('click', () => {
+            score = 0;
+            const quizContent = document.getElementById('quiz-content');
+            const questionDivs = quizContent.children;
+
+            currentQuestions.forEach((q, qIndex) => {
+                const selectedOptionIndex = userAnswers[qIndex];
+                const optionsDiv = questionDivs[qIndex].querySelector('.space-y-3');
+                const optionButtons = Array.from(optionsDiv.children);
+
+                optionButtons.forEach((btn, oIndex) => {
+                    btn.disabled = true; // Desabilita botões após submissão
+                    btn.classList.remove('selected-answer'); // Remove a seleção original
+                    if (oIndex === q.correct) {
+                        btn.classList.add('correct-answer');
+                    }
+                    if (selectedOptionIndex === oIndex && selectedOptionIndex !== q.correct) {
+                        btn.classList.add('wrong-answer');
+                    }
+                });
+
+                if (selectedOptionIndex === q.correct) {
+                    score++;
+                }
+            });
+
+            document.getElementById('score-text').innerText = `Você acertou ${score} de ${NUM_QUESTIONS_TO_DISPLAY} perguntas!`;
+            document.getElementById('result-modal').classList.remove('hidden');
+            document.getElementById('submit-quiz').classList.add('hidden'); // Esconde o botão de submissão
+        });
+
+        document.getElementById('save-score').addEventListener('click', () => {
+            const playerName = document.getElementById('player-name').value.trim();
+            if (playerName) {
+                const formData = new FormData();
+                formData.append('acao', 'salvar_quiz_filipenses');
+                formData.append('nome', playerName);
+                formData.append('pontos', score);
+
+                fetch('api.php', { method: 'POST', body: formData })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.sucesso) {
+                            alert('Pontuação salva com sucesso!');
+                            loadRanking();
+                            document.getElementById('result-modal').classList.add('hidden');
+                        } else {
+                            alert('Erro ao salvar pontuação: ' + (data.mensagem || ''));
+                        }
+                    })
+                    .catch(err => {
+                        alert('Erro de conexão ao salvar pontuação. Tente novamente mais tarde.');
+                        console.error("Erro ao salvar pontuação:", err);
+                    });
+            } else {
+                alert('Por favor, digite seu nome para salvar a pontuação.');
+            }
+        });
+
+        document.getElementById('retake-quiz').addEventListener('click', () => {
+            startQuiz();
+            document.getElementById('result-modal').classList.add('hidden');
+        });
+
+        function loadRanking() {
+            const rankingList = document.getElementById('ranking-list');
+            rankingList.innerHTML = '<li class="text-center animate-pulse text-slate-400">Carregando ranking...</li>';
+
+            fetch('api.php?acao=ranking_filipenses')
+                .then(res => res.json())
+                .then(data => {
+                    rankingList.innerHTML = '';
+                    if(!Array.isArray(data)) { // Programação defensiva: Valida se 'data' é um array
+                        rankingList.innerHTML = '<li class="text-center text-red-400 text-xs">Erro ao carregar ranking: formato inválido.</li>';
+                        console.error("Erro: Dados de ranking não são um array.", data);
+                        return;
+                    }
+                    if (data.length === 0) {
+                        rankingList.innerHTML = '<li class="text-center text-slate-500 italic">Nenhuma pontuação ainda. Seja o primeiro!</li>';
+                        return;
+                    }
+
+                    let currentRank = 1;
+                    data.forEach((entry, index) => {
+                        if (index > 0 && entry.pontos < data[index - 1].pontos) {
+                            currentRank++;
+                        }
+                        let icon = currentRank === 1 ? '🥇' : (currentRank === 2 ? '🥈' : (currentRank === 3 ? '🥉' : `${currentRank}º`));
+                        let colorClass = currentRank === 1 ? 'text-pink-400 font-bold' : 'text-slate-400';
+
+                        rankingList.innerHTML += `
+                            <li class="flex justify-between items-center border-b border-slate-800/50 py-2 px-2 rounded hover:bg-slate-800 transition">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-6 text-right ${colorClass}">${icon}</span>
+                                    <span class="text-slate-200 truncate font-medium">${entry.nome}</span>
+                                </div>
+                                <span class="font-mono text-white font-bold text-sm bg-slate-900 px-2 py-0.5 rounded border border-slate-600/50">${entry.pontos}</span>
+                            </li>
+                        `;
+                    });
+                })
+                .catch(err => {
+                    rankingList.innerHTML = '<li class="text-center text-red-400 text-xs">Erro ao carregar ranking.</li>';
+                    console.error("Erro ao carregar ranking:", err);
+                });
+        }
+
+        function resetObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        // Particle.js initialization
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        // Particle color based on Filipenses theme: pink-500 #ec4899 with some transparency
+        const particleColor = "rgba(236, 72, 153, 0.15)"; 
+        for(let i=0; i<60; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = particleColor;
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            startQuiz();
+            loadRanking();
+            animateParticles();
+        });
+    </script>
+</body>
+</html>
