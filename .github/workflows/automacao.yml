@@ -5,7 +5,7 @@ on:
     # O horário é em UTC. 03:00 UTC é meia-noite no Brasil (Brasília).
     #- cron: '0 3 * * *' 
     # 55 minutos da hora 00 (UTC), que equivale às 21:55 no Brasil
-    - cron: '55 0 * * *'
+    - cron: '5 22 * * *'
   workflow_dispatch:
     # Isso permite que você ainda rode o botão "Run workflow" manualmente quando quiser.
 jobs:
