@@ -42,6 +42,7 @@ async function iniciarAutomacao() {
     const manualContexto = fs.readFileSync(manualPath, 'utf8');
     const indexAtual = fs.readFileSync(path.join(hostingerDir, 'index.html'), 'utf8');
     const moldeDesign = fs.readFileSync(path.join(hostingerDir, 'efesios.html'), 'utf8');
+    const moldeQuiz = fs.readFileSync(path.join(hostingerDir, 'quiz_efesios.html'), 'utf8');
 
     const model = genAI.getGenerativeModel({ 
         model: "gemini-2.5-flash",
@@ -66,6 +67,8 @@ async function iniciarAutomacao() {
             2. VISIBILIDADE: No HTML gerado para as seções de conteúdo, certifique-se de que a classe 'active' seja adicionada ou que o script de 'IntersectionObserver' seja resiliente para que o texto não fique invisível (opacity-0).
             3. ESCAPE DE CARACTERES: Não utilize crases (backticks \`) dentro das strings de exegese no objeto 'bibleData', pois isso quebra o JavaScript. Use aspas simples ou duplas.
             4. BIBLE DATA: Preencha o objeto 'const bibleData' integralmente com conteúdo teológico profundo, do primeiro ao último capítulo especificado.
+            5. QUIZ TEMPLATE: A estrutura (HTML, JS, formulário de salvamento) deve ser uma réplica conceitual do MOLDE QUIZ. PORÉM, você é ESTRITAMENTE PROIBIDO de copiar as cores dele. As cores, ícones e tailwind classes devem ser obrigatoriamente ADAPTADAS para a paleta correspondente ao novo livro gerado (conforme o manual).
+            6. BANCO DE DADOS (CRÍTICO): O HTML final do quiz gerado DEVE conter exatamente o seguinte formulário para comunicação de dados com o Back-End: <form id="rankingForm"> e, dentro dele, obrigatório: <input type="hidden" name="acao" value="salvar_quiz_[nome_do_livro_em_minusculo_e_sem_acentos]">. Esse passo garante a gravação correta do ranking!
 
             --- LÓGICA DO INDEX.HTML ---
             1. Crie o card de ${tarefaCriacao.livro} no topo com selo "Leitura Atual". Botão de Quiz desativado (opacity-50).
@@ -75,6 +78,7 @@ async function iniciarAutomacao() {
 
             --- REFERÊNCIAS ---
             MOLDE DESIGN: ${moldeDesign}
+            MOLDE QUIZ: ${moldeQuiz}
             INDEX ATUAL: ${indexAtual}
 
             --- FORMATO EXATO DE RESPOSTA ---
