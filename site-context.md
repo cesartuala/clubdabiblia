@@ -162,8 +162,10 @@ O `index.html` deve ser reorganizado dinamicamente seguindo esta hierarquia:
 ---
 
 ## 7. Quiz Engine
-* **Volume:** Cada `quiz_[livro].html` deve conter **15 perguntas** no código, mas exibir apenas **10 aleatórias** por rodada.
-* **Integração:** Os dados devem ser enviados via POST para `api.php` utilizando o parâmetro `acao` (Ex: `acao=salvar_quiz_[livro]`).
+* **Padrão Oficial e Estrutura Progressiva:** Jamais invente um layout comprido empilhando perguntas. É obrigatório seguir a mesma arquitetura do molde de referência: exibir **apenas 1 pergunta por tela**, com barra de progresso, botões de opção interativos e Feedback visual imediato (Verde/Correto ou Vermelho/Incorreto) com uma justificativa teológica na tela.
+* **Volume Dinâmico:** Cada arquivo `quiz_[livro].html` deve trazer no seu JavaScript um banco minucioso de **15 perguntas inéditas** (com a alternativa correta e o texto de justificativa), porém estruturado para embaralhar e mostrar apenas **10 questões** ao usuário final.
+* **Autenticidade Visual (Cores e Ícones):** É TERMINANTEMENTE PROIBIDO arrastar as cores de um molde genérico (ex: as cores de Efésios). Você deve pesquisar na matriz deste manual (Seção 6) qual é a Paleta (Tailwind class / Hex) e o Ícone FontAwesome do livro em questão e aplicar essa identidade em todo o arquivo HTML, inclusive na engrenagem inicial do JS do `particles.js`.
+* **Integração Back-End Rigorosa:** A etapa final do Quiz deve possuir ocultamente a exata montagem para não quebrar o banco de dados. Obrigatoriamente: `<form id="rankingForm"> <input type="hidden" name="acao" value="salvar_quiz_[nome_do_livro_em_minusculo_e_sem_acentos]"> <input type="hidden" name="pontos" id="inputPontos"> <input type="hidden" name="acertos" id="inputAcertos"> <input type="text" name="nome"> ... </form>`. Qualquer desvio ou criação de JSON destruirá a intercomunicação com o `api.php`.
 
 ---
 
