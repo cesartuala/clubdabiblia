@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Colossenses | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        .glass-card { background: rgba(15, 15, 35, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(20, 184, 166, 0.2); transition: all 0.4s ease; }
+        .teal-glow { text-shadow: 0 0 15px rgba(20, 184, 166, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); background-color: rgba(20, 184, 166, 0.15); border-color: #14b8a6; }
+        .option-correct { background-color: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+        .option-wrong { background-color: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #f87171 !important; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="w-full z-50 p-6 flex justify-between items-center relative">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0a0a1a] border border-teal-500/50 text-teal-400 hover:bg-teal-500 hover:text-black transition-all">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-mountain text-teal-500 text-xl"></i>
+            <span class="font-serif text-white text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl w-full flex flex-col relative overflow-hidden shadow-[0_0_40px_rgba(20,184,166,0.15)]">
+            <div class="h-1 w-full bg-gradient-to-r from-teal-600 via-emerald-500 to-cyan-500" id="progressBar"></div>
+            
+            <div class="p-6 md:p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b border-teal-500/20 pb-4">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white teal-glow">Quiz: Colossenses</h1>
+                    <span id="questionCounter" class="bg-teal-900/50 text-teal-300 px-3 py-1 rounded-full text-xs font-bold tracking-widest border border-teal-500/30">1 / 10</span>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="questionText" class="text-lg md:text-xl text-slate-200 mb-6 font-light leading-relaxed"></div>
+                    <div id="optionsContainer" class="space-y-3"></div>
+                    <div id="feedbackContainer" class="mt-6 p-4 rounded-lg hidden text-sm leading-relaxed border"></div>
+
+                    <button id="nextBtn" class="mt-8 w-full bg-teal-600 hover:bg-teal-500 text-white font-bold py-3 rounded-lg transition uppercase tracking-widest hidden shadow-lg shadow-teal-900/50">
+                        Próxima Pergunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-col items-center text-center py-8">
+                    <i class="fa-solid fa-crown text-6xl text-teal-400 mb-4 drop-shadow-[0_0_15px_rgba(20,184,166,0.6)]"></i>
+                    <h2 class="font-serif text-3xl text-white mb-2">Vitória em Cristo!</h2>
+                    <p class="text-slate-300 text-lg mb-6">Você acertou <span id="finalScore" class="text-teal-400 font-bold text-2xl">0</span> de 10 perguntas.</p>
+                    
+                    <div class="w-full max-w-sm bg-slate-900/80 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xs uppercase tracking-widest text-teal-400 mb-4 font-bold">Salvar no Ranking</h3>
+                        <form id="rankingForm" class="space-y-4">
+                            <input type="hidden" name="acao" value="salvar_quiz_colossenses">
+                            <input type="hidden" name="pontos" id="inputPontos" value="0">
+                            <input type="hidden" name="acertos" id="inputAcertos" value="0">
+                            <input type="text" name="nome" required placeholder="Seu Nome..." class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white focus:border-teal-500 focus:outline-none transition text-sm">
+                            <button type="submit" class="w-full bg-gradient-to-r from-teal-600 to-cyan-500 text-white font-bold py-2 rounded transition uppercase tracking-widest text-xs shadow-lg">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const allQuizQuestions = [
+            {
+                q: "Qual é o grande tema central da carta aos Colossenses?",
+                options: [
+                    { t: "A importância da circuncisão para a salvação.", c: false, r: "Paulo combate o legalismo e a circuncisão para a salvação." },
+                    { t: "A supremacia de Cristo sobre todas as coisas.", c: true, r: "Colossenses exalta a pessoa e a obra de Cristo como superiores a todas as filosofias e potestades." },
+                    { t: "A organização da igreja local e seus presbíteros.", c: false, r: "Embora importante, não é o tema central de Colossenses." },
+                    { t: "As profecias sobre o fim dos tempos e a volta de Cristo.", c: false, r: "Este tema é mais proeminente em Tessalonicenses." }
+                ]
+            },
+            {
+                q: "Segundo Colossenses 1:15, como Cristo é descrito em relação a Deus?",
+                options: [
+                    { t: "Um profeta que ensinou a verdade.", c: false, r: "Cristo é muito mais do que um profeta." },
+                    { t: "A imagem do Deus invisível.", c: true, r: "Ele é a representação exata e perfeita do Pai." },
+                    { t: "Um anjo poderoso com grande autoridade.", c: false, r: "Paulo combate a adoração de anjos, exaltando Cristo como superior." },
+                    { t: "O mais sábio entre os homens.", c: false, r: "Sua sabedoria é divina, não meramente humana." }
+                ]
+            },
+            {
+                q: "O que significa o termo 'primogênito de toda a criação' (Cl 1:15)?",
+                options: [
+                    { t: "Que Cristo foi a primeira criatura feita por Deus.", c: false, r: "O termo 'primogênito' (prototokos) indica preeminência e soberania sobre a criação, não ser o primeiro a ser criado." },
+                    { t: "Que Ele é o mais velho entre os anjos.", c: false, r: "Ele é superior aos anjos." },
+                    { t: "Que Ele tem preeminência e soberania sobre toda a criação.", c: true, r: "Refere-se à Sua posição de autoridade e primazia, não à Sua origem como criatura." },
+                    { t: "Que Ele nasceu primeiro entre os seres humanos.", c: false, r: "É uma referência cósmica e divina, não apenas terrena." }
+                ]
+            },
+            {
+                q: "Em quem, segundo Colossenses 2:9, 'habita corporalmente toda a plenitude da divindade'?",
+                options: [
+                    { t: "No templo de Jerusalém.", c: false, r: "O templo físico foi uma sombra, e já não é o lugar da plenitude." },
+                    { t: "Nos apóstolos e profetas.", c: false, r: "Eles são instrumentos de Deus, mas não a plenitude da divindade." },
+                    { t: "Em Cristo Jesus.", c: true, r: "A plenitude da divindade reside integralmente em Cristo, não havendo necessidade de mais nada." },
+                    { t: "Na guarda da Lei Mosaica.", c: false, r: "A Lei não contém a plenitude da divindade." }
+                ]
+            },
+            {
+                q: "Contra o que Paulo adverte os Colossenses no capítulo 2?",
+                options: [
+                    { t: "Contra a idolatria a deuses pagãos.", c: false, r: "Embora seja um pecado, a advertência específica é outra." },
+                    { t: "Contra filosofias vazias e enganosas, baseadas em tradições humanas.", c: true, r: "Ele adverte contra o sincretismo que diminuía a suficiência de Cristo." },
+                    { t: "Contra a perseguição romana aos cristãos.", c: false, r: "Ele fala de resistência espiritual, não política." },
+                    { t: "Contra a desobediência aos governantes civis.", c: false, r: "O foco é doutrinário e espiritual." }
+                ]
+            }
+            ,
+            {
+                q: "Qual prática ritual é mencionada por Paulo como sendo 'cravada na cruz'?",
+                options: [
+                    { t: "O sacrifício de animais.", c: false, r: "Isso é do Antigo Testamento, mas Paulo usa outra metáfora." },
+                    { t: "A cédula da dívida que era contra nós.", c: true, r: "Representa a nossa condenação sob a Lei, que foi anulada por Cristo." },
+                    { t: "A oferta de incenso nos templos.", c: false, r: "Isso era uma prática pagã ou judaica antiga, não o foco." },
+                    { t: "O jejum prolongado para purificação.", c: false, r: "Embora seja uma prática bíblica, não é o que foi cravado na cruz." }
+                ]
+            },
+            {
+                q: "O que os crentes devem buscar, segundo Colossenses 3:1, se foram ressuscitados com Cristo?",
+                options: [
+                    { t: "Riquezas materiais na terra.", c: false, r: "Paulo exorta a não focar em coisas terrenas." },
+                    { t: "Fama e reconhecimento entre os homens.", c: false, r: "A busca por glória humana é contrária ao ensino." },
+                    { t: "As coisas que são de cima, onde Cristo está.", c: true, r: "Um foco celestial reflete a nova identidade em Cristo." },
+                    { t: "Mais regras e rituais para santificação.", c: false, r: "A santificação vem da união com Cristo, não de regras externas." }
+                ]
+            },
+            {
+                q: "Quais qualidades os crentes devem 'revestir-se' (Cl 3:12-14)?",
+                options: [
+                    { t: "Ira, malícia e calúnia.", c: false, r: "Essas são as coisas que devem ser despojadas." },
+                    { t: "Misericórdia, bondade, humildade, mansidão e longanimidade.", c: true, r: "Estas são as virtudes da nova vida em Cristo." },
+                    { t: "Orgulho, egoísmo e ostentação.", c: false, r: "Esses são frutos da velha natureza." },
+                    { t: "Crítica, julgamento e condenação.", c: false, r: "Essas atitudes não refletem o amor de Cristo." }
+                ]
+            },
+            {
+                q: "O que Paulo diz que deve habitar abundantemente nos crentes em Colossenses 3:16?",
+                options: [
+                    { t: "A sabedoria dos filósofos gregos.", c: false, r: "Paulo adverte contra filosofias humanas." },
+                    { t: "A palavra de Cristo.", c: true, r: "A Palavra de Deus é a fonte de toda sabedoria e conhecimento espiritual." },
+                    { t: "Muitos bens e propriedades.", c: false, r: "Riquezas materiais não garantem plenitude espiritual." },
+                    { t: "A tradição dos anciãos da sinagoga.", c: false, r: "Paulo contrapõe a tradição humana à verdade de Cristo." }
+                ]
+            },
+            {
+                q: "Como a palavra dos crentes deve ser para com os de fora, segundo Colossenses 4:6?",
+                options: [
+                    { t: "Sempre contenciosa e desafiadora.", c: false, r: "A palavra deve ser cheia de graça, não de contenda." },
+                    { t: "Cheia de graça e temperada com sal.", c: true, r: "Deve ser agradável, sábia e edificante." },
+                    { t: "Muitas palavras, mesmo que vazias.", c: false, r: "A qualidade da palavra é mais importante que a quantidade." },
+                    { t: "Silenciosa, para evitar conflitos.", c: false, r: "Deve-se estar pronto para responder, com sabedoria." }
+                ]
+            },
+            {
+                q: "Qual era a função de Epafras em relação à igreja de Colossos?",
+                options: [
+                    { t: "Um comerciante que patrocinava a igreja.", c: false, r: "Sua função era espiritual, não comercial." },
+                    { t: "O fundador da igreja e um fiel ministro de Cristo.", c: true, r: "Ele trouxe o evangelho para a região e intercedia por eles." },
+                    { t: "Um dos falsos mestres que enganavam a igreja.", c: false, r: "Epafras era fiel, ao contrário dos falsos mestres." },
+                    { t: "Um soldado romano que protegia Paulo.", c: false, r: "Ele era um líder da igreja, não um soldado." }
+                ]
+            },
+            {
+                q: "De que 'rudimentos do mundo' Paulo adverte em Colossenses 2:20?",
+                options: [
+                    { t: "Os elementos químicos da natureza.", c: false, r: "Referência é a princípios espirituais mundanos." },
+                    { t: "As tradições filosóficas e ascéticas vazias.", c: true, r: "Regras de 'não toques, não proves, não manuseies' que não têm poder real." },
+                    { t: "Os fundamentos da matemática e da física.", c: false, r: "O contexto é espiritual e religioso, não científico." },
+                    { t: "As leis civis do Império Romano.", c: false, r: "Ele se refere a doutrinas religiosas humanas." }
+                ]
+            },
+            {
+                q: "Segundo Colossenses 1:22, qual o propósito de Cristo nos reconciliar?",
+                options: [
+                    { t: "Para que vivêssemos em paz com todos os homens.", c: false, r: "A paz com Deus é o objetivo primário e eterno." },
+                    { t: "Para nos apresentar santos, irrepreensíveis e inculpáveis diante dele.", c: true, r: "O sacrifício de Cristo nos torna aceitáveis diante de Deus." },
+                    { t: "Para que tenhamos vida longa e próspera na terra.", c: false, r: "O propósito é espiritual e eterno, não apenas material." },
+                    { t: "Para nos dar conhecimento secreto dos anjos.", c: false, r: "Paulo combate a busca por conhecimento secreto e adoração de anjos." }
+                ]
+            },
+            {
+                q: "Quem é mencionado como o mensageiro que levou a carta de Colossenses?",
+                options: [
+                    { t: "Timóteo.", c: false, r: "Timóteo era frequentemente com Paulo, mas não o mensageiro desta carta." },
+                    { t: "Tíquico.", c: true, r: "Ele é explicitamente mencionado como o portador da carta em Colossenses 4:7." },
+                    { t: "Lucas.", c: false, r: "Lucas é mencionado, mas não como o mensageiro." },
+                    { t: "Aristárco.", c: false, r: "Aristárco estava com Paulo, mas Tíquico levou a carta." }
+                ]
+            },
+            {
+                q: "O que Paulo pede em oração pelos Colossenses no capítulo 1:9-10?",
+                options: [
+                    { t: "Riqueza e prosperidade material.", c: false, r: "Paulo não ora por bens materiais, mas por crescimento espiritual." },
+                    { t: "Fama e influência no mundo.", c: false, r: "Ele ora por um testemunho digno de Cristo." },
+                    { t: "Que sejam cheios do conhecimento da Sua vontade, em toda a sabedoria e inteligência espiritual.", c: true, r: "O foco é no conhecimento de Deus e na capacidade de viver de modo digno d'Ele." },
+                    { t: "Que recebam mais visões e revelações de anjos.", c: false, r: "Ele combate as visões místicas sem base em Cristo." }
+                ]
+            }
+        ];
+
+        let quizData = []; // This will hold the 10 shuffled questions
+        let currentQ = 0; 
+        let score = 0; 
+        let answered = false;
+
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function initializeQuiz() {
+            quizData = shuffleArray([...allQuizQuestions]).slice(0, 10); // Select 10 random questions
+            currentQ = 0;
+            score = 0;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false; 
+            feedbackContainer.classList.add('hidden'); 
+            nextBtn.classList.add('hidden');
+            
+            const qData = quizData[currentQ];
+            document.getElementById('questionCounter').innerText = `${currentQ + 1} / ${quizData.length}`;
+            questionText.innerText = qData.q;
+            optionsContainer.innerHTML = '';
+
+            // Shuffle options for each question
+            const shuffledOptions = shuffleArray([...qData.options]);
+            
+            shuffledOptions.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-lg bg-slate-800/80 border border-slate-600 text-slate-300 text-sm md:text-base';
+                btn.innerText = opt.t;
+                btn.onclick = () => selectOption(btn, opt, shuffledOptions);
+                optionsContainer.appendChild(btn);
+            });
+            progressBar.style.width = `${((currentQ) / quizData.length) * 100}%`;
+        }
+
+        function selectOption(btn, opt, allOptions) {
+            if (answered) return; 
+            answered = true;
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedbackContainer.classList.remove('hidden', 'bg-red-900/30', 'border-red-500/50', 'bg-green-900/30', 'border-green-500/50', 'text-green-200', 'text-red-200');
+            if (opt.c) {
+                score += 10; 
+                btn.classList.add('option-correct');
+                feedbackContainer.classList.add('bg-green-900/30', 'border-green-500/50', 'text-green-200');
+                feedbackContainer.innerHTML = `<strong>Correto!</strong> ${opt.r}`;
+            } else {
+                btn.classList.add('option-wrong');
+                feedbackContainer.classList.add('bg-red-900/30', 'border-red-500/50', 'text-red-200');
+                feedbackContainer.innerHTML = `<strong>Incorreto.</strong> ${opt.r}`;
+                allOptions.forEach((o, i) => { 
+                    if(o.c) {
+                        // Find the correct button by its text content
+                        const correctButton = Array.from(buttons).find(b => b.innerText === o.t);
+                        if (correctButton) {
+                            correctButton.classList.add('option-correct');
+                        }
+                    } 
+                });
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.onclick = () => {
+            currentQ++;
+            if (currentQ < quizData.length) loadQuestion();
+            else showResults();
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            document.getElementById('quizContainer').classList.add('hidden');
+            const res = document.getElementById('resultContainer');
+            res.classList.remove('hidden'); res.classList.add('flex');
+            document.getElementById('finalScore').innerText = score/10;
+            document.getElementById('inputPontos').value = score;
+            document.getElementById('inputAcertos').value = score/10;
+        }
+
+        document.getElementById('rankingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button'); btn.disabled = true; btn.innerText = "Salvando...";
+            fetch('api.php', { method: 'POST', body: new FormData(this) })
+            .then(response => response.json()) // Assumindo que a API retorna JSON
+            .then(data => {
+                if(data.sucesso) {
+                    window.location.href = 'index.html'; // Redireciona apenas se o salvamento foi bem-sucedido
+                } else {
+                    alert('Erro ao salvar no ranking: ' + (data.mensagem || 'Ocorreu um erro desconhecido.'));
+                    btn.disabled = false;
+                    btn.innerText = "Enviar";
+                }
+            })
+            .catch(err => {
+                alert('Erro de conexão ao salvar no ranking. Por favor, tente novamente.');
+                console.error("Erro ao salvar ranking:", err);
+                btn.disabled = false;
+                btn.innerText = "Enviar";
+            });
+        };
+
+        // Particles
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, sx: Math.random()*0.5-0.25, sy: Math.random()*0.5-0.25 });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(20, 184, 166, 0.2)"; /* Teal */
+            particles.forEach(p => { p.x+=p.sx; p.y+=p.sy; if(p.x<0||p.x>canvas.width)p.sx*=-1; if(p.y<0||p.y>canvas.height)p.sy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        initializeQuiz(); // Start the quiz
+    </script>
+</body>
+</html>
