@@ -31,6 +31,8 @@
         .indigo-glow { text-shadow: 0 0 15px rgba(129, 140, 248, 0.4); }
         .pink-glow { text-shadow: 0 0 15px rgba(236, 72, 153, 0.4); }
         .teal-glow { text-shadow: 0 0 15px rgba(20, 184, 166, 0.4); }
+        .lime-glow { text-shadow: 0 0 15px rgba(132, 204, 22, 0.4); } /* Adicionado para futuras necessidades */
+
 
         #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
         
@@ -58,7 +60,49 @@
     <main class="flex-grow flex items-start justify-center p-4 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[100rem] w-full items-start">
             
-            <!-- NOVO LIVRO: Colossenses - STATUS "DESAFIO ABERTO" -->
+            <!-- NOVO LIVRO: 1 Tessalonicenses - STATUS "LEITURA ATUAL" -->
+            <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-cyan-500/40 shadow-[0_0_30px_rgba(6,182,212,0.15)]">
+                <div class="h-1 w-full bg-gradient-to-r from-cyan-600 via-sky-500 to-blue-500"></div>
+                
+                <div class="absolute top-0 right-0 bg-cyan-600 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-bl-xl shadow-[0_0_15px_rgba(6,182,212,0.6)] z-20">
+                    <i class="fa-solid fa-book-reader mr-1"></i> Leitura Atual
+                </div>
+            
+                <div class="p-6 flex flex-col items-center text-center flex-grow justify-center">
+                    <div class="w-16 h-16 rounded-full bg-cyan-500/10 flex items-center justify-center mb-4 border border-cyan-500/20 group-hover:border-cyan-500/50 transition duration-500">
+                        <i class="fa-solid fa-envelope text-cyan-400 text-2xl"></i>
+                    </div>
+            
+                    <div class="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-full px-3 py-1 mb-4 shadow-sm opacity-70">
+                        <i class="fa-regular fa-calendar-check text-slate-400 text-[10px]"></i>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">19 Abr - 23 Abr</span>
+                    </div>
+                    
+                    <h2 class="font-serif text-3xl text-white mb-2 cyan-glow">1 Tessalonicenses</h2>
+                    <p class="text-slate-400 text-xs mb-6">A esperança do retorno de Cristo e o chamado à santidade.</p>
+            
+                    <div class="grid grid-cols-2 gap-3 w-full mt-auto mb-6">
+                        <a href="1tessalonicenses.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-cyan-500/20 p-3 rounded-xl hover:border-cyan-500 transition">
+                            <i class="fa-solid fa-book-open text-cyan-400 mb-1 text-sm"></i>
+                            <span class="text-[9px] uppercase text-slate-300">Leitura</span>
+                        </a>
+                        <!-- Quiz Desativado -->
+                        <div class="flex flex-col items-center justify-center bg-slate-900/30 border border-slate-700/20 p-3 rounded-xl opacity-50 pointer-events-none">
+                            <i class="fa-solid fa-trophy text-slate-500 mb-1 text-sm"></i>
+                            <span class="text-[9px] uppercase text-slate-500">Quiz</span>
+                        </div>
+                    </div>
+            
+                    <div class="w-full bg-slate-900/80 rounded-lg p-4 border border-slate-700/50">
+                        <h3 class="text-[10px] uppercase tracking-widest text-cyan-400 mb-3 font-bold border-b border-slate-800 pb-2">Ranking 1 Tessalonicenses</h3>
+                        <ul id="ranking1Tessalonicenses" class="space-y-2 text-xs text-slate-300 max-h-32 overflow-y-auto custom-scroll pr-2">
+                            <li class="text-center animate-pulse">Carregando...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANTERIORMENTE "LEITURA ATUAL": Colossenses - AGORA "DESAFIO ABERTO" -->
             <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-teal-500/40 shadow-[0_0_30px_rgba(20,184,166,0.15)]">
                 <div class="h-1 w-full bg-gradient-to-r from-teal-600 via-emerald-500 to-cyan-500"></div>
                 
@@ -84,6 +128,7 @@
                             <i class="fa-solid fa-book-open text-teal-400 mb-1 text-sm"></i>
                             <span class="text-[9px] uppercase text-slate-300">Leitura</span>
                         </a>
+                        <!-- Quiz ATIVADO -->
                         <a href="quiz_colossenses.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-cyan-500/20 p-3 rounded-xl hover:border-cyan-500 transition">
                             <i class="fa-solid fa-trophy text-cyan-400 mb-1 text-sm"></i>
                             <span class="text-[9px] uppercase text-slate-300">Quiz</span>
@@ -99,17 +144,15 @@
                 </div>
             </div>
 
-            <!-- ANTERIORMENTE "LEITURA ATUAL": Filipenses - AGORA "DESAFIO ABERTO" -->
-            <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-pink-500/40 shadow-[0_0_30px_rgba(236,72,153,0.15)]">
+            <!-- ANTERIORMENTE "DESAFIO ABERTO": Filipenses - AGORA "ARQUIVO/CONCLUÍDO" -->
+            <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group opacity-95 hover:opacity-100">
                 <div class="h-1 w-full bg-gradient-to-r from-pink-600 via-rose-500 to-red-500"></div>
                 
-                <div class="absolute top-0 right-0 bg-pink-600 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-bl-xl shadow-[0_0_15px_rgba(236,72,153,0.6)] z-20">
-                    <i class="fa-solid fa-trophy mr-1"></i> Desafio Aberto
-                </div>
+                <!-- Selo de destaque removido -->
             
                 <div class="p-6 flex flex-col items-center text-center flex-grow justify-center">
                     <div class="w-16 h-16 rounded-full bg-pink-500/10 flex items-center justify-center mb-4 border border-pink-500/20 group-hover:border-pink-500/50 transition duration-500">
-                        <i class="fa-solid fa-face-smile text-pink-400 text-2xl"></i>
+                        <i class="fa-solid fa-face-smile text-pink-400 text-2xl group-hover:text-pink-300"></i>
                     </div>
             
                     <div class="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-full px-3 py-1 mb-4 shadow-sm opacity-70">
@@ -117,22 +160,24 @@
                         <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold line-through">11 Abr - 14 Abr</span>
                     </div>
                     
-                    <h2 class="font-serif text-3xl text-white mb-2 pink-glow">Filipenses</h2>
+                    <h2 class="font-serif text-2xl text-white mb-2 group-hover:text-pink-400 transition">Filipenses</h2>
                     <p class="text-slate-400 text-xs mb-6">A alegria em Cristo, mesmo em meio ao sofrimento.</p>
             
                     <div class="grid grid-cols-2 gap-3 w-full mt-auto mb-6">
-                        <a href="filipenses.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-pink-500/20 p-3 rounded-xl hover:border-pink-500 transition">
-                            <i class="fa-solid fa-book-open text-pink-400 mb-1 text-sm"></i>
-                            <span class="text-[9px] uppercase text-slate-300">Leitura</span>
+                        <a href="filipenses.html" class="action-btn flex flex-col items-center justify-center bg-gradient-to-b from-pink-900/20 to-black/60 border border-pink-500/20 hover:border-pink-500 p-3 rounded-xl group/btn shadow-lg">
+                            <i class="fa-solid fa-book-open text-pink-400/80 mb-2 text-lg group-hover/btn:scale-110 transition"></i>
+                            <span class="text-[8px] md:text-[9px] uppercase tracking-widest text-slate-400 group-hover:text-slate-200 font-bold">Leitura</span>
                         </a>
-                        <a href="quiz_filipenses.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-blue-500/20 p-3 rounded-xl hover:border-blue-500 transition">
-                            <i class="fa-solid fa-trophy text-blue-400 mb-1 text-sm"></i>
-                            <span class="text-[9px] uppercase text-slate-300">Quiz</span>
+                        <a href="quiz_filipenses.html" class="action-btn flex flex-col items-center justify-center bg-gradient-to-b from-blue-900/20 to-black/60 border border-blue-500/20 hover:border-blue-500 p-3 rounded-xl group/btn shadow-lg">
+                            <i class="fa-solid fa-trophy text-blue-400/80 mb-2 text-lg group-hover/btn:scale-110 transition"></i>
+                            <span class="text-[8px] md:text-[9px] uppercase tracking-widest text-slate-400 group-hover:text-slate-200 font-bold">Quiz</span>
                         </a>
                     </div>
             
-                    <div class="w-full bg-slate-900/80 rounded-lg p-4 border border-slate-700/50">
-                        <h3 class="text-[10px] uppercase tracking-widest text-pink-400 mb-3 font-bold border-b border-slate-800 pb-2">Ranking Filipenses</h3>
+                    <div class="w-full bg-slate-900/80 rounded-lg p-4 border border-slate-700/50 shadow-inner">
+                        <h3 class="text-[10px] uppercase tracking-widest text-pink-400 mb-3 flex items-center justify-center gap-2 font-bold border-b border-slate-800 pb-2">
+                            <i class="fa-solid fa-list-ol"></i> Ranking Filipenses
+                        </h3>
                         <ul id="rankingFilipenses" class="space-y-2 text-xs text-slate-300 max-h-32 overflow-y-auto custom-scroll pr-2">
                             <li class="text-center animate-pulse">Carregando...</li>
                         </ul>
@@ -140,7 +185,7 @@
                 </div>
             </div>
 
-            <!-- ANTERIORMENTE "DESAFIO ABERTO": Efésios - AGORA "ARQUIVO/CONCLUÍDO" -->
+            <!-- ARQUIVADO: Efésios -->
             <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group opacity-95 hover:opacity-100">
                 <div class="h-1 w-full bg-gradient-to-r from-indigo-600 via-purple-500 to-blue-500"></div>
                 
@@ -407,19 +452,17 @@
                 return;
             }
 
+            // Sort data by points in descending order to ensure correct ranking
+            data.sort((a, b) => b.pontos - a.pontos);
+
             let currentRank = 1;
+            let previousPoints = -1; // Initialize with a value lower than any possible score
 
             data.forEach((p, index) => {
-                // Determine rank based on points, handling ties
-                if (index > 0 && p.pontos < data[index - 1].pontos) {
-                    currentRank = index + 1; // Correct rank for distinct scores
-                } else if (index > 0 && p.pontos === data[index - 1].pontos) {
-                    // If scores are tied, maintain the same rank
-                    // currentRank remains the same as previous iteration's currentRank
-                } else if (index === 0) {
-                    currentRank = 1; // First item is rank 1
+                if (p.pontos !== previousPoints) {
+                    currentRank = index + 1;
                 }
-
+                previousPoints = p.pontos;
 
                 let icon = currentRank + 'º';
                 let colorClass = 'text-slate-400';
@@ -442,7 +485,16 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Fetch for Colossenses
+            // Fetch for 1 Tessalonicenses (NEW)
+            fetch('api.php?acao=ranking_1tessalonicenses')
+                .then(res => res.json())
+                .then(data => renderRanking(data, 'ranking1Tessalonicenses', 'text-cyan-400 font-bold'))
+                .catch(err => {
+                    document.getElementById('ranking1Tessalonicenses').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de 1 Tessalonicenses.</li>';
+                    console.error("Erro ao carregar ranking de 1 Tessalonicenses:", err);
+                });
+
+            // Fetch for Colossenses (now DESAFIO ABERTO)
             fetch('api.php?acao=ranking_colossenses')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingColossenses', 'text-teal-400 font-bold'))

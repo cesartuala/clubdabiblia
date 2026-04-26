@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz 1 Tessalonicenses | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        .glass-card { background: rgba(15, 15, 35, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(6, 182, 212, 0.2); transition: all 0.4s ease; }
+        .cyan-glow { text-shadow: 0 0 15px rgba(6, 182, 212, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); background-color: rgba(6, 182, 212, 0.15); border-color: #06b6d4; }
+        .option-correct { background-color: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+        .option-wrong { background-color: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #f87171 !important; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="w-full z-50 p-6 flex justify-between items-center relative">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0a0a1a] border border-cyan-500/50 text-cyan-400 hover:bg-cyan-500 hover:text-black transition-all">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-envelope text-cyan-500 text-xl"></i>
+            <span class="font-serif text-white text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl w-full flex flex-col relative overflow-hidden shadow-[0_0_40px_rgba(6,182,212,0.15)]">
+            <div class="h-1 w-full bg-gradient-to-r from-cyan-600 via-sky-500 to-blue-500" id="progressBar"></div>
+            
+            <div class="p-6 md:p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b border-cyan-500/20 pb-4">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white cyan-glow">Quiz: 1 Tessalonicenses</h1>
+                    <span id="questionCounter" class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full text-xs font-bold tracking-widest border border-cyan-500/30">1 / 10</span>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="questionText" class="text-lg md:text-xl text-slate-200 mb-6 font-light leading-relaxed"></div>
+                    <div id="optionsContainer" class="space-y-3"></div>
+                    <div id="feedbackContainer" class="mt-6 p-4 rounded-lg hidden text-sm leading-relaxed border"></div>
+
+                    <button id="nextBtn" class="mt-8 w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-lg transition uppercase tracking-widest hidden shadow-lg shadow-cyan-900/50">
+                        Próxima Pergunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-col items-center text-center py-8">
+                    <i class="fa-solid fa-envelope text-6xl text-cyan-400 mb-4 drop-shadow-[0_0_15px_rgba(6,182,212,0.6)]"></i>
+                    <h2 class="font-serif text-3xl text-white mb-2">Mensagem Entregue!</h2>
+                    <p class="text-slate-300 text-lg mb-6">Você acertou <span id="finalScore" class="text-cyan-400 font-bold text-2xl">0</span> de 10 perguntas.</p>
+                    
+                    <div class="w-full max-w-sm bg-slate-900/80 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xs uppercase tracking-widest text-cyan-400 mb-4 font-bold">Salvar no Ranking</h3>
+                        <form id="rankingForm" class="space-y-4">
+                            <input type="hidden" name="acao" value="salvar_quiz_1tessalonicenses">
+                            <input type="hidden" name="pontos" id="inputPontos" value="0">
+                            <input type="hidden" name="acertos" id="inputAcertos" value="0">
+                            <input type="text" name="nome" required placeholder="Seu Nome..." class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white focus:border-cyan-500 focus:outline-none transition text-sm">
+                            <button type="submit" class="w-full bg-gradient-to-r from-cyan-600 to-sky-500 text-white font-bold py-2 rounded transition uppercase tracking-widest text-xs shadow-lg">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const allQuizData = [
+            {
+                q: "Qual é a principal razão pela qual Paulo escreveu a Primeira Carta aos Tessalonicenses?",
+                options: [
+                    { t: "Para condenar a igreja por pecados graves.", c: false, r: "A carta é majoritariamente de encorajamento e instrução, não condenação." },
+                    { t: "Para corrigir ensinamentos falsos sobre a Lei Mosaica.", c: false, r: "Esse era o tema principal da carta aos Gálatas." },
+                    { t: "Para encorajar os crentes em meio à perseguição e instruí-los sobre a volta de Cristo.", c: true, r: "Paulo se preocupa com a perseverança deles e esclarece dúvidas sobre a escatologia." },
+                    { t: "Para solicitar apoio financeiro para sua próxima viagem missionária.", c: false, r: "Embora Paulo recebesse apoio, não era o foco principal desta carta." }
+                ]
+            },
+            {
+                q: "De acordo com o Capítulo 1, quais são as três marcas da fé viva dos tessalonicenses elogiadas por Paulo?",
+                options: [
+                    { t: "Riqueza material, poder político e sabedoria humana.", c: false, r: "Essas não são as virtudes espirituais destacadas por Paulo." },
+                    { t: "Orações longas, jejuns frequentes e sacrifícios rituais.", c: false, r: "Embora importantes, não são as três marcas específicas mencionadas aqui." },
+                    { t: "Obras da fé, trabalho de amor e perseverança da esperança.", c: true, r: "Essas três virtudes ativas são o fruto da genuína conversão." },
+                    { t: "Eloquência na pregação, conhecimento teológico e organização eclesiástica.", c: false, r: "Essas são capacidades, não as marcas da fé viva citadas." }
+                ]
+            },
+            {
+                q: "Como Paulo descreve seu ministério entre os tessalonicenses no Capítulo 2?",
+                options: [
+                    { t: "Com autoridade e domínio, como um senhor sobre seus servos.", c: false, r: "Paulo rejeita tal abordagem." },
+                    { t: "Com discursos elaborados e argumentação filosófica.", c: false, r: "Ele focou na simplicidade do evangelho e no poder do Espírito." },
+                    { t: "Com brandura, como uma ama que nutre seus filhos, e como um pai que exorta.", c: true, r: "Ele usou metáforas de cuidado parental para descrever seu amor e dedicação." },
+                    { t: "Buscando o próprio lucro e usando de palavras lisonjeiras.", c: false, r: "Paulo nega veementemente essas acusações, enfatizando sua integridade." }
+                ]
+            },
+            {
+                q: "Quem Paulo enviou a Tessalônica para confirmar e encorajar os crentes em sua fé (Capítulo 3)?",
+                options: [
+                    { t: "Barnabé", c: false, r: "Barnabé esteve com Paulo em sua primeira viagem missionária." },
+                    { t: "Silas", c: false, r: "Silas estava com Paulo, mas Timóteo foi o enviado." },
+                    { t: "Tito", c: false, r: "Tito foi enviado a Corinto e Creta em outras ocasiões." },
+                    { t: "Timóteo", c: true, r: "Paulo enviou Timóteo, demonstrando sua grande preocupação pela igreja." }
+                ]
+            },
+            {
+                q: "Qual é a vontade de Deus para os crentes em relação à impureza sexual, de acordo com o Capítulo 4?",
+                options: [
+                    { t: "Que se entreguem aos desejos da carne, pois a graça cobre todos os pecados.", c: false, r: "Paulo adverte severamente contra a imoralidade sexual." },
+                    { t: "Que busquem a santificação, abstendo-se da fornicação e controlando seu corpo em santidade.", c: true, r: "Esta é a vontade expressa de Deus: a santificação." },
+                    { t: "Que a sexualidade seja livremente praticada, desde que não prejudique o próximo.", c: false, r: "O padrão bíblico de santidade é mais elevado do que a ética pagã." },
+                    { t: "Que evitem o casamento para se dedicarem exclusivamente ao ministério.", c: false, r: "Paulo não impõe o celibato como regra geral." }
+                ]
+            },
+            {
+                q: "O que Paulo ensina sobre os crentes que já morreram antes da volta de Cristo (Capítulo 4)?",
+                options: [
+                    { t: "Eles serão esquecidos e não participarão da ressurreição.", c: false, r: "Paulo oferece grande consolo, afirmando o oposto." },
+                    { t: "Eles serão arrebatados ao céu em um momento posterior, após os vivos.", c: false, r: "Os mortos em Cristo ressuscitarão primeiro." },
+                    { t: "Eles ressuscitarão primeiro e, junto com os vivos, serão arrebatados para encontrar o Senhor nos ares.", c: true, r: "Esta é a sequência do arrebatamento, conforme descrito por Paulo." },
+                    { t: "Suas almas esperam no purgatório até o juízo final.", c: false, r: "A Bíblia não ensina o purgatório." }
+                ]
+            },
+            {
+                q: "O que Paulo compara a vinda do Dia do Senhor para os descrentes no Capítulo 5?",
+                options: [
+                    { t: "A uma festa grandiosa e alegre.", c: false, r: "Para os descrentes, será um tempo de juízo." },
+                    { t: "A uma colheita abundante e esperada.", c: false, r: "A figura usada é de surpresa e destruição." },
+                    { t: "A um ladrão de noite, trazendo repentina destruição.", c: true, r: "A vinda será inesperada e trará juízo para os despreparados." },
+                    { t: "A um mensageiro que anuncia a paz.", c: false, r: "Eles clamarão por paz e segurança, mas a destruição virá." }
+                ]
+            },
+            {
+                q: "Qual destas exortações Paulo NÃO dá aos tessalonicenses no Capítulo 5?",
+                options: [
+                    { t: "Regozijai-vos sempre.", c: false, r: "Este é um dos imperativos." },
+                    { t: "Orai sem cessar.", c: false, r: "Este é outro imperativo conhecido." },
+                    { t: "Em tudo dai graças.", c: false, r: "Este completa a trilogia de mandamentos." },
+                    { t: "Buscai vingança contra os vossos perseguidores.", c: true, r: "Paulo ensina o amor, a paz e a paciência, não a vingança." }
+                ]
+            },
+            {
+                q: "Qual a atitude que os crentes devem ter em relação aos que trabalham no ministério entre eles, segundo o Capítulo 5?",
+                options: [
+                    { t: "Ignorá-los ou criticá-los constantemente.", c: false, r: "Paulo exorta ao respeito e reconhecimento." },
+                    { t: "Considerá-los superiores e infalíveis.", c: false, r: "Deve haver estima, mas não adoração." },
+                    { t: "Estimá-los muito altamente em amor, por causa do trabalho que fazem.", c: true, r: "Reconhecimento e apreço pelo esforço pastoral." },
+                    { t: "Deixá-los fazer todo o trabalho da igreja.", c: false, r: "Todos os santos são chamados a servir." }
+                ]
+            },
+            {
+                q: "Paulo instrui os crentes a 'não desprezar as profecias', mas o que eles devem fazer com elas?",
+                options: [
+                    { t: "Aceitá-las cegamente sem questionar.", c: false, r: "Paulo diz para examinar." },
+                    { t: "Registrá-las em um livro sagrado.", c: false, r: "Não há menção disso." },
+                    { t: "Examinar tudo e reter o que é bom.", c: true, r: "É um equilíbrio entre abertura e discernimento." },
+                    { t: "Usá-las para prever o futuro financeiro.", c: false, r: "O propósito da profecia é edificação, exortação e consolação." }
+                ]
+            },
+            {
+                q: "Qual termo grego Paulo usa para a 'obra da fé' dos tessalonicenses no capítulo 1?",
+                options: [
+                    { t: "Agapē", c: false, r: "Agapē significa amor." },
+                    { t: "Koinonia", c: false, r: "Koinonia significa comunhão." },
+                    { t: "Ergon Pisteos", c: true, r: "A obra ou labor da fé." },
+                    { t: "Hypomonē", c: false, r: "Hypomonē significa perseverança." }
+                ]
+            },
+            {
+                q: "Como Paulo descreve a maneira como o evangelho chegou aos tessalonicenses no capítulo 1?",
+                options: [
+                    { t: "Somente em palavra, sem poder.", c: false, r: "Ele especifica o contrário." },
+                    { t: "Em palavra, poder, Espírito Santo e muita certeza.", c: true, r: "Uma experiência completa e transformadora." },
+                    { t: "Com demonstrações de milagres espetaculares apenas.", c: false, r: "O poder do Espírito vai além dos milagres visíveis." },
+                    { t: "Através de debates filosóficos e retóricos.", c: false, r: "Paulo rejeita a sabedoria humana como base do evangelho." }
+                ]
+            },
+            {
+                q: "O que Paulo diz sobre trabalhar com as próprias mãos no capítulo 4?",
+                options: [
+                    { t: "É desnecessário para os que esperam a vinda de Cristo.", c: false, r: "Ele exorta ao trabalho diligente." },
+                    { t: "É um sinal de falta de fé em Deus.", c: false, r: "Pelo contrário, é parte de um andar digno." },
+                    { t: "Que os crentes o façam para viver tranquilamente e não depender de ninguém.", c: true, r: "Promove a autossuficiência e um bom testemunho." },
+                    { t: "Que é opcional, dependendo da situação econômica de cada um.", c: false, r: "É uma exortação geral para a diligência." }
+                ]
+            },
+            {
+                q: "Qual a esperança da salvação é comparada a uma peça de armadura no capítulo 5?",
+                options: [
+                    { t: "O cinto da verdade.", c: false, r: "O cinto da verdade é em Efésios." },
+                    { t: "O escudo da fé.", c: false, r: "O escudo da fé é em Efésios." },
+                    { t: "A couraça da fé e do amor e o capacete da esperança da salvação.", c: true, r: "Estas são as proteções para o crente sóbrio." },
+                    { t: "A espada do Espírito.", c: false, r: "A espada é a Palavra de Deus e é uma arma ofensiva." }
+                ]
+            },
+            {
+                q: "No final da carta, qual a oração de Paulo pela santificação dos tessalonicenses no capítulo 5?",
+                options: [
+                    { t: "Que Deus os faça ricos e poderosos.", c: false, r: "O foco é espiritual, não material." },
+                    { t: "Que Deus os santifique completamente em espírito, alma e corpo, e os conserve irrepreensíveis.", c: true, r: "Uma oração por santificação holística e preservação." },
+                    { t: "Que Deus os liberte de toda perseguição e sofrimento.", c: false, r: "Paulo frequentemente via o sofrimento como parte do plano de Deus." },
+                    { t: "Que Deus os torne os mais sábios entre todas as igrejas.", c: false, r: "A sabedoria humana não é o foco principal." }
+                ]
+            }
+        ];
+
+        // Shuffle all questions and select 10
+        let quizData = allQuizData.sort(() => 0.5 - Math.random()).slice(0, 10);
+
+        let currentQ = 0; let score = 0; let answered = false;
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        function loadQuestion() {
+            answered = false; feedbackContainer.classList.add('hidden'); nextBtn.classList.add('hidden');
+            const qData = quizData[currentQ];
+            document.getElementById('questionCounter').innerText = `${currentQ + 1} / ${quizData.length}`;
+            questionText.innerText = qData.q;
+            optionsContainer.innerHTML = '';
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-lg bg-slate-800/80 border border-slate-600 text-slate-300 text-sm md:text-base';
+                btn.innerText = opt.t;
+                btn.onclick = () => selectOption(btn, opt);
+                optionsContainer.appendChild(btn);
+            });
+            progressBar.style.width = `${((currentQ + 1) / quizData.length) * 100}%`;
+        }
+
+        function selectOption(btn, opt) {
+            if (answered) return; answered = true;
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedbackContainer.classList.remove('hidden', 'bg-red-900/30', 'border-red-500/50', 'bg-green-900/30', 'border-green-500/50', 'text-green-200', 'text-red-200');
+            if (opt.c) {
+                score++; // Pontos são contagem de acertos
+                btn.classList.add('option-correct');
+                feedbackContainer.classList.add('bg-green-900/30', 'border-green-500/50', 'text-green-200');
+                feedbackContainer.innerHTML = `<strong>Correto!</strong> ${opt.r}`;
+            } else {
+                btn.classList.add('option-wrong');
+                feedbackContainer.classList.add('bg-red-900/30', 'border-red-500/50', 'text-red-200');
+                feedbackContainer.innerHTML = `<strong>Incorreto.</strong> ${opt.r}`;
+                buttons.forEach((b, i) => { if(quizData[currentQ].options[i].c) b.classList.add('option-correct'); });
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.onclick = () => {
+            currentQ++;
+            if (currentQ < quizData.length) loadQuestion();
+            else showResults();
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            document.getElementById('quizContainer').classList.add('hidden');
+            const res = document.getElementById('resultContainer');
+            res.classList.remove('hidden'); res.classList.add('flex');
+            document.getElementById('finalScore').innerText = score; // Exibe o número de acertos
+            document.getElementById('inputPontos').value = score * 10; // 10 pontos por acerto
+            document.getElementById('inputAcertos').value = score; // Número de acertos
+        }
+
+        document.getElementById('rankingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button'); btn.disabled = true; btn.innerText = "Salvando...";
+            fetch('api.php', { method: 'POST', body: new FormData(this) })
+            .then(res => res.json()) // Adiciona .json() para verificar a resposta do PHP
+            .then(data => {
+                if(data.sucesso) {
+                    window.location.href = 'index.html'; // Redireciona se o PHP indicar sucesso
+                } else {
+                    alert('Erro ao salvar no ranking: ' + (data.mensagem || 'Erro desconhecido.'));
+                    btn.disabled = false;
+                    btn.innerText = "Enviar";
+                }
+            })
+            .catch(err => {
+                alert('Erro de conexão ao enviar o ranking.');
+                console.error("Erro no fetch do ranking:", err);
+                btn.disabled = false;
+                btn.innerText = "Enviar";
+            });
+        };
+
+        // Particles
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        // Cor dos partículas para 1 Tessalonicenses: #06b6d4 (cyan-600)
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, sx: Math.random()*0.5-0.25, sy: Math.random()*0.5-0.25 });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(6, 182, 212, 0.2)";
+            particles.forEach(p => { p.x+=p.sx; p.y+=p.sy; if(p.x<0||p.x>canvas.width)p.sx*=-1; if(p.y<0||p.y>canvas.height)p.sy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        loadQuestion();
+    </script>
+</body>
+</html>
