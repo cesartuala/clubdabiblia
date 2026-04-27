@@ -178,3 +178,28 @@ O `index.html` deve ser reorganizado dinamicamente seguindo esta hierarquia:
 
 **Instrução para a IA:** Priorize a fidelidade visual e a **robustez do código**. Não simplifique a lógica teológica nem a programação. Garanta que o site seja resiliente a erros e visualmente impecável.
 
+---
+
+## 9. Padrão Estrito de Nomenclaturas e Base de Dados
+Para evitar falhas de link (Erro 404) ou desconexão com o banco de dados e garantir a visualização correta na interface principal, todos os arquivos gerados, formulários de ranking e chamadas (fetch) devem obedecer **rigorosamente** a formatação abaixo (tudo minúsculo, sem acentos, sem espaços). Além disso, as datas descritas aqui devem ser seguidas fielmente na geração dos cards de `index.html`.
+
+| Livro Agendado | Arquivo HTML | Ação DB (Salvar Quiz) | Ação DB (Ranking) | Período de Leitura |
+| --- | --- | --- | --- | --- |
+| 1 Tessalonicenses | `1tessalonicenses.html` | `salvar_quiz_1tessalonicenses` | `ranking_1tessalonicenses` | 27/04 a 01/05 |
+| 2 Tessalonicenses | `2tessalonicenses.html` | `salvar_quiz_2tessalonicenses` | `ranking_2tessalonicenses` | 04/05 a 06/05 |
+| 1 Timóteo | `1timoteo.html` | `salvar_quiz_1timoteo` | `ranking_1timoteo` | 07/05 a 14/05 |
+| 2 Timóteo | `2timoteo.html` | `salvar_quiz_2timoteo` | `ranking_2timoteo` | 18/05 a 21/05 |
+| Tito | `tito.html` | `salvar_quiz_tito` | `ranking_tito` | 25/05 a 27/05 |
+| Filemon | `filemon.html` | `salvar_quiz_filemon` | `ranking_filemon` | 28/05 |
+| Hebreus | `hebreus.html` | `salvar_quiz_hebreus` | `ranking_hebreus` | 29/05 a 17/06 |
+| Tiago | `tiago.html` | `salvar_quiz_tiago` | `ranking_tiago` | 18/06 a 24/06 |
+| 1 Pedro | `1pedro.html` | `salvar_quiz_1pedro` | `ranking_1pedro` | 25/06 a 01/07 |
+| 2 Pedro | `2pedro.html` | `salvar_quiz_2pedro` | `ranking_2pedro` | 02/07 a 04/07 |
+| 1 João | `1joao.html` | `salvar_quiz_1joao` | `ranking_1joao` | 06/07 a 10/07 |
+| 2 João | `2joao.html` | `salvar_quiz_2joao` | `ranking_2joao` | 13/07 |
+| 3 João | `3joao.html` | `salvar_quiz_3joao` | `ranking_3joao` | 14/07 |
+| Judas | `judas.html` | `salvar_quiz_judas` | `ranking_judas` | 15/07 |
+| Mateus | `mateus.html` | `salvar_quiz_mateus` | `ranking_mateus` | 16/07 a 22/08 |
+| Marcos | `marcos.html` | `salvar_quiz_marcos` | `ranking_marcos` | 24/08 a 12/09 |
+| Lucas | `lucas.html` | `salvar_quiz_lucas` | `ranking_lucas` | 14/09 a 15/10 |
+| Apocalipse | `apocalipse.html` | `salvar_quiz_apocalipse` | `ranking_apocalipse` | 19/10 a 17/11 |
