@@ -51,6 +51,9 @@ async function iniciarAutomacao() {
 
     let promptMestre = "";
     let tarefaAtual = tarefaCriacao || tarefaQuiz;
+    
+    // Identificador estrito para URLs e BD (Ex: "1 Tessalonicenses" -> "1tessalonicenses")
+    const nomeBase = tarefaAtual ? tarefaAtual.livro.toLowerCase().replace(/\s+/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '') : '';
 
     // --- LÓGICA 1: CRIAÇÃO COMPLETA DE NOVO LIVRO ---
     if (tarefaCriacao) {
@@ -68,13 +71,15 @@ async function iniciarAutomacao() {
             3. ESCAPE DE CARACTERES: Não utilize crases (backticks \`) dentro das strings de exegese no objeto 'bibleData', pois isso quebra o JavaScript. Use aspas simples ou duplas.
             4. BIBLE DATA: Preencha o objeto 'const bibleData' integralmente com conteúdo teológico profundo, do primeiro ao último capítulo especificado.
             5. QUIZ TEMPLATE: A estrutura (HTML, JS, formulário de salvamento) deve ser uma réplica conceitual do MOLDE QUIZ. PORÉM, você é ESTRITAMENTE PROIBIDO de copiar as cores dele. As cores, ícones e tailwind classes devem ser obrigatoriamente ADAPTADAS para a paleta correspondente ao novo livro gerado (conforme o manual).
-            6. BANCO DE DADOS (CRÍTICO): O HTML final do quiz gerado DEVE conter exatamente o seguinte formulário para comunicação de dados com o Back-End: <form id="rankingForm"> e, dentro dele, obrigatório: <input type="hidden" name="acao" value="salvar_quiz_[nome_do_livro_em_minusculo_e_sem_acentos]">. Esse passo garante a gravação correta do ranking!
+            6. BANCO DE DADOS (CRÍTICO): O HTML final do quiz gerado DEVE conter exatamente o seguinte formulário para comunicação de dados com o Back-End: <form id="rankingForm"> e, dentro dele, obrigatório: <input type="hidden" name="acao" value="salvar_quiz_${nomeBase}">. Esse passo garante a gravação correta do ranking!
+            7. URLS E ARQUIVOS: Todo link gerado de acesso aos capítulos ou ao quiz deve apontar EXATAMENTE para '${nomeBase}.html' e 'quiz_${nomeBase}.html'. Jamais crie links com espaços ou acentos.
 
             --- LÓGICA DO INDEX.HTML ---
             1. Crie o card de ${tarefaCriacao.livro} no topo com selo "Leitura Atual". Botão de Quiz desativado (opacity-50).
             2. Mova o livro anterior para "Desafios Abertos" e ATIVE o quiz dele.
             3. Remova selos de destaque dos livros mais antigos.
-            4. Atualize o fetch de rankings no final do index.html.
+            4. As DATAS de leitura no card devem ser estritamente: "${tarefaCriacao.periodo_leitura}". É proibido inventar datas, use apenas aspas e a string fornecida!
+            5. Atualize o fetch de rankings no script do final do index.html. O novo fetch deve ser estritamente para 'api.php?acao=ranking_${nomeBase}'.
 
             --- REFERÊNCIAS ---
             MOLDE DESIGN: ${moldeDesign}
@@ -110,7 +115,7 @@ async function iniciarAutomacao() {
             1. Localize o card de ${tarefaQuiz.livro} no index.html.
             2. Remova as classes 'opacity-50' e 'pointer-events-none' do botão de Quiz desse card.
             3. Mude o selo visual de 'Leitura Atual' para 'Desafio Aberto'.
-            4. Garanta que a função fetch('api.php?acao=ranking_${tarefaQuiz.livro.toLowerCase()}') esteja presente e ativa no JavaScript no final do arquivo.
+            4. Garanta que a função fetch('api.php?acao=ranking_${nomeBase}') esteja presente e ativa no JavaScript no final do arquivo.
             
             --- REFERÊNCIA ---
             INDEX ATUAL: ${indexAtual}
@@ -152,8 +157,8 @@ async function iniciarAutomacao() {
             const livroHtml = livroMatch[1].replace(/^```html/i, '').replace(/```$/, '').trim();
             const quizHtml = quizMatch[1].replace(/^```html/i, '').replace(/```$/, '').trim();
             
-            fs.writeFileSync(path.join(hostingerDir, `${tarefaCriacao.livro.toLowerCase()}.html`), livroHtml);
-            fs.writeFileSync(path.join(hostingerDir, `quiz_${tarefaCriacao.livro.toLowerCase()}.html`), quizHtml);
+            fs.writeFileSync(path.join(hostingerDir, `${nomeBase}.html`), livroHtml);
+            fs.writeFileSync(path.join(hostingerDir, `quiz_${nomeBase}.html`), quizHtml);
             
             // Marca a criação como concluída
             tarefaCriacao.status = "concluido";
