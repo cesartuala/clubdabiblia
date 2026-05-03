@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz 2 Tessalonicenses | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        .glass-card { background: rgba(15, 15, 35, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(8, 145, 178, 0.2); transition: all 0.4s ease; }
+        .cyan-glow { text-shadow: 0 0 15px rgba(8, 145, 178, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); background-color: rgba(8, 145, 178, 0.15); border-color: #0891b2; }
+        .option-correct { background-color: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+        .option-wrong { background-color: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #f87171 !important; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="w-full z-50 p-6 flex justify-between items-center relative">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0a0a1a] border border-cyan-500/50 text-cyan-400 hover:bg-cyan-500 hover:text-black transition-all">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-church text-cyan-500 text-xl"></i>
+            <span class="font-serif text-white text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl w-full flex flex-col relative overflow-hidden shadow-[0_0_40px_rgba(8,145,178,0.15)]">
+            <div class="h-1 w-full bg-gradient-to-r from-cyan-600 via-sky-500 to-blue-500" id="progressBar"></div>
+            
+            <div class="p-6 md:p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b border-cyan-500/20 pb-4">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white cyan-glow">Quiz: 2 Tessalonicenses</h1>
+                    <span id="questionCounter" class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full text-xs font-bold tracking-widest border border-cyan-500/30">1 / 10</span>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="questionText" class="text-lg md:text-xl text-slate-200 mb-6 font-light leading-relaxed"></div>
+                    <div id="optionsContainer" class="space-y-3"></div>
+                    <div id="feedbackContainer" class="mt-6 p-4 rounded-lg hidden text-sm leading-relaxed border"></div>
+
+                    <button id="nextBtn" class="mt-8 w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-lg transition uppercase tracking-widest hidden shadow-lg shadow-cyan-900/50">
+                        Próxima Pergunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-col items-center text-center py-8">
+                    <i class="fa-solid fa-clock text-6xl text-cyan-400 mb-4 drop-shadow-[0_0_15px_rgba(8,145,178,0.6)]"></i>
+                    <h2 class="font-serif text-3xl text-white mb-2">Firmeza na Verdade!</h2>
+                    <p class="text-slate-300 text-lg mb-6">Você acertou <span id="finalScore" class="text-cyan-400 font-bold text-2xl">0</span> de 10 perguntas.</p>
+                    
+                    <div class="w-full max-w-sm bg-slate-900/80 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xs uppercase tracking-widest text-cyan-400 mb-4 font-bold">Salvar no Ranking</h3>
+                        <form id="rankingForm" class="space-y-4">
+                            <input type="hidden" name="acao" value="salvar_quiz_2tessalonicenses">
+                            <input type="hidden" name="pontos" id="inputPontos" value="0">
+                            <input type="hidden" name="acertos" id="inputAcertos" value="0">
+                            <input type="text" name="nome" required placeholder="Seu Nome..." class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white focus:border-cyan-500 focus:outline-none transition text-sm">
+                            <button type="submit" class="w-full bg-gradient-to-r from-cyan-600 to-blue-500 text-white font-bold py-2 rounded transition uppercase tracking-widest text-xs shadow-lg">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const allQuizQuestions = [
+            {
+                q: "Qual o principal motivo da gratidão de Paulo pelos tessalonicenses no capítulo 1?",
+                options: [
+                    { t: "Sua riqueza material.", c: false, r: "Paulo expressa gratidão pelo notável crescimento da fé e do amor que eles tinham uns pelos outros, mesmo em meio a tribulações (2 Ts 1:3)." },
+                    { t: "Sua fama na região.", c: false, r: "Paulo expressa gratidão pelo notável crescimento da fé e do amor que eles tinham uns pelos outros, mesmo em meio a tribulações (2 Ts 1:3)." },
+                    { t: "Seu crescimento na fé e amor mútuo.", c: true, r: "Paulo expressa gratidão pelo notável crescimento da fé e do amor que eles tinham uns pelos outros, mesmo em meio a tribulações (2 Ts 1:3)." },
+                    { t: "Sua capacidade de pregar para muitos.", c: false, r: "Paulo expressa gratidão pelo notável crescimento da fé e do amor que eles tinham uns pelos outros, mesmo em meio a tribulações (2 Ts 1:3)." }
+                ]
+            },
+            {
+                q: "No capítulo 1, qual a consolação de Paulo para os tessalonicenses que sofriam perseguição?",
+                options: [
+                    { t: "Que a perseguição os faria ricos.", c: false, r: "Paulo os conforta com a certeza do julgamento justo (dikaiokrisia) de Deus, que trará retribuição aos perseguidores e descanso aos fiéis (2 Ts 1:5-7)." },
+                    { t: "Que Deus julgará com justiça os que os oprimem.", c: true, r: "Paulo os conforta com a certeza do julgamento justo (dikaiokrisia) de Deus, que trará retribuição aos perseguidores e descanso aos fiéis (2 Ts 1:5-7)." },
+                    { t: "Que eles deveriam se mudar para outro lugar.", c: false, r: "Paulo os conforta com a certeza do julgamento justo (dikaiokrisia) de Deus, que trará retribuição aos perseguidores e descanso aos fiéis (2 Ts 1:5-7)." },
+                    { t: "Que a perseguição logo terminaria.", c: false, r: "Paulo os conforta com a certeza do julgamento justo (dikaiokrisia) de Deus, que trará retribuição aos perseguidores e descanso aos fiéis (2 Ts 1:5-7)." }
+                ]
+            },
+            {
+                q: "O que Paulo menciona que acontecerá antes da vinda do Dia do Senhor, no capítulo 2?",
+                options: [
+                    { t: "Um grande avivamento mundial.", c: false, r: "Paulo afirma claramente que a apostasia (rebelião ou abandono da fé) virá primeiro, seguida pela revelação do homem da iniquidade (2 Ts 2:3)." },
+                    { t: "A construção de um novo templo em Jerusalém.", c: false, r: "Paulo afirma claramente que a apostasia (rebelião ou abandono da fé) virá primeiro, seguida pela revelação do homem da iniquidade (2 Ts 2:3)." },
+                    { t: "Uma grande apostasia e a revelação do 'homem da iniquidade'.", c: true, r: "Paulo afirma claramente que a apostasia (rebelião ou abandono da fé) virá primeiro, seguida pela revelação do homem da iniquidade (2 Ts 2:3)." },
+                    { t: "A conversão de todas as nações a Cristo.", c: false, r: "Paulo afirma claramente que a apostasia (rebelião ou abandono da fé) virá primeiro, seguida pela revelação do homem da iniquidade (2 Ts 2:3)." }
+                ]
+            },
+            {
+                q: "Quem ou o que é descrito como 'o que detém' ou 'ho katechon' no capítulo 2, impedindo a revelação do homem da iniquidade?",
+                options: [
+                    { t: "O poder do Império Romano.", c: false, r: "Paulo não dá um nome explícito, mantendo o ho katechon (o que detém) como um mistério, mas é uma força poderosa que impede a manifestação do mal absoluto (2 Ts 2:6-7)." },
+                    { t: "Uma figura angelical específica.", c: false, r: "Paulo não dá um nome explícito, mantendo o ho katechon (o que detém) como um mistério, mas é uma força poderosa que impede a manifestação do mal absoluto (2 Ts 2:6-7)." },
+                    { t: "Paulo não especifica, mas é uma força que restringe o mal.", c: true, r: "Paulo não dá um nome explícito, mantendo o ho katechon (o que detém) como um mistério, mas é uma força poderosa que impede a manifestação do mal absoluto (2 Ts 2:6-7)." },
+                    { t: "Os apóstolos da igreja primitiva.", c: false, r: "Paulo não dá um nome explícito, mantendo o ho katechon (o que detém) como um mistério, mas é uma força poderosa que impede a manifestação do mal absoluto (2 Ts 2:6-7)." }
+                ]
+            },
+            {
+                q: "Qual o destino daqueles que não creram na verdade e tiveram prazer na iniquidade, segundo o capítulo 2?",
+                options: [
+                    { t: "Serão milagrosamente convertidos no último momento.", c: false, r: "Paulo afirma que, por não amarem a verdade, Deus lhes enviará um forte engano para que creiam na mentira e sejam julgados (2 Ts 2:10-12)." },
+                    { t: "Deus lhes enviará a operação do erro para que creiam na mentira.", c: true, r: "Paulo afirma que, por não amarem a verdade, Deus lhes enviará um forte engano para que creiam na mentira e sejam julgados (2 Ts 2:10-12)." },
+                    { t: "Serão recompensados pela sua fidelidade.", c: false, r: "Paulo afirma que, por não amarem a verdade, Deus lhes enviará um forte engano para que creiam na mentira e sejam julgados (2 Ts 2:10-12)." },
+                    { t: "Terão uma segunda chance após o julgamento.", c: false, r: "Paulo afirma que, por não amarem a verdade, Deus lhes enviará um forte engano para que creiam na mentira e sejam julgados (2 Ts 2:10-12)." }
+                ]
+            },
+            {
+                q: "No capítulo 3, por que Paulo pede que os tessalonicenses orem por ele e seus companheiros?",
+                options: [
+                    { t: "Para que fiquem ricos e famosos.", c: false, r: "Ele pede oração para que a mensagem do Evangelho continue a avançar sem obstáculos e para proteção contra pessoas perversas (2 Ts 3:1-2)." },
+                    { t: "Para que a palavra do Senhor se propague rapidamente e seja glorificada, e para serem livrados de homens maus.", c: true, r: "Ele pede oração para que a mensagem do Evangelho continue a avançar sem obstáculos e para proteção contra pessoas perversas (2 Ts 3:1-2)." },
+                    { t: "Para que tenham uma vida tranquila sem perseguições.", c: false, r: "Ele pede oração para que a mensagem do Evangelho continue a avançar sem obstáculos e para proteção contra pessoas perversas (2 Ts 3:1-2)." },
+                    { t: "Para que sua saúde melhore.", c: false, r: "Ele pede oração para que a mensagem do Evangelho continue a avançar sem obstáculos e para proteção contra pessoas perversas (2 Ts 3:1-2)." }
+                ]
+            },
+            {
+                q: "Qual é a exortação de Paulo aos que estavam 'desordenados' e não queriam trabalhar, no capítulo 3?",
+                options: [
+                    { t: "Que a igreja deveria sustentá-los.", c: false, r: "Paulo os instrui a trabalhar em silêncio e a comer o fruto do seu próprio trabalho, em vez de serem ociosos (2 Ts 3:10-12). A palavra grega é argein, para não ser preguiçoso." },
+                    { t: "Que esperassem passivamente pela volta de Cristo.", c: false, r: "Paulo os instrui a trabalhar em silêncio e a comer o fruto do seu próprio trabalho, em vez de serem ociosos (2 Ts 3:10-12). A palavra grega é argein, para não ser preguiçoso." },
+                    { t: "Que trabalhassem tranquilamente para comer seu próprio pão.", c: true, r: "Paulo os instrui a trabalhar em silêncio e a comer o fruto do seu próprio trabalho, em vez de serem ociosos (2 Ts 3:10-12). A palavra grega é argein, para não ser preguiçoso." },
+                    { t: "Que se dedicassem apenas à oração.", c: false, r: "Paulo os instrui a trabalhar em silêncio e a comer o fruto do seu próprio trabalho, em vez de serem ociosos (2 Ts 3:10-12). A palavra grega é argein, para não ser preguiçoso." }
+                ]
+            },
+            {
+                q: "Paulo destaca uma característica de Deus no capítulo 3, oferecendo segurança aos crentes. Qual é?",
+                options: [
+                    { t: "Sua onisciência.", c: false, r: "Mas fiel é o Senhor, que vos confirmará, e guardará do maligno (2 Ts 3:3)." },
+                    { t: "Sua ira.", c: false, r: "Mas fiel é o Senhor, que vos confirmará, e guardará do maligno (2 Ts 3:3)." },
+                    { t: "Sua fidelidade.", c: true, r: "Mas fiel é o Senhor, que vos confirmará, e guardará do maligno (2 Ts 3:3)." },
+                    { t: "Sua paciência infinita.", c: false, r: "Mas fiel é o Senhor, que vos confirmará, e guardará do maligno (2 Ts 3:3)." }
+                ]
+            },
+            {
+                q: "Segundo 2 Tessalonicenses, a vinda do Senhor será acompanhada por qual tipo de manifestação?",
+                options: [
+                    { t: "Uma luz suave e silenciosa.", c: false, r: "Cristo virá com os anjos do seu poder, em chama de fogo, tomando vingança dos que não conhecem a Deus e dos que não obedecem ao evangelho (2 Ts 1:7-8)." },
+                    { t: "Fogo vingador e poder glorioso.", c: true, r: "Cristo virá com os anjos do seu poder, em chama de fogo, tomando vingança dos que não conhecem a Deus e dos que não obedecem ao evangelho (2 Ts 1:7-8)." },
+                    { t: "Um grande banquete para todos.", c: false, r: "Cristo virá com os anjos do seu poder, em chama de fogo, tomando vingança dos que não conhecem a Deus e dos que não obedecem ao evangelho (2 Ts 1:7-8)." },
+                    { t: "Apenas um pequeno tremor de terra.", c: false, r: "Cristo virá com os anjos do seu poder, em chama de fogo, tomando vingança dos que não conhecem a Deus e dos que não obedecem ao evangelho (2 Ts 1:7-8)." }
+                ]
+            },
+            {
+                q: "Por que alguns tessalonicenses estavam 'desordenados' (ociosos) segundo a carta?",
+                options: [
+                    { t: "Por estarem doentes.", c: false, r: "O contexto sugere que a ansiedade sobre a volta de Cristo levou alguns a abandonar o trabalho e se intrometer na vida alheia (2 Ts 3:11). O termo usado para 'ordem' é parangelia, referindo-se a uma ordem militar ou comando." },
+                    { t: "Por preguiça e uma interpretação errada da iminência da volta de Cristo.", c: true, r: "O contexto sugere que a ansiedade sobre a volta de Cristo levou alguns a abandonar o trabalho e se intrometer na vida alheia (2 Ts 3:11). O termo usado para 'ordem' é parangelia, referindo-se a uma ordem militar ou comando." },
+                    { t: "Por falta de oportunidades de emprego.", c: false, r: "O contexto sugere que a ansiedade sobre a volta de Cristo levou alguns a abandonar o trabalho e se intrometer na vida alheia (2 Ts 3:11). O termo usado para 'ordem' é parangelia, referindo-se a uma ordem militar ou comando." },
+                    { t: "Porque estavam se dedicando demais à evangelização.", c: false, r: "O contexto sugere que a ansiedade sobre a volta de Cristo levou alguns a abandonar o trabalho e se intrometer na vida alheia (2 Ts 3:11). O termo usado para 'ordem' é parangelia, referindo-se a uma ordem militar ou comando." }
+                ]
+            },
+            {
+                q: "Qual a expressão que Paulo usa para descrever a glória dos santos no Dia do Senhor?",
+                options: [
+                    { t: "Coroas de ouro e honra.", c: false, r: "Ele diz que Jesus virá 'para ser glorificado nos seus santos e para se fazer admirável em todos os que creem' (2 Ts 1:10)." },
+                    { t: "Admirado em seus santos.", c: true, r: "Ele diz que Jesus virá 'para ser glorificado nos seus santos e para se fazer admirável em todos os que creem' (2 Ts 1:10)." },
+                    { t: "Pérolas e joias reluzentes.", c: false, r: "Ele diz que Jesus virá 'para ser glorificado nos seus santos e para se fazer admirável em todos os que creem' (2 Ts 1:10)." },
+                    { t: "Exaltado sobre a terra.", c: false, r: "Ele diz que Jesus virá 'para ser glorificado nos seus santos e para se fazer admirável em todos os que creem' (2 Ts 1:10)." }
+                ]
+            },
+            {
+                q: "A qual 'tradição' Paulo exorta os crentes a se aterem, no capítulo 2?",
+                options: [
+                    { t: "Às tradições dos anciãos de Israel.", c: false, r: "Assim, irmãos, estai firmes e conservai as tradições que vos foram ensinadas, seja por palavra, seja por epístola nossa (2 Ts 2:15)." },
+                    { t: "Às tradições pagãs locais.", c: false, r: "Assim, irmãos, estai firmes e conservai as tradições que vos foram ensinadas, seja por palavra, seja por epístola nossa (2 Ts 2:15)." },
+                    { t: "Às tradições que lhes foram ensinadas, seja por palavra ou por epístola.", c: true, r: "Assim, irmãos, estai firmes e conservai as tradições que vos foram ensinadas, seja por palavra, seja por epístola nossa (2 Ts 2:15)." },
+                    { t: "Às novas revelações proféticas.", c: false, r: "Assim, irmãos, estai firmes e conservai as tradições que vos foram ensinadas, seja por palavra, seja por epístola nossa (2 Ts 2:15)." }
+                ]
+            },
+            {
+                q: "Qual é a base para a eleição e salvação dos tessalonicenses, conforme o capítulo 2?",
+                options: [
+                    { t: "Suas próprias boas obras.", c: false, r: "Deus vos escolheu desde o princípio para a salvação, em santificação do Espírito e fé da verdade (2 Ts 2:13)." },
+                    { t: "A purificação do templo.", c: false, r: "Deus vos escolheu desde o princípio para a salvação, em santificação do Espírito e fé da verdade (2 Ts 2:13)." },
+                    { t: "A santificação do Espírito e a fé na verdade.", c: true, r: "Deus vos escolheu desde o princípio para a salvação, em santificação do Espírito e fé da verdade (2 Ts 2:13)." },
+                    { t: "Seu status social.", c: false, r: "Deus vos escolheu desde o princípio para a salvação, em santificação do Espírito e fé da verdade (2 Ts 2:13)." }
+                ]
+            },
+            {
+                q: "Para aqueles que se recusam a obedecer às instruções de Paulo no capítulo 3, qual a atitude recomendada?",
+                options: [
+                    { t: "Expulsá-los imediatamente da comunidade.", c: false, r: "Mas, se alguém não obedecer à nossa palavra por esta carta, notai o tal e não vos mistureis com ele, para que se envergonhe. Todavia, não o tenhais como inimigo, mas admoestai-o como irmão (2 Ts 3:14-15)." },
+                    { t: "Não os tratar como inimigos, mas admoestá-los como irmãos.", c: true, r: "Mas, se alguém não obedecer à nossa palavra por esta carta, notai o tal e não vos mistureis com ele, para que se envergonhe. Todavia, não o tenhais como inimigo, mas admoestai-o como irmão (2 Ts 3:14-15)." },
+                    { t: "Ignorá-los completamente.", c: false, r: "Mas, se alguém não obedecer à nossa palavra por esta carta, notai o tal e não vos mistureis com ele, para que se envergonhe. Todavia, não o tenhais como inimigo, mas admoestai-o como irmão (2 Ts 3:14-15)." },
+                    { t: "Reportá-los às autoridades romanas.", c: false, r: "Mas, se alguém não obedecer à nossa palavra por esta carta, notai o tal e não vos mistureis com ele, para que se envergonhe. Todavia, não o tenhais como inimigo, mas admoestai-o como irmão (2 Ts 3:14-15)." }
+                ]
+            },
+            {
+                q: "Qual é a saudação final de Paulo que ele mesmo escreve como sinal de autenticidade?",
+                options: [
+                    { t: "Graça e paz sejam convosco.", c: false, r: "A saudação é de minha própria mão, de Paulo, o que é o sinal em todas as minhas epístolas; assim escrevo (2 Ts 3:17)." },
+                    { t: "Amém.", c: false, r: "A saudação é de minha própria mão, de Paulo, o que é o sinal em todas as minhas epístolas; assim escrevo (2 Ts 3:17)." },
+                    { t: "A saudação é de minha própria mão, de Paulo, o que é o sinal em todas as minhas epístolas.", c: true, r: "A saudação é de minha própria mão, de Paulo, o que é o sinal em todas as minhas epístolas; assim escrevo (2 Ts 3:17)." },
+                    { t: "O amor de Cristo vos constranja.", c: false, r: "A saudação é de minha própria mão, de Paulo, o que é o sinal em todas as minhas epístolas; assim escrevo (2 Ts 3:17)." }
+                ]
+            }
+        ];
+
+        let quizData = [];
+        let currentQ = 0; let score = 0; let answered = false;
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function initializeQuiz() {
+            shuffleArray(allQuizQuestions);
+            quizData = allQuizQuestions.slice(0, 10); // Use only 10 questions
+            currentQ = 0;
+            score = 0;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false; feedbackContainer.classList.add('hidden'); nextBtn.classList.add('hidden');
+            const qData = quizData[currentQ];
+            document.getElementById('questionCounter').innerText = `${currentQ + 1} / ${quizData.length}`;
+            questionText.innerText = qData.q;
+            optionsContainer.innerHTML = '';
+            
+            const shuffledOptions = [...qData.options];
+            shuffleArray(shuffledOptions); // Shuffle options for each question
+            
+            shuffledOptions.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-lg bg-slate-800/80 border border-slate-600 text-slate-300 text-sm md:text-base';
+                btn.innerText = opt.t;
+                btn.onclick = () => selectOption(btn, opt);
+                optionsContainer.appendChild(btn);
+            });
+            progressBar.style.width = `${((currentQ) / quizData.length) * 100}%`;
+        }
+
+        function selectOption(btn, opt) {
+            if (answered) return; answered = true;
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedbackContainer.classList.remove('hidden', 'bg-red-900/30', 'border-red-500/50', 'bg-green-900/30', 'border-green-500/50', 'text-green-200', 'text-red-200');
+            if (opt.c) {
+                score += 1; // Increment score by 1 for correct answer, total points will be score * 10
+                btn.classList.add('option-correct');
+                feedbackContainer.classList.add('bg-green-900/30', 'border-green-500/50', 'text-green-200');
+                feedbackContainer.innerHTML = `<strong>Correto!</strong> ${opt.r}`;
+            } else {
+                btn.classList.add('option-wrong');
+                feedbackContainer.classList.add('bg-red-900/30', 'border-red-500/50', 'text-red-200');
+                feedbackContainer.innerHTML = `<strong>Incorreto.</strong> ${opt.r}`;
+                buttons.forEach((b) => { 
+                    const originalOption = quizData[currentQ].options.find(o => o.t === b.innerText);
+                    if(originalOption && originalOption.c) {
+                        b.classList.add('option-correct'); 
+                    }
+                });
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.onclick = () => {
+            currentQ++;
+            if (currentQ < quizData.length) loadQuestion();
+            else showResults();
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            document.getElementById('quizContainer').classList.add('hidden');
+            const res = document.getElementById('resultContainer');
+            res.classList.remove('hidden'); res.classList.add('flex');
+            document.getElementById('finalScore').innerText = score; // Display number of correct answers
+            document.getElementById('inputPontos').value = score * 10; // Save points (e.g., 10 points per correct answer)
+            document.getElementById('inputAcertos').value = score; // Save number of correct answers
+        }
+
+        document.getElementById('rankingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button'); btn.disabled = true; btn.innerText = "Salvando...";
+            fetch('api.php', { method: 'POST', body: new FormData(this) })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if(data.sucesso) {
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Erro ao salvar ranking: ' + (data.mensagem || 'Resposta inválida.'));
+                    btn.disabled = false;
+                    btn.innerText = "Enviar";
+                }
+            })
+            .catch(error => {
+                console.error("Erro ao salvar ranking:", error);
+                alert('Erro de conexão ao salvar ranking. Verifique sua rede.');
+                btn.disabled = false;
+                btn.innerText = "Enviar";
+            });
+        };
+
+        // Particles
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, sx: Math.random()*0.5-0.25, sy: Math.random()*0.5-0.25 });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(8, 145, 178, 0.2)"; /* Cyan-600 */
+            particles.forEach(p => { p.x+=p.sx; p.y+=p.sy; if(p.x<0||p.x>canvas.width)p.sx*=-1; if(p.y<0||p.y>canvas.height)p.sy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        initializeQuiz();
+    </script>
+</body>
+</html>

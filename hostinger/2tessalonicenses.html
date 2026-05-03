@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2 Tessalonicenses | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] },
+                    colors: { 
+                        divine: { 400: '#0891b2' } /* Cyan */
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        
+        .glass-panel { background: rgba(10, 5, 25, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(8, 145, 178, 0.2); }
+        .cyan-glow { text-shadow: 0 0 15px rgba(8, 145, 178, 0.5); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .rich-text strong { color: #22d3ee; font-weight: 700; }
+        .rich-text .ref { color: #0891b2; font-size: 0.9em; font-family: monospace; background: rgba(8, 145, 178, 0.15); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(8, 145, 178, 0.3); }
+        .rich-text h3 { color: #06b6d4; font-weight: bold; margin-top: 2rem; margin-bottom: 0.75rem; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.15em; border-bottom: 1px solid rgba(8, 145, 178, 0.3); padding-bottom: 6px; }
+        .rich-text ul { list-style-type: none; padding-left: 0; margin-top: 15px; margin-bottom: 20px; }
+        .rich-text li { margin-bottom: 15px; line-height: 1.8; text-align: justify; border-left: 3px solid #06b6d4; padding-left: 20px; background: linear-gradient(to right, rgba(8,145,178,0.05), transparent); padding-top: 5px; padding-bottom: 5px; }
+        .rich-text p { margin-bottom: 20px; line-height: 2; text-align: justify; font-size: 1.05rem; color: #cbd5e1; }
+        .rich-text blockquote { border-left: 4px solid #06b6d4; padding-left: 20px; margin: 20px 0; font-style: italic; color: #22d3ee; background: rgba(8, 145, 178, 0.05); padding: 15px; border-radius: 0 8px 8px 0; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050510; }
+        ::-webkit-scrollbar-thumb { background: #0c4a6e; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0891b2; }
+
+        .recording-pulse { animation: recPulse 1.5s infinite; background-color: #ef4444; border-color: #ef4444; color: white; }
+        @keyframes recPulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @keyframes pop { 50% { transform: scale(1.4); } }
+        .reacted-anim { animation: pop 0.3s ease-out; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="fixed top-0 w-full z-50 p-4 md:p-6 flex flex-col md:flex-row justify-between items-center bg-gradient-to-b from-[#050510]/95 to-[#050510]/80 backdrop-blur-md border-b border-cyan-900/40 transition-all">
+        <div class="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto justify-between md:justify-start">
+            <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0f0a1a] border border-cyan-500/50 text-cyan-400 hover:bg-cyan-500 hover:text-black transition-all shadow-[0_0_15px_rgba(8,145,178,0.1)]">
+                <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+                <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-church text-cyan-500 text-xl md:text-2xl"></i>
+                <span class="font-serif text-white text-lg md:text-xl tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto justify-end">
+            <span class="hidden md:inline text-xs text-slate-400 uppercase tracking-widest">Navegar:</span>
+            <select id="chapterSelect" onchange="loadChapter(this.value)" class="w-full md:w-auto bg-[#0f0a1a] text-cyan-400 border border-cyan-500/40 rounded px-4 py-2 text-sm uppercase tracking-widest focus:outline-none focus:border-cyan-500 cursor-pointer">
+                <option value="intro_book">★ Sobre o Livro</option>
+                <option value="intro_author">✎ Sobre o Autor</option>
+                <option disabled>──────────</option>
+                <option value="2tessalonicenses_1">Capítulo 01</option>
+                <option value="2tessalonicenses_2">Capítulo 02</option>
+                <option value="2tessalonicenses_3">Capítulo 03</option>
+            </select>
+        </div>
+    </nav>
+
+    <header class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-32 md:pt-20">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1510425330821-2ca3c085b4f6?q=80&w=2000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center opacity-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#050510] via-[#050510]/80 to-transparent"></div>
+        
+        <div class="z-10 reveal active space-y-4 max-w-5xl w-full">
+            <h2 class="text-cyan-400 tracking-[0.5em] text-[10px] md:text-sm uppercase animate-pulse mb-4 font-bold">Clube da Bíblia Apresenta</h2>
+            
+            <div id="dateBadge" class="hidden inline-flex items-center gap-2 border border-cyan-500/50 rounded-full px-4 py-1 mb-4 bg-cyan-500/10 backdrop-blur-sm transition-all duration-700 opacity-0">
+                <i class="fa-regular fa-calendar text-cyan-400 text-xs"></i>
+                <span class="text-cyan-300 text-xs tracking-widest uppercase font-bold">Leitura: <span id="dateValue" class="text-white"></span></span>
+            </div>
+
+            <h1 id="heroTitle" class="font-serif text-4xl md:text-7xl text-white mb-2 cyan-glow transition-all duration-700 uppercase leading-tight px-2"></h1>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 text-slate-400 mt-8 pt-8 border-t border-cyan-900/40 w-full max-w-3xl mx-auto">
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Idealizado por</p>
+                    <strong class="text-cyan-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-cyan-300 transition">Fellipe Gomes Andrade</strong>
+                </div>
+                <span class="hidden md:block h-8 w-[1px] bg-gradient-to-b from-transparent via-cyan-900 to-transparent"></span>
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Desenvolvido por</p>
+                    <strong class="text-cyan-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-cyan-300 transition">Cesar Tuala</strong>
+                </div>
+            </div>
+
+            <p id="heroDesc" class="text-sm md:text-xl text-slate-300 max-w-2xl mx-auto pt-8 font-light italic transition-all duration-700 px-4"></p>
+            
+            <div class="pt-10">
+                <button onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" class="animate-bounce text-cyan-500 text-2xl">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="content" class="max-w-4xl mx-auto px-4 py-10 md:py-20 space-y-20 md:space-y-32 min-h-screen"></main>
+
+    <section id="community-section" class="w-full bg-[#07030f] border-t-4 border-cyan-600 py-16 mb-0 relative shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <h3 class="font-serif text-3xl md:text-4xl text-cyan-500 mb-2 uppercase tracking-widest cyan-glow">
+                    <i class="fa-solid fa-users-line mr-3"></i>Comunidade
+                </h3>
+                <p class="text-slate-400 text-sm italic">"Compartilhe o que Deus falou ao seu coração"</p>
+                <div class="h-1 w-24 bg-gradient-to-r from-transparent via-cyan-600 to-transparent mx-auto mt-4"></div>
+            </div>
+
+            <div class="glass-panel p-6 md:p-8 rounded-xl mb-12 border border-slate-800 shadow-2xl bg-[#0a0514]/80">
+                <form id="commentForm" class="space-y-5">
+                    <input type="hidden" id="formChapterKey" name="capitulo">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="col-span-1">
+                            <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Nome</label>
+                            <input type="text" name="nome" required class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-cyan-500 focus:outline-none transition">
+                        </div>
+                        <div class="flex gap-3 col-span-1 md:col-span-2 items-end">
+                            <label class="flex-1 cursor-pointer bg-black/50 border border-slate-700 hover:border-cyan-500 hover:bg-[#110a24] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-camera group-hover:text-cyan-400"></i> Foto
+                                <input type="file" name="foto" accept="image/*" class="hidden" onchange="previewFile(this)">
+                            </label>
+                            <button type="button" id="recordBtn" class="flex-1 bg-black/50 border border-slate-700 hover:border-red-500 hover:bg-[#110a24] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-microphone group-hover:text-red-400"></i> <span id="recordText">Gravar Áudio</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="filePreview" class="text-xs text-cyan-400 hidden bg-black p-2 rounded border border-cyan-500/30"></div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Comentário</label>
+                        <textarea name="mensagem" class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-cyan-500 focus:outline-none h-28 resize-none transition"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-cyan-800 to-cyan-600 hover:from-cyan-600 hover:to-cyan-500 text-white font-bold py-4 rounded-lg transition uppercase tracking-[0.2em] text-sm shadow-lg shadow-black/50 transform hover:-translate-y-1">
+                        Publicar Comentário
+                    </button>
+                </form>
+            </div>
+            <div id="commentsList" class="space-y-6"></div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-800 bg-black py-12 text-center relative z-10">
+        <div class="flex flex-col items-center justify-center space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="fa-solid fa-church text-cyan-600 text-xl"></i>
+                <span class="font-serif text-slate-300 text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+            <p class="text-slate-700 text-[10px] tracking-widest uppercase mt-4">&copy; 2026 Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="imageModal" class="fixed inset-0 z-[100] bg-black/95 hidden flex justify-center items-center p-4 backdrop-blur-sm transition-opacity duration-300" onclick="closeImage()">
+        <div class="relative max-w-4xl w-full flex justify-center">
+            <button onclick="closeImage()" class="absolute -top-12 right-0 text-white text-3xl hover:text-cyan-500 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modalImg" src="" class="max-h-[85vh] max-w-full rounded-lg shadow-[0_0_50px_rgba(8,145,178,0.3)] border-2 border-cyan-500/20 object-contain">
+        </div>
+    </div>
+
+    <script>
+        const bibleData = {
+            "intro_book": {
+                title: "A SEGUNDA CARTA AOS TESSALONICENSES",
+                date: null,
+                desc: "<span class='text-xs uppercase tracking-[0.3em] text-cyan-400 not-italic block mb-4'>Introdução: Sobre o Livro</span>\"A firmeza na tribulação e a expectativa da vinda do Senhor.\"",
+                blocks: [
+                    {
+                        title: "Clarificando a Escatologia",
+                        verse: "Porque a palavra do Senhor corre, e é glorificada, como também o é entre vós. (2 Ts 3:1)",
+                        exegesis: `
+                            <p>Após a primeira carta aos Tessalonicenses, Paulo soube que a igreja estava enfrentando dois problemas principais: intensificação da perseguição e confusão doutrinária sobre a volta de Cristo, o que levava alguns à ociosidade.</p>
+                            
+                            <h3>1. Contexto e Propósito</h3>
+                            <ul>
+                                <li>Paulo escreveu a Segunda Epístola aos Tessalonicenses de Corinto, provavelmente pouco tempo depois da primeira (cerca de 51-52 d.C.). Ele havia recebido relatórios sobre os progressos da igreja, mas também sobre novas preocupações.</li>
+                                <li><strong>Consolo na Perseguição:</strong> A perseguição não havia diminuído, e Paulo os encoraja a perseverar, assegurando-lhes da justiça de Deus que trará descanso aos fiéis e retribuição aos perseguidores.</li>
+                                <li><strong>Correção Doutrinária:</strong> Havia rumores ou ensinos falsos de que o Dia do Senhor já havia chegado, causando pânico e confusão. Paulo corrige essa ideia, explicando que certos eventos devem preceder a vinda do Senhor.</li>
+                                <li><strong>Combate à Ociosidade:</strong> Alguns crentes, talvez por causa da expectativa imediata da volta de Cristo, haviam abandonado o trabalho, tornando-se um fardo para a comunidade. Paulo os admoesta firmemente a trabalhar.</li>
+                            </ul>
+                            
+                            <h3>2. Temas Chave</h3>
+                            <ul>
+                                <li><strong>A Justiça de Deus:</strong> A certeza de que Deus é justo e trará julgamento sobre os ímpios e recompensa aos justos.</li>
+                                <li><strong>A Vinda do Senhor:</strong> Detalhes sobre os eventos que precederão a segunda vinda, incluindo a *apostasia* (ἀποστασία - transl. Apostasia - Significado: Abandono da fé) e a revelação do 'homem da iniquidade'.</li>
+                                <li><strong>Dignidade do Trabalho:</strong> A importância de uma vida ordeira e produtiva, refutando a ideia de que a iminência da volta de Cristo justifica a ociosidade.</li>
+                            </ul>
+
+                            <h3>3. Relevância Hoje</h3>
+                            <ul>
+                                <li>Esta carta é vital para a compreensão da escatologia bíblica e oferece princípios práticos para a vida cristã em meio à espera. Ela nos lembra da soberania de Deus sobre a história, da necessidade de perseverar na fé, do perigo da especulação sobre o futuro e da santidade do trabalho.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "intro_author": {
+                title: "SOBRE O AUTOR",
+                date: null,
+                desc: "\"Paulo, Silvano e Timóteo, à igreja dos tessalonicenses...\"",
+                blocks: [
+                    {
+                        title: "O Apóstolo da Paciência e da Ordem",
+                        verse: "Mas fiel é o Senhor, que vos confirmará e guardará do maligno. (2 Ts 3:3)",
+                        exegesis: `
+                            <p>A autoria paulina de 2 Tessalonicenses é largamente aceita, sendo uma continuação natural da primeira carta, mas com um tom mais urgente em relação à disciplina e à escatologia.</p>
+
+                            <h3>1. Autoria e Companheiros</h3>
+                            <ul>
+                                <li>Paulo é o principal autor, mas a carta começa com a saudação de Silvano (Silas) e Timóteo, que o acompanharam em sua segunda viagem missionária e foram fundamentais no estabelecimento da igreja em Tessalônica (Atos 17). Esses nomes validam a carta e mostram um trabalho em equipe.</li>
+                            </ul>
+
+                            <h3>2. A Preocupação de um Pai Espiritual</h3>
+                            <ul>
+                                <li>A carta revela o coração pastoral de Paulo. Ele não apenas lida com a teologia, mas também com a vida prática e emocional dos crentes. Sua preocupação com a perseguição que a igreja enfrentava, sua paciência em corrigir entendimentos errados sobre o fim dos tempos e sua firmeza ao lidar com a ociosidade demonstram o cuidado genuíno de um pai espiritual.</li>
+                                <li>A frase "não vos canseis de fazer o bem" (2 Ts 3:13) reflete sua própria vida de serviço incansável, mesmo diante de oposição e sofrimento.</li>
+                            </ul>
+
+                            <h3>3. O Legado da Santidade e Trabalho</h3>
+                            <ul>
+                                <li>Em 2 Tessalonicenses, Paulo reitera seu próprio exemplo de trabalho árduo para não ser um fardo para ninguém (2 Ts 3:8). Este princípio da dignidade do trabalho e da auto-sustentação é uma marca distintiva de seu ensinamento e um legado importante para a ética cristã.</li>
+                                <li>Sua assinatura pessoal no final da carta (2 Ts 3:17) servia como um selo de autenticidade, prevenindo falsificações em um tempo em que cartas apócrifas eram comuns. A *parangelia* (παραγγελία - transl. Parangelia - Significado: Ordem/Instrução) que ele dá é, portanto, de autoridade apostólica e amor pastoral.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "2tessalonicenses_1": {
+                title: "GRATIDÃO, JULGAMENTO E CONSOLAÇÃO",
+                date: "04/05 (Sábado)",
+                desc: "\"Para que sejais havidos por dignos do Reino de Deus, pelo qual também sofreis.\"",
+                blocks: [
+                    {
+                        title: "Perseverança na Aflição e a Justiça Divina",
+                        verse: "De maneira que nós mesmos nos gloriamos de vós nas igrejas de Deus por causa da vossa paciência e fé, em todas as vossas perseguições e aflições que suportais. (2 Ts 1:4)",
+                        exegesis: `
+                            <h3>1. Louvor Pela Fé e Amor</h3>
+                            <ul>
+                                <li>Paulo inicia a carta com uma efusiva ação de graças a Deus pelos tessalonicenses. Ele louva seu "crescimento na fé" e o "aumento do amor" que tinham uns pelos outros. Isso é notável porque o contexto é de intensa perseguição e tribulação (*thlipsis* - θλίψις - transl. Thlipsis - Significado: Aflição/Tribulação). Em vez de esmorecerem, a fé e o amor deles floresciam, servindo de testemunho para outras igrejas.</li>
+                            </ul>
+                            
+                            <h3>2. O Julgamento Justo de Deus</h3>
+                            <ul>
+                                <li>A tribulação que os tessalonicenses suportavam era prova (evidência) do "justo juízo de Deus" (*dikaiokrisia* - δικαιοκρισία - transl. Dikaiokrisia - Significado: Julgamento Justo). Este não é um julgamento para eles, mas sim para os seus perseguidores. Deus, em Sua perfeita justiça, recompensará os que sofrem por Cristo com "repouso" e aplicará retribuição sobre aqueles que os afligem.</li>
+                                <li>Essa retribuição virá na revelação do Senhor Jesus "com os anjos do seu poder, em chama de fogo". É um evento de grande glória e majestade, onde Ele "tomará vingança dos que não conhecem a Deus e dos que não obedecem ao evangelho de nosso Senhor Jesus Cristo".</li>
+                            </ul>
+
+                            <h3>3. Consolação e Oração</h3>
+                            <ul>
+                                <li>A mensagem de Paulo oferece grande consolo. Os crentes não estão sofrendo em vão; sua perseverança valida sua dignidade para o Reino de Deus. Além disso, eles não precisam se preocupar com a injustiça presente, pois Deus mesmo se encarregará de fazer justiça de forma definitiva.</li>
+                                <li>Paulo encerra o capítulo com uma oração poderosa, pedindo que Deus os faça dignos de Seu chamado, capacitando-os a cumprir todo o desejo de bondade e a obra da fé com poder, para que o nome de Jesus seja glorificado neles.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "2tessalonicenses_2": {
+                title: "O DIA DO SENHOR E O HOMEM DA INIQUIDADE",
+                date: "05/05 (Domingo)",
+                desc: "\"Ninguém de maneira alguma vos engane; porque não será assim sem que antes venha a apostasia...\"",
+                blocks: [
+                    {
+                        title: "Eventos Precursores e o Mistério da Iniquidade",
+                        verse: "E então será revelado o iníquo, a quem o Senhor desfará pelo assopro da sua boca, e aniquilará pelo esplendor da sua vinda. (2 Ts 2:8)",
+                        exegesis: `
+                            <h3>1. Clarificando o Dia do Senhor</h3>
+                            <ul>
+                                <li>Paulo aborda diretamente a confusão dos tessalonicenses sobre a vinda do Dia do Senhor, possivelmente devido a falsos ensinos ou cartas apócrifas. Ele os exorta a não se perturbarem, pois certos eventos devem ocorrer antes que esse Dia chegue.</li>
+                                <li>Dois grandes eventos são mencionados: a "apostasia" (*apostasia* - ἀποστασία - transl. Apostasia - Significado: Abandono/Rebelião) — uma grande rebelião ou abandono da fé — e a revelação do "homem da iniquidade" (também chamado "homem do pecado" ou "filho da perdição"), uma figura que se oporá a Deus e se exaltará acima de tudo o que é divino.</li>
+                            </ul>
+                            
+                            <h3>2. O Impeditivo (Ho Katechon)</h3>
+                            <ul>
+                                <li>Paulo menciona a existência de algo ou alguém que "o detém" (*ho katechon* - ὁ κατέχων - transl. Ho Katechon - Significado: O que detém/Impede), impedindo a manifestação completa do homem da iniquidade até o tempo determinado por Deus. A identidade desse "impedimento" tem sido objeto de muita discussão teológica, com interpretações que vão desde o Espírito Santo, a Igreja, até o Império Romano. Independentemente de sua identidade, é um poder que restringe o mal.</li>
+                                <li>O homem da iniquidade operará com "toda a eficácia de Satanás, com todo o poder, e sinais, e prodígios da mentira", enganando aqueles que não "receberam o amor da verdade".</li>
+                            </ul>
+
+                            <h3>3. A Escolha Soberana de Deus</h3>
+                            <ul>
+                                <li>Para aqueles que se recusam a amar a verdade, Deus enviará um "poder enganoso" para que creiam na mentira e sejam julgados. Isso sublinha a seriedade da rejeição da verdade divina.</li>
+                                <li>Em contraste, Paulo reafirma a eleição dos tessalonicenses: "Deus vos escolheu desde o princípio para a salvação, em santificação do Espírito e fé da verdade". Essa eleição é para a salvação, através da obra santificadora do Espírito e da fé na verdade do Evangelho, não em obras humanas.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            "2tessalonicenses_3": {
+                title: "EXORTAÇÕES FINAIS E DISCIPLINA",
+                date: "06/05 (Segunda)",
+                desc: "\"O Senhor, porém, é fiel e vos fortalecerá e guardará do maligno.\"",
+                blocks: [
+                    {
+                        title: "Oração, Trabalho e Admoestação Fraterna",
+                        verse: "Ora, nós vos mandamos, irmãos, em nome de nosso Senhor Jesus Cristo, que vos aparteis de todo irmão que andar desordenadamente e não segundo a tradição que de nós recebeu. (2 Ts 3:6)",
+                        exegesis: `
+                            <h3>1. Pedido de Oração e Confiança no Senhor</h3>
+                            <ul>
+                                <li>Paulo inicia o capítulo pedindo oração. Ele solicita que orem para que a Palavra do Senhor (*logos kyriou*) possa "correr rapidamente e ser glorificada" e para que eles sejam libertados de homens maus e perversos. Este pedido mostra a confiança de Paulo no poder da oração e na soberania de Deus para proteger Seus servos.</li>
+                                <li>Ele então afirma a fidelidade do Senhor: "Mas fiel é o Senhor, que vos confirmará e guardará do maligno". Essa é uma poderosa promessa de proteção e fortalecimento em meio às dificuldades.</li>
+                            </ul>
+                            
+                            <h3>2. A Ética do Trabalho</h3>
+                            <ul>
+                                <li>Paulo aborda um problema prático na igreja: alguns crentes estavam "andando desordenadamente" (*argein* - ἀργεῖν - transl. Argein - Significado: Ser preguiçoso/Ocioso), não trabalhando e se intrometendo na vida alheia. Isso provavelmente era resultado de uma compreensão errônea sobre a iminência da volta de Cristo, levando-os a negligenciar suas responsabilidades diárias.</li>
+                                <li>Paulo relembra seu próprio exemplo: ele e seus companheiros trabalharam "com labor e fadiga, noite e dia", para não serem um fardo para ninguém. Ele lhes dá uma clara "ordem" (*parangelia* - παραγγελία - transl. Parangelia - Significado: Ordem/Instrução): "Se alguém não quer trabalhar, também não coma." A vida cristã requer responsabilidade e diligência.</li>
+                            </ul>
+
+                            <h3>3. Admoestação e Bênção Final</h3>
+                            <ul>
+                                <li>Para aqueles que persistem na ociosidade, Paulo instrui a igreja a "notar o tal e não vos mistureis com ele, para que se envergonhe". Contudo, essa disciplina não é para condenação, mas para restauração: "Todavia, não o tenhais como inimigo, mas admoestai-o como irmão".</li>
+                                <li>A carta conclui com a oração de Paulo pela paz e graça do Senhor para todos eles, e com sua saudação pessoal, um selo de autenticidade para a carta, diferenciando-a de possíveis falsificações.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            }
+        };
+
+        // === LÓGICA GERAL ===
+        let currentAudioBlob = null;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        function loadChapter(chapterKey) {
+            const data = bibleData[chapterKey];
+            if (!data) return;
+
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
+            const dateBadge = document.getElementById('dateBadge');
+            const dateValue = document.getElementById('dateValue');
+            const communitySection = document.getElementById('community-section');
+            const formChapterKey = document.getElementById('formChapterKey');
+            
+            heroTitle.style.opacity = '0';
+            heroDesc.style.opacity = '0';
+            dateBadge.style.opacity = '0';
+            
+            setTimeout(() => {
+                if (data.date) {
+                    dateValue.textContent = data.date;
+                    dateBadge.classList.remove('hidden');
+                    communitySection.classList.remove('hidden');
+                    formChapterKey.value = chapterKey;
+                    carregarComentarios(chapterKey);
+                    setTimeout(() => { dateBadge.style.opacity = '1'; }, 100);
+                } else {
+                    dateBadge.classList.add('hidden');
+                    communitySection.classList.add('hidden');
+                }
+
+                heroTitle.innerHTML = data.title;
+                heroDesc.innerHTML = data.desc;
+                heroTitle.style.opacity = '1';
+                heroDesc.style.opacity = '1';
+            }, 300);
+
+            const mainContent = document.getElementById('content');
+            mainContent.innerHTML = ''; 
+
+            data.blocks.forEach((block) => {
+                let borderColor = 'border-cyan-600';
+                let blurTop = 'bg-cyan-600/5';
+                let blurBottom = 'bg-cyan-800/5';
+                let borderPanel = 'border-cyan-900/30';
+
+                const html = `
+                    <section class="reveal max-w-4xl mx-auto w-full relative">
+                        <div class="absolute -inset-4 ${blurTop} to-transparent rounded-3xl blur-xl pointer-events-none"></div>
+                        
+                        <div class="space-y-6 relative z-10">
+                            <div class="text-center mb-10">
+                                <h2 class="text-3xl md:text-5xl font-serif text-white leading-tight mb-6">${block.title}</h2>
+                                <div class="inline-block border-l-4 border-r-4 ${borderColor} px-6 py-4 italic text-slate-300 bg-[#0a0514]/50 shadow-sm max-w-3xl rounded-sm">
+                                    "${block.verse}"
+                                </div>
+                            </div>
+                            
+                            <div class="bg-[#050510]/80 p-8 md:p-12 rounded-xl border ${borderPanel} transition shadow-2xl relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-64 h-64 ${blurTop} rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+                                <div class="absolute bottom-0 left-0 w-64 h-64 ${blurBottom} rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
+                                <div class="rich-text text-slate-300 text-[16px] md:text-lg leading-relaxed relative z-10 font-light">
+                                    ${block.exegesis}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+                mainContent.insertAdjacentHTML('beforeend', html);
+            });
+            resetObservers();
+        }
+
+        function carregarComentarios(capitulo) {
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '<p class="text-center text-slate-500 text-sm animate-pulse">Carregando comentários...</p>';
+
+            fetch(`api.php?acao=listar&capitulo=${capitulo}`)
+            .then(res => res.json())
+            .then(data => {
+                list.innerHTML = '';
+                if(!Array.isArray(data)) {
+                    list.innerHTML = '<p class="text-center text-red-400 text-xs">Erro: Dados de comentários inválidos.</p>';
+                    return;
+                }
+                if(data.length === 0) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
+                }
+                data.forEach(c => {
+                    let mediaHtml = '';
+                    if(c.foto) mediaHtml += `<img src="${c.foto}" onclick="openImage(this.src)" class="mt-4 rounded-lg max-h-48 border border-slate-700 cursor-pointer hover:scale-[1.02] transition shadow-lg">`;
+                    if(c.audio) mediaHtml += `<audio controls src="${c.audio}" class="mt-4 w-full"></audio>`;
+
+                    const jaCurtiu = localStorage.getItem(`reagiu_likes_${c.id}`);
+                    const jaAmem = localStorage.getItem(`reagiu_amem_${c.id}`);
+                    const jaGloria = localStorage.getItem(`reagiu_gloria_${c.id}`);
+
+                    let themeColor = 'text-cyan-400';
+                    let panelBorder = 'hover:border-cyan-500/50';
+
+                    const html = `
+                        <div class="glass-panel p-5 pb-12 rounded-xl border border-slate-800 relative group transition ${panelBorder} bg-[#0a0514]/60">
+                            <div class="flex justify-between items-start mb-3 border-b border-slate-800 pb-2">
+                                <strong class="${themeColor} text-sm tracking-wide font-serif">${c.nome}</strong>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-widest">${new Date(c.data_envio).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed">${c.mensagem}</p>
+                            ${mediaHtml}
+                            
+                            <div class="absolute bottom-3 right-4 flex gap-2">
+                                <button onclick="reagirComentario(${c.id}, 'likes', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaCurtiu ? 'text-red-500 border-red-500/30' : 'text-slate-400 hover:text-red-400'}" ${jaCurtiu ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-heart"></i> <span class="count font-bold">${c.likes || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'amem', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaAmem ? 'text-cyan-400 border-cyan-400/30' : 'text-slate-400 hover:text-cyan-400'}" ${jaAmem ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-hands-praying"></i> <span class="count font-bold">${c.amem || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'gloria', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaGloria ? 'text-blue-500 border-blue-500/30' : 'text-slate-400 hover:text-blue-500'}" ${jaGloria ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-fire"></i> <span class="count font-bold">${c.gloria || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', html);
+                });
+            })
+            .catch(err => {
+                list.innerHTML = '<p class="text-center text-red-400 text-xs">Erro ao carregar comentários. Tente novamente mais tarde.</p>';
+                console.error("Erro ao carregar comentários:", err);
+            });
+        }
+
+        function reagirComentario(id, tipo, btn) {
+            if(localStorage.getItem(`reagiu_${tipo}_${id}`)) return;
+
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('.count');
+            let count = parseInt(countSpan.innerText);
+
+            icon.classList.add('reacted-anim');
+            btn.classList.remove('text-slate-400');
+            
+            if(tipo === 'likes') btn.classList.add('text-red-500', 'border-red-500/30');
+            if(tipo === 'amem') btn.classList.add('text-cyan-400', 'border-cyan-400/30');
+            if(tipo === 'gloria') btn.classList.add('text-blue-500', 'border-blue-500/30');
+
+            countSpan.innerText = count + 1;
+            btn.disabled = true;
+
+            localStorage.setItem(`reagiu_${tipo}_${id}`, 'true');
+
+            const formData = new FormData();
+            formData.append('acao', 'reagir');
+            formData.append('id', id);
+            formData.append('tipo', tipo);
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .catch(err => {
+                console.error("Erro ao reagir ao comentário:", err);
+                alert("Não foi possível registrar sua reação. Tente novamente.");
+                // Revert UI changes on error if desired
+                icon.classList.remove('reacted-anim');
+                btn.classList.add('text-slate-400');
+                if(tipo === 'likes') btn.classList.remove('text-red-500', 'border-red-500/30');
+                if(tipo === 'amem') btn.classList.remove('text-cyan-400', 'border-cyan-400/30');
+                if(tipo === 'gloria') btn.classList.remove('text-blue-500', 'border-blue-500/30');
+                countSpan.innerText = count;
+                btn.disabled = false;
+                localStorage.removeItem(`reagiu_${tipo}_${id}`);
+            });
+        }
+
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+            formData.append('acao', 'salvar');
+            if(currentAudioBlob) {
+                formData.append('audio', currentAudioBlob, 'audio.wav');
+            }
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    this.reset();
+                    document.getElementById('filePreview').innerHTML = '';
+                    document.getElementById('filePreview').classList.add('hidden');
+                    currentAudioBlob = null;
+                    document.getElementById('recordText').innerText = "Gravar Áudio";
+                    recordBtn.classList.remove('recording-pulse');
+                    carregarComentarios(document.getElementById('formChapterKey').value);
+                } else {
+                    alert('Erro ao enviar comentário: ' + (data.mensagem || 'Desconhecido.'));
+                }
+            })
+            .catch(err => {
+                alert('Erro de conexão ao enviar comentário. Verifique sua rede.');
+                console.error("Erro ao enviar comentário:", err);
+            })
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        });
+
+        function previewFile(input) {
+            const preview = document.getElementById('filePreview');
+            if(input.files && input.files[0]) {
+                preview.innerHTML = `<i class="fa-solid fa-check text-green-400"></i> Imagem selecionada: ${input.files[0].name}`;
+                preview.classList.remove('hidden');
+            } else {
+                preview.innerHTML = '';
+                preview.classList.add('hidden');
+            }
+        }
+
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.addEventListener('click', async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                    mediaRecorder.onstop = () => {
+                        currentAudioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        document.getElementById('filePreview').classList.remove('hidden');
+                        document.getElementById('filePreview').innerHTML = `<i class="fa-solid fa-microphone text-green-400"></i> Áudio gravado!`;
+                        if (document.querySelector('input[name="foto"]').files[0]) {
+                             document.getElementById('filePreview').innerHTML += `<br><i class="fa-solid fa-check text-green-400"></i> Imagem selecionada: ${document.querySelector('input[name="foto"]').files[0].name}`;
+                        }
+                    };
+                    mediaRecorder.start();
+                    recordBtn.classList.add('recording-pulse');
+                    document.getElementById('recordText').innerText = "Parar Gravação";
+                } catch (err) {
+                    alert("Permita o uso do microfone para gravar áudio.");
+                    console.error("Erro ao acessar microfone:", err);
+                }
+            } else {
+                mediaRecorder.stop();
+                recordBtn.classList.remove('recording-pulse');
+                document.getElementById('recordText').innerText = "Gravar Áudio";
+            }
+        });
+
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        function closeImage() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function resetObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<80; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(8, 145, 178, 0.15)"; /* Cyan-600 */
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        loadChapter('intro_book');
+    </script>
+</body>
+</html>
