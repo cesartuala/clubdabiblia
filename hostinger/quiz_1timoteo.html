@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz 1 Timóteo | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        .glass-card { background: rgba(15, 35, 15, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(74, 222, 128, 0.2); transition: all 0.4s ease; }
+        .green-glow { text-shadow: 0 0 15px rgba(74, 222, 128, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); background-color: rgba(74, 222, 128, 0.15); border-color: #4ade80; }
+        .option-correct { background-color: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+        .option-wrong { background-color: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #f87171 !important; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="w-full z-50 p-6 flex justify-between items-center relative">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0a1a0a] border border-green-500/50 text-green-400 hover:bg-green-500 hover:text-black transition-all">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-church text-green-500 text-xl"></i>
+            <span class="font-serif text-white text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl w-full flex flex-col relative overflow-hidden shadow-[0_0_40px_rgba(74,222,128,0.15)]">
+            <div class="h-1 w-full bg-gradient-to-r from-green-600 via-lime-500 to-emerald-500" id="progressBar"></div>
+            
+            <div class="p-6 md:p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b border-green-500/20 pb-4">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white green-glow">Quiz: 1 Timóteo</h1>
+                    <span id="questionCounter" class="bg-green-900/50 text-green-300 px-3 py-1 rounded-full text-xs font-bold tracking-widest border border-green-500/30">1 / 10</span>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="questionText" class="text-lg md:text-xl text-slate-200 mb-6 font-light leading-relaxed"></div>
+                    <div id="optionsContainer" class="space-y-3"></div>
+                    <div id="feedbackContainer" class="mt-6 p-4 rounded-lg hidden text-sm leading-relaxed border"></div>
+
+                    <button id="nextBtn" class="mt-8 w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-lg transition uppercase tracking-widest hidden shadow-lg shadow-green-900/50">
+                        Próxima Pergunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-col items-center text-center py-8">
+                    <i class="fa-solid fa-user-tie text-6xl text-green-400 mb-4 drop-shadow-[0_0_15px_rgba(74,222,128,0.6)]"></i>
+                    <h2 class="font-serif text-3xl text-white mb-2">Fiel na Liderança!</h2>
+                    <p class="text-slate-300 text-lg mb-6">Você acertou <span id="finalScore" class="text-green-400 font-bold text-2xl">0</span> de 10 perguntas.</p>
+                    
+                    <div class="w-full max-w-sm bg-slate-900/80 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xs uppercase tracking-widest text-green-400 mb-4 font-bold">Salvar no Ranking</h3>
+                        <form id="rankingForm" class="space-y-4">
+                            <input type="hidden" name="acao" value="salvar_quiz_1timoteo">
+                            <input type="hidden" name="pontos" id="inputPontos" value="0">
+                            <input type="hidden" name="acertos" id="inputAcertos" value="0">
+                            <input type="text" name="nome" required placeholder="Seu Nome..." class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white focus:border-green-500 focus:outline-none transition text-sm">
+                            <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-emerald-500 text-white font-bold py-2 rounded transition uppercase tracking-widest text-xs shadow-lg">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                q: "Qual é o principal propósito da Lei de acordo com 1 Timóteo 1?",
+                options: [
+                    { t: "Gerar debates teológicos intermináveis.", c: false, r: "Paulo adverte contra fábulas e genealogias que geram questões e não edificação." },
+                    { t: "Revelar os pecados e levar ao amor de um coração puro, boa consciência e fé não fingida.", c: true, r: "O fim do mandamento é o amor, e a Lei serve para mostrar a necessidade da graça, não para justificar." },
+                    { t: "Estabelecer uma hierarquia religiosa rigorosa.", c: false, r: "A Lei é para os transgressores, não para o justo." },
+                    { t: "Promover a autojustificação pelas obras.", c: false, r: "A salvação é pela graça, não pelas obras da Lei." }
+                ]
+            },
+            {
+                q: "Quem Paulo chama de 'principal dos pecadores' em 1 Timóteo 1?",
+                options: [
+                    { t: "Timóteo, por sua juventude.", c: false, r: "Paulo elogia a fé de Timóteo." },
+                    { t: "Ele mesmo (Paulo).", c: true, r: "Paulo usa sua própria vida como testemunho da graça abundante de Cristo, que salvou o maior dos pecadores." },
+                    { t: "Os falsos mestres em Éfeso.", c: false, r: "Embora fossem pecadores, Paulo se coloca como o maior." },
+                    { t: "César, o imperador romano.", c: false, r: "César era uma autoridade, mas não o foco de sua confissão de pecado." }
+                ]
+            },
+            {
+                q: "Por quem, antes de tudo, devemos fazer orações, intercessões e ações de graças, segundo 1 Timóteo 2?",
+                options: [
+                    { t: "Apenas pelos membros da nossa família e amigos.", c: false, r: "A oração deve ser universal." },
+                    { t: "Por todos os homens, incluindo reis e autoridades.", c: true, r: "O desejo de Deus é que todos se salvem, e a oração por autoridades promove um ambiente pacífico para o evangelho." },
+                    { t: "Exclusivamente pelos líderes da igreja.", c: false, r: "Líderes devem ser incluídos, mas não são o único foco." },
+                    { t: "Somente pelos que já são crentes.", c: false, r: "Deus quer que todos os homens se salvem." }
+                ]
+            },
+            {
+                q: "Quem é o 'único Mediador entre Deus e os homens' conforme 1 Timóteo 2?",
+                options: [
+                    { t: "Um sacerdote levítico.", c: false, r: "O sacerdócio levítico foi cumprido em Cristo." },
+                    { t: "Maria, a mãe de Jesus.", c: false, r: "A Bíblia não a apresenta como mediadora." },
+                    { t: "Jesus Cristo homem.", c: true, r: "Ele é o único que pode fazer a ponte entre Deus e a humanidade por ser plenamente Deus e plenamente homem." },
+                    { t: "Os anjos e arcanjos.", c: false, r: "Anjos são mensageiros, não mediadores." }
+                ]
+            },
+            {
+                q: "Qual dessas NÃO é uma qualificação explícita para um bispo/presbítero em 1 Timóteo 3?",
+                options: [
+                    { t: "Marido de uma mulher (fiel em seu casamento).", c: false, r: "É uma qualificação essencial." },
+                    { t: "Apto para ensinar.", c: false, r: "Uma habilidade ministerial chave." },
+                    { t: "Ser rico e bem-sucedido financeiramente.", c: true, r: "A riqueza material não é uma qualificação; o caráter é primordial." },
+                    { t: "Que governe bem sua própria casa.", c: false, r: "Um teste de sua capacidade de liderar a igreja." }
+                ]
+            },
+            {
+                q: "O que Paulo declara ser 'o mistério da piedade' em 1 Timóteo 3:16?",
+                options: [
+                    { t: "A revelação de segredos ocultos para poucos.", c: false, r: "O mistério da piedade é a manifestação de Deus em carne." },
+                    { t: "Que a salvação é alcançada por meio de rituais secretos.", c: false, r: "A salvação é pela fé em Cristo." },
+                    { t: "Deus se manifestou em carne, foi justificado no Espírito, visto dos anjos, pregado aos gentios, crido no mundo, e recebido acima na glória.", c: true, r: "Esta é a confissão de fé central da igreja, resumindo a obra de Cristo." },
+                    { t: "A prosperidade material como sinal da bênção divina.", c: false, r: "Paulo adverte contra a cobiça e o amor ao dinheiro." }
+                ]
+            },
+            {
+                q: "O que o Espírito expressamente diz que acontecerá nos 'últimos tempos' (1 Timóteo 4)?",
+                options: [
+                    { t: "Um grande avivamento global de fé.", c: false, r: "Embora avivamentos aconteçam, a profecia aqui é sobre apostasia." },
+                    { t: "Apostatarão alguns da fé, dando ouvidos a espíritos enganadores e doutrinas de demônios.", c: true, r: "Paulo alerta sobre o desvio da sã doutrina por falsos mestres." },
+                    { t: "Todos os crentes serão arrebatados para o céu.", c: false, r: "A carta trata de vida e ordem na igreja na terra." },
+                    { t: "A igreja alcançará um poder político sem precedentes.", c: false, r: "O foco é na pureza doutrinária." }
+                ]
+            },
+            {
+                q: "Qual conselho Paulo dá a Timóteo sobre sua juventude e liderança em 1 Timóteo 4:12?",
+                options: [
+                    { t: "Para que se retire da liderança por ser muito jovem.", c: false, r: "Pelo contrário, ele deve liderar." },
+                    { t: "Que ninguém despreze sua mocidade, mas seja um exemplo para os fiéis.", c: true, r: "Timóteo deve ser um modelo de conduta, amor, fé e pureza, superando preconceitos de idade." },
+                    { t: "Que busque rapidamente um mentor mais velho para fazer todo o trabalho.", c: false, r: "Ele já tem um mentor e deve exercer seus dons." },
+                    { t: "Que se concentre apenas em suas próprias necessidades pessoais.", c: false, r: "O foco é no ministério e no cuidado da igreja." }
+                ]
+            },
+            {
+                q: "Em 1 Timóteo 5, qual é a principal responsabilidade pelo cuidado das viúvas?",
+                options: [
+                    { t: "Exclusivamente da igreja, sem distinção.", c: false, r: "A igreja tem um papel, mas há prioridades." },
+                    { t: "De suas famílias, se tiverem, antes que da igreja.", c: true, r: "Paulo instrui que os parentes devem cuidar de suas viúvas, honrando a Deus e sua fé." },
+                    { t: "Do estado romano.", c: false, r: "O foco é a comunidade cristã." },
+                    { t: "A viúva deve se sustentar sozinha a todo custo.", c: false, r: "Há um papel de suporte para a igreja e família." }
+                ]
+            },
+            {
+                q: "O que Paulo afirma ser 'a raiz de todos os males' em 1 Timóteo 6?",
+                options: [
+                    { t: "A falta de conhecimento bíblico.", c: false, r: "É uma causa de erro, mas não a raiz principal mencionada." },
+                    { t: "O amor ao dinheiro.", c: true, r: "Não o dinheiro em si, mas o apego e a cobiça por ele, que levam a desvios da fé e dores." },
+                    { t: "A soberba intelectual.", c: false, r: "É um pecado, mas não a 'raiz de todos os males'." },
+                    { t: "O legalismo religioso.", c: false, r: "É um erro doutrinário, mas a raiz de todos os males tem um escopo mais amplo." }
+                ]
+            },
+            {
+                q: "Qual conselho Paulo dá aos que são ricos em 1 Timóteo 6?",
+                options: [
+                    { t: "Que sejam altivos e confiem em suas riquezas.", c: false, r: "Paulo adverte exatamente contra isso." },
+                    { t: "Que não sejam altivos, nem ponham a esperança na incerteza das riquezas, mas em Deus, sendo ricos em boas obras.", c: true, r: "Os ricos devem ser generosos e usar seus bens para o bem, confiando em Deus." },
+                    { t: "Que se desfaçam de todo o seu dinheiro.", c: false, r: "A ênfase é no uso correto e na atitude, não na eliminação da riqueza." },
+                    { t: "Que escondam suas riquezas para não serem roubados.", c: false, r: "A generosidade é encorajada." }
+                ]
+            },
+            {
+                q: "Timóteo é instruído a ser um 'homem de Deus' e a fugir de quais coisas no capítulo 6?",
+                options: [
+                    { t: "Da sã doutrina e da piedade.", c: false, r: "Ele deve seguir essas coisas." },
+                    { t: "Do amor ao dinheiro, da cobiça, e a seguir a justiça, piedade, fé, amor, paciência e mansidão.", c: true, r: "É uma exortação direta para evitar as ciladas do materialismo e buscar as virtudes cristãs." },
+                    { t: "De todas as responsabilidades ministeriais.", c: false, r: "Ele deve combater o bom combate da fé." },
+                    { t: "Da interação com os membros da igreja.", c: false, r: "Ele é pastor da igreja." }
+                ]
+            },
+            {
+                q: "Qual disciplina espiritual Paulo enfatiza para o progresso de Timóteo no capítulo 4?",
+                options: [
+                    { t: "Abster-se de casamento e de certos alimentos.", c: false, r: "Paulo combate essas proibições como doutrinas de demônios." },
+                    { t: "Negligenciar o dom que lhe foi dado.", c: false, r: "Ele é exortado a não negligenciar." },
+                    { t: "A leitura pública das Escrituras, a exortação e o ensino.", c: true, r: "Essas são as disciplinas que manifestarão seu progresso." },
+                    { t: "Buscar poder político na sociedade.", c: false, r: "O foco é na vida e ministério da igreja." }
+                ]
+            },
+            {
+                q: "Que tipo de conduta Paulo instrui que as mulheres devem ter na adoração pública (1 Timóteo 2)?",
+                options: [
+                    { t: "Vestir-se com adornos caros e chamar atenção.", c: false, r: "Devem vestir-se com modéstia e bom senso." },
+                    { t: "Apenas assistir sem participar.", c: false, r: "Devem aprender com toda sujeição." },
+                    { t: "Vestir-se modestamente, com recato e bom senso, adornando-se com boas obras.", c: true, r: "A modéstia e a piedade são o adorno verdadeiro." },
+                    { t: "Assumir a liderança e ensinar sobre os homens.", c: false, r: "Paulo instrui para aprenderem em silêncio e sujeição." }
+                ]
+            },
+            {
+                q: "Qual termo Paulo usa para descrever a atitude desejada de contentamento em 1 Timóteo 6?",
+                options: [
+                    { t: "Hedonismo.", c: false, r: "O hedonismo busca o prazer egoísta." },
+                    { t: "Asceticismo.", c: false, r: "Asceticismo busca a privação extrema, não necessariamente contentamento bíblico." },
+                    { t: "Autarkeia (Autossuficiência/Contentamento).", c: true, r: "A piedade com autossuficiência (contentamento) é grande ganho." },
+                    { t: "Capitalismo.", c: false, r: "É um sistema econômico, não uma atitude espiritual." }
+                ]
+            }
+        ];
+
+        let currentQ = 0; let score = 0; let answered = false;
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+        let questionsToAsk = [];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function initializeQuiz() {
+            shuffleArray(quizData);
+            questionsToAsk = quizData.slice(0, 10); // Select 10 random questions
+            currentQ = 0;
+            score = 0;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false; feedbackContainer.classList.add('hidden'); nextBtn.classList.add('hidden');
+            const qData = questionsToAsk[currentQ];
+            document.getElementById('questionCounter').innerText = `${currentQ + 1} / ${questionsToAsk.length}`;
+            questionText.innerText = qData.q;
+            optionsContainer.innerHTML = '';
+            shuffleArray(qData.options); // Shuffle options for each question
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-lg bg-slate-800/80 border border-slate-600 text-slate-300 text-sm md:text-base';
+                btn.innerText = opt.t;
+                btn.onclick = () => selectOption(btn, opt);
+                optionsContainer.appendChild(btn);
+            });
+            progressBar.style.width = `${((currentQ + 1) / questionsToAsk.length) * 100}%`;
+        }
+
+        function selectOption(btn, opt) {
+            if (answered) return; answered = true;
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedbackContainer.classList.remove('hidden', 'bg-red-900/30', 'border-red-500/50', 'bg-green-900/30', 'border-green-500/50');
+            if (opt.c) {
+                score += 10; btn.classList.add('option-correct');
+                feedbackContainer.classList.add('bg-green-900/30', 'border-green-500/50', 'text-green-200');
+                feedbackContainer.innerHTML = `<strong>Correto!</strong> ${opt.r}`;
+            } else {
+                btn.classList.add('option-wrong');
+                feedbackContainer.classList.add('bg-red-900/30', 'border-red-500/50', 'text-red-200');
+                feedbackContainer.innerHTML = `<strong>Incorreto.</strong> ${opt.r}`;
+                buttons.forEach((b, i) => { if(questionsToAsk[currentQ].options[i].c) b.classList.add('option-correct'); });
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.onclick = () => {
+            currentQ++;
+            if (currentQ < questionsToAsk.length) loadQuestion();
+            else showResults();
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            document.getElementById('quizContainer').classList.add('hidden');
+            const res = document.getElementById('resultContainer');
+            res.classList.remove('hidden'); res.classList.add('flex');
+            document.getElementById('finalScore').innerText = score/10;
+            document.getElementById('inputPontos').value = score;
+            document.getElementById('inputAcertos').value = score/10;
+        }
+
+        document.getElementById('rankingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button'); btn.disabled = true; btn.innerText = "Salvando...";
+            fetch('api.php', { method: 'POST', body: new FormData(this) })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return res.json();
+            })
+            .then(data => {
+                if(data.sucesso) {
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Erro ao salvar no ranking: ' + (data.mensagem || 'Desconhecido'));
+                }
+            })
+            .catch(err => {
+                alert('Erro de conexão ao salvar ranking: ' + err.message);
+                btn.disabled = false;
+                btn.innerText = "Enviar";
+            });
+        };
+
+        // Particles
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, sx: Math.random()*0.5-0.25, sy: Math.random()*0.5-0.25 });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(74, 222, 128, 0.2)"; // Green-400
+            particles.forEach(p => { p.x+=p.sx; p.y+=p.sy; if(p.x<0||p.x>canvas.width)p.sx*=-1; if(p.y<0||p.y>canvas.height)p.sy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        initializeQuiz();
+    </script>
+</body>
+</html>

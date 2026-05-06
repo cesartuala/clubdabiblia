@@ -34,7 +34,7 @@
       "periodo_leitura": "04/05 a 06/05",
       "data_quiz": "06/05",
       "status": "concluido",
-      "quiz_ativo": false
+      "quiz_ativo": true
     },
     {
       "data_criacao": "2026-05-06",
@@ -42,7 +42,7 @@
       "capitulos": 6,
       "periodo_leitura": "07/05 a 14/05",
       "data_quiz": "15/05",
-      "status": "pendente",
+      "status": "concluido",
       "quiz_ativo": false
     },
     {
