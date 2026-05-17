@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz 2 Timóteo | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        .glass-card { background: rgba(15, 15, 35, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(34, 197, 94, 0.2); transition: all 0.4s ease; }
+        .green-glow { text-shadow: 0 0 15px rgba(34, 197, 94, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); background-color: rgba(34, 197, 94, 0.15); border-color: #22c55e; }
+        .option-correct { background-color: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+        .option-wrong { background-color: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #f87171 !important; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="w-full z-50 p-6 flex justify-between items-center relative">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0a0a1a] border border-green-500/50 text-green-400 hover:bg-green-500 hover:text-black transition-all">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-pen-nib text-green-500 text-xl"></i>
+            <span class="font-serif text-white text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl w-full flex flex-col relative overflow-hidden shadow-[0_0_40px_rgba(34,197,94,0.15)]">
+            <div class="h-1 w-full bg-gradient-to-r from-green-600 via-lime-500 to-emerald-500" id="progressBar"></div>
+            
+            <div class="p-6 md:p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b border-green-500/20 pb-4">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white green-glow">Quiz: 2 Timóteo</h1>
+                    <span id="questionCounter" class="bg-green-900/50 text-green-300 px-3 py-1 rounded-full text-xs font-bold tracking-widest border border-green-500/30">1 / 10</span>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="questionText" class="text-lg md:text-xl text-slate-200 mb-6 font-light leading-relaxed"></div>
+                    <div id="optionsContainer" class="space-y-3"></div>
+                    <div id="feedbackContainer" class="mt-6 p-4 rounded-lg hidden text-sm leading-relaxed border"></div>
+
+                    <button id="nextBtn" class="mt-8 w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-lg transition uppercase tracking-widest hidden shadow-lg shadow-green-900/50">
+                        Próxima Pergunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-col items-center text-center py-8">
+                    <i class="fa-solid fa-crown text-6xl text-green-400 mb-4 drop-shadow-[0_0_15px_rgba(34,197,94,0.6)]"></i>
+                    <h2 class="font-serif text-3xl text-white mb-2">Vitória em Cristo!</h2>
+                    <p class="text-slate-300 text-lg mb-6">Você acertou <span id="finalScore" class="text-green-400 font-bold text-2xl">0</span> de 10 perguntas.</p>
+                    
+                    <div class="w-full max-w-sm bg-slate-900/80 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xs uppercase tracking-widest text-green-400 mb-4 font-bold">Salvar no Ranking</h3>
+                        <form id="rankingForm" class="space-y-4">
+                            <input type="hidden" name="acao" value="salvar_quiz_2timoteo">
+                            <input type="hidden" name="pontos" id="inputPontos" value="0">
+                            <input type="hidden" name="acertos" id="inputAcertos" value="0">
+                            <input type="text" name="nome" required placeholder="Seu Nome..." class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white focus:border-green-500 focus:outline-none transition text-sm">
+                            <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-emerald-500 text-white font-bold py-2 rounded transition uppercase tracking-widest text-xs shadow-lg">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizDataFull = [
+            {
+                q: "Qual é a exortação de Paulo a Timóteo para 'reavivar' o dom de Deus?",
+                options: [
+                    { t: "Para reavivar sua memória da Lei de Moisés.", c: false, r: "Paulo fala sobre o dom de Deus, que é espiritual, não legal." },
+                    { t: "Para reavivar o dom espiritual que está nele pela imposição das mãos.", c: true, r: "Paulo usa a metáfora de atiçar uma brasa para Timóteo não deixar seu ministério esfriar." },
+                    { t: "Para reavivar a economia de Éfeso.", c: false, r: "O contexto é ministerial e espiritual, não econômico." },
+                    { t: "Para reavivar sua vida social em Roma.", c: false, r: "O foco é o serviço a Deus e não a vida secular." }
+                ]
+            },
+            {
+                q: "Deus não nos deu um espírito de covardia, mas de quê?",
+                options: [
+                    { t: "Poder, amor e moderação (autodisciplina).", c: true, r: "Essa é a trindade da força espiritual que Paulo enfatiza." },
+                    { t: "Riqueza, fama e longevidade.", c: false, r: "Os dons de Deus são espirituais e para o serviço." },
+                    { t: "Sabedoria humana, força física e eloquência.", c: false, r: "São atributos externos, não a essência do espírito dado por Deus." },
+                    { t: "Medo, timidez e incerteza.", c: false, r: "Paulo contradiz explicitamente esses traços." }
+                ]
+            },
+            {
+                q: "Qual das seguintes não é uma das metáforas usadas por Paulo em 2 Timóteo 2 para descrever o ministro do Evangelho?",
+                options: [
+                    { t: "O Bom Soldado", c: false, r: "O soldado é aquele que foca em agradar quem o alistou." },
+                    { t: "O Lavrador Diligente", c: false, r: "O lavrador representa o esforço e a paciência para os frutos." },
+                    { t: "O Atleta Competitivo", c: false, r: "O atleta luta de acordo com as regras para ganhar a coroa." },
+                    { t: "O Sábio Filósofo", c: true, r: "Paulo adverte contra a filosofia vazia e prioriza a Palavra de Deus." }
+                ]
+            },
+            {
+                q: "Por que Paulo aconselha Timóteo a 'fugir das paixões da mocidade'?",
+                options: [
+                    { t: "Para que Timóteo possa se casar.", c: false, r: "Não há relação direta. A fuga é para manter a santidade." },
+                    { t: "Para evitar contendas e ser um vaso de honra.", c: true, r: "As paixões podem desviar do propósito e gerar divisões, enquanto a pureza leva à utilidade no reino." },
+                    { t: "Para que ele possa viajar mais.", c: false, r: "O contexto é moral e espiritual, não geográfico." },
+                    { t: "Para se dedicar a estudos seculares.", c: false, r: "O foco é a sã doutrina e a vida em Cristo." }
+                ]
+            },
+            {
+                q: "O que Paulo afirma sobre a Escritura em 2 Timóteo 3:16?",
+                options: [
+                    { t: "Apenas partes da Escritura são divinamente inspiradas.", c: false, r: "Ele diz 'Toda a Escritura' (Pasa Graphē - Πᾶσα Γραφή)." },
+                    { t: "Toda a Escritura é divinamente inspirada e proveitosa para ensinar, redarguir, corrigir e instruir em justiça.", c: true, r: "Esta é a declaração completa da inspiração e utilidade da Bíblia." },
+                    { t: "A Escritura é inspirada, mas não útil para a vida diária.", c: false, r: "Ele enumera várias áreas onde é extremamente proveitosa." },
+                    { t: "A Escritura é um guia histórico, mas não teológico.", c: false, r: "Sua utilidade abrange doutrina, correção e instrução em justiça." }
+                ]
+            },
+            {
+                q: "Qual era o propósito de Paulo ao escrever que nos últimos dias viriam 'tempos trabalhosos'?",
+                options: [
+                    { t: "Desencorajar Timóteo de seu ministério.", c: false, r: "Pelo contrário, era para prepará-lo e encorajá-lo a perseverar." },
+                    { t: "Alertar sobre a degradação moral e espiritual e a necessidade de se apegar à Palavra de Deus.", c: true, r: "Ele mostra a corrupção para contrastar com a suficiência da Escritura." },
+                    { t: "Prever eventos políticos futuros.", c: false, r: "A descrição é sobre o caráter e a moral, não política." },
+                    { t: "Ensinar sobre a volta de Cristo.", c: false, r: "Embora relacionado, o foco é a conduta em tempos difíceis." }
+                ]
+            },
+            {
+                q: "No capítulo 4, qual é o encargo solene que Paulo dá a Timóteo, 'diante de Deus e do Senhor Jesus Cristo'?",
+                options: [
+                    { t: "Para cuidar de sua saúde física.", c: false, r: "Embora importante, não é o encargo central." },
+                    { t: "Para pregar a palavra, a tempo e fora de tempo.", c: true, r: "É a mais veemente exortação para proclamar o Evangelho." },
+                    { t: "Para estudar filosofia grega.", c: false, r: "Paulo se afasta de tais práticas, focando na Palavra de Deus." },
+                    { t: "Para buscar riquezas e prosperidade.", c: false, r: "O evangelho de Paulo é de sacrifício e serviço." }
+                ]
+            },
+            {
+                q: "Qual metáfora Paulo usa para descrever o fim de sua própria vida em 2 Timóteo 4:6-7?",
+                options: [
+                    { t: "Um construtor que termina uma casa.", c: false, r: "As metáforas são de luta e conclusão." },
+                    { t: "Um sacrifício derramado, um combate completado e uma corrida acabada.", c: true, r: "Ele se vê como uma oferta, um soldado vitorioso e um corredor que cruzou a linha de chegada." },
+                    { t: "Um mestre que se aposenta.", c: false, r: "Sua 'partida' é a morte, não a aposentadoria." },
+                    { t: "Um rei que abdica o trono.", c: false, r: "Ele aguarda uma coroa, mas não abdica." }
+                ]
+            },
+            {
+                q: "O que Paulo afirma que o aguarda, e também àqueles que amam a vinda de Cristo?",
+                options: [
+                    { t: "Uma grande herança terrena.", c: false, r: "O foco é celestial e espiritual." },
+                    { t: "A coroa da justiça.", c: true, r: "Uma recompensa divina pela fidelidade e perseverança." },
+                    { t: "A aprovação dos homens.", c: false, r: "Paulo busca a aprovação de Deus." },
+                    { t: "Uma vida longa e sem sofrimentos.", c: false, r: "A vida cristã é retratada como uma batalha e uma corrida." }
+                ]
+            },
+            {
+                q: "Qual o pedido específico de Paulo a Timóteo no capítulo 4 que revela sua necessidade pessoal?",
+                options: [
+                    { t: "Que Timóteo lhe enviasse dinheiro.", c: false, r: "Não há menção de dinheiro." },
+                    { t: "Que Timóteo viesse rapidamente e trouxesse seus pergaminhos e livros.", c: true, r: "Paulo estava isolado na prisão e ansiava por companhia e materiais de estudo." },
+                    { t: "Que Timóteo ficasse em Éfeso e não o visitasse.", c: false, r: "Ele expressa o desejo de ver Timóteo." },
+                    { t: "Que Timóteo parasse de pregar o Evangelho.", c: false, r: "O encargo era para pregar ainda mais." }
+                ]
+            },
+            {
+                q: "Quem Paulo menciona como tendo-o abandonado por amar 'o presente século'?",
+                options: [
+                    { t: "Tíquico", c: false, r: "Tíquico era um fiel companheiro." },
+                    { t: "Lucas", c: false, r: "Lucas permaneceu com Paulo." },
+                    { t: "Demas", c: true, r: "Demas é explicitamente mencionado como tendo abandonado Paulo." },
+                    { t: "Marcos", c: false, r: "Marcos é solicitado a ir a Paulo." }
+                ]
+            },
+            {
+                q: "Qual era a relação familiar de Timóteo que Paulo destaca em 2 Timóteo 1:5?",
+                options: [
+                    { t: "Seu pai era um fariseu.", c: false, r: "Seu pai era grego." },
+                    { t: "Sua avó Lóide e sua mãe Eunice possuíam uma fé não fingida.", c: true, r: "Paulo elogia a fé de sua família, indicando sua herança espiritual." },
+                    { t: "Ele era órfão.", c: false, r: "Sua família é mencionada." },
+                    { t: "Sua mãe era uma sacerdotisa pagã.", c: false, r: "Sua mãe era judia e crente." }
+                ]
+            },
+            {
+                q: "Paulo instrui Timóteo a 'manejar bem a palavra da verdade'. O que isso significa no contexto?",
+                options: [
+                    { t: "Usar linguagem complexa para impressionar.", c: false, r: "Significa usar a Palavra corretamente, sem deturpá-la." },
+                    { t: "Dividir corretamente a Palavra de Deus.", c: true, r: "O termo grego 'orthotomounta' (ὀρθοτομοῦντα) significa 'cortar reto', referindo-se à interpretação e aplicação exata da Escritura." },
+                    { t: "Apenas ler a Palavra sem explicar.", c: false, r: "A instrução é para ensinar e corrigir." },
+                    { t: "Adaptar a Palavra aos desejos dos ouvintes.", c: false, r: "Paulo adverte contra isso." }
+                ]
+            },
+            {
+                q: "Qual é o 'depósito' (parathēkē - παραθήκη) que Paulo confiou a Timóteo?",
+                options: [
+                    { t: "Seus bens materiais.", c: false, r: "É um tesouro espiritual, não material." },
+                    { t: "O evangelho e a sã doutrina.", c: true, r: "É a mensagem de fé e a verdade revelada por Deus." },
+                    { t: "Um segredo pessoal de Paulo.", c: false, r: "É a verdade pública da salvação." },
+                    { t: "Uma lista de inimigos a serem evitados.", c: false, r: "O foco é a preservação da fé." }
+                ]
+            },
+            {
+                q: "Quem Lucas era para Paulo durante sua segunda prisão em Roma?",
+                options: [
+                    { t: "O único que permaneceu com ele.", c: true, r: "Paulo menciona: 'Só Lucas está comigo' (2 Tm 4:11)." },
+                    { t: "Aquele que o abandonou.", c: false, r: "Demas foi quem o abandonou." },
+                    { t: "Um mensageiro que ele enviou para Éfeso.", c: false, r: "Ele pede que Tíquico seja enviado para Éfeso." },
+                    { t: "Um jovem discípulo que precisava de exortação.", c: false, r: "Lucas era um companheiro maduro e fiel." }
+                ]
+            }
+        ];
+
+        let quizData = []; // To hold the 10 shuffled questions
+        let currentQ = 0; let score = 0; let answered = false;
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function initializeQuiz() {
+            shuffleArray(quizDataFull);
+            quizData = quizDataFull.slice(0, 10); // Select only 10 questions
+            currentQ = 0;
+            score = 0;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false; feedbackContainer.classList.add('hidden'); nextBtn.classList.add('hidden');
+            const qData = quizData[currentQ];
+            document.getElementById('questionCounter').innerText = `${currentQ + 1} / ${quizData.length}`;
+            questionText.innerText = qData.q;
+            optionsContainer.innerHTML = '';
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-lg bg-slate-800/80 border border-slate-600 text-slate-300 text-sm md:text-base';
+                btn.innerText = opt.t;
+                btn.onclick = () => selectOption(btn, opt);
+                optionsContainer.appendChild(btn);
+            });
+            progressBar.style.width = `${((currentQ + 1) / quizData.length) * 100}%`;
+        }
+
+        function selectOption(btn, opt) {
+            if (answered) return; answered = true;
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedbackContainer.classList.remove('hidden', 'bg-red-900/30', 'border-red-500/50', 'bg-green-900/30', 'border-green-500/50');
+            if (opt.c) {
+                score += 10; btn.classList.add('option-correct');
+                feedbackContainer.classList.add('bg-green-900/30', 'border-green-500/50', 'text-green-200');
+                feedbackContainer.innerHTML = `<strong>Correto!</strong> ${opt.r}`;
+            } else {
+                btn.classList.add('option-wrong');
+                feedbackContainer.classList.add('bg-red-900/30', 'border-red-500/50', 'text-red-200');
+                feedbackContainer.innerHTML = `<strong>Incorreto.</strong> ${opt.r}`;
+                buttons.forEach((b, i) => { if(quizData[currentQ].options[i].c) b.classList.add('option-correct'); });
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.onclick = () => {
+            currentQ++;
+            if (currentQ < quizData.length) loadQuestion();
+            else showResults();
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            document.getElementById('quizContainer').classList.add('hidden');
+            const res = document.getElementById('resultContainer');
+            res.classList.remove('hidden'); res.classList.add('flex');
+            document.getElementById('finalScore').innerText = score/10;
+            document.getElementById('inputPontos').value = score;
+            document.getElementById('inputAcertos').value = score/10;
+        }
+
+        document.getElementById('rankingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button'); btn.disabled = true; btn.innerText = "Salvando...";
+            fetch('api.php', { method: 'POST', body: new FormData(this) })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+                return response.json(); // Se a API retornar JSON
+            })
+            .then(data => {
+                if (data.sucesso) {
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Erro ao salvar ranking: ' + (data.mensagem || 'Resposta desconhecida.'));
+                    btn.disabled = false;
+                    btn.innerText = "Enviar";
+                }
+            })
+            .catch(error => { // CRÍTICO: Tratamento de erros no fetch
+                console.error('Erro ao enviar formulário de ranking:', error);
+                alert('Erro de conexão ao salvar ranking. Por favor, tente novamente.');
+                btn.disabled = false;
+                btn.innerText = "Enviar";
+            });
+        };
+
+        // Particles
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, sx: Math.random()*0.5-0.25, sy: Math.random()*0.5-0.25 });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(34, 197, 94, 0.2)"; /* Green-500 */
+            particles.forEach(p => { p.x+=p.sx; p.y+=p.sy; if(p.x<0||p.x>canvas.width)p.sx*=-1; if(p.y<0||p.y>canvas.height)p.sy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        initializeQuiz();
+    </script>
+</body>
+</html>
