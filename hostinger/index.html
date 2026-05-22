@@ -61,12 +61,12 @@
     <main class="flex-grow flex items-start justify-center p-4 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[100rem] w-full items-start">
             
-            <!-- STATUS "LEITURA ATUAL": 2 Timóteo -->
+            <!-- STATUS "DESAFIO ABERTO": 2 Timóteo (era Leitura Atual) -->
             <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-green-500/40 shadow-[0_0_30px_rgba(34,197,94,0.15)]">
                 <div class="h-1 w-full bg-gradient-to-r from-green-600 via-lime-500 to-emerald-500"></div>
                 
                 <div class="absolute top-0 right-0 bg-green-600 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-bl-xl shadow-[0_0_15px_rgba(34,197,94,0.6)] z-20">
-                    <i class="fa-solid fa-star mr-1"></i> Leitura Atual
+                    <i class="fa-solid fa-trophy mr-1"></i> Desafio Aberto
                 </div>
             
                 <div class="p-6 flex flex-col items-center text-center flex-grow justify-center">
@@ -87,8 +87,8 @@
                             <i class="fa-solid fa-book-open text-green-400 mb-1 text-sm"></i>
                             <span class="text-[9px] uppercase text-slate-300">Leitura</span>
                         </a>
-                        <!-- Quiz DESATIVADO -->
-                        <a href="quiz_2timoteo.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-green-500/20 p-3 rounded-xl opacity-50 pointer-events-none">
+                        <!-- Quiz ATIVADO -->
+                        <a href="quiz_2timoteo.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-green-500/20 p-3 rounded-xl hover:border-green-500 transition">
                             <i class="fa-solid fa-trophy text-green-400 mb-1 text-sm"></i>
                             <span class="text-[9px] uppercase text-slate-300">Quiz</span>
                         </a>
@@ -607,7 +607,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Fetch for 2 Timóteo (NEW Leitura Atual)
+            // Fetch for 2 Timóteo (NOW DESAFIO ABERTO)
             fetch('api.php?acao=ranking_2timoteo')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'ranking2timoteo', 'text-green-400 font-bold'))

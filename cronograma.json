@@ -52,7 +52,7 @@
       "periodo_leitura": "18/05 a 21/05",
       "data_quiz": "22/05",
       "status": "concluido",
-      "quiz_ativo": false
+      "quiz_ativo": true
     },
     {
       "data_criacao": "2026-05-24",
