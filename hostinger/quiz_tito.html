@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Tito | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        .glass-card { background: rgba(15, 15, 35, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(132, 204, 22, 0.2); transition: all 0.4s ease; }
+        .lime-glow { text-shadow: 0 0 15px rgba(132, 204, 22, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); background-color: rgba(132, 204, 22, 0.15); border-color: #84cc16; }
+        .option-correct { background-color: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+        .option-wrong { background-color: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #f87171 !important; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="w-full z-50 p-6 flex justify-between items-center relative">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0a0a1a] border border-lime-500/50 text-lime-400 hover:bg-lime-500 hover:text-black transition-all">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-clipboard-check text-lime-500 text-xl"></i>
+            <span class="font-serif text-white text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl w-full flex flex-col relative overflow-hidden shadow-[0_0_40px_rgba(132,204,22,0.15)]">
+            <div class="h-1 w-full bg-gradient-to-r from-lime-600 via-green-500 to-emerald-500" id="progressBar"></div>
+            
+            <div class="p-6 md:p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b border-lime-500/20 pb-4">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white lime-glow">Quiz: Tito</h1>
+                    <span id="questionCounter" class="bg-lime-900/50 text-lime-300 px-3 py-1 rounded-full text-xs font-bold tracking-widest border border-lime-500/30">1 / 10</span>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="questionText" class="text-lg md:text-xl text-slate-200 mb-6 font-light leading-relaxed"></div>
+                    <div id="optionsContainer" class="space-y-3"></div>
+                    <div id="feedbackContainer" class="mt-6 p-4 rounded-lg hidden text-sm leading-relaxed border"></div>
+
+                    <button id="nextBtn" class="mt-8 w-full bg-lime-600 hover:bg-lime-500 text-white font-bold py-3 rounded-lg transition uppercase tracking-widest hidden shadow-lg shadow-lime-900/50">
+                        Próxima Pergunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-col items-center text-center py-8">
+                    <i class="fa-solid fa-crown text-6xl text-lime-400 mb-4 drop-shadow-[0_0_15px_rgba(132,204,22,0.6)]"></i>
+                    <h2 class="font-serif text-3xl text-white mb-2">Vitória em Cristo!</h2>
+                    <p class="text-slate-300 text-lg mb-6">Você acertou <span id="finalScore" class="text-lime-400 font-bold text-2xl">0</span> de 10 perguntas.</p>
+                    
+                    <div class="w-full max-w-sm bg-slate-900/80 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xs uppercase tracking-widest text-lime-400 mb-4 font-bold">Salvar no Ranking</h3>
+                        <form id="rankingForm" class="space-y-4">
+                            <input type="hidden" name="acao" value="salvar_quiz_tito">
+                            <input type="hidden" name="pontos" id="inputPontos" value="0">
+                            <input type="hidden" name="acertos" id="inputAcertos" value="0">
+                            <input type="text" name="nome" required placeholder="Seu Nome..." class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white focus:border-lime-500 focus:outline-none transition text-sm">
+                            <button type="submit" class="w-full bg-gradient-to-r from-lime-600 to-green-500 text-white font-bold py-2 rounded transition uppercase tracking-widest text-xs shadow-lg">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const allQuizData = [
+            {
+                q: "Qual era a principal tarefa de Tito deixada por Paulo em Creta, segundo Tito 1:5?",
+                options: [
+                    { t: "Construir um grande templo.", c: false, r: "A tarefa era de organização e estabelecimento de liderança, não de construção física." },
+                    { t: "Estabelecer presbíteros em cada cidade e pôr em ordem as coisas restantes.", c: true, r: "Esta era a dupla missão fundamental de Tito na ilha." },
+                    { t: "Coletar ofertas para a igreja em Jerusalém.", c: false, r: "Embora importante, não foi a tarefa principal descrita neste contexto." },
+                    { t: "Escrever novas epístolas aos crentes.", c: false, r: "Paulo era o escritor das epístolas neste contexto." }
+                ]
+            },
+            {
+                q: "Quais eram os três principais vícios atribuídos aos cretenses no capítulo 1, citados por Paulo?",
+                options: [
+                    { t: "Preguiçosos, glutões e beberrões.", c: false, r: "Glutões e preguiçosos sim, mas 'beberrões' não é o termo exato." },
+                    { t: "Mentirosos, bestas ruins e ventres preguiçosos.", c: true, r: "Esta é a citação direta de Epimênides, referenciada por Paulo." },
+                    { t: "Idólatras, orgulhosos e avarentos.", c: false, r: "Esses são vícios gerais, mas não a descrição específica dos cretenses." },
+                    { t: "Falsos, sediciosos e caluniadores.", c: false, r: "Essas são características dos falsos mestres, não do povo em geral." }
+                ]
+            },
+            {
+                q: "Qual a qualificação primordial para um presbítero, segundo Tito 1, que abrange seu caráter geral?",
+                options: [
+                    { t: "Ser rico e influente.", c: false, r: "A qualificação é espiritual e moral, não material ou social." },
+                    { t: "Ser irrepreensível.", c: true, r: "A irrepreensibilidade é a característica abrangente de seu bom testemunho." },
+                    { t: "Ter muitos dons espirituais.", c: false, r: "Dons são importantes, mas o caráter é a base para o ministério." },
+                    { t: "Ser um excelente orador.", c: false, r: "A capacidade de ensinar é mencionada, mas a irrepreensibilidade é mais fundamental." }
+                ]
+            },
+            {
+                q: "O que significa 'sã doutrina' (hygiainousa didaskalia) em Tito, para além de meras crenças?",
+                options: [
+                    { t: "Doutrina que é complexa e difícil de entender.", c: false, r: "Pelo contrário, ela deve ser clara e prática." },
+                    { t: "Ensinos saudáveis que promovem a piedade e uma vida correta.", c: true, r: "É uma doutrina que nutre a alma e se reflete na conduta." },
+                    { t: "Doutrina que permite qualquer estilo de vida.", c: false, r: "A sã doutrina estabelece padrões de conduta." },
+                    { t: "Doutrina que enfatiza rituais e tradições antigas.", c: false, r: "O foco é na vida transformada pelo Evangelho." }
+                ]
+            },
+            {
+                q: "O que a graça de Deus nos ensina a rejeitar e a viver, segundo Tito 2:12?",
+                options: [
+                    { t: "Rejeitar a riqueza e viver na pobreza.", c: false, r: "A graça não condena a riqueza, mas a impiedade." },
+                    { t: "Rejeitar a impiedade e as paixões mundanas, e viver de forma sensata, justa e piedosa.", c: true, r: "Esta é a tríplice manifestação da vida transformada pela graça." },
+                    { t: "Rejeitar a leitura da Bíblia e viver pela experiência.", c: false, r: "A graça nos capacita a viver de acordo com a Palavra." },
+                    { t: "Rejeitar a responsabilidade e viver sem compromissos.", c: false, r: "A graça nos capacita a assumir responsabilidades espirituais e sociais." }
+                ]
+            },
+            {
+                q: "Qual é a 'bendita esperança' mencionada em Tito 2:13?",
+                options: [
+                    { t: "A esperança de prosperidade material nesta vida.", c: false, r: "A esperança é escatológica, focada na pessoa de Cristo." },
+                    { t: "A manifestação gloriosa de nosso grande Deus e Salvador Jesus Cristo.", c: true, r: "Refere-se à Segunda Vinda de Cristo." },
+                    { t: "A esperança de alcançar a perfeição moral por nossos esforços.", c: false, r: "A perfeição é uma obra de Cristo, não de nossos esforços isolados." },
+                    { t: "A esperança de uma vida longa e sem sofrimento.", c: false, r: "Cristo promete vida eterna e consolo no sofrimento." }
+                ]
+            },
+            {
+                q: "De que forma as mulheres idosas deveriam instruir as mais jovens, segundo Tito 2:3-5?",
+                options: [
+                    { t: "A serem ambiciosas, independentes e focadas na carreira.", c: false, r: "A instrução é sobre o lar e o relacionamento conjugal." },
+                    { t: "A serem prudentes, puras, cuidadosas com o lar, bondosas e sujeitas a seus maridos.", c: true, r: "Estas virtudes são para edificar a família e a igreja." },
+                    { t: "A serem dominadoras e a controlar seus maridos.", c: false, r: "A instrução é para que sejam sujeitas." },
+                    { t: "A serem fofoqueiras e a criticar as outras mulheres.", c: false, r: "Devem ser mestras no bem e não caluniadoras." }
+                ]
+            },
+            {
+                q: "O que o cristão deve estar pronto para fazer em relação às autoridades governamentais, segundo Tito 3:1?",
+                options: [
+                    { t: "Rebelar-se e desobedecer sempre que discordar.", c: false, r: "A instrução é para ser submisso e obediente." },
+                    { t: "Ser-lhes sujeito, obedecer e estar pronto para toda boa obra.", c: true, r: "O cristão é chamado a ser um cidadão exemplar." },
+                    { t: "Ignorar as leis e viver conforme seus próprios desejos.", c: false, r: "Isto é oposto ao ensino de Paulo." },
+                    { t: "Criticar constantemente e buscar a derrubada de qualquer governo.", c: false, r: "Deve-se ser pacífico e não difamador." }
+                ]
+            },
+            {
+                q: "Antes de serem salvos, como éramos, de acordo com Tito 3:3?",
+                options: [
+                    { t: "Perfeitos e sem necessidade de salvação.", c: false, r: "Paulo descreve uma condição de pecado e rebeldia." },
+                    { t: "Néscios, desobedientes, transviados, servindo a várias concupiscências e deleites.", c: true, r: "Esta é a descrição clara da condição humana antes da graça." },
+                    { t: "Justos por natureza, mas corrompidos pela sociedade.", c: false, r: "A corrupção vem do interior, não apenas do exterior." },
+                    { t: "Neutros, esperando uma decisão.", c: false, r: "Éramos ativamente desobedientes e servindo ao pecado." }
+                ]
+            },
+            {
+                q: "Pelo que somos salvos, segundo Tito 3:5?",
+                options: [
+                    { t: "Pelo nosso esforço em fazer boas obras e sacrifícios.", c: false, r: "A salvação não é por obras que tenhamos feito." },
+                    { t: "Pelo lavar da regeneração e da renovação do Espírito Santo.", c: true, r: "A salvação é um ato da misericórdia de Deus através do Espírito." },
+                    { t: "Pela nossa inteligência e sabedoria.", c: false, r: "A salvação é um dom de Deus, não resultado de inteligência." },
+                    { t: "Pela nossa decisão de obedecer a Lei de Moisés.", c: false, r: "A Lei nos condena, não nos salva." }
+                ]
+            },
+            {
+                q: "Por que os cristãos devem ser zelosos em boas obras, de acordo com Tito 3:8?",
+                options: [
+                    { t: "Para ganhar a salvação.", c: false, r: "A salvação é pela graça, as obras são um resultado." },
+                    { t: "Porque estas coisas são boas e proveitosas aos homens.", c: true, r: "As boas obras beneficiam a sociedade e glorificam a Deus." },
+                    { t: "Para serem elogiados pelos outros e obter status.", c: false, r: "A motivação deve ser para agradar a Deus, não aos homens." },
+                    { t: "Para mostrar que são melhores que os não crentes.", c: false, r: "A soberba não é um motivo cristão para as boas obras." }
+                ]
+            },
+            {
+                q: "Que tipo de discussões e contendas Paulo instrui Tito a evitar no capítulo 3?",
+                options: [
+                    { t: "Debates sobre a divindade de Cristo.", c: false, r: "Esses são debates cruciais para a sã doutrina." },
+                    { t: "Contendas insensatas, genealogias, discórdias e questões acerca da lei.", c: true, r: "São discussões inúteis que desviam do propósito do Evangelho." },
+                    { t: "Debates sobre a ética sexual cristã.", c: false, r: "Temas éticos são parte integrante da doutrina sã." },
+                    { t: "Discussões sobre a importância da oração.", c: false, r: "A oração é um pilar da fé cristã." }
+                ]
+            },
+            {
+                q: "O que significa o termo grego 'charis' em Tito 2:11?",
+                options: [
+                    { t: "Dinheiro ou riqueza.", c: false, r: "Charis se refere ao favor divino." },
+                    { t: "Graça, o favor imerecido de Deus que traz salvação.", c: true, r: "É o dom gratuito e soberano de Deus." },
+                    { t: "Sabedoria humana.", c: false, r: "A sabedoria vem de Deus, mas 'charis' tem um significado mais específico." },
+                    { t: "Obras de caridade.", c: false, r: "As obras são um fruto da graça, não a graça em si." }
+                ]
+            },
+            {
+                q: "Qual a instrução de Paulo para Tito sobre lidar com o 'homem faccioso' (hairetikos) após a primeira e segunda admoestação (Tito 3:10)?",
+                options: [
+                    { t: "Promovê-lo a uma posição de liderança para integrá-lo.", c: false, r: "Isto seria prejudicial à igreja." },
+                    { t: "Manter debates intermináveis com ele até que mude de ideia.", c: false, r: "Paulo aconselha a evitar discussões inúteis." },
+                    { t: "Que se aparte dele.", c: true, r: "A insistência em promover divisões exige uma separação para proteger a igreja." },
+                    { t: "Ignorá-lo completamente desde o início.", c: false, r: "Ele deve ser admoestado primeiro, mas com limite." }
+                ]
+            },
+            {
+                q: "Qual era o principal objetivo do sacrifício de Cristo por nós, de acordo com Tito 2:14?",
+                options: [
+                    { t: "Para nos tornar ricos e prósperos materialmente.", c: false, r: "O objetivo é espiritual e moral." },
+                    { t: "Remir-nos de toda iniquidade e purificar para si um povo seu especial, zeloso de boas obras.", c: true, r: "Cristo nos salva e nos transforma para um propósito divino." },
+                    { t: "Para que pudéssemos viver uma vida sem responsabilidades.", c: false, r: "Pelo contrário, nos torna zelosos de boas obras." },
+                    { t: "Para que todos os homens fossem salvos sem fé.", c: false, r: "A fé é o meio para a salvação." }
+                ]
+            }
+        ];
+
+        // Shuffle allQuizData and select 10 questions
+        let quizData = [];
+        function initializeQuiz() {
+            const shuffled = [...allQuizData].sort(() => 0.5 - Math.random());
+            quizData = shuffled.slice(0, 10);
+            currentQ = 0;
+            score = 0;
+            answered = false;
+            loadQuestion();
+        }
+
+        let currentQ = 0; let score = 0; let answered = false;
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        function loadQuestion() {
+            answered = false; feedbackContainer.classList.add('hidden'); nextBtn.classList.add('hidden');
+            const qData = quizData[currentQ];
+            document.getElementById('questionCounter').innerText = `${currentQ + 1} / ${quizData.length}`;
+            questionText.innerText = qData.q;
+            optionsContainer.innerHTML = '';
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-lg bg-slate-800/80 border border-slate-600 text-slate-300 text-sm md:text-base';
+                btn.innerText = opt.t;
+                btn.onclick = () => selectOption(btn, opt);
+                optionsContainer.appendChild(btn);
+            });
+            progressBar.style.width = `${((currentQ + 1) / quizData.length) * 100}%`;
+        }
+
+        function selectOption(btn, opt) {
+            if (answered) return; answered = true;
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedbackContainer.classList.remove('hidden', 'bg-red-900/30', 'border-red-500/50', 'bg-green-900/30', 'border-green-500/50');
+            if (opt.c) {
+                score += 10; btn.classList.add('option-correct');
+                feedbackContainer.classList.add('bg-green-900/30', 'border-green-500/50', 'text-green-200');
+                feedbackContainer.innerHTML = `<strong>Correto!</strong> ${opt.r}`;
+            } else {
+                btn.classList.add('option-wrong');
+                feedbackContainer.classList.add('bg-red-900/30', 'border-red-500/50', 'text-red-200');
+                feedbackContainer.innerHTML = `<strong>Incorreto.</strong> ${opt.r}`;
+                buttons.forEach((b, i) => { if(quizData[currentQ].options[i].c) b.classList.add('option-correct'); });
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.onclick = () => {
+            currentQ++;
+            if (currentQ < quizData.length) loadQuestion();
+            else showResults();
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            document.getElementById('quizContainer').classList.add('hidden');
+            const res = document.getElementById('resultContainer');
+            res.classList.remove('hidden'); res.classList.add('flex');
+            document.getElementById('finalScore').innerText = score/10;
+            document.getElementById('inputPontos').value = score;
+            document.getElementById('inputAcertos').value = score/10;
+        }
+
+        document.getElementById('rankingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button'); btn.disabled = true; btn.innerText = "Salvando...";
+            fetch('api.php', { method: 'POST', body: new FormData(this) })
+            .then(res => res.json()) // Adiciona tratamento para a resposta da API
+            .then(data => {
+                if(data.sucesso) {
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Erro ao salvar no ranking: ' + (data.mensagem || 'Ocorreu um erro desconhecido.'));
+                }
+            })
+            .catch(err => {
+                console.error("Erro de conexão ao salvar ranking:", err);
+                alert('Erro de conexão ao salvar ranking. Tente novamente.');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerText = "Enviar";
+            });
+        };
+
+        // Particles
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, sx: Math.random()*0.5-0.25, sy: Math.random()*0.5-0.25 });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(132, 204, 22, 0.2)"; // Lime color
+            particles.forEach(p => { p.x+=p.sx; p.y+=p.sy; if(p.x<0||p.x>canvas.width)p.sx*=-1; if(p.y<0||p.y>canvas.height)p.sy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        initializeQuiz(); // Call to initialize quiz with shuffled questions
+    </script>
+</body>
+</html>
