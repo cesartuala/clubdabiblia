@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Filemon | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        .glass-card { background: rgba(15, 15, 35, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(251, 113, 133, 0.2); transition: all 0.4s ease; }
+        .rose-glow { text-shadow: 0 0 15px rgba(251, 113, 133, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); background-color: rgba(251, 113, 133, 0.15); border-color: #fb7185; }
+        .option-correct { background-color: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+        .option-wrong { background-color: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #f87171 !important; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="w-full z-50 p-6 flex justify-between items-center relative">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0a0a1a] border border-rose-500/50 text-rose-400 hover:bg-rose-500 hover:text-black transition-all">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-handshake text-rose-500 text-xl"></i>
+            <span class="font-serif text-white text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl w-full flex flex-col relative overflow-hidden shadow-[0_0_40px_rgba(251,113,133,0.15)]">
+            <div class="h-1 w-full bg-gradient-to-r from-rose-600 via-pink-500 to-rose-400" id="progressBar"></div>
+            
+            <div class="p-6 md:p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b border-rose-500/20 pb-4">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white rose-glow">Quiz: Filemon</h1>
+                    <span id="questionCounter" class="bg-rose-950/50 text-rose-300 px-3 py-1 rounded-full text-xs font-bold tracking-widest border border-rose-500/30">1 / 10</span>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="questionText" class="text-lg md:text-xl text-slate-200 mb-6 font-light leading-relaxed"></div>
+                    <div id="optionsContainer" class="space-y-3"></div>
+                    <div id="feedbackContainer" class="mt-6 p-4 rounded-lg hidden text-sm leading-relaxed border"></div>
+
+                    <button id="nextBtn" class="mt-8 w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-3 rounded-lg transition uppercase tracking-widest hidden shadow-lg shadow-rose-900/50">
+                        Próxima Pergunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-col items-center text-center py-8">
+                    <i class="fa-solid fa-crown text-6xl text-rose-400 mb-4 drop-shadow-[0_0_15px_rgba(251,113,133,0.6)]"></i>
+                    <h2 class="font-serif text-3xl text-white mb-2">Vitória em Cristo!</h2>
+                    <p class="text-slate-300 text-lg mb-6">Você acertou <span id="finalScore" class="text-rose-400 font-bold text-2xl">0</span> de 10 perguntas.</p>
+                    
+                    <div class="w-full max-w-sm bg-slate-900/80 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xs uppercase tracking-widest text-rose-400 mb-4 font-bold">Salvar no Ranking</h3>
+                        <form id="rankingForm" class="space-y-4">
+                            <input type="hidden" name="acao" value="salvar_quiz_filemon">
+                            <input type="hidden" name="pontos" id="inputPontos" value="0">
+                            <input type="hidden" name="acertos" id="inputAcertos" value="0">
+                            <input type="text" name="nome" required placeholder="Seu Nome..." class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white focus:border-rose-500 focus:outline-none transition text-sm">
+                            <button type="submit" class="w-full bg-gradient-to-r from-rose-600 to-rose-500 text-white font-bold py-2 rounded transition uppercase tracking-widest text-xs shadow-lg">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const rawQuizData = [
+            {
+                q: "Quem era Filemon no contexto neotestamentário?",
+                options: [
+                    { t: "Um carcereiro romano em Éfeso que se converteu.", c: false, r: "Filemon era um cristão de posses em Colossos." },
+                    { t: "Um líder cristão rico de Colossos, cuja igreja se reunia em sua casa.", c: true, r: "Filemon hospedava a comunidade cristã em sua residência e era parceiro ministerial de Paulo." },
+                    { t: "O sumo sacerdote judeu que acusou Paulo diante de César.", c: false, r: "Ele era um amado irmão e obreiro da causa de Cristo." },
+                    { t: "Um centurião romano que ajudou Paulo na viagem a Roma.", c: false, r: "Filemon era um gentio convertido pelo ministério de Paulo." }
+                ]
+            },
+            {
+                q: "Qual era a relação inicial e legal de Onésimo para com Filemon?",
+                options: [
+                    { t: "Eram irmãos carnais de sangue.", c: false, r: "Eles eram mestre e escravo legalmente." },
+                    { t: "Onésimo era o credor financeiro de Filemon.", c: false, r: "Ao contrário, Onésimo devia a Filemon após a fuga." },
+                    { t: "Onésimo era escravo doméstico de Filemon.", c: true, r: "Onésimo era escravo na residência de Filemon." },
+                    { t: "Eram parceiros de negócios na província da Ásia.", c: false, r: "Eles faziam parte de uma estrutura escravocrata do Império Romano." }
+                ]
+            },
+            {
+                q: "O que Onésimo fez que motivou sua fuga de Colossos?",
+                options: [
+                    { t: "Ele causou um prejuízo financeiro ou furto a Filemon.", c: true, r: "O verso 18 sugere fortemente furto ou prejuízo econômico: 'se te fez algum dano, ou te deve alguma coisa'." },
+                    { t: "Ele se recusou a adorar imagens pagãs.", c: false, r: "Sua conversão ocorreu apenas após a fuga, em Roma." },
+                    { t: "Ele ofendeu a esposa de Filemon.", c: false, r: "Sua quebra de confiança foi patrimonial/financeira." },
+                    { t: "Ele fugiu para se alistar no exército romano.", c: false, r: "Sua intenção era ocultar-se em Roma." }
+                ]
+            },
+            {
+                q: "Em qual circunstância Paulo encontrou Onésimo em Roma?",
+                options: [
+                    { t: "Durante uma pregação ao ar livre nas praças de Roma.", c: false, r: "Paulo estava em cativeiro domiciliar." },
+                    { t: "Enquanto Paulo estava preso sob custódia domiciliar.", c: true, r: "Paulo estava confinado e Onésimo o visitou ou o encontrou no confinamento." },
+                    { t: "No mercado de escravos de Roma.", c: false, r: "Paulo não comprou Onésimo fisicamente." },
+                    { t: "Em uma sinagoga judaica romana.", c: false, r: "Onésimo era um gentio fugitivo do sistema escravagista." }
+                ]
+            },
+            {
+                q: "O que ocorreu na vida de Onésimo ao se encontrar com Paulo?",
+                options: [
+                    { t: "Ele obteve sua alforria civil por vias jurídicas.", c: false, r: "Sua reconciliação legal precisava ser resolvida com Filemon." },
+                    { t: "Onésimo aprendeu o ofício de copista de cartas.", c: false, r: "Ele aprendeu o evangelho da salvação." },
+                    { t: "Ele foi regenerado e se converteu a Cristo.", c: true, r: "Paulo se refere a Onésimo como seu filho na fé, gerado nas correntes (v.10)." },
+                    { t: "Ele decidiu retornar imediatamente para o paganismo.", c: false, r: "Onésimo se tornou obreiro e irmão fiel." }
+                ]
+            },
+            {
+                q: "Qual é o significado do nome 'Onésimo' no idioma grego?",
+                options: [
+                    { t: "Valente ou Guerreiro.", c: false, r: "Este não é o significado do nome." },
+                    { t: "Útil, Proveitoso ou Benéfico.", c: true, r: "No verso 11, Paulo faz um trocadilho: 'em outro tempo te foi inútil, mas agora proveitoso'." },
+                    { t: "Liberto ou Resgatado.", c: false, r: "O significado evoca utilidade prática." },
+                    { t: "Aquele que pertence a Deus.", c: false, r: "O significado exato é útil/proveitoso." }
+                ]
+            },
+            {
+                q: "Como Paulo se apresenta no início da carta, em vez de usar o habitual título de 'Apóstolo'?",
+                options: [
+                    { t: "Servo humilde de Israel.", c: false, r: "Paulo não usa essa expressão na introdução." },
+                    { t: "Prisioneiro de Cristo Jesus.", c: true, r: "Ele inicia identificando-se como prisioneiro, evocando amor voluntário em vez de imposição (v.1)." },
+                    { t: "Doutor dos Gentios.", c: false, r: "Paulo evita evocar sua posição acadêmica ou apostólica." },
+                    { t: "Ancião da Igreja de Roma.", c: false, r: "Paulo era apóstolo, mas intitula-se prisioneiro." }
+                ]
+            },
+            {
+                q: "Qual doutrina teológica central é tipificada no apelo financeiro de Paulo a Filemon?",
+                options: [
+                    { t: "A santificação progressiva.", c: false, r: "Não há analogia direta de imputação financeira nessa doutrina." },
+                    { t: "A Doutrina da Imputação vicária.", c: true, r: "Assim como Cristo assume nossas dívidas espirituais, Paulo diz 'lança isso na minha conta' (v.18)." },
+                    { t: "A ressurreição corpórea.", c: false, r: "O apelo ilustra a justificação e substituição de penalidade." },
+                    { t: "A predestinação absoluta.", c: false, r: "A imputação é a analogia perfeita do perdão voluntário baseado no preço pago por outro." }
+                ]
+            },
+            {
+                q: "Quem é mencionado junto com Paulo na saudação inicial da epístola?",
+                options: [
+                    { t: "Lucas, o médico amado.", c: false, r: "Lucas envia saudações no fim da carta, não no início." },
+                    { t: "Silas, co-autor das epístolas missionárias.", c: false, r: "Silas não é mencionado na abertura de Filemon." },
+                    { t: "Timóteo, o irmão.", c: true, r: "O cabeçalho traz 'Paulo, prisioneiro de Cristo Jesus, e o irmão Timóteo' (v.1)." },
+                    { t: "Tito, cooperador fiel.", c: false, r: "Tito não assina a introdução com Paulo." }
+                ]
+            },
+            {
+                q: "Quem era Áfia, citada na introdução da carta de Paulo?",
+                options: [
+                    { t: "Uma diaconisa consagrada na igreja de Roma.", c: false, r: "Ela residia em Colossos com Filemon." },
+                    { t: "Provavelmente a esposa de Filemon e co-hospedeira da igreja.", c: true, r: "Ela é mencionada logo após Filemon, sugerindo ser a esposa e senhora da casa (v.2)." },
+                    { t: "A mãe biológica de Onésimo.", c: false, r: "Não há registros de parentesco biológico entre eles." },
+                    { t: "A profetisa da comunidade de Colossos.", c: false, r: "Sua menção junto ao lar sugere estrutura familiar cristã." }
+                ]
+            },
+            {
+                q: "Como Paulo se propõe a compensar qualquer perda gerada por Onésimo?",
+                options: [
+                    { t: "Ele promete enviar uma oferta financeira vinda de Jerusalém.", c: false, r: "A igreja de Jerusalém estava em extrema pobreza." },
+                    { t: "Ele diz: 'Lança-o em minha conta', responsabilizando-se pessoalmente.", c: true, r: "Paulo se oferece como fiador de Onésimo para garantir que não houvesse barreiras ao perdão." },
+                    { t: "Ele ordena que a igreja local pague a dívida.", c: false, r: "Paulo não impôs essa carga à congregação de Colossos." },
+                    { t: "Ele nega o prejuízo, afirmando que a fé anula a dívida material.", c: false, r: "O Evangelho respeita a responsabilidade moral e o acerto de perdas materiais." }
+                ]
+            },
+            {
+                q: "Qual o termo grego para 'Comunhão/Parceria' que Paulo emprega para expressar a união de fé?",
+                options: [
+                    { t: "<i>Agape</i>", c: false, r: "Agape significa amor incondicional." },
+                    { t: "<i>Koinonia</i>", c: true, r: "Koinonia refere-se à comunhão orgânica e parceria na fé compartilhado entre eles (v.6)." },
+                    { t: "<i>Charis</i>", c: false, r: "Charis significa graça divina." },
+                    { t: "<i>Ekklesia</i>", c: false, r: "Ekklesia designa a assembleia de santos (Igreja)." }
+                ]
+            },
+            {
+                q: "Além de Filemon e Áfia, quem mais é saudado no lar como 'nosso companheiro de lutas'?",
+                options: [
+                    { t: "Epafras", c: false, r: "Epafras envia saudações no final, mas não na abertura familiar." },
+                    { t: "Arquipo", c: true, r: "Arquipo é explicitamente exortado e saudado como soldado de Cristo no lar de Filemon (v.2)." },
+                    { t: "Tíquico", c: false, r: "Tíquico levou a carta, mas não pertencia ao lar de Filemon." },
+                    { t: "Demas", c: false, r: "Demas é citado no encerramento como cooperador." }
+                ]
+            },
+            {
+                q: "Por que Paulo se recusou a ordenar a Filemon o perdão através de um decreto apostólico?",
+                options: [
+                    { t: "Para que a boa ação de Filemon não fosse por obrigação, mas voluntária.", c: true, r: "Paulo valorizava o amor genuíno e espontâneo gerado pelo Espírito, em vez de uma obediência cega por imposição legalista (v.14)." },
+                    { t: "Porque ele não tinha autoridade para emitir ordens em Colossos.", c: false, r: "Como apóstolo, ele tinha autoridade espiritual inequívoca." },
+                    { t: "Porque Onésimo não desejava ser perdoado civilmente.", c: false, r: "Onésimo concordou em voltar e restaurar o vínculo." },
+                    { t: "Porque a liderança já pertencia a Arquipo.", c: false, r: "Arquipo era obreiro, mas Paulo era o pai espiritual de Filemon." }
+                ]
+            },
+            {
+                q: "Qual o termo grego usado por Paulo para expressar 'afeição íntima' ou 'coração'?",
+                options: [
+                    { t: "<i>Psyche</i>", c: false, r: "Psyche significa alma ou psique." },
+                    { t: "<i>Splagchna</i>", c: true, r: "Splagchna (entranhas) evoca o amor mais visceral e profundo, usado por Paulo nos versículos 7, 12 e 20." },
+                    { t: "<i>Cardia</i>", c: false, r: "Embora represente o coração físico, Paulo prefere o termo visceral 'splagchna'." },
+                    { t: "<i>Pneuma</i>", c: false, r: "Pneuma significa espírito ou sopro vital." }
+                ]
+            }
+        ];
+
+        // Embaralha as 15 perguntas e seleciona apenas 10
+        const quizData = rawQuizData.sort(() => Math.random() - 0.5).slice(0, 10);
+
+        let currentQ = 0; let score = 0; let answered = false;
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        function loadQuestion() {
+            answered = false; feedbackContainer.classList.add('hidden'); nextBtn.classList.add('hidden');
+            const qData = quizData[currentQ];
+            document.getElementById('questionCounter').innerText = `${currentQ + 1} / ${quizData.length}`;
+            questionText.innerText = qData.q;
+            optionsContainer.innerHTML = '';
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-lg bg-slate-800/80 border border-slate-600 text-slate-300 text-sm md:text-base';
+                btn.innerText = opt.t;
+                btn.onclick = () => selectOption(btn, opt);
+                optionsContainer.appendChild(btn);
+            });
+            progressBar.style.width = `${(currentQ / quizData.length) * 100}%`;
+        }
+
+        function selectOption(btn, opt) {
+            if (answered) return; answered = true;
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedbackContainer.classList.remove('hidden', 'bg-red-900/30', 'border-red-500/50', 'bg-green-900/30', 'border-green-500/50');
+            if (opt.c) {
+                score += 10; btn.classList.add('option-correct');
+                feedbackContainer.classList.add('bg-green-900/30', 'border-green-500/50', 'text-green-200');
+                feedbackContainer.innerHTML = `<strong>Correto!</strong> ${opt.r}`;
+            } else {
+                btn.classList.add('option-wrong');
+                feedbackContainer.classList.add('bg-red-900/30', 'border-red-500/50', 'text-red-200');
+                feedbackContainer.innerHTML = `<strong>Incorreto.</strong> ${opt.r}`;
+                buttons.forEach((b, i) => { if(quizData[currentQ].options[i].c) b.classList.add('option-correct'); });
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.onclick = () => {
+            currentQ++;
+            if (currentQ < quizData.length) loadQuestion();
+            else showResults();
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            document.getElementById('quizContainer').classList.add('hidden');
+            const res = document.getElementById('resultContainer');
+            res.classList.remove('hidden'); res.classList.add('flex');
+            document.getElementById('finalScore').innerText = score/10;
+            document.getElementById('inputPontos').value = score;
+            document.getElementById('inputAcertos').value = score/10;
+        }
+
+        document.getElementById('rankingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button'); btn.disabled = true; btn.innerText = "Salvando...";
+            fetch('api.php', { method: 'POST', body: new FormData(this) })
+            .then(() => window.location.href = 'index.html')
+            .catch(err => {
+                console.error(err);
+                window.location.href = 'index.html';
+            });
+        };
+
+        // Particles
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, sx: Math.random()*0.5-0.25, sy: Math.random()*0.5-0.25 });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(251, 113, 133, 0.2)";
+            particles.forEach(p => { p.x+=p.sx; p.y+=p.sy; if(p.x<0||p.x>canvas.width)p.sx*=-1; if(p.y<0||p.y>canvas.height)p.sy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        loadQuestion();
+    </script>
+</body>
+</html>

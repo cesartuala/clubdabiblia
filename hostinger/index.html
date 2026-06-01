@@ -33,6 +33,7 @@
         .teal-glow { text-shadow: 0 0 15px rgba(20, 184, 166, 0.4); }
         .lime-glow { text-shadow: 0 0 15px rgba(132, 204, 22, 0.4); }
         .green-glow { text-shadow: 0 0 15px rgba(34, 197, 94, 0.4); } 
+        .rose-glow { text-shadow: 0 0 15px rgba(251, 113, 133, 0.4); }
 
         #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
         
@@ -60,12 +61,54 @@
     <main class="flex-grow flex items-start justify-center p-4 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[100rem] w-full items-start">
             
-            <!-- STATUS "LEITURA ATUAL": Tito -->
+            <!-- STATUS "LEITURA ATUAL": Filemon -->
+            <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-rose-500/40 shadow-[0_0_30px_rgba(251,113,133,0.15)]">
+                <div class="h-1 w-full bg-gradient-to-r from-rose-600 via-pink-500 to-rose-400"></div>
+                
+                <div class="absolute top-0 right-0 bg-rose-600 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-bl-xl shadow-[0_0_15px_rgba(251,113,133,0.6)] z-20">
+                    <i class="fa-solid fa-hourglass-start mr-1"></i> Leitura Atual
+                </div>
+            
+                <div class="p-6 flex flex-col items-center text-center flex-grow justify-center">
+                    <div class="w-16 h-16 rounded-full bg-rose-500/10 flex items-center justify-center mb-4 border border-rose-500/20 group-hover:border-rose-500/50 transition duration-500">
+                        <i class="fa-solid fa-handshake text-rose-400 text-2xl"></i>
+                    </div>
+            
+                    <div class="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-full px-3 py-1 mb-4 shadow-sm opacity-70">
+                        <i class="fa-regular fa-calendar-check text-slate-400 text-[10px]"></i>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">28/05</span>
+                    </div>
+                    
+                    <h2 class="font-serif text-3xl text-white mb-2 rose-glow">Filemon</h2>
+                    <p class="text-slate-400 text-xs mb-6">A reconciliação, o perdão e o amor prático no Evangelho.</p>
+            
+                    <div class="grid grid-cols-2 gap-3 w-full mt-auto mb-6">
+                        <a href="filemon.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-rose-500/20 p-3 rounded-xl hover:border-rose-500 transition">
+                            <i class="fa-solid fa-book-open text-rose-400 mb-1 text-sm"></i>
+                            <span class="text-[9px] uppercase text-slate-300">Leitura</span>
+                        </a>
+                        <!-- Quiz DESATIVADO -->
+                        <a href="quiz_filemon.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-rose-500/20 p-3 rounded-xl opacity-50 pointer-events-none">
+                            <i class="fa-solid fa-trophy text-rose-400 mb-1 text-sm"></i>
+                            <span class="text-[9px] uppercase text-slate-300">Quiz</span>
+                        </a>
+                    </div>
+            
+                    <div class="w-full bg-slate-900/80 rounded-lg p-4 border border-slate-700/50">
+                        <h3 class="text-[10px] uppercase tracking-widest text-rose-400 mb-3 font-bold border-b border-slate-800 pb-2">Ranking Filemon</h3>
+                        <ul id="rankingFilemon" class="space-y-2 text-xs text-slate-300 max-h-32 overflow-y-auto custom-scroll pr-2">
+                            <li class="text-center animate-pulse">Carregando...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATUS "DESAFIO ABERTO": Tito (era Leitura Atual, agora ativo) -->
             <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-lime-500/40 shadow-[0_0_30px_rgba(132,204,22,0.15)]">
                 <div class="h-1 w-full bg-gradient-to-r from-lime-600 via-green-500 to-emerald-500"></div>
                 
                 <div class="absolute top-0 right-0 bg-lime-600 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-bl-xl shadow-[0_0_15px_rgba(132,204,22,0.6)] z-20">
-                    <i class="fa-solid fa-hourglass-start mr-1"></i> Leitura Atual
+                    <i class="fa-solid fa-trophy mr-1"></i> Desafio Aberto
                 </div>
             
                 <div class="p-6 flex flex-col items-center text-center flex-grow justify-center">
@@ -86,8 +129,8 @@
                             <i class="fa-solid fa-book-open text-lime-400 mb-1 text-sm"></i>
                             <span class="text-[9px] uppercase text-slate-300">Leitura</span>
                         </a>
-                        <!-- Quiz DESATIVADO -->
-                        <a href="quiz_tito.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-lime-500/20 p-3 rounded-xl opacity-50 pointer-events-none">
+                        <!-- Quiz ATIVADO -->
+                        <a href="quiz_tito.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-lime-500/20 p-3 rounded-xl hover:border-lime-500 transition">
                             <i class="fa-solid fa-trophy text-lime-400 mb-1 text-sm"></i>
                             <span class="text-[9px] uppercase text-slate-300">Quiz</span>
                         </a>
@@ -102,7 +145,7 @@
                 </div>
             </div>
 
-            <!-- STATUS "DESAFIO ABERTO": 2 Timóteo (era Leitura Atual) -->
+            <!-- STATUS "DESAFIO ABERTO": 2 Timóteo -->
             <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-green-500/40 shadow-[0_0_30px_rgba(34,197,94,0.15)]">
                 <div class="h-1 w-full bg-gradient-to-r from-green-600 via-lime-500 to-emerald-500"></div>
                 
@@ -144,7 +187,7 @@
                 </div>
             </div>
 
-            <!-- STATUS "DESAFIO ABERTO": 1 Timóteo (era Leitura Atual, agora com quiz ativo) -->
+            <!-- STATUS "DESAFIO ABERTO": 1 Timóteo -->
             <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-green-400/40 shadow-[0_0_30px_rgba(74,222,128,0.15)]">
                 <div class="h-1 w-full bg-gradient-to-r from-green-600 via-lime-500 to-emerald-500"></div>
                 
@@ -205,7 +248,7 @@
                     </div>
                     
                     <h2 class="font-serif text-3xl text-white mb-2 cyan-glow">2 Tessalonicenses</h2>
-                    <p class="text-slate-400 text-xs mb-6">A esperança do retorno de Cristo e o chamado à santidade.</p>
+                    <p class="text-slate-400 text-xs mb-6">Instruções adicionais sobre o Dia do Senhor e o trabalho.</p>
             
                     <div class="grid grid-cols-2 gap-3 w-full mt-auto mb-6">
                         <a href="2tessalonicenses.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-cyan-500/20 p-3 rounded-xl hover:border-cyan-500 transition">
@@ -601,9 +644,9 @@
     <script>
         function renderRanking(data, elementId, colorClassTop) {
             const list = document.getElementById(elementId);
+            if (!list) return;
             list.innerHTML = ''; 
 
-            // Robustness check: Ensure data is an array
             if (!Array.isArray(data)) {
                 list.innerHTML = `<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>`;
                 console.error(`Erro: Dados de ranking para ${elementId} não são um array.`, data);
@@ -615,11 +658,10 @@
                 return;
             }
 
-            // Sort data by points in descending order to ensure correct ranking
             data.sort((a, b) => b.pontos - a.pontos);
 
             let currentRank = 1;
-            let previousPoints = -1; // Initialize with a value lower than any possible score
+            let previousPoints = -1;
 
             data.forEach((p, index) => {
                 if (p.pontos !== previousPoints) {
@@ -648,22 +690,31 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Fetch for Tito (NOW LEITURA ATUAL)
+            // Fetch for Filemon (LEITURA ATUAL)
+            fetch('api.php?acao=ranking_filemon')
+                .then(res => res.json())
+                .then(data => renderRanking(data, 'rankingFilemon', 'text-rose-400 font-bold'))
+                .catch(err => {
+                    document.getElementById('rankingFilemon').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
+                });
+
+            // Fetch for Tito (DESAFIO ABERTO)
             fetch('api.php?acao=ranking_tito')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingTito', 'text-lime-400 font-bold'))
                 .catch(err => {
-                    document.getElementById('rankingTito').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de Tito.</li>';
-                    console.error("Erro ao carregar ranking de Tito:", err);
+                    document.getElementById('rankingTito').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
                 });
 
-            // Fetch for 2 Timóteo (NOW DESAFIO ABERTO)
+            // Fetch for 2 Timóteo (DESAFIO ABERTO)
             fetch('api.php?acao=ranking_2timoteo')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'ranking2timoteo', 'text-green-400 font-bold'))
                 .catch(err => {
-                    document.getElementById('ranking2timoteo').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de 2 Timóteo.</li>';
-                    console.error("Erro ao carregar ranking de 2 Timóteo:", err);
+                    document.getElementById('ranking2timoteo').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
                 });
 
             // Fetch for 1 Timóteo (DESAFIO ABERTO)
@@ -671,8 +722,8 @@
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'ranking1timoteo', 'text-green-400 font-bold'))
                 .catch(err => {
-                    document.getElementById('ranking1timoteo').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de 1 Timóteo.</li>';
-                    console.error("Erro ao carregar ranking de 1 Timóteo:", err);
+                    document.getElementById('ranking1timoteo').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
                 });
 
             // Fetch for 2 Tessalonicenses (DESAFIO ABERTO)
@@ -680,8 +731,8 @@
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'ranking2tessalonicenses', 'text-cyan-400 font-bold'))
                 .catch(err => {
-                    document.getElementById('ranking2tessalonicenses').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de 2 Tessalonicenses.</li>';
-                    console.error("Erro ao carregar ranking de 2 Tessalonicenses:", err);
+                    document.getElementById('ranking2tessalonicenses').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
                 });
 
             // Fetch for 1 Tessalonicenses (DESAFIO ABERTO)
@@ -689,8 +740,8 @@
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'ranking1tessalonicenses', 'text-cyan-400 font-bold'))
                 .catch(err => {
-                    document.getElementById('ranking1tessalonicenses').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de 1 Tessalonicenses.</li>';
-                    console.error("Erro ao carregar ranking de 1 Tessalonicenses:", err);
+                    document.getElementById('ranking1tessalonicenses').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
                 });
 
             // Fetch for Colossenses (ARQUIVO/CONCLUÍDO)
@@ -698,8 +749,8 @@
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingColossenses', 'text-teal-400 font-bold'))
                 .catch(err => {
-                    document.getElementById('rankingColossenses').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de Colossenses.</li>';
-                    console.error("Erro ao carregar ranking de Colossenses:", err);
+                    document.getElementById('rankingColossenses').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
                 });
 
             // Fetch for Filipenses (ARQUIVO/CONCLUÍDO)
@@ -707,8 +758,8 @@
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingFilipenses', 'text-pink-400 font-bold'))
                 .catch(err => {
-                    document.getElementById('rankingFilipenses').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de Filipenses.</li>';
-                    console.error("Erro ao carregar ranking de Filipenses:", err);
+                    document.getElementById('rankingFilipenses').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
                 });
 
             // Fetch for Efesios (ARQUIVO/CONCLUÍDO)
@@ -716,8 +767,8 @@
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingEfesios', 'text-indigo-400 font-bold'))
                 .catch(err => {
-                    document.getElementById('rankingEfesios').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de Efésios.</li>';
-                    console.error("Erro ao carregar ranking de Efésios:", err);
+                    document.getElementById('rankingEfesios').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
                 });
 
             // Fetch for Galatas (ARQUIVO/CONCLUÍDO)
@@ -725,8 +776,8 @@
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingGalatas', 'text-orange-400 font-bold'))
                 .catch(err => {
-                    document.getElementById('rankingGalatas').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de Gálatas.</li>';
-                    console.error("Erro ao carregar ranking de Gálatas:", err);
+                    document.getElementById('rankingGalatas').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
                 });
 
             // Fetch for II Corintios (ARQUIVO/CONCLUÍDO)
@@ -734,8 +785,8 @@
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'ranking2Corintios', 'text-emerald-400 font-bold'))
                 .catch(err => {
-                    document.getElementById('ranking2Corintios').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de II Coríntios.</li>';
-                    console.error("Erro ao carregar ranking de II Coríntios:", err);
+                    document.getElementById('ranking2Corintios').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
                 });
                 
             // Fetch for I Corintios (ARQUIVO/CONCLUÍDO)
@@ -743,8 +794,8 @@
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'ranking1Corintios', 'text-purple-400 font-bold'))
                 .catch(err => {
-                    document.getElementById('ranking1Corintios').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de I Coríntios.</li>';
-                    console.error("Erro ao carregar ranking de I Coríntios:", err);
+                    document.getElementById('ranking1Corintios').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
                 });
 
             // Fetch for Romanos (ARQUIVO/CONCLUÍDO)
@@ -752,8 +803,8 @@
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingRomanos', 'text-red-400 font-bold'))
                 .catch(err => {
-                    document.getElementById('rankingRomanos').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de Romanos.</li>';
-                    console.error("Erro ao carregar ranking de Romanos:", err);
+                    document.getElementById('rankingRomanos').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
                 });
 
             // Fetch for Atos (ARQUIVO/CONCLUÍDO)
@@ -761,8 +812,8 @@
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingAtos', 'text-cyan-400 font-bold'))
                 .catch(err => {
-                    document.getElementById('rankingAtos').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking de Atos.</li>';
-                    console.error("Erro ao carregar ranking de Atos:", err);
+                    document.getElementById('rankingAtos').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
                 });
         });
 
