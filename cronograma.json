@@ -59,21 +59,21 @@
       "livro": "Tito",
       "capitulos": 3,
       "periodo_leitura": "25/05 a 27/05",
-      "data_quiz": "27/05",
+      "data_quiz": "01/06",
       "status": "concluido",
       "quiz_ativo": false
     },
     {
-      "data_criacao": "2026-05-27",
+      "data_criacao": "2026-06-01",
       "livro": "Filemon",
       "capitulos": 1,
-      "periodo_leitura": "28/05",
-      "data_quiz": "28/05",
+      "periodo_leitura": "01/06",
+      "data_quiz": "01/06",
       "status": "pendente",
       "quiz_ativo": false
     },
     {
-      "data_criacao": "2026-05-28",
+      "data_criacao": "2026-06-01",
       "livro": "Hebreus",
       "capitulos": 13,
       "periodo_leitura": "29/05 a 17/06",
