@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Hebreus | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #05020c; color: #e2e8f0; overflow-x: hidden; }
+        .glass-card { background: rgba(18, 9, 36, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(147, 51, 234, 0.2); transition: all 0.4s ease; }
+        .purple-glow { text-shadow: 0 0 15px rgba(147, 51, 234, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); background-color: rgba(147, 51, 234, 0.15); border-color: #a855f7; }
+        .option-correct { background-color: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+        .option-wrong { background-color: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #f87171 !important; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="w-full z-50 p-6 flex justify-between items-center relative">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0e051c] border border-purple-500/50 text-purple-400 hover:bg-purple-500 hover:text-black transition-all">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-anchor text-purple-500 text-xl"></i>
+            <span class="font-serif text-white text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl w-full flex flex-col relative overflow-hidden shadow-[0_0_40px_rgba(147,51,234,0.15)]">
+            <div class="h-1 w-full bg-gradient-to-r from-purple-600 via-fuchsia-500 to-indigo-500" id="progressBar"></div>
+            
+            <div class="p-6 md:p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b border-purple-500/20 pb-4">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white purple-glow">Quiz: Hebreus</h1>
+                    <span id="questionCounter" class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-xs font-bold tracking-widest border border-purple-500/30">1 / 10</span>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="questionText" class="text-lg md:text-xl text-slate-200 mb-6 font-light leading-relaxed"></div>
+                    <div id="optionsContainer" class="space-y-3"></div>
+                    <div id="feedbackContainer" class="mt-6 p-4 rounded-lg hidden text-sm leading-relaxed border"></div>
+
+                    <button id="nextBtn" class="mt-8 w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-lg transition uppercase tracking-widest hidden shadow-lg shadow-purple-900/50">
+                        Próxima Pergunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-col items-center text-center py-8">
+                    <i class="fa-solid fa-crown text-6xl text-purple-400 mb-4 drop-shadow-[0_0_15px_rgba(147,51,234,0.6)]"></i>
+                    <h2 class="font-serif text-3xl text-white mb-2">Vitória em Cristo!</h2>
+                    <p class="text-slate-300 text-lg mb-6">Você acertou <span id="finalScore" class="text-purple-400 font-bold text-2xl">0</span> de 10 perguntas.</p>
+                    
+                    <div class="w-full max-w-sm bg-slate-900/80 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xs uppercase tracking-widest text-purple-400 mb-4 font-bold">Salvar no Ranking</h3>
+                        <form id="rankingForm" class="space-y-4">
+                            <input type="hidden" name="acao" value="salvar_quiz_hebreus">
+                            <input type="hidden" name="pontos" id="inputPontos" value="0">
+                            <input type="hidden" name="acertos" id="inputAcertos" value="0">
+                            <input type="text" name="nome" required placeholder="Seu Nome..." class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white focus:border-purple-500 focus:outline-none transition text-sm">
+                            <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-500 text-white font-bold py-2 rounded transition uppercase tracking-widest text-xs shadow-lg">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                q: "Qual frase resume o tema central e o termo mais repetido em todo o livro de Hebreus?",
+                options: [
+                    { t: "A volta iminente do Messias.", c: false, r: "Embora mencionada, não é a palavra estrutural chave." },
+                    { t: "A superioridade ou excelência de Cristo ('Superior' / 'Melhor').", c: true, r: "Hebreus enfatiza constantemente que Jesus é superior aos anjos, a Moisés, a Arão e que possui um pacto melhor." },
+                    { t: "A condenação dos gentios pela Lei.", c: false, r: "Hebreus foca no público judeu e na transição dos pactos." },
+                    { t: "A reconstrução do templo físico em Jerusalém.", c: false, r: "Hebreus aponta para um tabernáculo espiritual no céu." }
+                ]
+            },
+            {
+                q: "A quem o autor de Hebreus compara Jesus no capítulo 1 para provar Sua supremacia divina?",
+                options: [
+                    { t: "Aos anjos.", c: true, r: "Ele demonstra que Jesus é o Filho de Deus, a quem os anjos adoram e servem." },
+                    { t: "Aos reis do Egito.", c: false, r: "A comparação inicial se dá com seres celestes e com Moisés depois." },
+                    { t: "Aos filósofos gregos.", c: false, r: "Hebreus lida estritamente com a revelação veterotestamentária." },
+                    { t: "Aos heróis de guerra romanos.", c: false, r: "Os heróis romanos não entram na argumentação teológica de Hebreus." }
+                ]
+            },
+            {
+                q: "Segundo Hebreus 2:1, qual é o grave perigo que ameaça o crente que negligencia a vida espiritual?",
+                options: [
+                    { t: "A perda da inteligência emocional.", c: false, r: "A advertência é estritamente espiritual e de fidelidade eterna." },
+                    { t: "O desvio ou 'deriva' espiritual ('jamais nos desviemos').", c: true, r: "O autor usa o termo náutico para ilustrar o perigo de se afastar lentamente da verdade." },
+                    { t: "A perda das riquezas financeiras terrenas.", c: false, r: "O texto fala do tesouro celestial da salvação." },
+                    { t: "A perseguição imediata pelos sacerdotes.", c: false, r: "A perseguição era real, mas o desvio espiritual era o perigo contra o qual o autor alerta." }
+                ]
+            },
+            {
+                q: "Por que Jesus precisou assumir a carne e o sangue humano, conforme Hebreus 2:14?",
+                options: [
+                    { t: "Para demonstrar o poder de fazer milagres físicos.", c: false, r: "Os milagres atestaram a salvação, mas a encarnação teve um alvo sacrificial." },
+                    { t: "Para aniquilar pelo próprio sofrimento e morte o império do diabo.", c: true, r: "Ele precisou se solidarizar com o homem para morrer e assim derrotar o diabo e o medo da morte." },
+                    { t: "Para aprender a ciência da época de Sua vida terrena.", c: false, r: "Não há menção à sabedoria secular humana." },
+                    { t: "Para convencer os líderes políticos romanos de Sua inocência.", c: false, r: "Jesus foi condenado politicamente; Seu alvo foi a salvação cósmica." }
+                ]
+            },
+            {
+                q: "Em Hebreus 3, Jesus é comparado a qual líder histórico do Antigo Testamento, sendo declarado superior?",
+                options: [
+                    { t: "Davi.", c: false, r: "Jesus é o Rei da linhagem, mas o capítulo compara-o ao legislador da casa." },
+                    { t: "Moisés.", c: true, r: "Moisés foi servo fiel na casa de Deus; Jesus é o próprio construtor e Filho sobre a casa." },
+                    { t: "Salomão.", c: false, r: "A sabedoria de Salomão não é o foco comparativo do capítulo 3." },
+                    { t: "Elias.", c: false, r: "Elias representa os profetas, mas Moisés representava a Lei pela qual eles tentavam se salvar." }
+                ]
+            },
+            {
+                q: "De acordo com Hebreus 4:12, como é descrita a eficácia da Palavra de Deus?",
+                options: [
+                    { t: "Como um bálsamo que encobre os pecados de forma superficial.", c: false, r: "A Palavra penetra e expõe tudo, não encobre." },
+                    { t: "Como viva, eficaz e mais cortante que qualquer espada de dois gumes.", c: true, r: "Ela penetra até a divisão da alma e do espírito, discernindo pensamentos e intenções." },
+                    { t: "Como uma lei rígida e pesada impossível de ser compreendida.", c: false, r: "Ela é discernidora e viva, não uma letra morta." },
+                    { t: "Como uma revelação misteriosa destinada apenas aos líderes sagrados.", c: false, r: "Ela é de livre acesso a todo o povo." }
+                ]
+            },
+            {
+                q: "O sacerdócio de Cristo não pertence à ordem de Arão (tribo de Levi). Qual ordem sacerdotal eterna Jesus assume?",
+                options: [
+                    { t: "Ordem de Samuel.", c: false, r: "Samuel era juiz e profeta, não o modelo sacerdotal eterno de Cristo." },
+                    { t: "Ordem de Melquisedeque.", c: true, r: "Conforme profetizado no Salmo 110, Jesus assume o sacerdócio eterno conforme a figura de Melquisedeque." },
+                    { t: "Ordem de Josué.", c: false, r: "Josué foi líder militar e sucessor de Moisés." },
+                    { t: "Ordem de Elias.", c: false, r: "Elias não possuía linhagem sacerdotal descrita como tipo de Cristo." }
+                ]
+            },
+            {
+                q: "Qual a principal limitação dos sacrifícios rituais do Antigo Testamento, descrita em Hebreus 9 e 10?",
+                options: [
+                    { t: "Eram excessivamente caros para a população comum.", c: false, r: "A questão não era financeira, mas teológica e de eficácia." },
+                    { t: "Eram incapazes de purificar de forma definitiva a consciência do pecado.", c: true, r: "Eles cobriam os pecados temporariamente, funcionando apenas como lembrança anual de culpa." },
+                    { t: "Eram proibidos para os reis de Judá.", c: false, r: "Os reis de fato não podiam exercer o ofício sacerdotal, mas essa não era a limitação da Lei." },
+                    { t: "Foram abolidos pelos próprios profetas do deserto.", c: false, r: "Eles continuaram ativos até a vinda e o sacrifício consumado de Jesus." }
+                ]
+            },
+            {
+                q: "Como o autor de Hebreus define a Fé no versículo 1 do famoso capítulo 11?",
+                options: [
+                    { t: "Como uma convicção psicológica de que tudo se resolverá financeiramente.", c: false, r: "A definição de fé em Hebreus transcende em muito o materialismo humano." },
+                    { t: "A certeza de coisas que se esperam, a convicção de fatos que se não veem.", c: true, r: "Esta é a definição canônica da fé operante e vitoriosa aprovada por Deus." },
+                    { t: "Como um sentimento passageiro de entusiasmo coletivo.", c: false, r: "A fé bíblica persevera em meio à perseguição e ao martírio." },
+                    { t: "O cumprimento estrito e cego de todos os costumes da tradição religiosa.", c: false, r: "A fé muitas vezes levou os heróis a romperem com os sistemas vigentes." }
+                ]
+            },
+            {
+                q: "Quem é o foco central absoluto de nossa fé, para quem devemos olhar firmemente durante a corrida cristã (Hb 12)?",
+                options: [
+                    { t: "Moisés, o grande legislador da Lei.", c: false, r: "Moisés foi apenas um servo; ele não é o autor da nossa fé." },
+                    { t: "Jesus, o Autor e Consumador de nossa fé.", c: true, r: "Ele iniciou e completou a carreira perfeita, vencendo a cruz e assentando-se no trono." },
+                    { t: "A grande nuvem de testemunhas que nos cerca.", c: false, r: "As testemunhas servem de exemplo, mas os olhos devem estar fixos em Jesus." },
+                    { t: "Os líderes espirituais que nos guiam.", c: false, r: "Devemos imitá-los, mas nossa âncora e olhar estão unicamente no Senhor." }
+                ]
+            },
+            {
+                q: "Por que o Novo Pacto descrito no capítulo 8 é superior ao Antigo Pacto?",
+                options: [
+                    { t: "Porque aboliu o dízimo e todas as ofertas voluntárias.", c: false, r: "A Nova Aliança estabelece sacrifícios voluntários ainda mais profundos e amorosos." },
+                    { t: "Porque grava as leis de Deus diretamente na mente e no coração do homem.", c: true, r: "A transformação é interna pelo Espírito Santo, e não externa em pedras frias." },
+                    { t: "Porque permite que o homem viva sem nenhuma regra moral.", c: false, r: "A santidade exigida em Hebreus é ainda mais profunda e de dentro para fora." },
+                    { t: "Porque foi instituído sob as promessas humanas de riqueza temporal.", c: false, r: "Foi instituído sob promessas eternas e de herança celestial inabalável." }
+                ]
+            },
+            {
+                q: "Qual o consolo apresentado em Hebreus 4:16 para nos aproximarmos do Trono da Graça?",
+                options: [
+                    { t: "Que seremos julgados e condenados severamente antes de falar.", c: false, r: "O trono é de graça, não de condenação para quem está em Cristo." },
+                    { t: "Que temos um Sumo Sacerdote que se compadece de nossas fraquezas e nos entende.", c: true, r: "Jesus foi tentado em tudo, mas sem pecado, e por isso é perfeitamente compassivo." },
+                    { t: "Que o trono só aceita as ofertas e sacrifícios de animais.", c: false, r: "O sangue de Cristo já abriu o acesso de uma vez por todas." },
+                    { t: "Que apenas as pessoas moralmente perfeitas conseguem falar com o Pai.", c: false, r: "O convite é para achar socorro na hora da necessidade para os imperfeitos." }
+                ]
+            },
+            {
+                q: "O que o autor aconselha sobre a conduta fraternal no capítulo 13?",
+                options: [
+                    { t: "A busca do isolamento total e o jejum perpétuo.", c: false, r: "O autor foca na hospitalidade e no amor mútuo ativo." },
+                    { t: "Que seja constante o amor fraternal, exercitando a hospitalidade e lembrando dos presos.", c: true, r: "A teologia celestial deságua em deveres de amor prático e social." },
+                    { t: "A busca obstinada pelo acúmulo de bens e propriedades na terra.", c: false, r: "O autor alerta contra o amor ao dinheiro e aconselha o contentamento." },
+                    { t: "A rejeição de todas as autoridades constituídas na comunidade.", c: false, r: "Ele orienta a obedecer e honrar os guias espirituais." }
+                ]
+            },
+            {
+                q: "Qual a verdade imutável proclamada sobre a identidade de Jesus em Hebreus 13:8?",
+                options: [
+                    { t: "Que Ele muda Sua doutrina de acordo com a cultura das épocas.", c: false, r: "Sua mensagem e ser permanecem intocáveis perante as eras." },
+                    { t: "Jesus Cristo é o mesmo ontem, e hoje, e eternamente.", c: true, r: "Esta verdade ancora a fé cristã contra qualquer vento de doutrina estranha." },
+                    { t: "Que Ele só se importa com a geração que O conheceu na terra.", c: false, r: "Ele vive para sempre para interceder por todas as gerações de crentes." },
+                    { t: "Sua identidade depende da interpretação individual de cada pessoa.", c: false, r: "Sua identidade divina e soberana é um fato histórico objetivo." }
+                ]
+            },
+            {
+                q: "Quem é a figura misteriosa e sem genealogia que abençoou Abraão, citada no cap. 7?",
+                options: [
+                    { t: "Arão, o primeiro Sumo Sacerdote de Israel.", c: false, r: "Arão pertence a uma linhagem posterior e inferior à de Melquisedeque." },
+                    { t: "Melquisedeque, o Rei de Salém.", c: true, r: "Ele é a figura do Antigo Testamento que serve de tipo perfeito para o sacerdócio eterno de Cristo." },
+                    { t: "Moisés, o libertador nacional do Egito.", c: false, r: "Moisés nasceu muito depois do encontro de Abraão com Melquisedeque." },
+                    { t: "O profeta Elias, que subiu aos céus em um redemoinho.", c: false, r: "Elias viveu no período dos reis, muito posterior a Abraão." }
+                ]
+            }
+        ];
+
+        // Shuffle questions in-place and pick exactly 10
+        function shuffleQuestions() {
+            for (let i = quizData.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [quizData[i], quizData[j]] = [quizData[j], quizData[i]];
+            }
+            quizData.splice(10); // keep only 10
+        }
+
+        shuffleQuestions();
+
+        let currentQ = 0; let score = 0; let answered = false;
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        function loadQuestion() {
+            answered = false; feedbackContainer.classList.add('hidden'); nextBtn.classList.add('hidden');
+            const qData = quizData[currentQ];
+            document.getElementById('questionCounter').innerText = `${currentQ + 1} / ${quizData.length}`;
+            questionText.innerText = qData.q;
+            optionsContainer.innerHTML = '';
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-lg bg-slate-800/80 border border-slate-600 text-slate-300 text-sm md:text-base';
+                btn.innerText = opt.t;
+                btn.onclick = () => selectOption(btn, opt);
+                optionsContainer.appendChild(btn);
+            });
+            progressBar.style.width = `${(currentQ / quizData.length) * 100}%`;
+        }
+
+        function selectOption(btn, opt) {
+            if (answered) return; answered = true;
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedbackContainer.classList.remove('hidden', 'bg-red-900/30', 'border-red-500/50', 'bg-green-900/30', 'border-green-500/50');
+            if (opt.c) {
+                score += 10; btn.classList.add('option-correct');
+                feedbackContainer.classList.add('bg-green-900/30', 'border-green-500/50', 'text-green-200');
+                feedbackContainer.innerHTML = `<strong>Correto!</strong> ${opt.r}`;
+            } else {
+                btn.classList.add('option-wrong');
+                feedbackContainer.classList.add('bg-red-900/30', 'border-red-500/50', 'text-red-200');
+                feedbackContainer.innerHTML = `<strong>Incorreto.</strong> ${opt.r}`;
+                buttons.forEach((b, i) => { if(quizData[currentQ].options[i].c) b.classList.add('option-correct'); });
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.onclick = () => {
+            currentQ++;
+            if (currentQ < quizData.length) loadQuestion();
+            else showResults();
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            document.getElementById('quizContainer').classList.add('hidden');
+            const res = document.getElementById('resultContainer');
+            res.classList.remove('hidden'); res.classList.add('flex');
+            document.getElementById('finalScore').innerText = score/10;
+            document.getElementById('inputPontos').value = score;
+            document.getElementById('inputAcertos').value = score/10;
+        }
+
+        document.getElementById('rankingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button'); btn.disabled = true; btn.innerText = "Salvando...";
+            fetch('api.php', { method: 'POST', body: new FormData(this) })
+            .then(() => window.location.href = 'index.html');
+        };
+
+        // Particles
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, sx: Math.random()*0.5-0.25, sy: Math.random()*0.5-0.25 });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(147, 51, 234, 0.2)";
+            particles.forEach(p => { p.x+=p.sx; p.y+=p.sy; if(p.x<0||p.x>canvas.width)p.sx*=-1; if(p.y<0||p.y>canvas.height)p.sy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        loadQuestion();
+    </script>
+</body>
+</html>

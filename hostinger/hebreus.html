@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hebreus | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] },
+                    colors: { 
+                        divine: { 400: '#c084fc' } /* Roxo/Púrpura */
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #05020c; color: #e2e8f0; overflow-x: hidden; }
+        
+        .glass-panel { background: rgba(12, 6, 24, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(147, 51, 234, 0.2); }
+        .purple-glow { text-shadow: 0 0 15px rgba(147, 51, 234, 0.5); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .rich-text strong { color: #d8b4fe; font-weight: 700; }
+        .rich-text .ref { color: #c084fc; font-size: 0.9em; font-family: monospace; background: rgba(147, 51, 234, 0.15); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(147, 51, 234, 0.3); }
+        .rich-text h3 { color: #a855f7; font-weight: bold; margin-top: 2rem; margin-bottom: 0.75rem; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.15em; border-bottom: 1px solid rgba(147, 51, 234, 0.3); padding-bottom: 6px; }
+        .rich-text ul { list-style-type: none; padding-left: 0; margin-top: 15px; margin-bottom: 20px; }
+        .rich-text li { margin-bottom: 15px; line-height: 1.8; text-align: justify; border-left: 3px solid #a855f7; padding-left: 20px; background: linear-gradient(to right, rgba(147, 51, 234, 0.05), transparent); padding-top: 5px; padding-bottom: 5px; }
+        .rich-text p { margin-bottom: 20px; line-height: 2; text-align: justify; font-size: 1.05rem; color: #cbd5e1; }
+        .rich-text blockquote { border-left: 4px solid #a855f7; padding-left: 20px; margin: 20px 0; font-style: italic; color: #d8b4fe; background: rgba(147, 51, 234, 0.05); padding: 15px; border-radius: 0 8px 8px 0; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #05020c; }
+        ::-webkit-scrollbar-thumb { background: #2e1065; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a855f7; }
+
+        .recording-pulse { animation: recPulse 1.5s infinite; background-color: #ef4444; border-color: #ef4444; color: white; }
+        @keyframes recPulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @keyframes pop { 50% { transform: scale(1.4); } }
+        .reacted-anim { animation: pop 0.3s ease-out; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="fixed top-0 w-full z-50 p-4 md:p-6 flex flex-col md:flex-row justify-between items-center bg-gradient-to-b from-[#05020c]/95 to-[#05020c]/80 backdrop-blur-md border-b border-purple-900/40 transition-all">
+        <div class="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto justify-between md:justify-start">
+            <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#120624] border border-purple-500/50 text-purple-400 hover:bg-purple-500 hover:text-black transition-all shadow-[0_0_15px_rgba(168,85,247,0.1)]">
+                <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+                <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-anchor text-purple-500 text-xl md:text-2xl"></i>
+                <span class="font-serif text-white text-lg md:text-xl tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto justify-end">
+            <span class="hidden md:inline text-xs text-slate-400 uppercase tracking-widest">Navegar:</span>
+            <select id="chapterSelect" onchange="loadChapter(this.value)" class="w-full md:w-auto bg-[#120624] text-purple-400 border border-purple-500/40 rounded px-4 py-2 text-sm uppercase tracking-widest focus:outline-none focus:border-purple-500 cursor-pointer">
+                <option value="intro_book">★ Sobre o Livro</option>
+                <option value="intro_author">✎ Sobre o Autor</option>
+                <option disabled>──────────</option>
+                <option value="hebreus_1">Capítulo 01</option>
+                <option value="hebreus_2">Capítulo 02</option>
+                <option value="hebreus_3">Capítulo 03</option>
+                <option value="hebreus_4">Capítulo 04</option>
+                <option value="hebreus_5">Capítulo 05</option>
+                <option value="hebreus_6">Capítulo 06</option>
+                <option value="hebreus_7">Capítulo 07</option>
+                <option value="hebreus_8">Capítulo 08</option>
+                <option value="hebreus_9">Capítulo 09</option>
+                <option value="hebreus_10">Capítulo 10</option>
+                <option value="hebreus_11">Capítulo 11</option>
+                <option value="hebreus_12">Capítulo 12</option>
+                <option value="hebreus_13">Capítulo 13</option>
+            </select>
+        </div>
+    </nav>
+
+    <header class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-32 md:pt-20">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1447069387593-a5de0862481e?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#05020c] via-[#05020c]/80 to-transparent"></div>
+        
+        <div class="z-10 reveal active space-y-4 max-w-5xl w-full">
+            <h2 class="text-purple-400 tracking-[0.5em] text-[10px] md:text-sm uppercase animate-pulse mb-4 font-bold">Clube da Bíblia Apresenta</h2>
+            
+            <div id="dateBadge" class="hidden inline-flex items-center gap-2 border border-purple-500/50 rounded-full px-4 py-1 mb-4 bg-purple-500/10 backdrop-blur-sm transition-all duration-700 opacity-0">
+                <i class="fa-regular fa-calendar text-purple-400 text-xs"></i>
+                <span class="text-purple-300 text-xs tracking-widest uppercase font-bold">Leitura: <span id="dateValue" class="text-white"></span></span>
+            </div>
+
+            <h1 id="heroTitle" class="font-serif text-4xl md:text-7xl text-white mb-2 purple-glow transition-all duration-700 uppercase leading-tight px-2"></h1>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 text-slate-400 mt-8 pt-8 border-t border-purple-900/40 w-full max-w-3xl mx-auto">
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Idealizado por</p>
+                    <strong class="text-purple-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-purple-300 transition">Fellipe Gomes Andrade</strong>
+                </div>
+                <span class="hidden md:block h-8 w-[1px] bg-gradient-to-b from-transparent via-purple-900 to-transparent"></span>
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Desenvolvido por</p>
+                    <strong class="text-purple-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-purple-300 transition">Cesar Tuala</strong>
+                </div>
+            </div>
+
+            <p id="heroDesc" class="text-sm md:text-xl text-slate-300 max-w-2xl mx-auto pt-8 font-light italic transition-all duration-700 px-4"></p>
+            
+            <div class="pt-10">
+                <button onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" class="animate-bounce text-purple-500 text-2xl">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="content" class="max-w-4xl mx-auto px-4 py-10 md:py-20 space-y-20 md:space-y-32 min-h-screen"></main>
+
+    <section id="community-section" class="w-full bg-[#0b0318] border-t-4 border-purple-600 py-16 mb-0 relative shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <h3 class="font-serif text-3xl md:text-4xl text-purple-500 mb-2 uppercase tracking-widest purple-glow">
+                    <i class="fa-solid fa-users-line mr-3"></i>Comunidade
+                </h3>
+                <p class="text-slate-400 text-sm italic">"Compartilhe o que Deus falou ao seu coração"</p>
+                <div class="h-1 w-24 bg-gradient-to-r from-transparent via-purple-600 to-transparent mx-auto mt-4"></div>
+            </div>
+
+            <div class="glass-panel p-6 md:p-8 rounded-xl mb-12 border border-slate-800 shadow-2xl bg-[#0e071c]/80">
+                <form id="commentForm" class="space-y-5">
+                    <input type="hidden" id="formChapterKey" name="capitulo">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="col-span-1">
+                            <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Nome</label>
+                            <input type="text" name="nome" required class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-purple-500 focus:outline-none transition">
+                        </div>
+                        <div class="flex gap-3 col-span-1 md:col-span-2 items-end">
+                            <label class="flex-1 cursor-pointer bg-black/50 border border-slate-700 hover:border-purple-500 hover:bg-[#190a30] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-camera group-hover:text-purple-400"></i> Foto
+                                <input type="file" name="foto" accept="image/*" class="hidden" onchange="previewFile(this)">
+                            </label>
+                            <button type="button" id="recordBtn" class="flex-1 bg-black/50 border border-slate-700 hover:border-red-500 hover:bg-[#190a30] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-microphone group-hover:text-red-400"></i> <span id="recordText">Gravar Áudio</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="filePreview" class="text-xs text-purple-400 hidden bg-black p-2 rounded border border-purple-500/30"></div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Comentário</label>
+                        <textarea name="mensagem" class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-purple-500 focus:outline-none h-28 resize-none transition"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-purple-800 to-purple-600 hover:from-purple-600 hover:to-purple-500 text-white font-bold py-4 rounded-lg transition uppercase tracking-[0.2em] text-sm shadow-lg shadow-black/50 transform hover:-translate-y-1">
+                        Publicar Comentário
+                    </button>
+                </form>
+            </div>
+            <div id="commentsList" class="space-y-6"></div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-800 bg-black py-12 text-center relative z-10">
+        <div class="flex flex-col items-center justify-center space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="fa-solid fa-anchor text-purple-600 text-xl"></i>
+                <span class="font-serif text-slate-300 text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+            <p class="text-slate-700 text-[10px] tracking-widest uppercase mt-4">&copy; 2026 Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="imageModal" class="fixed inset-0 z-[100] bg-black/95 hidden flex justify-center items-center p-4 backdrop-blur-sm transition-opacity duration-300" onclick="closeImage()">
+        <div class="relative max-w-4xl w-full flex justify-center">
+            <button onclick="closeImage()" class="absolute -top-12 right-0 text-white text-3xl hover:text-purple-500 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modalImg" src="" class="max-h-[85vh] max-w-full rounded-lg shadow-[0_0_50px_rgba(168,85,247,0.3)] border-2 border-purple-500/20 object-contain">
+        </div>
+    </div>
+
+    <script>
+        const bibleData = {
+            "intro_book": {
+                title: "A EPÍSTOLA AOS HEBREUS",
+                date: null,
+                desc: "<span class='text-xs uppercase tracking-[0.3em] text-purple-400 not-italic block mb-4'>Introdução: Sobre o Livro</span>\"Olhando firmemente para Jesus, o Autor e Consumador da nossa fé.\"",
+                blocks: [
+                    {
+                        title: "A Supremacia Absoluta de Cristo",
+                        verse: "Havendo Deus, outrora, falado, muitas vezes e de muitas maneiras, aos pais, pelos profetas, nestes últimos dias, nos falou pelo Filho. (Hb 1:1-2)",
+                        exegesis: `
+                            <p>A Epístola aos Hebreus é uma das obras teológicas mais profundas e majestosas de todo o Novo Testamento. Ela funciona como uma ponte indispensável entre o Antigo Pacto e o Novo Pacto, demonstrando de forma irrefutável como todos os rituais, sacrifícios, sacerdotes e estruturas da antiga aliança judaica eram apenas sombras que apontavam para a realidade perfeita em Jesus Cristo. O tema central que ecoa por toda a epístola é a palavra <strong>\"Superior\"</strong> ou <strong>\"Melhor\"</strong>.</p>
+                            
+                            <h3>1. Contexto Histórico e Crise</h3>
+                            <p>Os destinatários originais eram cristãos de origem judaica (hebreus) que enfrentavam severa perseguição social, financeira e religiosa por sua fé em Jesus. Diante do sofrimento, muitos estavam tentados a retroceder e apostatar, retornando ao conforto seguro do judaísmo tradicional com seus rituais visíveis e aceitos pelo Império Romano. Para combater essa tentação cósmica, o autor escreve uma poderosa exortação teológica demonstrando que abandonar Jesus para voltar à Lei é o equivalente a trocar a realidade por uma sombra passageira.</p>
+                            
+                            <h3>2. Rigor Linguístico e Teológico</h3>
+                            <p>O texto de Hebreus exibe o grego mais refinado e literário de todo o Novo Testamento. Nele encontramos termos indispensáveis para a compreensão do plano da salvação, como os conceitos de (<i>ἀρχιερεύς</i> - Archieréus - Sumo Sacerdote) e (<i>διαθήκη</i> - Diathēkē - Aliança ou Testamento), que mostram a substituição definitiva e superior de Jesus.</p>
+
+                            <h3>3. A Aplicação Prática Original</h3>
+                            <p>A epístola serve como um convite constante à perseverança. O autor não discute apenas conceitos intelectuais; ele clama para que seus leitores avancem em direção à maturidade, resistam ao desânimo e permaneçam firmes no sacrifício definitivo de Cristo, sabendo que as perdas temporárias na terra não se comparam à herança eterna nos céus.</p>
+                        `
+                    }
+                ]
+            },
+            "intro_author": {
+                title: "SOBRE O AUTOR",
+                date: null,
+                desc: "\"O mistério da autoria e a perfeição da mensagem divina.\"",
+                blocks: [
+                    {
+                        title: "Um Mistério que Pertence a Deus",
+                        verse: "Quem escreveu a epístola, em verdade, só Deus sabe. (Orígenes, Pai da Igreja, séc. III)",
+                        exegesis: `
+                            <p>Ao contrário da maioria das cartas do Novo Testamento, a Epístola aos Hebreus é totalmente anônima. Ela não começa com a saudação típica que traz o nome do remetente. Esse mistério histórico gerou debates teológicos fascinantes ao longo dos séculos.</p>
+
+                            <h3>1. Principais Teorias de Autoria</h3>
+                            <ul>
+                                <li><strong>Paulo de Tarso:</strong> Tradicionalmente associado à carta devido a referências no final (como a menção a Timóteo). No entanto, o estilo grego de Hebreus é polido e acadêmico demais se comparado às cartas paulinas conhecidas, e o autor se coloca como alguém que recebeu a mensagem em segunda mão de testemunhas oculares (Hb 2:3), algo que Paulo sempre rejeitou fazer (Gl 1:11-12).</li>
+                                <li><strong>Apolo de Alexandria:</strong> Defendido por Martinho Lutero. Apolo era um homem eloquente, judeu de nascimento, profundamente versado nas Escrituras e instruído em Alexandria (capital do pensamento filosófico judeu). Esta hipótese explica perfeitamente a elegância do grego e o método exegético usado na carta.</li>
+                                <li><strong>Barnabé ou Lucas:</strong> Barnabé, por ser levita, teria profundo conhecimento dos rituais do templo; Lucas, por sua escrita polida e proximidade com Paulo, também é um candidato plausível.</li>
+                            </ul>
+
+                            <h3>2. Autoridade Apostólica e Inspiração</h3>
+                            <p>Independentemente da mão humana que segurou a pena, a igreja primitiva reconheceu a autoria do Espírito Santo de forma unânime. O autor demonstra ser um verdadeiro (<i>ἀπόστολος</i> - Apóstolos - Enviado) em sua autoridade bíblica e precisão profética. A carta define Jesus Cristo como a própria (<i>ὑπόστασις</i> - Hypóstasis - Essência ou Substância) de Deus Pai, validando a plena divindade do Filho.</p>
+
+                            <h3>3. O Propósito Sobrenatural</h3>
+                            <p>O anonimato humano de Hebreus acaba por destacar o seu principal protagonista: a voz do próprio Deus Pai falando através do Filho. Sem a distração de focar em um autor específico, o leitor é diretamente conduzido a contemplar unicamente o Sumo Sacerdote Eterno que intercede por nós continuamente.</p>
+                        `
+                    }
+                ]
+            },
+            "hebreus_1": {
+                title: "O FILHO SUPERIOR AOS ANJOS",
+                date: "29/05 (Sexta)",
+                desc: "\"Ele é o resplendor da glória de Deus e a expressão exata do seu Ser...\"",
+                blocks: [
+                    {
+                        title: "Contexto e Exegese: A Revelação Final",
+                        verse: "Havendo Deus, outrora, falado... pelos profetas, nestes últimos dias, nos falou pelo Filho. (Hb 1:1-2)",
+                        exegesis: `
+                            <p>Hebreus começa com um prólogo de tirar o fôlego. O autor contrasta a revelação fragmentada e progressiva dada no Antigo Testamento por meio de visões e profetas, com a revelação definitiva, perfeita e personificada dada na pessoa de Jesus Cristo. Na mentalidade judaica do primeiro século, os anjos eram tidos em altíssima consideração por terem sido os mediadores da entrega da Lei no Sinai. O autor desconstrói imediatamente qualquer idolatria angélica ao provar biblicamente que o Filho é infinitamente superior aos seres celestes.</p>
+                        `
+                    },
+                    {
+                        title: "Análise Teológica: Divindade e Realeza",
+                        verse: "Mas, acerca do Filho, diz: O teu trono, ó Deus, subsiste pelos séculos dos séculos. (Hb 1:8)",
+                        exegesis: `
+                            <p>O autor utiliza uma sucessão magistral de citações dos Salmos para fundamentar a divindade de Cristo. Jesus não é apenas um anjo exaltado ou um mestre moral; Ele é Deus Criador adorado pelos próprios anjos. Ele é descrito como o (<i>χαρακτήρ</i> - Charaktēr - Expressão exata ou Selo) do próprio ser do Pai. Enquanto os anjos são seres criados chamados de espíritos (<i>λειτουργικός</i> - Leitourgikós - Ministradores ou Servidores), o Filho possui um trono soberano que dura para sempre.</p>
+                        `
+                    },
+                    {
+                        title: "Aplicação Prática: Escutando a Voz do Filho",
+                        verse: "Sustentando todas as coisas pela palavra do seu poder... assentou-se à direita da Majestade, nas alturas. (Hb 1:3)",
+                        exegesis: `
+                            <p>Se o Filho é a revelação final e suprema de Deus, a nossa atitude diante de Sua Palavra deve ser de profunda reverência e obediência. Não precisamos mais buscar revelações esotéricas, místicas ou aparições de anjos para nos guiar. Em Cristo Jesus temos a plenitude da vontade do Pai revelada. Devemos alinhar nossas decisões diárias sob o senhorio daquele que sustenta o cosmos com o poder de Sua Palavra.</p>
+                        `
+                    }
+                ]
+            },
+            "hebreus_2": {
+                title: "A HUMANIDADE DO SALVADOR",
+                date: "31/05 (Domingo)",
+                desc: "\"Convinha que, em todas as coisas, se tornasse semelhante aos irmãos...\"",
+                blocks: [
+                    {
+                        title: "Contexto e Exegese: O Perigo da Deriva",
+                        verse: "Por esta razão, importa que nos apeguemos, com mais firmeza, às verdades ouvidas, para que delas jamais nos desviemos. (Hb 2:1)",
+                        exegesis: `
+                            <p>Após demonstrar a divindade cósmica de Cristo no capítulo 1, o autor faz a primeira advertência prática da carta. Ele alerta os leitores contra o perigo da negligência espiritual, usando a metáfora de um barco que se desvia lentamente de seu curso devido à apatia dos marinheiros. O autor então desenvolve a teologia da encarnação: a salvação perfeita exigia que o Salvador não fosse apenas Deus, mas também homem, participando da nossa carne e sangue para nos resgatar.</p>
+                        `
+                    },
+                    {
+                        title: "Análise Teológica: A Encarnação e a Vitória sobre a Morte",
+                        verse: "Para que, por sua morte, destruísse aquele que tem o poder da morte, a saber, o diabo. (Hb 2:14)",
+                        exegesis: `
+                            <p>A teologia da expiação em Hebreus exige a solidariedade de Cristo com a humanidade. Ele precisava se tornar homem para sofrer e morrer em nosso lugar. A palavra para a nossa redenção é (<i>σωτηρία</i> - Sōtēria - Salvação), que é conquistada e selada por Aquele que nos chama de irmãos e nos conduz à glória. Jesus precisava (<i>ἁγιάζω</i> - Hagiázō - Santificar) a Si mesmo e aos Seus seguidores através do sofrimento voluntário para neutralizar o império da morte estabelecido pelo pecado.</p>
+                        `
+                    },
+                    {
+                        title: "Aplicação Prática: Consolo na Tentação",
+                        verse: "Pois, naquilo que ele mesmo sofreu, tendo sido tentado, é poderoso para socorrer os que são tentados. (Hb 2:18)",
+                        exegesis: `
+                            <p>Saber que o nosso Rei Soberano se tornou homem e experimentou as mesmas dores, limites, cansaço e tentações que nós enfrentamos traz um consolo inigualável. Quando você clama por socorro, não está falando com um Deus distante e apático, mas com um irmão mais velho que compreende perfeitamente a sua fraqueza. Podemos descansar na empatia de Jesus em nossas horas mais escuras.</p>
+                        `
+                    }
+                ]
+            },
+            "hebreus_3": {
+                title: "SUPERIOR A MOISÉS",
+                date: "02/06 (Terça)",
+                desc: "\"Considerai o Apóstolo e Sumo Sacerdote da nossa confissão, Jesus...\"",
+                blocks: [
+                    {
+                        title: "Contexto e Exegese: O Construtor vs. A Casa",
+                        verse: "Pois Jesus tem sido considerado digno de tanto maior glória do que Moisés, quanto maior honra do que a casa tem aquele que a estabeleceu. (Hb 3:3)",
+                        exegesis: `
+                            <p>Moisés era a figura mais reverenciada na história e teologia judaica. Ele foi o legislador, o libertador nacional e aquele com quem Deus falava face a face. Contudo, o autor de Hebreus prova que Moisés foi apenas um servo fiel dentro da casa de Deus, enquanto Jesus Cristo é o próprio Filho e Herdeiro que construiu a casa. Ao elevar Jesus acima de Moisés, o autor elimina qualquer justificativa teológica para retornar ao sistema mosaico antigo.</p>
+                        `
+                    },
+                    {
+                        title: "Análise Teológica: O Perigo do Coração Endurecido",
+                        verse: "Hoje, se ouvirdes a sua voz, não endureçais o vosso coração, como foi na provocação. (Hb 3:15)",
+                        exegesis: `
+                            <p>O autor faz uma analogia com a geração do êxodo que, apesar de testemunhar milagres estupendos no deserto, falhou em entrar na Terra Prometida devido ao seu pecado de incredulidade. A Igreja é descrita como a nova (<i>οἶκος</i> - Oíkos - Casa ou Família) de Deus, mas o autor adverte severamente contra a (<i>ἀπιστία</i> - Apistía - Incredulidade) que afasta o crente do Deus vivo e destrói sua caminhada de fé.</p>
+                        `
+                    },
+                    {
+                        title: "Aplicação Prática: Cuidado Mútuo diário",
+                        verse: "Pelo contrário, exortai-vos mutuamente cada dia, durante o tempo que se chama Hoje. (Hb 3:13)",
+                        exegesis: `
+                            <p>A fé cristã não é uma jornada individualista. O autor destaca a importância da comunidade local na preservação da fé. Somos exortados a cuidar uns dos outros diariamente, encorajando-nos de forma contínua para evitar que nossos corações sejam endurecidos pelo engano do pecado. O discipulado e a comunhão não são opcionais; são mecanismos de sobrevivência espiritual.</p>
+                        `
+                    }
+                ]
+            },
+            "hebreus_4": {
+                title: "O DESCANSO PROMETIDO E A PALAVRA",
+                date: "04/06 (Quinta)",
+                desc: "\"Porque a palavra de Deus é viva, e eficaz, e mais cortante do que qualquer espada de dois gumes...\"",
+                blocks: [
+                    {
+                        title: "Contexto e Exegese: O Descanso Espiritual Verdadeiro",
+                        verse: "Portanto, resta ainda um repouso sabático para o povo de Deus. (Hb 4:9)",
+                        exegesis: `
+                            <p>O autor desenvolve o conceito do \"Descanso de Deus\". Josué liderou o povo até a terra de Canaã, mas aquele repouso físico e geográfico não era o descanso definitivo planejado por Deus. Há um descanso espiritual superior, conquistado por meio da fé em Cristo, que nos liberta do peso de tentar merecer a salvação pelas nossas próprias obras. Esse descanso está disponível hoje para todos os que confiam integralmente na obra consumada de Jesus.</p>
+                        `
+                    },
+                    {
+                        title: "Análise Teológica: O Poder Cirúrgico da Palavra",
+                        verse: "Porque a palavra de Deus é viva, e eficaz... e apta para discernir os pensamentos e intenções do coração. (Hb 4:12)",
+                        exegesis: `
+                            <p>Para aqueles que tentam fingir fé ou viver de aparências, o autor introduz a Palavra de Deus como um bisturi cirúrgico divino. A palavra grega para esse descanso soberano é (<i>κατάπαυσις</i> - Katápausis - Descanso ou Repouso). Ela é revelada por uma escritura que é descrita como (<i>ζῶν</i> - Zōn - Viva ou Ativa), capaz de penetrar até a divisão da alma e do espírito, expondo e julgando as reais motivações de todo ser humano diante do Criador.</p>
+                        `
+                    },
+                    {
+                        title: "Aplicação Prática: Aproximando-se do Trono da Graça",
+                        verse: "Acheguemo-nos, portanto, confiadamente, junto ao trono da graça, a fim de recebermos misericórdia e acharmos graça. (Hb 4:16)",
+                        exegesis: `
+                            <p>Muitas vezes evitamos a oração por nos sentirmos indignos ou envergonhados por nossos erros. Mas Hebreus nos encoraja a entrar na presença de Deus com ousadia e confiança filial. Jesus, nosso Sumo Sacerdote compassivo, abriu o caminho. Não corra de Deus por causa de seus pecados; corra para o Trono da Graça, onde há cura, reabilitação e misericórdia infinita para você.</p>
+                        `
+                    }
+                ]
+            },
+            "hebreus_5": {
+                title: "O SUMO SACERDOTE SEGUNDO MELQUISEDEQUE",
+                date: "05/06 (Sexta)",
+                desc: "\"Chamado por Deus sumo sacerdote, segundo a ordem de Melquisedeque.\"",
+                blocks: [
+                    {
+                        title: "Contexto e Exegese: O Ofício de Intercessor",
+                        verse: "Porque todo sumo sacerdote, tomado dentre os homens, é constituído a favor dos homens nas coisas concernentes a Deus. (Hb 5:1)",
+                        exegesis: `
+                            <p>O autor define as qualificações necessárias para o sacerdócio sob a lei levítica: o sacerdote devia ser humano para demonstrar compaixão pelas fraquezas do povo, e devia ser chamado divinamente por Deus, nunca autoproclamado. O autor demonstra então como Jesus preenche perfeitamente essas condições de maneira superior, inaugurando um sacerdócio eterno que ultrapassa a ordem de Arão.</p>
+                        `
+                    },
+                    {
+                        title: "Análise Teológica: Obediência no Sofrimento",
+                        verse: "Embora sendo Filho, aprendeu a obediência pelas coisas que sofreu. (Hb 5:8)",
+                        exegesis: `
+                            <p>A encarnação levou Jesus a experimentar o peso real do drama humano. Ele enfrentou o sofrimento e o (<i>πάθος</i> - Páthos - Sofrimento ou Paixão), chorando e clamando na terra. Através desse processo de dor voluntária, Jesus foi levado a (<i>τελειόω</i> - Teleióō - Aperfeiçoar ou Consumar) a Sua missão messiânica, tornando-se o autor da salvação eterna para todos os que O obedecem de coração.</p>
+                        `
+                    },
+                    {
+                        title: "Aplicação Prática: Saindo da Infância Espiritual",
+                        verse: "Porque todo aquele que se alimenta de leite é inexperiente na palavra da justiça, porque é criança. (Hb 5:13)",
+                        exegesis: `
+                            <p>O autor interrompe a profunda exposição sobre Melquisedeque para exortar seus leitores quanto à preguiça espiritual. Muitos, que já deveriam ser mestres, ainda precisavam de lições infantis básicas. A maturidade espiritual requer dedicação constante ao estudo das Escrituras e a prática da obediência diária. Saia da estagnação espiritual e busque conhecer as riquezas mais profundas de Deus.</p>
+                        `
+                    }
+                ]
+            },
+            "hebreus_6": {
+                title: "A ÂNCORA DA ALMA",
+                date: "07/06 (Domingo)",
+                desc: "\"A qual temos como âncora da alma, segura e firme...\"",
+                blocks: [
+                    {
+                        title: "Contexto e Exegese: O Temível Alerta",
+                        verse: "É impossível, pois, que aqueles que uma vez foram iluminados... e caíram, sejam outra vez renovados para arrependimento. (Hb 6:4-6)",
+                        exegesis: `
+                            <p>O capítulo 6 contém uma das passagens de advertência mais severas do Novo Testamento. O autor confronta diretamente aqueles que, após experimentarem a pregação do evangelho, a comunhão da igreja e a operação do Espírito Santo, escolhem dar as costas à cruz e apostatar deliberadamente da fé. Para estes, não existe outro plano de salvação, pois ao rejeitarem Jesus, estão crucificando novamente o Filho de Deus.</p>
+                        `
+                    },
+                    {
+                        title: "Análise Teológica: O Juramento Imutável de Deus",
+                        verse: "Para que... tivéssemos forte alento, nós, os que nos refugiamos em deitar mão da esperança proposta. (Hb 6:18)",
+                        exegesis: `
+                            <p>O autor deseja que o crente encontre segurança, não nas suas emoções volúveis, mas no caráter imutável do Deus da aliança. O verdadeiro arrependimento espiritual, ou (<i>μετάνοια</i> - Metánoia - Arrependimento ou Mudança de Mente), é seguido por uma segurança inabalável. Nossa esperança funciona como uma (<i>ἄγκυρα</i> - Ágkyra - Âncora) espiritual de salvação, que penetra além do véu do templo, no próprio Santo dos Santos celestial onde Jesus se encontra.</p>
+                        `
+                    },
+                    {
+                        title: "Aplicação Prática: Segurança Firme na tempestade",
+                        verse: "A fim de que não vos torneis indolentes, mas imitadores daqueles que, pela fé e longanimidade, herdam as promessas. (Hb 6:12)",
+                        exegesis: `
+                            <p>Quando as tribulações, perseguições e dúvidas da vida ameaçarem abalar a sua estabilidade emocional e espiritual, lembre-se de que a sua salvação não está ancorada em solo movediço deste mundo. Ela está amarrada diretamente ao trono eterno de Deus nos céus. Mantenha os seus olhos fitos na promessa imutável do Pai e persevere com paciência.</p>
+                        `
+                    }
+                ]
+            },
+            "hebreus_7": {
+                title: "O SACERDÓCIO ETERNO",
+                date: "09/06 (Terça)",
+                desc: "\"Porque ele permanece para sempre, tem o seu sacerdócio imutável.\"",
+                blocks: [
+                    {
+                        title: "Contexto e Exegese: Quem é Melquisedeque?",
+                        verse: "Porque este Melquisedeque, rei de Salém, sacerdote do Deus Altíssimo... permanece sacerdote continuamente. (Hb 7:1-3)",
+                        exegesis: `
+                            <p>O autor retoma o enigmático personagem de Melquisedeque, que aparece subitamente no Gênesis para abençoar Abraão e receber dízimos dele. Sob o sistema levítico, os sacerdotes morriam e precisavam ser substituídos continuamente, e a linhagem dependia estritamente da genealogia física. Melquisedeque surge sem registro de nascimento ou morte, funcionando como um tipo perfeito do Filho de Deus, que possui um sacerdócio permanente e independente de herança sanguínea.</p>
+                        `
+                    },
+                    {
+                        title: "Análise Teológica: A Insuficiência da Lei de Arão",
+                        verse: "Se, portanto, a perfeição fora pelo sacerdócio levítico... que necessidade haveria ainda de que se levantasse outro sacerdote? (Hb 7:11)",
+                        exegesis: `
+                            <p>A teologia de Hebreus estabelece que a mudança de sacerdócio exige necessariamente uma mudança de lei. Jesus não pertencia à tribo sacerdotal de Levi, mas à tribo real de Judá. O sacerdócio levítico dependia de uma lei carnal, mas Jesus se tornou sacerdote pelo poder de uma vida indestrutível. Seu sacerdócio não se baseia em uma (<i>γενεαλογία</i> - Genealogía - Linhagem ou Origem) terrena, mas é (<i>ἀπαράβατος</i> - Aparábatos - Permanente ou Inviolável), garantindo a intercessão perfeita e eterna do crente.</p>
+                        `
+                    },
+                    {
+                        title: "Aplicação Prática: Salvação Total e Intercessão Direta",
+                        verse: "Por isso, também pode salvar totalmente os que por ele se chegam a Deus, vivendo sempre para interceder por eles. (Hb 7:25)",
+                        exegesis: `
+                            <p>Não precisamos mais de mediadores humanos, santos falecidos ou rituais confessionais terrenos para acessar a presença de Deus Pai. Jesus é o nosso intercessor direto e definitivo perante a Majestade celestial. Quando você fraqueja ou cai em pecado, Ele está diante do Pai pleiteando a sua causa com base no sangue que verteu na cruz. Você está infinitamente seguro Nele.</p>
+                        `
+                    }
+                ]
+            },
+            "hebreus_8": {
+                title: "A SUPERIORIDADE DA NOVA ALIANÇA",
+                date: "11/06 (Quinta)",
+                desc: "\"Estabelecerei com a casa de Israel e com a casa de Judá uma nova aliança...\"",
+                blocks: [
+                    {
+                        title: "Contexto e Exegese: O Ministério Superior no Céu",
+                        verse: "Ora, o essencial das coisas que estamos dizendo é que temos tal sumo sacerdote, que se assentou à direita do trono da Majestade. (Hb 8:1)",
+                        exegesis: `
+                            <p>O autor resume o núcleo de seu argumento: temos um Sumo Sacerdote que ministra no verdadeiro santuário espiritual no céu, estabelecido pelo próprio Deus e não por mãos humanas. Se o primeiro pacto de Deus com o povo no Sinai fosse perfeito e resolvesse o problema do pecado humano, não haveria necessidade de se anunciar uma Nova Aliança profetizada pelo profeta Jeremias.</p>
+                        `
+                    },
+                    {
+                        title: "Análise Teológica: Leis Gravadas no Coração",
+                        verse: "Pois esta é a aliança que farei... Imprimirei as minhas leis no seu entendimento e em seu coração as escreverei. (Hb 8:10)",
+                        exegesis: `
+                            <p>O antigo pacto era exterior, gravado em tábuas de pedra fria, incapaz de mudar o coração rebelde do ser humano. A Nova Aliança, instituída por Cristo, o (<i>λειτουργός</i> - Leitourgós - Ministro ou Servidor Público Celestial), opera uma transformação interna milagrosa pelo Espírito Santo. Esta aliança é infinitamente (<i>κρείττων</i> - Kreíttōn - Superior ou Melhor) porque se apoia em promessas espirituais eternas e no perdão total de nossos pecados.</p>
+                        `
+                    },
+                    {
+                        title: "Aplicação Prática: Vivendo de Dentro para Fora",
+                        verse: "E de seus pecados e de suas iniquidades jamais me lembrarei. (Hb 8:12)",
+                        exegesis: `
+                            <p>Sob a Nova Aliança, a obediência cristã não é motivada por medo de punição ritualística ou cumprimento mecânico de leis. Ela nasce de um coração regenerado que ama a Deus de forma voluntária e espontânea. Sabendo que os seus pecados passados foram totalmente deletados da memória judicial de Deus, sirva ao Senhor com alegria, gratidão e liberdade real.</p>
+                        `
+                    }
+                ]
+            },
+            "hebreus_9": {
+                title: "O SANTUÁRIO E O SACRIFÍCIO DE SANGUE",
+                date: "12/06 (Sexta)",
+                desc: "\"Não por meio de sangue de bodes e de bezerros, mas pelo seu próprio sangue, entrou no Santo dos Santos...\"",
+                blocks: [
+                    {
+                        title: "Contexto e Exegese: A Sombra vs. A Realidade",
+                        verse: "Apareceu Cristo, o sumo sacerdote dos bens vindouros, através de maior e mais perfeito tabernáculo, não feito por mãos humanas. (Hb 9:11)",
+                        exegesis: `
+                            <p>O autor descreve detalhadamente a estrutura do tabernáculo do deserto, com seus móveis (o candelabro, a mesa dos pães da proposição, o altar de incenso e a arca da aliança). O Sumo Sacerdote entrava no Santo dos Santos apenas uma vez por ano, no Dia da Expiação (Yom Kippur), portando sangue alheio. Todo esse sistema era simbólico e temporário, incapaz de purificar perfeitamente a consciência do adorador.</p>
+                        `
+                    },
+                    {
+                        title: "Análise Teológica: A Eficácia do Sangue de Jesus",
+                        verse: "Muito mais o sangue de Cristo... purificará a nossa consciência de obras mortas, para servirmos ao Deus vivo! (Hb 9:14)",
+                        exegesis: `
+                            <p>Na teologia bíblica de Hebreus, a remissão dos pecados exige derramamento de sangue. A antiga tenda ou (<i>σκηνή</i> - Skēnē - Tabernáculo ou Tenda) era limpa com sacrifícios animais repetitivos. Jesus, no entanto, oferece Seu próprio sangue perfeito de uma vez por todas, capaz de (<i>καθαρίζω</i> - Katharízō - Purificar ou Limpar) a consciência do pecador, inaugurando um novo e vivo caminho ao Trono.</p>
+                        `
+                    },
+                    {
+                        title: "Aplicação Prática: Livres da Culpa Espiritual",
+                        verse: "E, assim como aos homens está ordenado morrerem uma só vez, vindo, depois disso, o juízo. (Hb 9:27)",
+                        exegesis: `
+                            <p>A culpa é uma das forças mais destrutivas na mente humana, nos paralisando com acusações de erros do passado. Mas o sacrifício de Jesus não foi parcial; foi absoluto. Se o sangue de bodes cobria pecados temporariamente, quanto mais o sangue de Cristo remove de forma definitiva toda a sua culpa diante do Pai! Caminhe em santidade, livre do fantasma da condenação.</p>
+                        `
+                    }
+                ]
+            },
+            "hebreus_10": {
+                title: "O ÚNICO SACRIFÍCIO EFICAZ",
+                date: "14/06 (Domingo)",
+                desc: "\"Porque, com uma única oferta, aperfeiçoou para sempre os que estão sendo santificados.\"",
+                blocks: [
+                    {
+                        title: "Contexto e Exegese: O Fim das Ofertas Repetitivas",
+                        verse: "Ora, visto que a lei tem a sombra dos bens vindouros... nunca pode... aperfeiçoar os que se chegam a Deus. (Hb 10:1)",
+                        exegesis: `
+                            <p>O autor enfatiza o caráter definitivo da obra de Cristo. A repetição diária dos sacrifícios no templo era uma prova de sua ineficácia inerente, servindo apenas como um lembrete constante dos pecados do povo. Se as ofertas animais pudessem de fato purificar a humanidade, elas teriam cessado. Jesus veio para cumprir de forma perfeita a vontade do Pai, oferecendo Seu próprio corpo como sacrifício final.</p>
+                        `
+                    },
+                    {
+                        title: "Análise Teológica: Acesso Livre e a Perseverança",
+                        verse: "Tendo, pois, irmãos, intrepidez para entrar no Santo dos Santos, pelo sangue de Jesus. (Hb 10:19)",
+                        exegesis: `
+                            <p>O véu que separava os homens de Deus foi rasgado definitivamente na cruz. O crente agora tem livre acesso para adorar. O autor enfatiza que a nossa (<i>συνείδησις</i> - Syneídēsis - Consciência ou Autopercepção Moral) foi lavada no batismo e na fé. Para resistir à tentação de retroceder diante das provações, precisamos exercitar uma firme (<i>ὑπομονή</i> - Hypomonē - Perseverança ou Constância) até a manifestação final de nosso Senhor.</p>
+                        `
+                    },
+                    {
+                        title: "Aplicação Prática: Estimulando o Amor e a Comunhão",
+                        verse: "Não deixemos de congregar-nos, como é costume de alguns; antes, façamos admoestações. (Hb 10:25)",
+                        exegesis: `
+                            <p>Neste ambiente de pressões externas da sociedade secularizada, isolar-se é o primeiro passo em direção ao naufrágio espiritual. Somos instruídos a frequentar ativamente as reuniões da igreja local, estimulando-nos mutuamente ao amor fraternal e às boas obras. Encontre força espiritual no convívio comunitário com seus irmãos na fé.</p>
+                        `
+                    }
+                ]
+            },
+            "hebreus_11": {
+                title: "A GALERIA DOS HERÓIS DA FÉ",
+                date: "15/06 (Segunda)",
+                desc: "\"Ora, a fé é a certeza de coisas que se esperam, a convicção de fatos que se não veem.\"",
+                blocks: [
+                    {
+                        title: "Contexto e Exegese: O que é a Fé Verdadeira?",
+                        verse: "De fato, sem fé é impossível agradar a Deus. (Hb 11:6)",
+                        exegesis: `
+                            <p>Muitas vezes a fé é confundida com mero otimismo, pensamento positivo ou desejo humano de prosperidade material. O autor desconstrói essa mentalidade secularizada ao apresentar a definição clássica e divina de fé: confiar de forma irrestrita na palavra e nas promessas futuras de Deus, agindo e decidindo no presente em total obediência, mesmo sem ver fisicamente o resultado.</p>
+                        `
+                    },
+                    {
+                        title: "Análise Teológica: O Testemunho dos Anciãos",
+                        verse: "Pela fé, Abraão, sendo chamado, obedeceu, partindo para um lugar que havia de receber por herança. (Hb 11:8)",
+                        exegesis: `
+                            <p>O autor desfila uma galeria monumental de biografias inspiradoras do Antigo Testamento: Abel, Enoque, Noé, Abraão, Sara, Moisés e muitos outros. A essência de suas vitórias foi a (<i>πίστις</i> - Pístis - Fé ou Confiança Convicto). Todos eles decidiram crer em Deus, preferindo as riquezas invisíveis do céu aos prazeres terrenos, e o próprio Deus se orgulhou de (<i>μαρτυρέω</i> - Martyréō - Dar testemunho ou Validar) a sua jornada de fidelidade.</p>
+                        `
+                    },
+                    {
+                        title: "Aplicação Prática: Vivendo como Peregrinos na Terra",
+                        verse: "Confessando que eram estrangeiros e peregrinos na terra... aspiravam a uma pátria superior, isto é, celestial. (Hb 11:13-16)",
+                        exegesis: `
+                            <p>Sua verdadeira pátria não é este mundo corrupto e passageiro; você é um cidadão do céu de passagem temporária pela terra. Não gaste toda a sua energia existencial tentando acumular tesouros físicos perecíveis ou buscando a aprovação de uma sociedade alienada de Deus. Viva pela fé, investindo naquilo que tem valor eterno perante o Trono do Criador.</p>
+                        `
+                    }
+                ]
+            },
+            "hebreus_12": {
+                title: "A CORRIDA DA PERSEVERANÇA",
+                date: "16/06 (Terça)",
+                desc: "\"Olhando firmemente para o Autor e Consumador da fé, Jesus...\"",
+                blocks: [
+                    {
+                        title: "Contexto e Exegese: Correndo sem Embaraços",
+                        verse: "Desembaraçando-nos de todo peso e do pecado que tenazmente nos cerca, corramos, com perseverança, a carreira que nos está proposta. (Hb 12:1)",
+                        exegesis: `
+                            <p>O autor utiliza a metáfora de uma maratona olímpica antiga. Diante de uma imensa plateia de heróis da fé que nos assistem nas arquibancadas espirituais da eternidade, devemos lançar fora todo o fardo desnecessário de ansiedades, pecados e distrações para correr com foco e resistência a corrida que Deus desenhou para a nossa existência terrena.</p>
+                        `
+                    },
+                    {
+                        title: "Análise Teológica: A Disciplina como Amor de Pai",
+                        verse: "Porque o Senhor disciplina a quem ama e açoita a todo filho a quem acolhe. (Hb 12:6)",
+                        exegesis: `
+                            <p>O autor contrasta a grande (<i>νέφος</i> - Néphos - Nuvem ou Multidão) de testemunhas com o nosso maior exemplo, Jesus. O sofrimento do crente também deve ser compreendido sob a ótica da paternidade divina. As dificuldades da vida funcionam muitas vezes como ferramentas de (<i>παιδεία</i> - Paideía - Disciplina, Instrução ou Educação de Filhos) aplicada por Deus Pai para nos santificar e moldar o nosso caráter à imagem de Cristo.</p>
+                        `
+                    },
+                    {
+                        title: "Aplicação Prática: Evitando a Amargura no Coração",
+                        verse: "Atentando, diligentemente... para que nenhuma raiz de amargura, brotando, vos perturbe. (Hb 12:15)",
+                        exegesis: `
+                            <p>Diante de injustiças, dores e frustrações da caminhada, o ressentimento pode brotar silenciosamente em nossas almas como uma planta venenosa, azedando a nossa relação com Deus e contaminando os relacionamentos ao nosso redor. Guarde o seu coração em oração e perdoe continuamente, permitindo que a graça de Deus cure as suas feridas.</p>
+                        `
+                    }
+                ]
+            },
+            "hebreus_13": {
+                title: "SACRIFÍCIOS DE LOUVOR E AMOR",
+                date: "17/06 (Quarta)",
+                desc: "\"Jesus Cristo é o mesmo ontem, e hoje, e eternamente.\"",
+                blocks: [
+                    {
+                        title: "Contexto e Exegese: A Ética Prática do Amor",
+                        verse: "Seja constante o amor fraternal. Não vos esqueçais da hospitalidade... Lembrai-vos dos encarcerados. (Hb 13:1-3)",
+                        exegesis: `
+                            <p>A epístola se encerra com uma sucessão de exortações éticas e práticas para a vida diária dos crentes hebreus. O autor traduz toda a majestosa teologia celestial apresentada nos capítulos anteriores em ações concretas de amor social, proteção à santidade do matrimônio contra a imoralidade, combate à ganância material através do contentamento, e submissão aos líderes espirituais.</p>
+                        `
+                    },
+                    {
+                        title: "Análise Teológica: O Sacrifício Espiritual Superior",
+                        verse: "Por meio de Jesus, pois, ofereçamos a Deus, sempre, sacrifício de louvor, que é o fruto de lábios que confessam o seu nome. (Hb 13:15)",
+                        exegesis: `
+                            <p>Na Nova Aliança, o fim dos sacrifícios de animais não significa a abolição total das ofertas voluntárias a Deus. Nossos sacrifícios agora são espirituais: a prática constante da (<i>φιλαδελφία</i> - Philadelphía - Amor Fraternal ou Amizade de Irmão) e a entrega sincera de nossa (<i>θυσía</i> - Thysía - Sacrifício ou Oferta de Devoção) expressa por meio de ações de graças, louvores genuínos dos lábios e generosidade material.</p>
+                        `
+                    },
+                    {
+                        title: "Aplicação Prática: Permanecendo no Cristo Imutável",
+                        verse: "Jesus Cristo é o mesmo ontem, e hoje, e eternamente. (Hb 13:8)",
+                        exegesis: `
+                            <p>Vivemos em uma época de profundas e rápidas transformações culturais, políticas, morais e tecnológicas que geram enorme insegurança na alma humana. Mas temos uma rocha inabalável sob os nossos pés: Jesus Cristo não muda, Seu amor é constante, Suas promessas são fiéis e Sua salvação é indestrutível. Descanse a sua vida e o seu futuro na estabilidade perfeita dEle.</p>
+                        `
+                    }
+                ]
+            }
+        };
+
+        // === LÓGICA GERAL ===
+        let currentAudioBlob = null;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        function loadChapter(chapterKey) {
+            const data = bibleData[chapterKey];
+            if (!data) return;
+
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
+            const dateBadge = document.getElementById('dateBadge');
+            const dateValue = document.getElementById('dateValue');
+            const communitySection = document.getElementById('community-section');
+            const formChapterKey = document.getElementById('formChapterKey');
+            
+            heroTitle.style.opacity = '0';
+            heroDesc.style.opacity = '0';
+            dateBadge.style.opacity = '0';
+            
+            setTimeout(() => {
+                if (data.date) {
+                    dateValue.textContent = data.date;
+                    dateBadge.classList.remove('hidden');
+                    communitySection.classList.remove('hidden');
+                    formChapterKey.value = chapterKey;
+                    carregarComentarios(chapterKey);
+                    setTimeout(() => { dateBadge.style.opacity = '1'; }, 100);
+                } else {
+                    dateBadge.classList.add('hidden');
+                    communitySection.classList.add('hidden');
+                }
+
+                heroTitle.innerHTML = data.title;
+                heroDesc.innerHTML = data.desc;
+                heroTitle.style.opacity = '1';
+                heroDesc.style.opacity = '1';
+            }, 300);
+
+            const mainContent = document.getElementById('content');
+            mainContent.innerHTML = ''; 
+
+            data.blocks.forEach((block) => {
+                let borderColor = 'border-purple-600';
+                let blurTop = 'bg-purple-600/5';
+                let blurBottom = 'bg-purple-800/5';
+                let borderPanel = 'border-purple-900/30';
+
+                const html = `
+                    <section class="reveal max-w-4xl mx-auto w-full relative">
+                        <div class="absolute -inset-4 ${blurTop} to-transparent rounded-3xl blur-xl pointer-events-none"></div>
+                        
+                        <div class="space-y-6 relative z-10">
+                            <div class="text-center mb-10">
+                                <h2 class="text-3xl md:text-5xl font-serif text-white leading-tight mb-6">${block.title}</h2>
+                                <div class="inline-block border-l-4 border-r-4 ${borderColor} px-6 py-4 italic text-slate-300 bg-[#0e071c]/50 shadow-sm max-w-3xl rounded-sm">
+                                    "${block.verse}"
+                                </div>
+                            </div>
+                            
+                            <div class="bg-[#05020c]/80 p-8 md:p-12 rounded-xl border ${borderPanel} transition shadow-2xl relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-64 h-64 ${blurTop} rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+                                <div class="absolute bottom-0 left-0 w-64 h-64 ${blurBottom} rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
+                                <div class="rich-text text-slate-300 text-[16px] md:text-lg leading-relaxed relative z-10 font-light">
+                                    ${block.exegesis}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+                mainContent.insertAdjacentHTML('beforeend', html);
+            });
+            resetObservers();
+        }
+
+        function carregarComentarios(capitulo) {
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '<p class="text-center text-slate-500 text-sm animate-pulse">Carregando comentários...</p>';
+
+            fetch(`api.php?acao=listar&capitulo=${capitulo}`)
+            .then(res => res.json())
+            .then(data => {
+                list.innerHTML = '';
+                if(!Array.isArray(data)) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
+                }
+                if(data.length === 0) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
+                }
+                data.forEach(c => {
+                    let mediaHtml = '';
+                    if(c.foto) mediaHtml += `<img src="${c.foto}" onclick="openImage(this.src)" class="mt-4 rounded-lg max-h-48 border border-slate-700 cursor-pointer hover:scale-[1.02] transition shadow-lg">`;
+                    if(c.audio) mediaHtml += `<audio controls src="${c.audio}" class="mt-4 w-full"></audio>`;
+
+                    const jaCurtiu = localStorage.getItem(`reagiu_likes_${c.id}`);
+                    const jaAmem = localStorage.getItem(`reagiu_amem_${c.id}`);
+                    const jaGloria = localStorage.getItem(`reagiu_gloria_${c.id}`);
+
+                    let themeColor = 'text-purple-400';
+                    let panelBorder = 'hover:border-purple-500/50';
+
+                    const html = `
+                        <div class="glass-panel p-5 pb-12 rounded-xl border border-slate-800 relative group transition ${panelBorder} bg-[#0e071c]/60">
+                            <div class="flex justify-between items-start mb-3 border-b border-slate-800 pb-2">
+                                <strong class="${themeColor} text-sm tracking-wide font-serif">${c.nome}</strong>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-widest">${new Date(c.data_envio).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed">${c.mensagem}</p>
+                            ${mediaHtml}
+                            
+                            <div class="absolute bottom-3 right-4 flex gap-2">
+                                <button onclick="reagirComentario(${c.id}, 'likes', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaCurtiu ? 'text-red-500 border-red-500/30' : 'text-slate-400 hover:text-red-400'}" ${jaCurtiu ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-heart"></i> <span class="count font-bold">${c.likes || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'amem', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaAmem ? 'text-purple-400 border-purple-400/30' : 'text-slate-400 hover:text-purple-400'}" ${jaAmem ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-hands-praying"></i> <span class="count font-bold">${c.amem || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'gloria', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaGloria ? 'text-blue-500 border-blue-500/30' : 'text-slate-400 hover:text-blue-500'}" ${jaGloria ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-fire"></i> <span class="count font-bold">${c.gloria || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', html);
+                });
+            })
+            .catch(err => {
+                list.innerHTML = '<p class="text-center text-red-400 text-xs">Erro ao carregar comentários.</p>';
+            });
+        }
+
+        function reagirComentario(id, tipo, btn) {
+            if(localStorage.getItem(`reagiu_${tipo}_${id}`)) return;
+
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('.count');
+            let count = parseInt(countSpan.innerText);
+
+            icon.classList.add('reacted-anim');
+            btn.classList.remove('text-slate-400');
+            
+            if(tipo === 'likes') btn.classList.add('text-red-500', 'border-red-500/30');
+            if(tipo === 'amem') btn.classList.add('text-purple-400', 'border-purple-400/30');
+            if(tipo === 'gloria') btn.classList.add('text-blue-500', 'border-blue-500/30');
+
+            countSpan.innerText = count + 1;
+            btn.disabled = true;
+
+            localStorage.setItem(`reagiu_${tipo}_${id}`, 'true');
+
+            const formData = new FormData();
+            formData.append('acao', 'reagir');
+            formData.append('id', id);
+            formData.append('tipo', tipo);
+
+            fetch('api.php', { method: 'POST', body: formData });
+        }
+
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+            formData.append('acao', 'salvar');
+            if(currentAudioBlob) {
+                formData.append('audio', currentAudioBlob, 'audio.wav');
+            }
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    this.reset();
+                    document.getElementById('filePreview').innerHTML = '';
+                    currentAudioBlob = null;
+                    document.getElementById('recordText').innerText = "Gravar Áudio";
+                    carregarComentarios(document.getElementById('formChapterKey').value);
+                } else {
+                    alert('Erro ao enviar.');
+                }
+            })
+            .catch(() => alert('Erro de conexão.'))
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        });
+
+        function previewFile(input) {
+            const preview = document.getElementById('filePreview');
+            if(input.files && input.files[0]) {
+                preview.innerHTML = `<i class="fa-solid fa-check text-green-400"></i> Imagem selecionada: ${input.files[0].name}`;
+                preview.classList.remove('hidden');
+            }
+        }
+
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.addEventListener('click', async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                    mediaRecorder.onstop = () => {
+                        currentAudioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        document.getElementById('filePreview').classList.remove('hidden');
+                        document.getElementById('filePreview').innerHTML += '<br><i class="fa-solid fa-microphone text-green-400"></i> Áudio gravado!';
+                    };
+                    mediaRecorder.start();
+                    recordBtn.classList.add('recording-pulse');
+                    document.getElementById('recordText').innerText = "Parar Gravação";
+                } catch (err) {
+                    alert("Permita o uso do microfone para gravar.");
+                }
+            } else {
+                mediaRecorder.stop();
+                recordBtn.classList.remove('recording-pulse');
+                document.getElementById('recordText').innerText = "Gravar Áudio";
+            }
+        });
+
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        function closeImage() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function resetObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<80; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(147, 51, 234, 0.15)"; /* Púrpura */
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        loadChapter('intro_book');
+    </script>
+</body>
+</html>
