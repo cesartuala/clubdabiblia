@@ -138,7 +138,7 @@
             
                     <div class="w-full bg-slate-900/80 rounded-lg p-4 border border-slate-700/50">
                         <h3 class="text-[10px] uppercase tracking-widest text-rose-400 mb-3 font-bold border-b border-slate-800 pb-2">Ranking Filemon</h3>
-                        <ul id="ranking_Filemom" class="space-y-2 text-xs text-slate-300 max-h-32 overflow-y-auto custom-scroll pr-2">
+                        <ul id="ranking_filemom" class="space-y-2 text-xs text-slate-300 max-h-32 overflow-y-auto custom-scroll pr-2">
                             <li class="text-center animate-pulse">Carregando...</li>
                         </ul>
                     </div>
@@ -742,11 +742,11 @@
                 });
 
             // Fetch for Filemon (DESAFIO ABERTO)
-            fetch('api.php?acao=ranking_filemon')
+            fetch('api.php?acao=ranking_filemom')
                 .then(res => res.json())
-                .then(data => renderRanking(data, 'rankingFilemon', 'text-rose-400 font-bold'))
+                .then(data => renderRanking(data, 'ranking_filemom', 'text-rose-400 font-bold'))
                 .catch(err => {
-                    document.getElementById('rankingFilemon').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    document.getElementById('ranking_filemom').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
                     console.error(err);
                 });
 
