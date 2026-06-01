@@ -45,7 +45,7 @@ async function iniciarAutomacao() {
     const moldeQuiz = fs.readFileSync(path.join(hostingerDir, 'quiz_efesios.html'), 'utf8');
 
     const model = genAI.getGenerativeModel({ 
-        model: "gemini-2.5-flash",
+        model: "gemini-3.5-flash",
         systemInstruction: "Você é um Arquiteto de Software e Erudito Sênior. É expressamente PROIBIDO o uso de placeholders (ex: // resto do código). Gere arquivos com código robusto e resiliente a erros de banco de dados. Responda apenas com os blocos marcados pelos separadores."
     });
 
