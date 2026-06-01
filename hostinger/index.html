@@ -61,12 +61,12 @@
     <main class="flex-grow flex items-start justify-center p-4 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[100rem] w-full items-start">
             
-            <!-- STATUS "LEITURA ATUAL": Filemon -->
+            <!-- STATUS "DESAFIO ABERTO": Filemon -->
             <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-rose-500/40 shadow-[0_0_30px_rgba(251,113,133,0.15)]">
                 <div class="h-1 w-full bg-gradient-to-r from-rose-600 via-pink-500 to-rose-400"></div>
                 
                 <div class="absolute top-0 right-0 bg-rose-600 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-bl-xl shadow-[0_0_15px_rgba(251,113,133,0.6)] z-20">
-                    <i class="fa-solid fa-hourglass-start mr-1"></i> Leitura Atual
+                    <i class="fa-solid fa-trophy mr-1"></i> Desafio Aberto
                 </div>
             
                 <div class="p-6 flex flex-col items-center text-center flex-grow justify-center">
@@ -87,8 +87,8 @@
                             <i class="fa-solid fa-book-open text-rose-400 mb-1 text-sm"></i>
                             <span class="text-[9px] uppercase text-slate-300">Leitura</span>
                         </a>
-                        <!-- Quiz DESATIVADO -->
-                        <a href="quiz_filemon.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-rose-500/20 p-3 rounded-xl opacity-50 pointer-events-none">
+                        <!-- Quiz ATIVADO -->
+                        <a href="quiz_filemon.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-rose-500/20 p-3 rounded-xl hover:border-rose-500 transition">
                             <i class="fa-solid fa-trophy text-rose-400 mb-1 text-sm"></i>
                             <span class="text-[9px] uppercase text-slate-300">Quiz</span>
                         </a>
@@ -103,7 +103,7 @@
                 </div>
             </div>
 
-            <!-- STATUS "DESAFIO ABERTO": Tito (era Leitura Atual, agora ativo) -->
+            <!-- STATUS "DESAFIO ABERTO": Tito -->
             <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-lime-500/40 shadow-[0_0_30px_rgba(132,204,22,0.15)]">
                 <div class="h-1 w-full bg-gradient-to-r from-lime-600 via-green-500 to-emerald-500"></div>
                 
@@ -690,7 +690,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Fetch for Filemon (LEITURA ATUAL)
+            // Fetch for Filemon (DESAFIO ABERTO)
             fetch('api.php?acao=ranking_filemon')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingFilemon', 'text-rose-400 font-bold'))
