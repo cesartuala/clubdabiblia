@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Tiago | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        .glass-card { background: rgba(15, 15, 35, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(192, 132, 252, 0.2); transition: all 0.4s ease; }
+        .purple-glow { text-shadow: 0 0 15px rgba(192, 132, 252, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); background-color: rgba(168, 85, 247, 0.15); border-color: #a855f7; }
+        .option-correct { background-color: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+        .option-wrong { background-color: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #f87171 !important; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="w-full z-50 p-6 flex justify-between items-center relative">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0a0a1a] border border-purple-500/50 text-purple-400 hover:bg-purple-500 hover:text-black transition-all">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-hand-holding-heart text-purple-500 text-xl"></i>
+            <span class="font-serif text-white text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl w-full flex flex-col relative overflow-hidden shadow-[0_0_40px_rgba(192,132,252,0.15)]">
+            <div class="h-1 w-full bg-gradient-to-r from-purple-600 via-fuchsia-500 to-indigo-500" id="progressBar"></div>
+            
+            <div class="p-6 md:p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b border-purple-500/20 pb-4">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white purple-glow">Quiz: Tiago</h1>
+                    <span id="questionCounter" class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-xs font-bold tracking-widest border border-purple-500/30">1 / 10</span>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="questionText" class="text-lg md:text-xl text-slate-200 mb-6 font-light leading-relaxed"></div>
+                    <div id="optionsContainer" class="space-y-3"></div>
+                    <div id="feedbackContainer" class="mt-6 p-4 rounded-lg hidden text-sm leading-relaxed border"></div>
+
+                    <button id="nextBtn" class="mt-8 w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-lg transition uppercase tracking-widest hidden shadow-lg shadow-purple-900/50">
+                        Próxima Pergunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-col items-center text-center py-8">
+                    <i class="fa-solid fa-crown text-6xl text-purple-400 mb-4 drop-shadow-[0_0_15px_rgba(192,132,252,0.6)]"></i>
+                    <h2 class="font-serif text-3xl text-white mb-2">Vitória na Fé Ativa!</h2>
+                    <p class="text-slate-300 text-lg mb-6">Você acertou <span id="finalScore" class="text-purple-400 font-bold text-2xl">0</span> de 10 perguntas.</p>
+                    
+                    <div class="w-full max-w-sm bg-slate-900/80 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xs uppercase tracking-widest text-purple-400 mb-4 font-bold">Salvar no Ranking</h3>
+                        <form id="rankingForm" class="space-y-4">
+                            <input type="hidden" name="acao" value="salvar_quiz_tiago">
+                            <input type="hidden" name="pontos" id="inputPontos" value="0">
+                            <input type="hidden" name="acertos" id="inputAcertos" value="0">
+                            <input type="text" name="nome" required placeholder="Seu Nome..." class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white focus:border-purple-500 focus:outline-none transition text-sm">
+                            <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-500 text-white font-bold py-2 rounded transition uppercase tracking-widest text-xs shadow-lg">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizDataFull = [
+            {
+                q: "Qual termo grego Tiago usa para designar a dispersão de judeus-cristãos fora de sua pátria?",
+                options: [
+                    { t: "Diaspora (διασπορά)", c: true, r: "Tiago escreve às doze tribos que andam dispersas na 'Diaspora'." },
+                    { t: "Ecclesia (ἐκκλησία)", c: false, r: "Ecclesia refere-se à assembleia ou igreja." },
+                    { t: "Koinonia (κοινωνία)", c: false, r: "Koinonia significa comunhão ou partilha espiritual." },
+                    { t: "Apocalypse (ἀποκάλυψις)", c: false, r: "Apocalypse significa revelação divina ou desvelamento." }
+                ]
+            },
+            {
+                q: "Segundo o capítulo 1, qual é o resultado da prova e perseverança de nossa fé?",
+                options: [
+                    { t: "Paciência e maturidade perfeita para nada faltar.", c: true, r: "A prova da fé produz perseverança/paciência, gerando maturidade e integridade." },
+                    { t: "Riquezas materiais imediatas nesta terra.", c: false, r: "Tiago foca em crescimento espiritual interno, não em teologia da prosperidade." },
+                    { t: "Ausência total de novas provações no futuro.", c: false, r: "As provações são constantes na vida do crente." },
+                    { t: "Isenção das leis morais da comunidade.", c: false, r: "A obediência moral é enfatizada ao longo de toda a epístola." }
+                ]
+            },
+            {
+                q: "O que é comparado a um homem que olha seu rosto natural no espelho e logo se esquece como era?",
+                options: [
+                    { t: "O ouvinte negligente da Palavra que não a pratica.", c: true, r: "Aquele que apenas ouve e não pratica assemelha-se a quem esquece sua imagem espiritual revelada no espelho das Escrituras." },
+                    { t: "O homem que não controla suas posses.", c: false, r: "A analogia do espelho foca diretamente na obediência prática à doutrina." },
+                    { t: "A instabilidade das ondas do mar na dúvida.", c: false, r: "A dúvida é comparada às ondas do mar, enquanto o espelho se refere à audição sem prática." },
+                    { t: "A fragilidade da vida humana que passa rapidamente.", c: false, r: "A efemeridade da vida é comparada à neblina no capítulo 4." }
+                ]
+            },
+            {
+                q: "O que é a religião pura e imaculada para com Deus e o Pai, segundo Tiago 1:27?",
+                options: [
+                    { t: "Visitar órfãos e viúvas em suas aflições e guardar-se incontaminado do mundo.", c: true, r: "Esta é a definição de piedade prática e pureza moral aceita por Deus." },
+                    { t: "Conhecer as línguas originais da Bíblia perfeitamente.", c: false, r: "O conhecimento intelectual sem misericórdia não valida a piedade pura." },
+                    { t: "Oferecer sacrifícios cerimoniais no templo de Jerusalém.", c: false, r: "Tiago prioriza a misericórdia ativa e a santidade pessoal." },
+                    { t: "Realizar debates teológicos complexos com incrédulos.", c: false, r: "A conduta compassiva e santa supera discursos vazios." }
+                ]
+            },
+            {
+                q: "Qual pecado específico de parcialidade social é fortemente condenado em Tiago 2?",
+                options: [
+                    { t: "Acepção de pessoas (julgamento de status por roupas e bens).", c: true, r: "Fazer diferença entre ricos e pobres com preconceito é Prosopolempsia (acepção de pessoas)." },
+                    { t: "Não partilhar segredos ministeriais.", c: false, r: "A condenação é sobre julgar as pessoas por aparência externa de riqueza." },
+                    { t: "Trabalhar nos dias de repouso sagrado.", c: false, r: "Tiago foca na justiça social e amor fraternal." },
+                    { t: "Não pagar impostos devidos ao império.", c: false, r: "O foco deste capítulo é a discriminação do pobre dentro do culto." }
+                ]
+            },
+            {
+                q: "Qual frase célebre do capítulo 2 resume a crítica de Tiago à fé meramente teórica?",
+                options: [
+                    { t: "A fé sem obras é morta.", c: true, r: "Pistis choris ergon nekra estin. A fé genuína produz obras visíveis." },
+                    { t: "A fé remove montanhas com autoridade.", c: false, r: "Este ensinamento é de Jesus nos Evangelhos, não a síntese de Tiago 2." },
+                    { t: "A letra mata, mas o espírito vivifica.", c: false, r: "Isso é de Paulo em 2 Coríntios 3:6." },
+                    { t: "O justo viverá exclusivamente pela fé intelectual.", c: false, r: "O justo vive por uma fé viva e obediente." }
+                ]
+            },
+            {
+                q: "Que seres espirituais decaídos Tiago cita para provar que crer sem obediência é inútil?",
+                options: [
+                    { t: "Os demônios, que creem e tremem.", c: true, r: "Até os demônios concordam mentalmente na doutrina da unicidade de Deus, mas não são salvos." },
+                    { t: "Os anjos caídos que não guardaram sua dignidade.", c: false, r: "Tiago cita especificamente que os demônios creem em um só Deus e tremem." },
+                    { t: "A serpente que enganou o Éden primordial.", c: false, r: "O texto refere-se aos demônios em geral." },
+                    { t: "Os falsos profetas das nações pagãs.", c: false, r: "Os demônios servem de exemplo para demonstrar fé puramente intelectual." }
+                ]
+            },
+            {
+                q: "Quais dois personagens históricos são usados como modelos de fé cooperando com obras em Tiago 2?",
+                options: [
+                    { t: "Abraão e Raabe.", c: true, r: "Abraão ao oferecer Isaque e Raabe ao acolher e salvar os mensageiros." },
+                    { t: "Moisés e Josué.", c: false, r: "Abraão e Raabe são os exemplos explícitos de Tiago 2." },
+                    { t: "Davi e Salomão.", c: false, r: "Davi e Salomão não são mencionados nesta seção." },
+                    { t: "Elias e Eliseu.", c: false, r: "Elias é citado no capítulo 5 sobre oração, não no capítulo 2." }
+                ]
+            },
+            {
+                q: "Quais metáforas Tiago usa no capítulo 3 para descrever a língua e seu controle?",
+                options: [
+                    { t: "O freio do cavalo, o leme do navio e uma fagulha de fogo.", c: true, r: "Essas imagens ilustram como algo pequeno governa e impacta corpos e ecossistemas imensos." },
+                    { t: "A âncora da alma e o capacete protetor.", c: false, r: "O leme, o freio e o fogo são as analogias centrais de Tiago 3." },
+                    { t: "O cajado do pastor e o óleo da unção.", c: false, r: "Estes não são os símbolos usados para retratar o perigo da fala." },
+                    { t: "O vento impetuoso e o orvalho da manhã.", c: false, r: "A língua é especificamente associada ao poder devastador do fogo." }
+                ]
+            },
+            {
+                q: "Qual a diferença entre as duas sabedorias descritas em Tiago 3?",
+                options: [
+                    { t: "A terrena é ciumenta e egoísta; a do alto é pura, pacífica e cheia de bons frutos.", c: true, r: "A sabedoria do alto (Anothen Sophia) é pautada na pureza, misericórdia e retidão." },
+                    { t: "A sabedoria judaica contraposta à sabedoria filosófica dos gregos.", c: false, r: "A divisão é de caráter moral e espiritual, não cultural." },
+                    { t: "Uma é dada aos sacerdotes e a outra ao povo leigo.", c: false, r: "Ambas as sabedorias são caminhos morais abertos à escolha do indivíduo." },
+                    { t: "A sabedoria científica em oposição à sabedoria mística antiga.", c: false, r: "A sabedoria terrena é rotulada como animal e demoníaca devido às suas origens soberbas." }
+                ]
+            },
+            {
+                q: "De onde procedem as guerras e pelejas na comunidade, segundo Tiago 4?",
+                options: [
+                    { t: "Dos prazeres carnais (Hedone) que combatem nos membros do corpo.", c: true, r: "Os conflitos comunitários nascem de ambições egocêntricas e paixões desordenadas." },
+                    { t: "De perseguições externas promovidas por governadores pagãos.", c: false, r: "A fonte dos conflitos reside nas paixões internas do próprio ser humano." },
+                    { t: "De falhas na tradução dos pergaminhos originais da Bíblia.", c: false, r: "Tiago lida com desvios morais práticos dos crentes." },
+                    { t: "De divergências estritamente litúrgicas sobre o sábado.", c: false, r: "O egoísmo e a soberba geram as divisões descritas." }
+                ]
+            },
+            {
+                q: "O que Tiago ordena fazer para que o diabo fuja de nós?",
+                options: [
+                    { t: "Sujeitar-se a Deus e resistir ao diabo.", c: true, r: "O segredo da vitória é Hypotasso (submissão a Deus) associado à resistência firme contra o mal." },
+                    { t: "Realizar orações repetitivas em voz alta.", c: false, r: "A submissão voluntária ao Criador precede e capacita a resistência ao inimigo." },
+                    { t: "Fugir fisicamente para o deserto da Judeia.", c: false, r: "A fuga do diabo é espiritual, operada no íntimo do crente submisso." },
+                    { t: "Adquirir relíquias religiosas de Éfeso.", c: false, r: "A obediência ética e a humildade são as únicas armas exigidas." }
+                ]
+            },
+            {
+                q: "O que devemos dizer ao planejar nossas atividades e comércio futuro?",
+                options: [
+                    { t: "'Se o Senhor quiser, viveremos e faremos isto ou aquilo'.", c: true, r: "Isso reconhece a soberania de Deus sobre o amanhã em vez da presunção arrogante." },
+                    { t: "'Eu tenho poder e determino minhas próprias vitórias financeiras'.", c: false, r: "Tiago chama o orgulho autossuficiente de arrogância pecaminosa." },
+                    { t: "'O destino decidirá meus lucros e perdas'.", c: false, r: "Devemos submeter nossa vida e planos à vontade do Senhor." },
+                    { t: "'O amanhã pertence inteiramente aos astros'.", c: false, r: "Os crentes devem submeter-se ao Criador, rejeitando superstições." }
+                ]
+            },
+            {
+                q: "Qual atitude dos ricos opressores do capítulo 5 causou clamor que subiu a Deus?",
+                options: [
+                    { t: "Reter injustamente o salário dos trabalhadores que ceifaram seus campos.", c: true, r: "Reter o salário do jornaleiro é um pecado grave de injustiça social severamente punido por Deus." },
+                    { t: "Construir silos maiores para armazenar trigo excedente.", c: false, r: "A denúncia explícita é sobre a fraude nos salários e opressão dos camponeses." },
+                    { t: "Negar acesso dos gentios às sinagogas da Galileia.", c: false, r: "A injustiça socioeconômica e a opressão aos trabalhadores são as causas denunciadas." },
+                    { t: "Não jejuar durante o grande dia da Expiação.", c: false, r: "O roubo de salários é o pecado social central apontado pelo autor." }
+                ]
+            },
+            {
+                q: "Qual profeta do Antigo Testamento é usado como modelo de oração eficaz no capítulo 5?",
+                options: [
+                    { t: "Elias, homem com paixões iguais às nossas.", c: true, r: "Elias orou intensamente e controlou a chuva sobre a terra, demonstrando o poder da oração do justo." },
+                    { t: "Daniel, na cova dos leões famintos.", c: false, r: "Daniel não é citado por Tiago; Elias é o grande exemplo de Proseuches energoumene." },
+                    { t: "Moisés, ao abrir o Mar Vermelho.", c: false, r: "Elias é o personagem histórico detalhado por Tiago no tocante à chuva." },
+                    { t: "Isaías, ao curar o rei Ezequias.", c: false, r: "A epístola foca no exemplo de Elias e suas orações persistentes." }
+                ]
+            }
+        ];
+
+        // Shuffle questions to get 10 random
+        const shuffled = quizDataFull.sort(() => 0.5 - Math.random());
+        const quizData = shuffled.slice(0, 10);
+
+        let currentQ = 0; let score = 0; let answered = false;
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        function loadQuestion() {
+            answered = false; feedbackContainer.classList.add('hidden'); nextBtn.classList.add('hidden');
+            const qData = quizData[currentQ];
+            document.getElementById('questionCounter').innerText = `${currentQ + 1} / ${quizData.length}`;
+            questionText.innerText = qData.q;
+            optionsContainer.innerHTML = '';
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-lg bg-slate-800/80 border border-slate-600 text-slate-300 text-sm md:text-base';
+                btn.innerText = opt.t;
+                btn.onclick = () => selectOption(btn, opt);
+                optionsContainer.appendChild(btn);
+            });
+            progressBar.style.width = `${(currentQ / quizData.length) * 100}%`;
+        }
+
+        function selectOption(btn, opt) {
+            if (answered) return; answered = true;
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedbackContainer.classList.remove('hidden', 'bg-red-900/30', 'border-red-500/50', 'bg-green-900/30', 'border-green-500/50');
+            if (opt.c) {
+                score += 10; btn.classList.add('option-correct');
+                feedbackContainer.classList.add('bg-green-900/30', 'border-green-500/50', 'text-green-200');
+                feedbackContainer.innerHTML = `<strong>Correto!</strong> ${opt.r}`;
+            } else {
+                btn.classList.add('option-wrong');
+                feedbackContainer.classList.add('bg-red-900/30', 'border-red-500/50', 'text-red-200');
+                feedbackContainer.innerHTML = `<strong>Incorreto.</strong> ${opt.r}`;
+                buttons.forEach((b, i) => { if(quizData[currentQ].options[i].c) b.classList.add('option-correct'); });
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.onclick = () => {
+            currentQ++;
+            if (currentQ < quizData.length) loadQuestion();
+            else showResults();
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            document.getElementById('quizContainer').classList.add('hidden');
+            const res = document.getElementById('resultContainer');
+            res.classList.remove('hidden'); res.classList.add('flex');
+            document.getElementById('finalScore').innerText = score/10;
+            document.getElementById('inputPontos').value = score;
+            document.getElementById('inputAcertos').value = score/10;
+        }
+
+        document.getElementById('rankingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button'); btn.disabled = true; btn.innerText = "Salvando...";
+            fetch('api.php', { method: 'POST', body: new FormData(this) })
+            .then(() => window.location.href = 'index.html')
+            .catch(() => {
+                alert('Ocorreu um erro de conexão ao tentar salvar sua pontuação.');
+                window.location.href = 'index.html';
+            });
+        };
+
+        // Particles
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, sx: Math.random()*0.5-0.25, sy: Math.random()*0.5-0.25 });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(192, 132, 252, 0.2)";
+            particles.forEach(p => { p.x+=p.sx; p.y+=p.sy; if(p.x<0||p.x>canvas.width)p.sx*=-1; if(p.y<0||p.y>canvas.height)p.sy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        loadQuestion();
+    </script>
+</body>
+</html>
