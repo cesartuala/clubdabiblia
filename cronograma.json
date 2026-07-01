@@ -97,7 +97,7 @@
       "periodo_leitura": "25/06 a 01/07",
       "data_quiz": "01/07",
       "status": "concluido",
-      "quiz_ativo": false
+      "quiz_ativo": true
     },
     {
       "data_criacao": "2026-07-01",
@@ -105,7 +105,7 @@
       "capitulos": 3,
       "periodo_leitura": "02/07 a 04/07",
       "data_quiz": "04/07",
-      "status": "pendente",
+      "status": "concluido",
       "quiz_ativo": false
     },
     {

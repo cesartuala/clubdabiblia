@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2 Pedro | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] },
+                    colors: { 
+                        divine: { 400: '#38bdf8' } /* Sky Blue */
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #020617; color: #f1f5f9; overflow-x: hidden; }
+        
+        .glass-panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(56, 189, 248, 0.2); }
+        .sky-glow { text-shadow: 0 0 15px rgba(56, 189, 248, 0.5); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .rich-text strong { color: #bae6fd; font-weight: 700; }
+        .rich-text .ref { color: #38bdf8; font-size: 0.9em; font-family: monospace; background: rgba(56, 189, 248, 0.15); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .rich-text h3 { color: #0ea5e9; font-weight: bold; margin-top: 2rem; margin-bottom: 0.75rem; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.15em; border-bottom: 1px solid rgba(56, 189, 248, 0.3); padding-bottom: 6px; }
+        .rich-text ul { list-style-type: none; padding-left: 0; margin-top: 15px; margin-bottom: 20px; }
+        .rich-text li { margin-bottom: 15px; line-height: 1.8; text-align: justify; border-left: 3px solid #0ea5e9; padding-left: 20px; background: linear-gradient(to right, rgba(56, 189, 248, 0.05), transparent); padding-top: 5px; padding-bottom: 5px; }
+        .rich-text p { margin-bottom: 20px; line-height: 2; text-align: justify; font-size: 1.05rem; color: #cbd5e1; }
+        .rich-text blockquote { border-left: 4px solid #0ea5e9; padding-left: 20px; margin: 20px 0; font-style: italic; color: #bae6fd; background: rgba(56, 189, 248, 0.05); padding: 15px; border-radius: 0 8px 8px 0; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0ea5e9; }
+
+        .recording-pulse { animation: recPulse 1.5s infinite; background-color: #ef4444; border-color: #ef4444; color: white; }
+        @keyframes recPulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @keyframes pop { 50% { transform: scale(1.4); } }
+        .reacted-anim { animation: pop 0.3s ease-out; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="fixed top-0 w-full z-50 p-4 md:p-6 flex flex-col md:flex-row justify-between items-center bg-gradient-to-b from-[#020617]/95 to-[#020617]/80 backdrop-blur-md border-b border-sky-900/40 transition-all">
+        <div class="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto justify-between md:justify-start">
+            <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#070f24] border border-sky-500/50 text-sky-400 hover:bg-sky-500 hover:text-black transition-all shadow-[0_0_15px_rgba(56,189,248,0.1)]">
+                <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+                <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-triangle-exclamation text-sky-500 text-xl md:text-2xl"></i>
+                <span class="font-serif text-white text-lg md:text-xl tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto justify-end">
+            <span class="hidden md:inline text-xs text-slate-400 uppercase tracking-widest">Navegar:</span>
+            <select id="chapterSelect" onchange="loadChapter(this.value)" class="w-full md:w-auto bg-[#070f24] text-sky-400 border border-sky-500/40 rounded px-4 py-2 text-sm uppercase tracking-widest focus:outline-none focus:border-sky-500 cursor-pointer">
+                <option value="intro_book">★ Sobre o Livro</option>
+                <option value="intro_author">✎ Sobre o Autor</option>
+                <option disabled>──────────</option>
+                <option value="2pedro_1">Capítulo 01</option>
+                <option value="2pedro_2">Capítulo 02</option>
+                <option value="2pedro_3">Capítulo 03</option>
+            </select>
+        </div>
+    </nav>
+
+    <header class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-32 md:pt-20">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/80 to-transparent"></div>
+        
+        <div class="z-10 reveal active space-y-4 max-w-5xl w-full">
+            <h2 class="text-sky-400 tracking-[0.5em] text-[10px] md:text-sm uppercase animate-pulse mb-4 font-bold">Clube da Bíblia Apresenta</h2>
+            
+            <div id="dateBadge" class="hidden inline-flex items-center gap-2 border border-sky-500/50 rounded-full px-4 py-1 mb-4 bg-sky-500/10 backdrop-blur-sm transition-all duration-700 opacity-0">
+                <i class="fa-regular fa-calendar text-sky-400 text-xs"></i>
+                <span class="text-sky-300 text-xs tracking-widest uppercase font-bold">Leitura: <span id="dateValue" class="text-white"></span></span>
+            </div>
+
+            <h1 id="heroTitle" class="font-serif text-4xl md:text-7xl text-white mb-2 sky-glow transition-all duration-700 uppercase leading-tight px-2"></h1>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 text-slate-400 mt-8 pt-8 border-t border-sky-900/40 w-full max-w-3xl mx-auto">
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Idealizado por</p>
+                    <strong class="text-sky-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-sky-300 transition">Fellipe Gomes Andrade</strong>
+                </div>
+                <span class="hidden md:block h-8 w-[1px] bg-gradient-to-b from-transparent via-sky-900 to-transparent"></span>
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Desenvolvido por</p>
+                    <strong class="text-sky-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-sky-300 transition">Cesar Tuala</strong>
+                </div>
+            </div>
+
+            <p id="heroDesc" class="text-sm md:text-xl text-slate-300 max-w-2xl mx-auto pt-8 font-light italic transition-all duration-700 px-4"></p>
+            
+            <div class="pt-10">
+                <button onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" class="animate-bounce text-sky-500 text-2xl">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="content" class="max-w-4xl mx-auto px-4 py-10 md:py-20 space-y-20 md:space-y-32 min-h-screen"></main>
+
+    <section id="community-section" class="w-full bg-[#030712] border-t-4 border-sky-600 py-16 mb-0 relative shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <h3 class="font-serif text-3xl md:text-4xl text-sky-500 mb-2 uppercase tracking-widest sky-glow">
+                    <i class="fa-solid fa-users-line mr-3"></i>Comunidade
+                </h3>
+                <p class="text-slate-400 text-sm italic">"Compartilhe o que Deus falou ao seu coração"</p>
+                <div class="h-1 w-24 bg-gradient-to-r from-transparent via-sky-600 to-transparent mx-auto mt-4"></div>
+            </div>
+
+            <div class="glass-panel p-6 md:p-8 rounded-xl mb-12 border border-slate-800 shadow-2xl bg-[#030712]/80">
+                <form id="commentForm" class="space-y-5">
+                    <input type="hidden" id="formChapterKey" name="capitulo">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="col-span-1">
+                            <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Nome</label>
+                            <input type="text" name="nome" required class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-sky-500 focus:outline-none transition">
+                        </div>
+                        <div class="flex gap-3 col-span-1 md:col-span-2 items-end">
+                            <label class="flex-1 cursor-pointer bg-black/50 border border-slate-700 hover:border-sky-500 hover:bg-[#070f24] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-camera group-hover:text-sky-400"></i> Foto
+                                <input type="file" name="foto" accept="image/*" class="hidden" onchange="previewFile(this)">
+                            </label>
+                            <button type="button" id="recordBtn" class="flex-1 bg-black/50 border border-slate-700 hover:border-red-500 hover:bg-[#070f24] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-microphone group-hover:text-red-400"></i> <span id="recordText">Gravar Áudio</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="filePreview" class="text-xs text-sky-400 hidden bg-black p-2 rounded border border-sky-500/30"></div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Comentário</label>
+                        <textarea name="mensagem" class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-sky-500 focus:outline-none h-28 resize-none transition"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-sky-800 to-sky-600 hover:from-sky-600 hover:to-sky-500 text-white font-bold py-4 rounded-lg transition uppercase tracking-[0.2em] text-sm shadow-lg shadow-black/50 transform hover:-translate-y-1">
+                        Publicar Comentário
+                    </button>
+                </form>
+            </div>
+            <div id="commentsList" class="space-y-6"></div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-800 bg-black py-12 text-center relative z-10">
+        <div class="flex flex-col items-center justify-center space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="fa-solid fa-triangle-exclamation text-sky-600 text-xl"></i>
+                <span class="font-serif text-slate-300 text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+            <p class="text-slate-700 text-[10px] tracking-widest uppercase mt-4">&copy; 2026 Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="imageModal" class="fixed inset-0 z-[100] bg-black/95 hidden flex justify-center items-center p-4 backdrop-blur-sm transition-opacity duration-300" onclick="closeImage()">
+        <div class="relative max-w-4xl w-full flex justify-center">
+            <button onclick="closeImage()" class="absolute -top-12 right-0 text-white text-3xl hover:text-sky-500 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modalImg" src="" class="max-h-[85vh] max-w-full rounded-lg shadow-[0_0_50px_rgba(56,189,248,0.3)] border-2 border-sky-500/20 object-contain">
+        </div>
+    </div>
+
+    <script>
+        const bibleData = {
+            "intro_book": {
+                title: "A SEGUNDA CARTA DE PEDRO",
+                date: null,
+                desc: "<span class='text-xs uppercase tracking-[0.3em] text-sky-400 not-italic block mb-4'>Introdução: Sobre o Livro</span>\"O solene testamento de despedida do apóstolo, exortando à fidelidade doutrinária e alertando contra falsas heresias.\"",
+                blocks: [
+                    {
+                        title: "Alerta e Confirmação",
+                        verse: "Simão Pedro, servo e apóstolo de Jesus Cristo, aos que conosco alcançaram fé igualmente preciosa... (2 Pe 1:1)",
+                        exegesis: "<h3>1. O Contexto Crítico da Epístola</h3>" +
+                            "<p>A Segunda Epístola de Pedro é um dos livros mais solenes de todo o Novo Testamento. Ela funciona como as últimas palavras deixadas por Pedro à igreja primitiva antes de enfrentar o seu próprio martírio em Roma. Se na sua primeira carta Pedro encorajou os cristãos a suportarem o sofrimento decorrente de perseguições externas, nesta segunda epístola ele volta o seu olhar para dentro, prevenindo a comunidade sobre o perigo avassalador da corrupção interna promovida por falsos mestres.</p>" +
+                            "<h3>2. Combate ao Relativismo e à Libertinagem</h3>" +
+                            "<p>Os oponentes enfrentados por Pedro não ensinavam apenas falsos ritos, mas introduziam um gnosticismo incipiente baseado em uma falsa noção de liberdade cristã que justificava a sensualidade e o pecado moral. Ao mesmo tempo, esses ensinos atacavam a doutrina da segunda vinda, semeando dúvidas sobre a justiça final de Deus. Pedro escreve para reestabelecer os fundamentos absolutos da fé revelada.</p>" +
+                            "<h3>3. A Essência Teológica</h3>" +
+                            "<p>O livro destaca a importância capital do conhecimento verdadeiro e espiritual. A heresia é derrotada através da maturidade e da confiança absoluta na autoridade divinamente inspirada das Escrituras. Pedro convida o crente a avançar de forma constante até a eternidade purificada, estabelecendo uma herança que jamais se corromperá.</p>"
+                    }
+                ]
+            },
+            "intro_author": {
+                title: "SOBRE O AUTOR",
+                date: null,
+                desc: "\"Sabendo que brevemente hei de deixar este meu tabernáculo, como também nosso Senhor Jesus Cristo já mo tem revelado.\"",
+                blocks: [
+                    {
+                        title: "O Pescador que se Tornou Pilar",
+                        verse: "Porque não vos fizemos saber a virtude e a vinda de nosso Senhor Jesus Cristo, seguindo fábulas artificialmente compostas, mas nós mesmos vimos a sua majestade. (2 Pe 1:16)",
+                        exegesis: "<h3>1. Próximo do Fim Histórico</h3>" +
+                            "<p>O apóstolo Pedro escreve de Roma por volta do ano 64-68 d.C., pouco antes de sua morte sob a fúria do imperador Nero. Ele tem plena consciência de que o seu 'tabernáculo' (corpo físico transitório) em breve será deixado, em cumprimento à profecia que o próprio Jesus lhe dera sobre como seria o seu martírio (João 21:18-19). Por isso, esta epístola se reveste do peso espiritual de uma mensagem testamentária.</p>" +
+                            "<h3>2. A Testemunha Ocular</h3>" +
+                            "<p>Pedro fala como alguém que possui autoridade empírica e celestial inquestionável. Ao rejeitar as 'fábulas artificialmente compostas' usadas pelos falsos ensinadores, ele apela diretamente para a sua experiência pessoal na Transfiguração no monte santo, onde ouviu a voz majestosa do próprio Pai glorificar a Jesus Cristo. Ele não repassa teorias de terceiros, mas a verdade histórica inabalável da qual foi testemunha.</p>" +
+                            "<h3>3. Legado de um Pastor Sênior</h3>" +
+                            "<p>A maturidade de Pedro brilha nesta epístola. O pescador impetuoso e outrora hesitante agora se revela um teólogo maduro e de visão cósmica extraordinária. Ele não busca aplausos, mas busca desesperadamente proteger a igreja amada dos lobos que se levantariam após sua partida, garantindo que as futuras gerações tivessem um farol seguro de orientação doutrinária.</p>"
+                    }
+                ]
+            },
+            "2pedro_1": {
+                title: "A NATUREZA DIVINA E A ESCRITURA",
+                date: "02/07 (Quarta)",
+                desc: "\"Acrescentai à vossa fé a virtude, e à virtude a ciência...\"",
+                blocks: [
+                    {
+                        title: "O Crescimento Espiritual e a Inspiração Sagrada",
+                        verse: "Porque a profecia nunca foi produzida por vontade de homem algum, mas os homens santos de Deus falaram inspirados pelo Espírito Santo. (2 Pe 1:21)",
+                        exegesis: "<h3>1. Contexto e Exegese: A Escada da Virtude</h3>" +
+                            "<p>Pedro inicia o primeiro capítulo desafiando os crentes a um progresso espiritual diligente. Ele apresenta uma sequência de qualidades espirituais que o crente deve cultivar ativamente: fé, virtude, ciência, temperança, paciência, piedade, amor fraternal e amor ágape. No grego original, o termo traduzido por virtude é <i>ἀρετή</i> (arete - virtude/excelência moral), que representa o pleno cumprimento do propósito para o qual fomos criados. Cultivar essas características impede que a vida do crente seja estéril e inoperante.</p>" +
+                            "<h3>2. Análise Teológica: A Verdadeira Gnosis</h3>" +
+                            "<p>A teologia deste capítulo destaca o verdadeiro conhecimento bíblico, em contraposição à gnose gnóstica herética. Pedro introduz o conceito de <i>γνῶσις</i> (gnosis - conhecimento espiritual prático), enfatizando que este saber provém da revelação divina e da íntima comunhão com Deus, e não de meditações intelectuais ou mitos místicos. Além disso, Pedro fornece uma definição clássica da inspiração bíblica, esclarecendo que os profetas não criaram as Escrituras, mas foram impulsionados e guiados de forma infalível pelo Espírito Santo.</p>" +
+                            "<h3>3. Aplicação Prática: Escapar da Cegueira Espiritual</h3>" +
+                            "<p>A aplicação moderna nos convoca a uma avaliação rigorosa do nosso próprio progresso cristão. Quem não desenvolve essas virtudes torna-se espiritualmente míope ou cego, esquecendo-se da purificação de seus antigos pecados. Devemos nos agarrar firmemente à autoridade infalível das Escrituras como uma 'luz que alumia em lugar escuro', não nos deixando seduzir por novos ensinos subjetivos ou modismos teológicos sem base bíblica.</p>"
+                    }
+                ]
+            },
+            "2pedro_2": {
+                title: "O PERIGO DOS FALSOS MESTRES",
+                date: "03/07 (Quinta)",
+                desc: "\"E muitos seguirão as suas dissoluções, por quem será blasfemado o caminho da verdade...\"",
+                blocks: [
+                    {
+                        title: "A Anatomia da Apostasia e a Certeza do Juízo",
+                        verse: "Porque, se Deus não poupou aos anjos que pecaram, mas, havendo-os lançado no inferno, os entregou às cadeias da escuridão, ficando reservados para o juízo... (2 Pe 2:4)",
+                        exegesis: "<h3>1. Contexto e Exegese: Infiltração Destruidora</h3>" +
+                            "<p>Neste capítulo denso e cortante, Pedro expõe o caráter moral e o destino trágico daqueles que distorcem o Evangelho. Ele utiliza o termo <i>ψευδοδιδάσκαλος</i> (pseudodidaskalos - falso mestre) para revelar que esses enganadores não operam de fora, mas se infiltram sutilmente no meio da igreja. Eles agem guiados por ganância, explorando os crentes com palavras fingidas, e prometem liberdade enquanto são eles mesmos escravos da corrupção moral.</p>" +
+                            "<h3>2. Análise Teológica: Os Três Exemplos do Juízo</h3>" +
+                            "<p>Para comprovar a certeza da intervenção judicial de Deus sobre os rebeldes, Pedro apresenta três fatos históricos: o aprisionamento dos anjos caídos, o julgamento do mundo antigo no Dilúvio e a destruição de Sodoma e Gomorra. Ao descrever a punição dos anjos, Pedro emprega o verbo <i>Τάρταρος</i> (Tartaros - Tártaro/abismo mais profundo), um termo grego que indica confinamento absoluto em trevas impenetráveis. Todavia, Pedro conforta a igreja ao mostrar que o mesmo Deus que julga os ímpios sabe perfeitamente como livrar da provação os piedosos, assim como livrou Noé e Ló.</p>" +
+                            "<h3>3. Aplicação Prática: Vigilância contra o Engano Mercenário</h3>" +
+                            "<p>A aplicação atual é um forte aviso contra a teologia do entretenimento e da prosperidade mercenária. Líderes que utilizam a fé apenas como ferramenta de lucro e que desprezam a santidade moral correspondem à descrição exata deste capítulo. Cabe aos crentes de hoje exercitarem o discernimento, avaliando não a fama ou o carisma dos pregadores, mas o fruto de seu testemunho e a fidelidade estrita à sã doutrina herdada dos apóstolos.</p>"
+                    }
+                ]
+            },
+            "2pedro_3": {
+                title: "A PROMESSA DO DIA DO SENHOR",
+                date: "04/07 (Sexta)",
+                desc: "\"Mas o dia do Senhor virá como o ladrão de noite...\"",
+                blocks: [
+                    {
+                        title: "Escatologia Purificadora e Nova Criação",
+                        verse: "Nós, porém, segundo a sua promessa, aguardamos novos céus e nova terra, em que habita a justiça. (2 Pe 3:13)",
+                        exegesis: "<h3>1. Contexto e Exegese: A Paciência do Senhor</h3>" +
+                            "<p>Pedro encerra sua carta confrontando os escarnecedores escatológicos que ridicularizavam a promessa da segunda vinda sob o argumento de que a criação continuava inalterada. Ele recorda que o mundo já foi outrora julgado e transformado pela água no dilúvio, e que o cosmos atual está reservado para o fogo da purificação. O apóstolo explica que a aparente demora da <i>παρουσία</i> (parousia - vinda/presença divina) de Jesus é reflexo da longanimidade e do amor de Deus, que suspende o tempo do juízo para dar oportunidade a que todos cheguem ao arrependimento sincero.</p>" +
+                            "<h3>2. Análise Teológica: A Desintegração de Stoicheia</h3>" +
+                            "<p>O apóstolo descreve um cenário escatológico onde os céus passarão com grande estrondo e os elementos ardendo se desfarão. O termo grego utilizado para elementos é <i>στοιχεῖον</i> (stoicheion - elementos primordiais/princípios básicos da matéria). A destruição pelo fogo descrita por Pedro não significa o aniquilamento do universo material à nulidade, mas sua completa regeneração e purificação de toda escória decorrente do pecado, preparando o cenário cósmico eterno para os 'novos céus e nova terra' onde a justiça reinará eternamente.</p>" +
+                            "<h3>3. Aplicação Prática: Santidade e Expectativa Ativa</h3>" +
+                            "<p>Visto que toda a atual ordem mundial passará por este processo regenerador, Pedro nos convoca a uma autoanálise profunda: que tipo de pessoas devemos ser? Devemos viver em santo procedimento e piedade, aguardando e apressando a vinda do Dia de Deus. A certeza do Retorno de Cristo nos estimula à pureza diária, ao testemunho ativo e ao progresso contínuo no conhecimento de nosso Salvador Jesus Cristo, a quem pertence a glória agora e para sempre.</p>"
+                    }
+                ]
+            }
+        };
+
+        // === LÓGICA GERAL ===
+        let currentAudioBlob = null;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        function loadChapter(chapterKey) {
+            const data = bibleData[chapterKey];
+            if (!data) return;
+
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
+            const dateBadge = document.getElementById('dateBadge');
+            const dateValue = document.getElementById('dateValue');
+            const communitySection = document.getElementById('community-section');
+            const formChapterKey = document.getElementById('formChapterKey');
+            
+            heroTitle.style.opacity = '0';
+            heroDesc.style.opacity = '0';
+            dateBadge.style.opacity = '0';
+            
+            setTimeout(() => {
+                if (data.date) {
+                    dateValue.textContent = data.date;
+                    dateBadge.classList.remove('hidden');
+                    communitySection.classList.remove('hidden');
+                    formChapterKey.value = chapterKey;
+                    carregarComentarios(chapterKey);
+                    setTimeout(() => { dateBadge.style.opacity = '1'; }, 100);
+                } else {
+                    dateBadge.classList.add('hidden');
+                    communitySection.classList.add('hidden');
+                }
+
+                heroTitle.innerHTML = data.title;
+                heroDesc.innerHTML = data.desc;
+                heroTitle.style.opacity = '1';
+                heroDesc.style.opacity = '1';
+            }, 300);
+
+            const mainContent = document.getElementById('content');
+            mainContent.innerHTML = ''; 
+
+            data.blocks.forEach((block) => {
+                let borderColor = 'border-sky-600';
+                let blurTop = 'bg-sky-600/5';
+                let blurBottom = 'bg-sky-800/5';
+                let borderPanel = 'border-sky-900/30';
+
+                const html = `
+                    <section class="reveal max-w-4xl mx-auto w-full relative">
+                        <div class="absolute -inset-4 ${blurTop} to-transparent rounded-3xl blur-xl pointer-events-none"></div>
+                        
+                        <div class="space-y-6 relative z-10">
+                            <div class="text-center mb-10">
+                                <h2 class="text-3xl md:text-5xl font-serif text-white leading-tight mb-6">${block.title}</h2>
+                                <div class="inline-block border-l-4 border-r-4 ${borderColor} px-6 py-4 italic text-slate-300 bg-[#020617]/50 shadow-sm max-w-3xl rounded-sm">
+                                    "${block.verse}"
+                                </div>
+                            </div>
+                            
+                            <div class="bg-[#020617]/80 p-8 md:p-12 rounded-xl border ${borderPanel} transition shadow-2xl relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-64 h-64 ${blurTop} rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+                                <div class="absolute bottom-0 left-0 w-64 h-64 ${blurBottom} rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
+                                <div class="rich-text text-slate-300 text-[16px] md:text-lg leading-relaxed relative z-10 font-light">
+                                    ${block.exegesis}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+                mainContent.insertAdjacentHTML('beforeend', html);
+            });
+            resetObservers();
+        }
+
+        function carregarComentarios(capitulo) {
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '<p class="text-center text-slate-500 text-sm animate-pulse">Carregando comentários...</p>';
+
+            fetch(`api.php?acao=listar&capitulo=${capitulo}`)
+            .then(res => res.json())
+            .then(data => {
+                if(!Array.isArray(data)) return;
+                list.innerHTML = '';
+                if(data.length === 0) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
+                }
+                data.forEach(c => {
+                    let mediaHtml = '';
+                    if(c.foto) mediaHtml += `<img src="${c.foto}" onclick="openImage(this.src)" class="mt-4 rounded-lg max-h-48 border border-slate-700 cursor-pointer hover:scale-[1.02] transition shadow-lg">`;
+                    if(c.audio) mediaHtml += `<audio controls src="${c.audio}" class="mt-4 w-full"></audio>`;
+
+                    const jaCurtiu = localStorage.getItem(`reagiu_likes_${c.id}`);
+                    const jaAmem = localStorage.getItem(`reagiu_amem_${c.id}`);
+                    const jaGloria = localStorage.getItem(`reagiu_gloria_${c.id}`);
+
+                    let themeColor = 'text-sky-400';
+                    let panelBorder = 'hover:border-sky-500/50';
+
+                    const html = `
+                        <div class="glass-panel p-5 pb-12 rounded-xl border border-slate-800 relative group transition ${panelBorder} bg-[#020617]/60">
+                            <div class="flex justify-between items-start mb-3 border-b border-slate-800 pb-2">
+                                <strong class="${themeColor} text-sm tracking-wide font-serif">${c.nome}</strong>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-widest">${new Date(c.data_envio).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed">${c.mensagem}</p>
+                            ${mediaHtml}
+                            
+                            <div class="absolute bottom-3 right-4 flex gap-2">
+                                <button onclick="reagirComentario(${c.id}, 'likes', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaCurtiu ? 'text-red-500 border-red-500/30' : 'text-slate-400 hover:text-red-400'}" ${jaCurtiu ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-heart"></i> <span class="count font-bold">${c.likes || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'amem', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaAmem ? 'text-sky-400 border-sky-400/30' : 'text-slate-400 hover:text-sky-400'}" ${jaAmem ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-hands-praying"></i> <span class="count font-bold">${c.amem || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'gloria', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaGloria ? 'text-blue-500 border-blue-500/30' : 'text-slate-400 hover:text-blue-500'}" ${jaGloria ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-fire"></i> <span class="count font-bold">${c.gloria || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', html);
+                });
+            })
+            .catch(err => {
+                list.innerHTML = '<p class="text-center text-red-400 text-xs">Erro ao carregar comentários de forma resiliente.</p>';
+            });
+        }
+
+        function reagirComentario(id, tipo, btn) {
+            if(localStorage.getItem(`reagiu_${tipo}_${id}`)) return;
+
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('.count');
+            let count = parseInt(countSpan.innerText);
+
+            icon.classList.add('reacted-anim');
+            btn.classList.remove('text-slate-400');
+            
+            if(tipo === 'likes') btn.classList.add('text-red-500', 'border-red-500/30');
+            if(tipo === 'amem') btn.classList.add('text-sky-400', 'border-sky-400/30');
+            if(tipo === 'gloria') btn.classList.add('text-blue-500', 'border-blue-500/30');
+
+            countSpan.innerText = count + 1;
+            btn.disabled = true;
+
+            localStorage.setItem(`reagiu_${tipo}_${id}`, 'true');
+
+            const formData = new FormData();
+            formData.append('acao', 'reagir');
+            formData.append('id', id);
+            formData.append('tipo', tipo);
+
+            fetch('api.php', { method: 'POST', body: formData });
+        }
+
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+            formData.append('acao', 'salvar');
+            if(currentAudioBlob) {
+                formData.append('audio', currentAudioBlob, 'audio.wav');
+            }
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    this.reset();
+                    document.getElementById('filePreview').innerHTML = '';
+                    currentAudioBlob = null;
+                    document.getElementById('recordText').innerText = "Gravar Áudio";
+                    carregarComentarios(document.getElementById('formChapterKey').value);
+                } else {
+                    alert('Erro ao enviar.');
+                }
+            })
+            .catch(() => alert('Erro de conexão.'))
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        });
+
+        function previewFile(input) {
+            const preview = document.getElementById('filePreview');
+            if(input.files && input.files[0]) {
+                preview.innerHTML = `<i class="fa-solid fa-check text-green-400"></i> Imagem selecionada: ${input.files[0].name}`;
+                preview.classList.remove('hidden');
+            }
+        }
+
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.addEventListener('click', async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                    mediaRecorder.onstop = () => {
+                        currentAudioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        document.getElementById('filePreview').classList.remove('hidden');
+                        document.getElementById('filePreview').innerHTML += '<br><i class="fa-solid fa-microphone text-green-400"></i> Áudio gravado!';
+                    };
+                    mediaRecorder.start();
+                    recordBtn.classList.add('recording-pulse');
+                    document.getElementById('recordText').innerText = "Parar Gravação";
+                } catch (err) {
+                    alert("Permita o uso do microfone para gravar.");
+                }
+            } else {
+                mediaRecorder.stop();
+                recordBtn.classList.remove('recording-pulse');
+                document.getElementById('recordText').innerText = "Gravar Áudio";
+            }
+        });
+
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        function closeImage() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function resetObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<80; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(14, 165, 233, 0.15)"; /* Sky Blue */
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        loadChapter('intro_book');
+    </script>
+</body>
+</html>
