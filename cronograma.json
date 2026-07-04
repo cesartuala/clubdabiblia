@@ -106,7 +106,7 @@
       "periodo_leitura": "02/07 a 04/07",
       "data_quiz": "04/07",
       "status": "concluido",
-      "quiz_ativo": false
+      "quiz_ativo": true
     },
     {
       "data_criacao": "2026-07-05",
