@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz 2 João | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        .glass-card { background: rgba(25, 10, 15, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(251, 113, 133, 0.2); transition: all 0.4s ease; }
+        .rose-glow { text-shadow: 0 0 15px rgba(251, 113, 133, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); background-color: rgba(244, 63, 94, 0.15); border-color: #f43f5e; }
+        .option-correct { background-color: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+        .option-wrong { background-color: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #f87171 !important; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="w-full z-50 p-6 flex justify-between items-center relative">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0a0506] border border-rose-500/50 text-rose-400 hover:bg-rose-500 hover:text-black transition-all">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-walkie-talkie text-rose-500 text-xl"></i>
+            <span class="font-serif text-white text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl w-full flex flex-col relative overflow-hidden shadow-[0_0_40px_rgba(251,113,133,0.15)]">
+            <div class="h-1 w-full bg-gradient-to-r from-rose-600 via-pink-500 to-rose-400" id="progressBar"></div>
+            
+            <div class="p-6 md:p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b border-rose-500/20 pb-4">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white rose-glow">Quiz: 2 João</h1>
+                    <span id="questionCounter" class="bg-rose-950/50 text-rose-300 px-3 py-1 rounded-full text-xs font-bold tracking-widest border border-rose-500/30">1 / 10</span>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="questionText" class="text-lg md:text-xl text-slate-200 mb-6 font-light leading-relaxed"></div>
+                    <div id="optionsContainer" class="space-y-3"></div>
+                    <div id="feedbackContainer" class="mt-6 p-4 rounded-lg hidden text-sm leading-relaxed border"></div>
+
+                    <button id="nextBtn" class="mt-8 w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-3 rounded-lg transition uppercase tracking-widest hidden shadow-lg shadow-rose-900/50">
+                        Próxima Pergunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-col items-center text-center py-8">
+                    <i class="fa-solid fa-crown text-6xl text-rose-400 mb-4 drop-shadow-[0_0_15px_rgba(251,113,133,0.6)]"></i>
+                    <h2 class="font-serif text-3xl text-white mb-2">Vitória em Cristo!</h2>
+                    <p class="text-slate-300 text-lg mb-6">Você acertou <span id="finalScore" class="text-rose-400 font-bold text-2xl">0</span> de 10 perguntas.</p>
+                    
+                    <div class="w-full max-w-sm bg-slate-900/80 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xs uppercase tracking-widest text-rose-400 mb-4 font-bold">Salvar no Ranking</h3>
+                        <form id="rankingForm" class="space-y-4">
+                            <input type="hidden" name="acao" value="salvar_quiz_2joao">
+                            <input type="hidden" name="pontos" id="inputPontos" value="0">
+                            <input type="hidden" name="acertos" id="inputAcertos" value="0">
+                            <input type="text" name="nome" required placeholder="Seu Nome..." class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white focus:border-rose-500 focus:outline-none transition text-sm">
+                            <button type="submit" class="w-full bg-gradient-to-r from-rose-600 to-pink-500 text-white font-bold py-2 rounded transition uppercase tracking-widest text-xs shadow-lg">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                q: "Como o autor se identifica no início da epístola de 2 João?",
+                options: [
+                    { t: "O Apóstolo da Ásia", c: false, r: "Ele não usa seu título oficial de apóstolo nesta carta." },
+                    { t: "O servo fiel", c: false, r: "Diferente de Tiago ou Judas, ele não inicia assim." },
+                    { t: "O ancião", c: true, r: "Ele se autodenomina 'o ancião' ou presbítero (Presbyteros) devido à sua idade e liderança consolidada." },
+                    { t: "O prisioneiro de Cristo", c: false, r: "Esse é um título comumente usado por Paulo." }
+                ]
+            },
+            {
+                q: "Qual o termo em grego para a 'senhora eleita' mencionada no versículo 1?",
+                options: [
+                    { t: "Agapē Kyria", c: false, r: "Agapē refere-se ao amor sacrificial." },
+                    { t: "Eklektē Kyria", c: true, r: "Este termo significa literalmente 'senhora eleita' e pode designar tanto uma mulher ilustre quanto uma metáfora para a igreja." },
+                    { t: "Koinōnia Eklektē", c: false, r: "Koinōnia denota comunhão espiritual." },
+                    { t: "Alētheia Gynē", c: false, r: "Alētheia significa verdade." }
+                ]
+            },
+            {
+                q: "Por qual motivo o autor expressa grande alegria no versículo 4?",
+                options: [
+                    { t: "Por ter recebido ofertas financeiras abundantes", c: false, r: "A preocupação de João nunca foi pecuniária." },
+                    { t: "Por descobrir que todos foram curados de enfermidades", c: false, r: "A alegria pastoral é ligada à saúde teológica e espiritual das ovelhas." },
+                    { t: "Por achar alguns dos filhos andando na verdade", c: true, r: "Ver os crentes perseverando e 'andando na verdade' (Alētheia) é a maior alegria pastoral." },
+                    { t: "Pelo crescimento numérico exponencial da comunidade", c: false, r: "A integridade e verdade moral importavam mais que números." }
+                ]
+            },
+            {
+                q: "De acordo com 2 João v. 5, qual mandamento ele roga que guardemos?",
+                options: [
+                    { t: "Que guardemos o sábado", c: false, r: "Esta é uma ordenança mosaica cerimonial." },
+                    { t: "Que nos amemos uns aos outros", c: true, r: "João reforça o mandamento original dado por Jesus, o amor mútuo (Agapē)." },
+                    { t: "Que jejuemos duas vezes por semana", c: false, r: "Esta era uma prática dos fariseus criticada por Jesus." },
+                    { t: "Que evitemos contato com gentios", c: false, r: "A barreira entre judeus e gentios foi desfeita na cruz." }
+                ]
+            },
+            {
+                q: "Qual heresia específica é fortemente combatida por João nesta carta?",
+                options: [
+                    { t: "A circuncisão obrigatória de gentios", c: false, r: "Este é o tema central combatido em Gálatas." },
+                    { t: "A heresia de que Jesus não veio em carne real e corpórea", c: true, r: "O Docetismo e o Gnosticismo primitivo negavam a encarnação física de Jesus Cristo." },
+                    { t: "A idolatria a deuses romanos e gregos", c: false, r: "Essa questão é tratada de forma indireta noutras cartas." },
+                    { t: "O sono da alma após a morte física", c: false, r: "Esse assunto não é abordado na epístola." }
+                ]
+            },
+            {
+                q: "No versículo 7, como João classifica aquele que não confessa a encarnação de Jesus?",
+                options: [
+                    { t: "O enganador e o anticristo", c: true, r: "Ele une as definições de enganador (Planos) e anticristo (Antichristos)." },
+                    { t: "Um irmão fraco na fé", c: false, r: "Ele é muito mais severo; trata-se de um lobo e não de um irmão mais fraco." },
+                    { t: "Um filósofo incompreendido", c: false, r: "João não condescende com desvios cristológicos." },
+                    { t: "Um fariseu moderno", c: false, r: "A questão era o gnosticismo gnosiológico, não o legalismo farisaico." }
+                ]
+            },
+            {
+                q: "O que acontece com aquele que vai 'além da doutrina' (ultrapassa os limites) de Cristo?",
+                options: [
+                    { t: "Torna-se um místico superior", c: false, r: "O gnosticismo alegava superioridade espiritual, mas João rebate isso." },
+                    { t: "Não tem a Deus", c: true, r: "V. 9: 'Todo aquele que ultrapassa a doutrina e nela não permanece, não tem a Deus'." },
+                    { t: "Recebe honras especiais da comunidade", c: false, r: "A inovação que anula a verdade estabelecida deve ser repudiada." },
+                    { t: "É liberto de dogmas arcaicos", c: false, r: "A sã doutrina não é uma prisão, é o fundamento." }
+                ]
+            },
+            {
+                q: "Qual a instrução explícita sobre como tratar quem vem e não traz a doutrina bíblica?",
+                options: [
+                    { t: "Debater com ele exaustivamente nas praças", c: false, r: "João adverte sobre os perigos da associação amigável." },
+                    { t: "Não o receber em casa nem lhe dar boas-vindas", c: true, r: "Não se deve oferecer hospitalidade (que significava endosso ministerial) a propagadores de heresias mortais." },
+                    { t: "Oferecer apoio financeiro para sua viagem", c: false, r: "Financiar o erro é se opor a Deus." },
+                    { t: "Ignorar suas convicções e focar apenas na amizade", c: false, r: "A verdade é o elo necessário para a comunhão genuína." }
+                ]
+            },
+            {
+                q: "O que significa 'saudar' ou 'dar boas-vindas' ao falso mestre segundo o versículo 11?",
+                options: [
+                    { t: "Apenas um ato de educação secular comum", c: false, r: "Na época, a saudação oficial era um sinal de aprovação e união." },
+                    { t: "Tornar-se cúmplice e participante de suas obras malignas", c: true, r: "Apoiar ou dar cobertura a um mestre apóstata nos faz parceiros de sua mentira." },
+                    { t: "Uma oportunidade para pregar-lhe o evangelho", c: false, r: "Embora queiramos a conversão, João destaca o perigo da validação pública." },
+                    { t: "Um mandamento de misericórdia e simpatia", c: false, r: "O amor à verdade exige oposição ao engano teológico." }
+                ]
+            },
+            {
+                q: "Por que João escolheu não escrever o restante de suas mensagens por meio de papel e tinta?",
+                options: [
+                    { t: "Por escassez material na ilha de Patmos", c: false, r: "Essa era a situação do Apocalipse, não desta carta escrita em Éfeso." },
+                    { t: "Porque desejava ir visitá-los e falar face a face", c: true, r: "A comunhão e o ensino presencial ('boca a boca') produzem a plenitude da nossa alegria." },
+                    { t: "Porque temia a censura e interceptação das cartas pelos romanos", c: false, r: "A razão apontada na carta é puramente o desejo de comunhão face a face." },
+                    { t: "Porque sua visão estava extremamente debilitada", c: false, r: "Essa foi uma menção de Paulo (em Gálatas), e não de João nesta epístola." }
+                ]
+            },
+            {
+                q: "Quem envia saudações no versículo 13 de 2 João?",
+                options: [
+                    { t: "A igreja de Jerusalém", c: false, r: "Não há menção específica a Jerusalém nesta despedida." },
+                    { t: "Os filhos da tua irmã, a eleita", c: true, r: "A carta se despede com as saudações da família da irmã da senhora eleita." },
+                    { t: "O apóstolo Pedro e seus discípulos", c: false, r: "Pedro não é mencionado neste escrito." },
+                    { t: "A comunidade judaica helenista", c: false, r: "A saudação provém de cristãos locais da província romana." }
+                ]
+            },
+            {
+                q: "Qual termo grego no versículo 7 define os falsos instrutores?",
+                options: [
+                    { t: "Didaskaloi", c: false, r: "Didaskaloi significa simplesmente mestres." },
+                    { t: "Planoi", c: true, r: "Planoi significa enganadores, impostores ou vagabundos espirituais." },
+                    { t: "Diakonoi", c: false, r: "Diakonoi significa diáconos ou servos." },
+                    { t: "Apostoloi", c: false, r: "Apostoloi significa enviados." }
+                ]
+            },
+            {
+                q: "O equilíbrio dinâmico e santo defendido por João se dá entre quais duas realidades?",
+                options: [
+                    { t: "Verdade e Amor", c: true, r: "O amor sem verdade é sentimentalismo fraco; a verdade sem amor é ortodoxia fria." },
+                    { t: "Lei e Sacrifício", c: false, r: "Este é um tema mais debatido na carta aos Hebreus." },
+                    { t: "Pecado e Justiça", c: false, r: "Embora vitais, não formam a tensão relacional de 2 João." },
+                    { t: "Fé e Obras", c: false, r: "Esta tensão de complementaridade é a tese principal de Tiago." }
+                ]
+            },
+            {
+                q: "Qual termo em grego João usa no versículo 11 para definir a cumplicidade do erro?",
+                options: [
+                    { t: "Koinōnei", c: true, r: "Koinōnei significa participar, associar-se, partilhar ou ter comunhão íntima com." },
+                    { t: "Charis", c: false, r: "Charis refere-se à graça divina." },
+                    { t: "Eusebeia", c: false, r: "Eusebeia significa piedade ou devoção." },
+                    { t: "Gnosis", c: false, r: "Gnosis significa conhecimento intelectual." }
+                ]
+            },
+            {
+                q: "Segundo 2 João, andar no amor é o mesmo que fazer o quê?",
+                options: [
+                    { t: "Andar de acordo com os mandamentos de Deus", c: true, r: "V. 6: 'E o amor é este: que andemos segundo os seus mandamentos'." },
+                    { t: "Permitir qualquer prática em nome da paz coletiva", c: false, r: "A paz sem limites doutrinários e morais não é bíblica." },
+                    { t: "Desprezar a teologia ortodoxa", c: false, r: "O amor apoia-se firmemente na sã doutrina cristológica." },
+                    { t: "Isolar-se do mundo secular inteiramente", c: false, r: "A igreja deve ser santa sem perder sua missão de sal da terra." }
+                ]
+            }
+        ];
+
+        let currentQ = 0; let score = 0; let answered = false;
+        let selectedQuestions = [];
+
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function initQuiz() {
+            // Embaralhar as 15 questões e selecionar 10
+            let shuffled = shuffle([...quizData]);
+            selectedQuestions = shuffled.slice(0, 10);
+            currentQ = 0;
+            score = 0;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false; feedbackContainer.classList.add('hidden'); nextBtn.classList.add('hidden');
+            const qData = selectedQuestions[currentQ];
+            document.getElementById('questionCounter').innerText = `${currentQ + 1} / ${selectedQuestions.length}`;
+            questionText.innerText = qData.q;
+            optionsContainer.innerHTML = '';
+            
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-lg bg-slate-800/80 border border-slate-600 text-slate-300 text-sm md:text-base';
+                btn.innerText = opt.t;
+                btn.onclick = () => selectOption(btn, opt);
+                optionsContainer.appendChild(btn);
+            });
+            progressBar.style.width = `${(currentQ / selectedQuestions.length) * 100}%`;
+        }
+
+        function selectOption(btn, opt) {
+            if (answered) return; answered = true;
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedbackContainer.classList.remove('hidden', 'bg-red-900/30', 'border-red-500/50', 'bg-green-900/30', 'border-green-500/50');
+            if (opt.c) {
+                score += 10; btn.classList.add('option-correct');
+                feedbackContainer.classList.add('bg-green-900/30', 'border-green-500/50', 'text-green-200');
+                feedbackContainer.innerHTML = `<strong>Correto!</strong> ${opt.r}`;
+            } else {
+                btn.classList.add('option-wrong');
+                feedbackContainer.classList.add('bg-red-900/30', 'border-red-500/50', 'text-red-200');
+                feedbackContainer.innerHTML = `<strong>Incorreto.</strong> ${opt.r}`;
+                buttons.forEach((b, i) => { if(selectedQuestions[currentQ].options[i].c) b.classList.add('option-correct'); });
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.onclick = () => {
+            currentQ++;
+            if (currentQ < selectedQuestions.length) loadQuestion();
+            else showResults();
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            document.getElementById('quizContainer').classList.add('hidden');
+            const res = document.getElementById('resultContainer');
+            res.classList.remove('hidden'); res.classList.add('flex');
+            document.getElementById('finalScore').innerText = score/10;
+            document.getElementById('inputPontos').value = score;
+            document.getElementById('inputAcertos').value = score/10;
+        }
+
+        document.getElementById('rankingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button'); btn.disabled = true; btn.innerText = "Salvando...";
+            fetch('api.php', { method: 'POST', body: new FormData(this) })
+            .then(() => window.location.href = 'index.html')
+            .catch(() => {
+                alert("Erro ao salvar no banco de dados. Retornando ao início.");
+                window.location.href = 'index.html';
+            });
+        };
+
+        // Particles
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, sx: Math.random()*0.5-0.25, sy: Math.random()*0.5-0.25 });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(251, 113, 133, 0.2)";
+            particles.forEach(p => { p.x+=p.sx; p.y+=p.sy; if(p.x<0||p.x>canvas.width)p.sx*=-1; if(p.y<0||p.y>canvas.height)p.sy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        initQuiz();
+    </script>
+</body>
+</html>

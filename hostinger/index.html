@@ -62,6 +62,89 @@
     <main class="flex-grow flex items-start justify-center p-4 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[100rem] w-full items-start">
             
+            <!-- STATUS "LEITURA ATUAL": 2 João (Topo) -->
+            <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-rose-500 shadow-[0_0_30px_rgba(251,113,133,0.3)]">
+                <div class="h-1 w-full bg-gradient-to-r from-rose-600 via-rose-500 to-rose-400 animate-pulse"></div>
+                
+                <div class="absolute top-0 right-0 bg-rose-500 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-bl-xl shadow-[0_0_15px_rgba(251,113,133,0.6)] z-20">
+                    <i class="fa-solid fa-book-open mr-1 animate-spin-slow"></i> Leitura Atual
+                </div>
+            
+                <div class="p-6 flex flex-col items-center text-center flex-grow justify-center">
+                    <div class="w-16 h-16 rounded-full bg-rose-500/10 flex items-center justify-center mb-4 border border-rose-500/20 group-hover:border-rose-500/50 transition duration-500">
+                        <i class="fa-solid fa-walkie-talkie text-rose-400 text-2xl"></i>
+                    </div>
+
+                    <div class="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-full px-3 py-1 mb-4 shadow-sm">
+                        <i class="fa-regular fa-calendar-check text-rose-400 text-[10px]"></i>
+                        <span class="text-[10px] text-rose-300 uppercase tracking-widest font-bold">13/07</span>
+                    </div>
+                    
+                    <h2 class="font-serif text-3xl text-white mb-2 rose-glow">2 João</h2>
+                    <p class="text-slate-400 text-xs mb-6">A defesa intransigente da Cristologia da Encarnação, o equilíbrio dinâmico entre Verdade e Amor contra os sedutores.</p>
+            
+                    <div class="grid grid-cols-2 gap-3 w-full mt-auto mb-6">
+                        <a href="2joao.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-rose-500/20 p-3 rounded-xl hover:border-rose-500 transition">
+                            <i class="fa-solid fa-book-open text-rose-400 mb-1 text-sm"></i>
+                            <span class="text-[9px] uppercase text-slate-300 font-bold">Leitura</span>
+                        </a>
+                        <!-- Quiz Desativado -->
+                        <div class="opacity-50 pointer-events-none flex flex-col items-center justify-center bg-slate-900/50 border border-slate-700 p-3 rounded-xl">
+                            <i class="fa-solid fa-lock text-slate-500 mb-1 text-sm"></i>
+                            <span class="text-[9px] uppercase text-slate-500 font-bold">Quiz Fechado</span>
+                        </div>
+                    </div>
+            
+                    <div class="w-full bg-slate-900/80 rounded-lg p-4 border border-slate-700/50">
+                        <h3 class="text-[10px] uppercase tracking-widest text-rose-400 mb-3 font-bold border-b border-slate-800 pb-2">Ranking 2 João</h3>
+                        <ul id="ranking2joao" class="space-y-2 text-xs text-slate-300 max-h-32 overflow-y-auto custom-scroll pr-2">
+                            <li class="text-center animate-pulse">Carregando...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATUS "DESAFIO ABERTO": 1 João -->
+            <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-pink-400/40 shadow-[0_0_30px_rgba(244,114,182,0.15)]">
+                <div class="h-1 w-full bg-gradient-to-r from-pink-600 via-pink-500 to-pink-400"></div>
+                
+                <div class="absolute top-0 right-0 bg-pink-500 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-bl-xl shadow-[0_0_15px_rgba(244,114,182,0.6)] z-20">
+                    <i class="fa-solid fa-trophy mr-1"></i> Desafio Aberto
+                </div>
+            
+                <div class="p-6 flex flex-col items-center text-center flex-grow justify-center">
+                    <div class="w-16 h-16 rounded-full bg-pink-400/10 flex items-center justify-center mb-4 border border-pink-400/20 group-hover:border-pink-400/50 transition duration-500">
+                        <i class="fa-solid fa-heart-pulse text-pink-400 text-2xl"></i>
+                    </div>
+
+                    <div class="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-full px-3 py-1 mb-4 shadow-sm opacity-70">
+                        <i class="fa-regular fa-calendar-check text-slate-400 text-[10px]"></i>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">06/07 a 10/07</span>
+                    </div>
+                    
+                    <h2 class="font-serif text-3xl text-white mb-2 pink-glow">1 João</h2>
+                    <p class="text-slate-400 text-xs mb-6">A certeza da salvação, comunhão genuína com Deus e a vitória do amor que lança fora todo o medo.</p>
+            
+                    <div class="grid grid-cols-2 gap-3 w-full mt-auto mb-6">
+                        <a href="1joao.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-pink-500/20 p-3 rounded-xl hover:border-pink-500 transition">
+                            <i class="fa-solid fa-book-open text-pink-400 mb-1 text-sm"></i>
+                            <span class="text-[9px] uppercase text-slate-300">Leitura</span>
+                        </a>
+                        <a href="quiz_1joao.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-pink-500/20 p-3 rounded-xl hover:border-pink-500 transition">
+                            <i class="fa-solid fa-trophy text-pink-400 mb-1 text-sm"></i>
+                            <span class="text-[9px] uppercase text-slate-300">Quiz</span>
+                        </a>
+                    </div>
+            
+                    <div class="w-full bg-slate-900/80 rounded-lg p-4 border border-slate-700/50">
+                        <h3 class="text-[10px] uppercase tracking-widest text-pink-400 mb-3 font-bold border-b border-slate-800 pb-2">Ranking 1 João</h3>
+                        <ul id="ranking1joao" class="space-y-2 text-xs text-slate-300 max-h-32 overflow-y-auto custom-scroll pr-2">
+                            <li class="text-center animate-pulse">Carregando...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
             <!-- STATUS "DESAFIO ABERTO": 2 Pedro -->
             <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-sky-500/40 shadow-[0_0_30px_rgba(14,165,233,0.15)]">
                 <div class="h-1 w-full bg-gradient-to-r from-sky-600 via-sky-500 to-sky-400"></div>
@@ -88,7 +171,6 @@
                             <i class="fa-solid fa-book-open text-sky-400 mb-1 text-sm"></i>
                             <span class="text-[9px] uppercase text-slate-300">Leitura</span>
                         </a>
-                        <!-- Quiz Ativo -->
                         <a href="quiz_2pedro.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-sky-500/20 p-3 rounded-xl hover:border-sky-500 transition">
                             <i class="fa-solid fa-trophy text-sky-400 mb-1 text-sm"></i>
                             <span class="text-[9px] uppercase text-slate-300">Quiz</span>
@@ -523,7 +605,7 @@
             
                     <div class="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-full px-3 py-1 mb-4 shadow-sm opacity-70">
                         <i class="fa-regular fa-calendar-check text-slate-400 text-[10px]"></i>
-                        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold line-through">11 Abr - 14 Abr</span>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold line-through">11 Apr - 14 Apr</span>
                     </div>
                     
                     <h2 class="font-serif text-2xl text-white mb-2 group-hover:text-pink-400 transition">Filipenses</h2>
@@ -562,7 +644,7 @@
             
                     <div class="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-full px-3 py-1 mb-4 shadow-sm opacity-70">
                         <i class="fa-regular fa-calendar-check text-slate-400 text-[10px]"></i>
-                        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold line-through">06 Abr - 10 Abr</span>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold line-through">06 Apr - 10 Apr</span>
                     </div>
                     
                     <h2 class="font-serif text-2xl text-white mb-2 group-hover:text-indigo-400 transition">Efésios</h2>
@@ -658,6 +740,24 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
+            // Fetch para 2 João (LEITURA ATUAL)
+            fetch('api.php?acao=ranking_2joao')
+                .then(res => res.json())
+                .then(data => renderRanking(data, 'ranking2joao', 'text-rose-400 font-bold'))
+                .catch(err => {
+                    document.getElementById('ranking2joao').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
+                });
+
+            // Fetch para 1 João (DESAFIO ABERTO)
+            fetch('api.php?acao=ranking_1joao')
+                .then(res => res.json())
+                .then(data => renderRanking(data, 'ranking1joao', 'text-pink-400 font-bold'))
+                .catch(err => {
+                    document.getElementById('ranking1joao').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
+                });
+
             // Fetch para 2 Pedro (DESAFIO ABERTO)
             fetch('api.php?acao=ranking_2pedro')
                 .then(res => res.json())
