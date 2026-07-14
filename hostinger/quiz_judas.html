@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Judas | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #050202; color: #e2e8f0; overflow-x: hidden; }
+        .glass-card { background: rgba(25, 5, 5, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(239, 68, 68, 0.2); transition: all 0.4s ease; }
+        .red-glow { text-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); background-color: rgba(239, 68, 68, 0.15); border-color: #ef4444; }
+        .option-correct { background-color: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+        .option-wrong { background-color: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #f87171 !important; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="w-full z-50 p-6 flex justify-between items-center relative">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0a0202] border border-red-500/50 text-red-400 hover:bg-red-500 hover:text-black transition-all">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-skull-crossbones text-red-500 text-xl"></i>
+            <span class="font-serif text-white text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl w-full flex flex-col relative overflow-hidden shadow-[0_0_40px_rgba(239,68,68,0.15)]">
+            <div class="h-1 w-full bg-gradient-to-r from-red-850 via-red-750 to-red-650" id="progressBar"></div>
+            
+            <div class="p-6 md:p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b border-red-500/20 pb-4">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white red-glow">Quiz: Judas</h1>
+                    <span id="questionCounter" class="bg-red-950/50 text-red-300 px-3 py-1 rounded-full text-xs font-bold tracking-widest border border-red-500/30">1 / 10</span>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="questionText" class="text-lg md:text-xl text-slate-200 mb-6 font-light leading-relaxed"></div>
+                    <div id="optionsContainer" class="space-y-3"></div>
+                    <div id="feedbackContainer" class="mt-6 p-4 rounded-lg hidden text-sm leading-relaxed border"></div>
+
+                    <button id="nextBtn" class="mt-8 w-full bg-red-800 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition uppercase tracking-widest hidden shadow-lg shadow-red-900/50">
+                        Próxima Pergunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-col items-center text-center py-8">
+                    <i class="fa-solid fa-crown text-6xl text-red-400 mb-4 drop-shadow-[0_0_15px_rgba(239,68,68,0.6)]"></i>
+                    <h2 class="font-serif text-3xl text-white mb-2">Batalha Concluída!</h2>
+                    <p class="text-slate-300 text-lg mb-6">Você acertou <span id="finalScore" class="text-red-400 font-bold text-2xl">0</span> de 10 perguntas.</p>
+                    
+                    <div class="w-full max-w-sm bg-slate-950/80 p-6 rounded-xl border border-slate-800">
+                        <h3 class="text-xs uppercase tracking-widest text-red-400 mb-4 font-bold">Salvar no Ranking</h3>
+                        <form id="rankingForm" class="space-y-4">
+                            <input type="hidden" name="acao" value="salvar_quiz_judas">
+                            <input type="hidden" name="pontos" id="inputPontos" value="0">
+                            <input type="hidden" name="acertos" id="inputAcertos" value="0">
+                            <input type="text" name="nome" required placeholder="Seu Nome..." class="w-full bg-slate-900 border border-slate-700 rounded px-4 py-2 text-white focus:border-red-500 focus:outline-none transition text-sm">
+                            <button type="submit" class="w-full bg-gradient-to-r from-red-800 to-red-650 text-white font-bold py-2 rounded transition uppercase tracking-widest text-xs shadow-lg">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                q: "Qual é a intenção de escrita inicial declarada por Judas antes de ser compelido a escrever sobre batalhar pela fé?",
+                options: [
+                    { t: "Fazer um relatório financeiro das coletas.", c: false, r: "Judas não trata de temas administrativos ou financeiros nesta carta." },
+                    { t: "Escrever acerca da salvação comum a todos.", c: true, r: "No versículo 3, Judas menciona que planejava escrever detalhadamente sobre a salvação comum." },
+                    { t: "Descrever detalhadamente a Jerusalém Celestial.", c: false, r: "Isso é próprio de Apocalipse, não de Judas." },
+                    { t: "Pedir perdão aos apóstolos em Jerusalém.", c: false, r: "Não há menção a pedidos de perdão ou justificativas." }
+                ]
+            },
+            {
+                q: "Qual é o termo em grego para 'lutar fervorosamente', usado por Judas no versículo 3?",
+                options: [
+                    { t: "Epagonizesthai", c: true, r: "Epagonizesthai é o verbo militar e atlético que significa agonizar no combate, defender diligentemente." },
+                    { t: "Apokatastasis", c: false, r: "Refere-se à restauração de todas as coisas." },
+                    { t: "Koinonia", c: false, r: "Significa comunhão ou participação comum." },
+                    { t: "Ekklesia", c: false, r: "Significa congregação ou assembleia." }
+                ]
+            },
+            {
+                q: "Quais são as três condenações históricas citadas por Judas nos versículos 5 a 7?",
+                options: [
+                    { t: "A Arca de Noé, a Torre de Babel e os ninivitas.", c: false, r: "Esses não são os exemplos citados consecutivamente no início da carta." },
+                    { t: "O deserto (povo do Egito), os anjos caídos e Sodoma/Gomorra.", c: true, r: "Judas aponta o juízo contra o povo que saiu do Egito mas não creu, os anjos que não guardaram o seu principado e a ruína pelo fogo de Sodoma e Gomorra." },
+                    { t: "O cativeiro babilônico, a praga dos gafanhotos e a morte de Golias.", c: false, r: "Esses eventos pertencem a outros contextos da história do Antigo Testamento." },
+                    { t: "A divisão do Reino, a rebelião de Absalão e a destruição do Templo.", c: false, r: "Esses episódios não são referenciados por Judas." }
+                ]
+            },
+            {
+                q: "O que os falsos mestres faziam de pior com a Graça de Deus?",
+                options: [
+                    { t: "Eles a vendiam em troca de cartas de indulgências.", c: false, r: "A venda de indulgências é um abuso histórico medieval, não o foco principal de Judas." },
+                    { t: "Eles a convertiam em libertinagem moral.", c: true, r: "Conforme o versículo 4, os ímpios desviavam e distorciam a graça de Deus para encobrir suas paixões desregradas." },
+                    { t: "Eles a negavam completamente de forma teórica.", c: false, r: "O perigo era prático: eles se infiltravam dizendo-se crentes mas viviam em imoralidade." },
+                    { t: "Diziam que ela era reservada exclusivamente para os anjos.", c: false, r: "Os anjos caídos são descritos por Judas sem direito à redenção." }
+                ]
+            },
+            {
+                q: "Qual arcanjo é citado por Judas disputando o corpo de Moisés?",
+                options: [
+                    { t: "Arcanjo Gabriel", c: false, r: "Gabriel é o anjo mensageiro das revelações, não o guerreiro em questão." },
+                    { t: "Arcanjo Rafael", c: false, r: "Rafael não pertence aos livros canônicos do protestantismo nem é citado aqui." },
+                    { t: "Arcanjo Miguel", c: true, r: "O versículo 9 menciona especificamente o Arcanjo Miguel combatendo as forças das trevas." },
+                    { t: "Arcanjo Uriel", c: false, r: "Uriel é uma figura de escritos apócrifos, não citada em Judas." }
+                ]
+            },
+            {
+                q: "Diante do Diabo, que frase moderada e reverente proferiu o Arcanjo Miguel?",
+                options: [
+                    { t: "Eu te amaldiçoo nas profundezas do inferno.", c: false, r: "Miguel evitou pronunciar julgamento injurioso por conta própria." },
+                    { t: "O Senhor te repreenda.", c: true, r: "No versículo 9, Miguel diz solenemente: 'O Senhor te repreenda', demonstrando reverência à autoridade divina." },
+                    { t: "O corpo de Moisés é propriedade dos reis terrenos.", c: false, r: "A disputa era no âmbito cósmico/espiritual." },
+                    { t: "Não tens poder algum contra minhas asas puras.", c: false, r: "Miguel baseou sua declaração no Senhor absoluto." }
+                ]
+            },
+            {
+                q: "Quais os três personagens do Antigo Testamento citados no versículo 11 como caminhos de impiedade?",
+                options: [
+                    { t: "Caim, Balaão e Corá.", c: true, r: "Caim (ódio/assassinato), Balaão (ganância espiritual) e Corá (rebelião contra o sacerdócio instituído)." },
+                    { t: "Faraó, Saul e Nabucodonosor.", c: false, r: "Estes são soberanos ímpios pagãos ou desviados, mas não o trio citado por Judas." },
+                    { t: "Davi, Salomão e Roboão.", c: false, r: "Esses são reis de Israel e Judá." },
+                    { t: "Abraão, Isaque e Jacó.", c: false, r: "Estes são os santos patriarcas da fé, não exemplos de erro." }
+                ]
+            },
+            {
+                q: "Qual livro antigo (apócrifo/pseudepígrafo) é mencionado de forma implícita com a profecia de Enoch?",
+                options: [
+                    { t: "O Livro de Enoque.", c: true, r: "Judas cita a profecia apocalíptica atribuída a Enoque sobre a vinda do Senhor com Seus milhares de santos." },
+                    { t: "O Livro dos Jubileus.", c: false, r: "Este livro trata de cronologia e reinterpretações do Gênesis, não contendo esta citação direta." },
+                    { t: "O Livro da Sabedoria de Salomão.", c: false, r: "Pertence aos deuterocanônicos, não é a fonte da profecia de Enoque." },
+                    { t: "O Livro das Guerras do Senhor.", c: false, r: "É uma obra antiga citada apenas em Números." }
+                ]
+            },
+            {
+                q: "Que metáfora da natureza Judas NÃO usa para retratar os falsos mestres no versículo 12?",
+                options: [
+                    { t: "Nuvens sem água, levadas pelos ventos.", c: false, r: "Ele usa essa imagem para mostrar que prometem chuva/bênção mas são vazios." },
+                    { t: "Ondas bravias do mar, que escumam sujidades.", c: false, r: "Ele usa essa imagem para retratar sua agitação inútil e vergonhosa." },
+                    { t: "Lobo voraz com pele de ovelha macia.", c: true, r: "Embora Jesus use a metáfora de lobos em pele de ovelha (Mateus 7), Judas não usa este termo em sua famosa lista." },
+                    { t: "Árvores murchas, sem fruto e desarraigadas.", c: false, r: "Ele usa para mostrar a esterilidade completa espiritual deles." }
+                ]
+            },
+            {
+                q: "Como Judas se autodeclara humildemente no cabeçalho da epístola?",
+                options: [
+                    { t: "O principal Apóstolo das Nações.", c: false, r: "Esse termo foi mais associado a Paulo." },
+                    { t: "Servo de Jesus Cristo e irmão de Tiago.", c: true, r: "Embora fosse meio-irmão biológico de Jesus, ele prefere a identificação de servo de Cristo e irmão de Tiago." },
+                    { t: "O Discípulo a quem Jesus mais amava.", c: false, r: "Este é João Evangelista." },
+                    { t: "O Ancião de Jerusalém e Guardião do Templo.", c: false, r: "Ele não se apropria de cargos institucionais pomposos." }
+                ]
+            },
+            {
+                q: "De que forma Judas exorta os cristãos a orar no versículo 20?",
+                options: [
+                    { t: "Sempre voltados em direção a Jerusalém física.", c: false, r: "Isso é uma tradição ligada a Daniel no Antigo Testamento." },
+                    { t: "Orando no Espírito Santo.", c: true, r: "Ele ensina que a edificação pessoal inclui orar guiado e fortalecido pelo Espírito." },
+                    { t: "Gritando bem alto para afastar os ímpios.", c: false, r: "A oração deve ser cheia de poder e fé, não mera histeria de voz." },
+                    { t: "Apenas em silêncio absoluto no deserto.", c: false, r: "Não há exigência de local geográfico isolado." }
+                ]
+            },
+            {
+                q: "O que Judas diz no versículo 23 para salvar aqueles que estão sob perigo de fogo espiritual?",
+                options: [
+                    { t: "Arrebatando-os do fogo.", c: true, r: "Judas convoca uma ação drástica de socorro rápido espiritual para arrancar os necessitados do julgamento." },
+                    { t: "Afastando-se de forma covarde para não sujar os sapatos.", c: false, r: "Ele pede misericórdia e socorro ativo, não egoísmo apático." },
+                    { t: "Oferecendo indulgências e orando por sua memória.", c: false, r: "Prática herética posterior desprovida de base bíblica." },
+                    { t: "Denunciando-os publicamente nos tribunais romanos.", c: false, r: "O âmbito era a disciplina e salvação na congregação." }
+                ]
+            },
+            {
+                q: "Qual a atitude correta recomendada por Judas ao lidar com aqueles que têm dúvidas?",
+                options: [
+                    { t: "Expulsá-los sumariamente da congregação.", c: false, r: "Dúvidas devem ser tratadas de outra maneira." },
+                    { t: "Ter compaixão deles.", c: true, r: "O versículo 22 diz expressamente: 'E apiedai-vos de alguns que estão duvidosos' (ter compaixão)." },
+                    { t: "Ignorá-los até que consigam ter fé sozinhos.", c: false, r: "O corpo de Cristo apoia os fracos." },
+                    { t: "Zombar de suas incertezas teológicas.", c: false, r: "Isso contraria o mandamento de amor e mansidão." }
+                ]
+            },
+            {
+                q: "Como a doxologia final de Judas exalta a soberania de Deus no versículo 24?",
+                options: [
+                    { t: "Aquele que é poderoso para vos guardar de tropeçar.", c: true, r: "Deus nos preserva e nos apresenta irrepreensíveis e puros com alegria excelsa perante o Seu Trono." },
+                    { t: "Como um juiz que aguarda apenas nosso primeiro erro.", c: false, r: "Deus nos guarda ativamente de cair." },
+                    { t: "Como uma energia abstrata imersa nas florestas.", c: false, r: "Isso é panteísmo, heresia contrária ao Deus Pessoal de Judas." },
+                    { t: "Uma divindade que necessita de sacrifícios diários de sangue de bodes.", c: false, r: "A obra redentora de Cristo é perfeita e definitiva." }
+                ]
+            },
+            {
+                q: "Quem os apóstolos previram que viria no 'último tempo', segundo relatado por Judas?",
+                options: [
+                    { t: "Escarnecedores que andariam segundo suas próprias paixões.", c: true, r: "O versículo 18 lembra o aviso apostólico sobre a presença de escarnecedores imorais e divisores." },
+                    { t: "Uma legião de gigantes com armaduras de bronze.", c: false, r: "Crenças folclóricas medievais, não teologia bíblica." },
+                    { t: "Apenas filósofos gregos pacíficos.", c: false, r: "A infiltração era de apóstatas práticos e destrutivos." },
+                    { t: "Reis do Oriente trazendo ouro e pedras preciosas.", c: false, r: "Isso se associa à infância de Jesus ou profecias apocalípticas de outra natureza." }
+                ]
+            }
+        ];
+
+        let currentQ = 0; let score = 0; let answered = false;
+        let selectedQuestions = [];
+
+        // Função de Embaralhamento (Fisher-Yates) para selecionar 10 questões de 15
+        function shuffleQuestions() {
+            let temp = [...quizData];
+            for (let i = temp.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [temp[i], temp[j]] = [temp[j], temp[i]];
+            }
+            selectedQuestions = temp.slice(0, 10);
+        }
+
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        function loadQuestion() {
+            answered = false; feedbackContainer.classList.add('hidden'); nextBtn.classList.add('hidden');
+            const qData = selectedQuestions[currentQ];
+            document.getElementById('questionCounter').innerText = `${currentQ + 1} / ${selectedQuestions.length}`;
+            questionText.innerText = qData.q;
+            optionsContainer.innerHTML = '';
+            
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-lg bg-slate-900/80 border border-slate-700 text-slate-300 text-sm md:text-base';
+                btn.innerText = opt.t;
+                btn.onclick = () => selectOption(btn, opt);
+                optionsContainer.appendChild(btn);
+            });
+            progressBar.style.width = `${(currentQ / selectedQuestions.length) * 100}%`;
+        }
+
+        function selectOption(btn, opt) {
+            if (answered) return; answered = true;
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedbackContainer.classList.remove('hidden', 'bg-red-900/30', 'border-red-500/50', 'bg-green-900/30', 'border-green-500/50');
+            if (opt.c) {
+                score += 10; btn.classList.add('option-correct');
+                feedbackContainer.classList.add('bg-green-900/30', 'border-green-500/50', 'text-green-200');
+                feedbackContainer.innerHTML = `<strong>Correto!</strong> ${opt.r}`;
+            } else {
+                btn.classList.add('option-wrong');
+                feedbackContainer.classList.add('bg-red-900/30', 'border-red-500/50', 'text-red-200');
+                feedbackContainer.innerHTML = `<strong>Incorreto.</strong> ${opt.r}`;
+                buttons.forEach((b, i) => { if(selectedQuestions[currentQ].options[i].c) b.classList.add('option-correct'); });
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.onclick = () => {
+            currentQ++;
+            if (currentQ < selectedQuestions.length) loadQuestion();
+            else showResults();
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            document.getElementById('quizContainer').classList.add('hidden');
+            const res = document.getElementById('resultContainer');
+            res.classList.remove('hidden'); res.classList.add('flex');
+            document.getElementById('finalScore').innerText = score/10;
+            document.getElementById('inputPontos').value = score;
+            document.getElementById('inputAcertos').value = score/10;
+        }
+
+        document.getElementById('rankingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button'); btn.disabled = true; btn.innerText = "Salvando...";
+            fetch('api.php', { method: 'POST', body: new FormData(this) })
+            .then(() => window.location.href = 'index.html')
+            .catch(() => {
+                alert('Erro ao salvar no banco. Retornando ao menu...');
+                window.location.href = 'index.html';
+            });
+        };
+
+        // Particles
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, sx: Math.random()*0.5-0.25, sy: Math.random()*0.5-0.25 });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(239, 68, 68, 0.2)";
+            particles.forEach(p => { p.x+=p.sx; p.y+=p.sy; if(p.x<0||p.x>canvas.width)p.sx*=-1; if(p.y<0||p.y>canvas.height)p.sy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        
+        shuffleQuestions();
+        loadQuestion();
+    </script>
+</body>
+</html>
