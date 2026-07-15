@@ -23,6 +23,7 @@
         .glass-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); border-color: rgba(255, 255, 255, 0.15); }
         
         .gold-glow { text-shadow: 0 0 15px rgba(251, 192, 45, 0.4); }
+        .amber-glow { text-shadow: 0 0 15px rgba(251, 191, 36, 0.4); }
         .cyan-glow { text-shadow: 0 0 15px rgba(34, 211, 238, 0.4); }
         .red-glow { text-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
         .purple-glow { text-shadow: 0 0 15px rgba(168, 85, 247, 0.4); }
@@ -63,12 +64,54 @@
     <main class="flex-grow flex items-start justify-center p-4 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[100rem] w-full items-start">
             
-            <!-- STATUS "LEITURA ATUAL": Judas (Topo) -->
-            <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-red-950 shadow-[0_0_30px_rgba(239,68,68,0.3)]">
-                <div class="h-1 w-full bg-gradient-to-r from-red-950 via-red-800 to-red-700 animate-pulse"></div>
+            <!-- STATUS "LEITURA ATUAL": Mateus (Topo) -->
+            <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-amber-500 shadow-[0_0_30px_rgba(251,191,36,0.3)]">
+                <div class="h-1 w-full bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 animate-pulse"></div>
+                
+                <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-bl-xl shadow-[0_0_15px_rgba(251,191,36,0.6)] z-20">
+                    <i class="fa-solid fa-book-open mr-1"></i> Leitura Atual
+                </div>
+            
+                <div class="p-6 flex flex-col items-center text-center flex-grow justify-center">
+                    <div class="w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center mb-4 border border-amber-500/20 group-hover:border-amber-500/50 transition duration-500">
+                        <i class="fa-solid fa-money-bill-1 text-amber-400 text-2xl"></i>
+                    </div>
+
+                    <div class="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-full px-3 py-1 mb-4 shadow-sm">
+                        <i class="fa-regular fa-calendar-check text-amber-400 text-[10px]"></i>
+                        <span class="text-[10px] text-amber-400 uppercase tracking-widest font-bold">16/07 a 22/08</span>
+                    </div>
+                    
+                    <h2 class="font-serif text-3xl text-white mb-2 amber-glow">Mateus</h2>
+                    <p class="text-slate-400 text-xs mb-6">Jesus Cristo, o Messias Prometido, o Rei dos Judeus e o Filho de Davi cumprindo a profecia antiga.</p>
+            
+                    <div class="grid grid-cols-2 gap-3 w-full mt-auto mb-6">
+                        <a href="mateus.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-amber-500/20 p-3 rounded-xl hover:border-amber-500 transition">
+                            <i class="fa-solid fa-book-open text-amber-400 mb-1 text-sm"></i>
+                            <span class="text-[9px] uppercase text-slate-300 font-bold">Leitura</span>
+                        </a>
+                        <!-- Quiz Desativado durante Leitura Atual -->
+                        <div class="opacity-50 pointer-events-none flex flex-col items-center justify-center bg-slate-900/50 border border-slate-700 p-3 rounded-xl">
+                            <i class="fa-solid fa-lock text-slate-500 mb-1 text-sm"></i>
+                            <span class="text-[9px] uppercase text-slate-500 font-bold">Quiz Fechado</span>
+                        </div>
+                    </div>
+            
+                    <div class="w-full bg-slate-900/80 rounded-lg p-4 border border-slate-700/50">
+                        <h3 class="text-[10px] uppercase tracking-widest text-amber-400 mb-3 font-bold border-b border-slate-800 pb-2">Ranking Mateus</h3>
+                        <ul id="rankingMateus" class="space-y-2 text-xs text-slate-300 max-h-32 overflow-y-auto custom-scroll pr-2">
+                            <li class="text-center animate-pulse">Carregando...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATUS "DESAFIO ABERTO": Judas (Recém descido) -->
+            <div class="glass-card rounded-2xl p-0 flex flex-col relative overflow-hidden group border-red-950 shadow-[0_0_30px_rgba(239,68,68,0.15)]">
+                <div class="h-1 w-full bg-gradient-to-r from-red-950 via-red-800 to-red-700"></div>
                 
                 <div class="absolute top-0 right-0 bg-red-850 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-bl-xl shadow-[0_0_15px_rgba(239,68,68,0.6)] z-20">
-                    <i class="fa-solid fa-book-open mr-1"></i> Leitura Atual
+                    <i class="fa-solid fa-trophy mr-1"></i> Desafio Aberto
                 </div>
             
                 <div class="p-6 flex flex-col items-center text-center flex-grow justify-center">
@@ -76,9 +119,9 @@
                         <i class="fa-solid fa-skull-crossbones text-red-500 text-2xl"></i>
                     </div>
 
-                    <div class="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-full px-3 py-1 mb-4 shadow-sm">
-                        <i class="fa-regular fa-calendar-check text-red-400 text-[10px]"></i>
-                        <span class="text-[10px] text-red-400 uppercase tracking-widest font-bold">15/07</span>
+                    <div class="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-full px-3 py-1 mb-4 shadow-sm opacity-70">
+                        <i class="fa-regular fa-calendar-check text-slate-400 text-[10px]"></i>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">15/07</span>
                     </div>
                     
                     <h2 class="font-serif text-3xl text-white mb-2 red-glow">Judas</h2>
@@ -87,13 +130,13 @@
                     <div class="grid grid-cols-2 gap-3 w-full mt-auto mb-6">
                         <a href="judas.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-red-500/20 p-3 rounded-xl hover:border-red-500 transition">
                             <i class="fa-solid fa-book-open text-red-400 mb-1 text-sm"></i>
-                            <span class="text-[9px] uppercase text-slate-300 font-bold">Leitura</span>
+                            <span class="text-[9px] uppercase text-slate-300">Leitura</span>
                         </a>
-                        <!-- Quiz Desativado -->
-                        <div class="opacity-50 pointer-events-none flex flex-col items-center justify-center bg-slate-900/50 border border-slate-700 p-3 rounded-xl">
-                            <i class="fa-solid fa-lock text-slate-500 mb-1 text-sm"></i>
-                            <span class="text-[9px] uppercase text-slate-500 font-bold">Quiz Fechado</span>
-                        </div>
+                        <!-- Quiz Ativado -->
+                        <a href="quiz_judas.html" class="action-btn flex flex-col items-center justify-center bg-slate-900/50 border border-red-500/20 p-3 rounded-xl hover:border-red-500 transition">
+                            <i class="fa-solid fa-trophy text-red-400 mb-1 text-sm"></i>
+                            <span class="text-[9px] uppercase text-slate-300">Quiz</span>
+                        </a>
                     </div>
             
                     <div class="w-full bg-slate-900/80 rounded-lg p-4 border border-slate-700/50">
@@ -761,12 +804,12 @@
     <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 text-slate-400 py-8 border-t border-white/5 w-full max-w-3xl mx-auto relative z-10">
         <div class="flex flex-col items-center group">
             <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Idealizado por</p>
-            <strong class="text-orange-400 text-xs md:text-sm font-serif tracking-widest group-hover:text-orange-300 transition">Fellipe Gomes Andrade</strong>
+            <strong class="text-amber-400 text-xs md:text-sm font-serif tracking-widest group-hover:text-amber-300 transition">Fellipe Gomes Andrade</strong>
         </div>
         <span class="hidden md:block h-8 w-[1px] bg-gradient-to-b from-transparent via-slate-600 to-transparent"></span>
         <div class="flex flex-col items-center group">
             <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Desenvolvido por</p>
-            <strong class="text-orange-400 text-xs md:text-sm font-serif tracking-widest group-hover:text-orange-300 transition">Cesar Tuala</strong>
+            <strong class="text-amber-400 text-xs md:text-sm font-serif tracking-widest group-hover:text-amber-300 transition">Cesar Tuala</strong>
         </div>
     </div>
 
@@ -823,7 +866,16 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Fetch para Judas (LEITURA ATUAL)
+            // Fetch para Mateus (LEITURA ATUAL)
+            fetch('api.php?acao=ranking_mateus')
+                .then(res => res.json())
+                .then(data => renderRanking(data, 'rankingMateus', 'text-amber-400 font-bold'))
+                .catch(err => {
+                    document.getElementById('rankingMateus').innerHTML = '<li class="text-center text-red-900 py-4">Erro ao carregar ranking.</li>';
+                    console.error(err);
+                });
+
+            // Fetch para Judas (DESAFIO ABERTO)
             fetch('api.php?acao=ranking_judas')
                 .then(res => res.json())
                 .then(data => renderRanking(data, 'rankingJudas', 'text-red-400 font-bold'))

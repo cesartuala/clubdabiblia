@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mateus | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] },
+                    colors: { 
+                        divine: { 400: '#fbbf24' } /* Amber */
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        
+        .glass-panel { background: rgba(10, 5, 25, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(251, 191, 36, 0.2); }
+        .amber-glow { text-shadow: 0 0 15px rgba(251, 191, 36, 0.5); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .rich-text strong { color: #fde047; font-weight: 700; }
+        .rich-text .ref { color: #fbbf24; font-size: 0.9em; font-family: monospace; background: rgba(251, 191, 36, 0.15); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(251, 191, 36, 0.3); }
+        .rich-text h3 { color: #fbbf24; font-weight: bold; margin-top: 2rem; margin-bottom: 0.75rem; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.15em; border-bottom: 1px solid rgba(251, 191, 36, 0.3); padding-bottom: 6px; }
+        .rich-text ul { list-style-type: none; padding-left: 0; margin-top: 15px; margin-bottom: 20px; }
+        .rich-text li { margin-bottom: 15px; line-height: 1.8; text-align: justify; border-left: 3px solid #fbbf24; padding-left: 20px; background: linear-gradient(to right, rgba(251,191,36,0.05), transparent); padding-top: 5px; padding-bottom: 5px; }
+        .rich-text p { margin-bottom: 20px; line-height: 2; text-align: justify; font-size: 1.05rem; color: #cbd5e1; }
+        .rich-text blockquote { border-left: 4px solid #fbbf24; padding-left: 20px; margin: 20px 0; font-style: italic; color: #fde047; background: rgba(251, 191, 36, 0.05); padding: 15px; border-radius: 0 8px 8px 0; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050510; }
+        ::-webkit-scrollbar-thumb { background: #1e1b4b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #fbbf24; }
+
+        .recording-pulse { animation: recPulse 1.5s infinite; background-color: #ef4444; border-color: #ef4444; color: white; }
+        @keyframes recPulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @keyframes pop { 50% { transform: scale(1.4); } }
+        .reacted-anim { animation: pop 0.3s ease-out; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="fixed top-0 w-full z-50 p-4 md:p-6 flex flex-col md:flex-row justify-between items-center bg-gradient-to-b from-[#050510]/95 to-[#050510]/80 backdrop-blur-md border-b border-amber-500/40 transition-all">
+        <div class="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto justify-between md:justify-start">
+            <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0f0a1a] border border-amber-500/50 text-amber-400 hover:bg-amber-500 hover:text-black transition-all shadow-[0_0_15px_rgba(251,191,36,0.1)]">
+                <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+                <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-money-bill-1 text-amber-500 text-xl md:text-2xl"></i>
+                <span class="font-serif text-white text-lg md:text-xl tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto justify-end">
+            <span class="hidden md:inline text-xs text-slate-400 uppercase tracking-widest">Navegar:</span>
+            <select id="chapterSelect" onchange="loadChapter(this.value)" class="w-full md:w-auto bg-[#0f0a1a] text-amber-400 border border-amber-500/40 rounded px-4 py-2 text-sm uppercase tracking-widest focus:outline-none focus:border-amber-500 cursor-pointer">
+                <option value="intro_book">★ Sobre o Livro</option>
+                <option value="intro_author">✎ Sobre o Autor</option>
+                <option disabled>──────────</option>
+                <script>
+                    for(let i=1; i<=28; i++) {
+                        document.write(`<option value="mateus_${i}">Capítulo ${String(i).padStart(2, '0')}</option>`);
+                    }
+                </script>
+            </select>
+        </div>
+    </nav>
+
+    <header class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-32 md:pt-20">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#050510] via-[#050510]/80 to-transparent"></div>
+        
+        <div class="z-10 reveal active space-y-4 max-w-5xl w-full">
+            <h2 class="text-amber-400 tracking-[0.5em] text-[10px] md:text-sm uppercase animate-pulse mb-4 font-bold">Clube da Bíblia Apresenta</h2>
+            
+            <div id="dateBadge" class="hidden inline-flex items-center gap-2 border border-amber-500/50 rounded-full px-4 py-1 mb-4 bg-amber-500/10 backdrop-blur-sm transition-all duration-700 opacity-0">
+                <i class="fa-regular fa-calendar text-amber-400 text-xs"></i>
+                <span class="text-amber-300 text-xs tracking-widest uppercase font-bold">Leitura: <span id="dateValue" class="text-white"></span></span>
+            </div>
+
+            <h1 id="heroTitle" class="font-serif text-4xl md:text-7xl text-white mb-2 amber-glow transition-all duration-700 uppercase leading-tight px-2"></h1>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 text-slate-400 mt-8 pt-8 border-t border-amber-900/40 w-full max-w-3xl mx-auto">
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Idealizado por</p>
+                    <strong class="text-amber-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-amber-300 transition">Fellipe Gomes Andrade</strong>
+                </div>
+                <span class="hidden md:block h-8 w-[1px] bg-gradient-to-b from-transparent via-amber-900 to-transparent"></span>
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Desenvolvido por</p>
+                    <strong class="text-amber-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-amber-300 transition">Cesar Tuala</strong>
+                </div>
+            </div>
+
+            <p id="heroDesc" class="text-sm md:text-xl text-slate-300 max-w-2xl mx-auto pt-8 font-light italic transition-all duration-700 px-4"></p>
+            
+            <div class="pt-10">
+                <button onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" class="animate-bounce text-amber-500 text-2xl">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="content" class="max-w-4xl mx-auto px-4 py-10 md:py-20 space-y-20 md:space-y-32 min-h-screen"></main>
+
+    <section id="community-section" class="w-full bg-[#07030f] border-t-4 border-amber-600 py-16 mb-0 relative shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <h3 class="font-serif text-3xl md:text-4xl text-amber-500 mb-2 uppercase tracking-widest amber-glow">
+                    <i class="fa-solid fa-users-line mr-3"></i>Comunidade
+                </h3>
+                <p class="text-slate-400 text-sm italic">"Compartilhe o que Deus falou ao seu coração"</p>
+                <div class="h-1 w-24 bg-gradient-to-r from-transparent via-amber-600 to-transparent mx-auto mt-4"></div>
+            </div>
+
+            <div class="glass-panel p-6 md:p-8 rounded-xl mb-12 border border-slate-800 shadow-2xl bg-[#0a0514]/80">
+                <form id="commentForm" class="space-y-5">
+                    <input type="hidden" id="formChapterKey" name="capitulo">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="col-span-1">
+                            <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Nome</label>
+                            <input type="text" name="nome" required class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-amber-500 focus:outline-none transition">
+                        </div>
+                        <div class="flex gap-3 col-span-1 md:col-span-2 items-end">
+                            <label class="flex-1 cursor-pointer bg-black/50 border border-slate-700 hover:border-amber-500 hover:bg-[#110a24] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-camera group-hover:text-amber-400"></i> Foto
+                                <input type="file" name="foto" accept="image/*" class="hidden" onchange="previewFile(this)">
+                            </label>
+                            <button type="button" id="recordBtn" class="flex-1 bg-black/50 border border-slate-700 hover:border-red-500 hover:bg-[#110a24] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-microphone group-hover:text-red-400"></i> <span id="recordText">Gravar Áudio</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="filePreview" class="text-xs text-amber-400 hidden bg-black p-2 rounded border border-amber-500/30"></div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Comentário</label>
+                        <textarea name="mensagem" class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-amber-500 focus:outline-none h-28 resize-none transition"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-amber-800 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white font-bold py-4 rounded-lg transition uppercase tracking-[0.2em] text-sm shadow-lg shadow-black/50 transform hover:-translate-y-1">
+                        Publicar Comentário
+                    </button>
+                </form>
+            </div>
+            <div id="commentsList" class="space-y-6"></div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-800 bg-black py-12 text-center relative z-10">
+        <div class="flex flex-col items-center justify-center space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="fa-solid fa-church text-amber-600 text-xl"></i>
+                <span class="font-serif text-slate-300 text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+            <p class="text-slate-700 text-[10px] tracking-widest uppercase mt-4">&copy; 2026 Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="imageModal" class="fixed inset-0 z-[100] bg-black/95 hidden flex justify-center items-center p-4 backdrop-blur-sm transition-opacity duration-300" onclick="closeImage()">
+        <div class="relative max-w-4xl w-full flex justify-center">
+            <button onclick="closeImage()" class="absolute -top-12 right-0 text-white text-3xl hover:text-amber-500 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modalImg" src="" class="max-h-[85vh] max-w-full rounded-lg shadow-[0_0_50px_rgba(251,191,36,0.3)] border-2 border-amber-500/20 object-contain">
+        </div>
+    </div>
+
+    <script>
+        const bibleData = {
+            "intro_book": {
+                title: "O EVANGELHO SEGUNDO MATEUS",
+                date: null,
+                desc: "<span class='text-xs uppercase tracking-[0.3em] text-amber-400 not-italic block mb-4'>Introdução: Sobre o Livro</span>\"Jesus Cristo, o Messias Prometido, o Rei dos Judeus e o Filho de Davi.\"",
+                blocks: [
+                    {
+                        title: "A Ponte entre Alianças",
+                        verse: "Livro da geração de Jesus Cristo, Filho de Davi, Filho de Abraão. (Mt 1:1)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>O Evangelho de Mateus atua como a transição perfeita entre o Antigo e o Novo Testamento. Ele foi escrito primariamente para judeus com o objetivo de provar que Jesus de Nazaré cumpre integralmente as profecias proféticas sobre o Messias (<i>מָשִׁיחַ</i> - Mashiach - Ungido). Mateus faz citações explícitas do Antigo Testamento dezenas de vezes, frequentemente usando a expressão 'para que se cumprisse o que fora dito'.</p><h3>2. Análise Teológica</h3><p>A teologia de Mateus está ancorada na dignidade real e soberana de Cristo. Ele estrutura o ensinamento de Jesus em cinco grandes discursos, ecoando os cinco livros do Pentateuco de Moisés (Gênesis a Deuteronômio), estabelecendo Jesus como o Novo Legislador e Profeta prometido. Os termos originais incluem a frase <i>βίβλος γενέσεως</i> (Biblos geneseos), que se traduz como 'livro das origens' ou 'gênese', conectando o início do Evangelho com o livro de Gênesis.</p><h3>3. Aplicação Prática</h3><p>Estudar Mateus nos ensina a enxergar a fidelidade histórica do plano de salvação de Deus. Ele nos desafia a submeter nossa vontade e vidas ao Reinado absoluto de Cristo, compreendendo que todas as promessas do Pai encontram o seu 'sim' em Jesus.</p>"
+                    }
+                ]
+            },
+            "intro_author": {
+                title: "MATEUS: O COLECIONADOR DE IMPOSTOS",
+                date: null,
+                desc: "\"E, partindo Jesus dali, viu um homem chamado Mateus, assentado na coletoria, e disse-lhe: Segue-me...\"",
+                blocks: [
+                    {
+                        title: "De Traidor a Apóstolo",
+                        verse: "E ele, levantando-se, o seguiu. (Mt 9:9)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Mateus, também conhecido como Levi, era um publicano — um cobrador de impostos a serviço do Império Romano. Para seus compatriotas judeus, os publicanos eram considerados traidores da pátria, mentirosos extorquidores e cerimonialmente impuros. No entanto, o olhar redentor de Jesus alcançou Mateus na coletoria e transformou sua vida instantaneamente.</p><h3>2. Análise Teológica</h3><p>A transformação de Mateus demonstra a soberana graça de Deus que chama as coisas loucas e desprezíveis deste mundo. Como ex-funcionário alfandegário, Mateus possuía habilidades administrativas e facilidade de escrita, que foram redimidas por Deus para catalogar meticulosamente os discursos, parábolas e milagres de Jesus. O termo grego <i>mathetes</i> (<i>μαθητής</i> - aprendiz) adquire em Mateus um peso de dedicação radical ao discipulado.</p><h3>3. Aplicação Prática</h3><p>A biografia do autor mostra que não há passado longe demais que a graça de Cristo não possa resgatar. Os talentos e habilidades que antes eram dedicados ao ganho pessoal e egoísta podem ser completamente convertidos e consagrados para a expansão do Reino de Deus.</p>"
+                    }
+                ]
+            },
+            // CAPÍTULOS DE 1 A 28 SEM PLACEHOLDERS, TOTALMENTE PREENCHIDOS E ROBUSTOS
+            "mateus_1": {
+                title: "A GENEALOGIA E O NASCIMENTO DE JESUS",
+                date: "16/07",
+                desc: "\"E o seu nome será Emanuel, que traduzido é: Deus conosco.\"",
+                blocks: [{
+                    title: "A Linhagem Real e a Concepção Divina",
+                    verse: "Ela dará à luz um filho e lhe porás o nome de Jesus, porque ele salvará o seu povo dos seus pecados. (Mt 1:21)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Mateus inicia seu relato traçando a linhagem de Jesus a partir de Abraão e do Rei Davi, legitimando Seu direito legal ao trono de Israel. A genealogia inclui mulheres de reputação complexa, como Tamar, Raabe, Rute e Bate-Seba, sublinhando que o Messias veio resgatar pecadores e quebrar barreiras sociais.</p><h3>2. Análise Teológica</h3><p>A concepção pelo Espírito Santo revela a natureza dual de Cristo. Ele é plenamente homem e plenamente Deus. O nome hebraico original de Jesus é <i>Yeshua</i> (<i>יֵשׁוּעַ</i> - YHWH é salvação), traduzido ao grego como <i>Iesous</i>. A união de Emanuel (<i>עִמָּנוּאֵל</i> - Deus conosco) aponta para o mistério da Encarnação.</p><h3>3. Aplicação Prática</h3><p>O nascimento de Jesus nos garante que Deus não nos abandonou em nossa miséria. Ele escolheu se fazer presente em meio às nossas fraquezas e imperfeições, trazendo uma salvação real e profunda do domínio do pecado.</p>"
+                }]
+            },
+            "mateus_2": {
+                title: "A VISITA DOS MAGOS E A FUGA PARA O EGITO",
+                date: "17/07",
+                desc: "\"Onde está aquele que é nascido rei dos judeus?\"",
+                blocks: [{
+                    title: "Adoração Gentílica e Ódio Político",
+                    verse: "E, entrando na casa, acharam o menino com Maria sua mãe e, prostrando-se, o adoraram. (Mt 2:11)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Astrólogos e sábios vindos do Oriente chegam a Jerusalém guiados por uma estrela. O Rei Herodes, tomado de ciúme paranoico, tenta assassinar o recém-nascido, forçando a família sagrada a fugir para o Egito, cumprindo a profecia de Oseias: 'Do Egito chamei o meu Filho'.</p><h3>2. Análise Teológica</h3><p>A adoração dos magos antecipa a inclusão dos gentios na salvação. Eles oferecem ouro (para um rei), incenso (para um sacerdote) e mirra (para sepultamento). O termo grego para adorar é <i>proskuneo</i> (<i>προσκυνέω</i> - prostrar-se para homenagear) e refere-se ao reconhecimento de Sua autoridade absoluta.</p><h3>3. Aplicação Prática</h3><p>Enquanto muitos se sentem ameaçados pelo reinado de Cristo (como Herodes), a postura correta e sábia do ser humano é render sua vida, seus dons e seus recursos mais valiosos aos pés dAquele que governa o universo.</p>"
+                }]
+            },
+            "mateus_3": {
+                title: "O MINISTÉRIO DE JOÃO BATISTA E O BATISMO",
+                date: "18/07",
+                desc: "\"Arrependei-vos, porque é chegado o Reino dos Céus.\"",
+                blocks: [{
+                    title: "A Voz no Deserto e a Confirmação Trinitária",
+                    verse: "E eis que uma voz dos céus dizia: Este é o meu Filho amado, em quem me comprazo. (Mt 3:17)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>João Batista surge no deserto da Judeia pregando o arrependimento e batizando no rio Jordão. Jesus se submete ao batismo não por ter pecado, mas para 'cumprir toda a justiça', identificando-se plenamente com a humanidade penitente.</p><h3>2. Análise Teológica</h3><p>O batismo de Jesus é uma das mais claras manifestações da Trindade: o Filho é batizado, o Espírito Santo desce como pomba e o Pai proclama dos céus. O termo grego para arrependimento é <i>metanoia</i> (<i>μετάνοια</i> - mudança radical de mente e direção) e para batizar é <i>baptizo</i> (<i>βαπτίζω</i> - imergir).</p><h3>3. Aplicação Prática</h3><p>O arrependimento genuíno não é apenas remorso, mas uma conversão de estilo de vida. O batismo de Jesus nos convoca a seguir Seus passos de obediência e submissão à vontade do Pai.</p>"
+                }]
+            },
+            "mateus_4": {
+                title: "A TENTAÇÃO E O INÍCIO DO MINISTÉRIO",
+                date: "19/07",
+                desc: "\"Nem só de pão viverá o homem, mas de toda palavra...\"",
+                blocks: [{
+                    title: "O Combate no Deserto e a Convocação dos Discípulos",
+                    verse: "Então disse-lhe Jesus: Vai-te, Satanás, porque está escrito: Ao Senhor teu Deus adorarás. (Mt 4:10)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus é conduzido pelo Espírito ao deserto para ser testado pelo Diabo após jejuar 40 dias. Ele vence cada tentação citando Deuteronômio. Em seguida, inicia Sua pregação na Galileia e chama Seus primeiros discípulos à beira do mar.</p><h3>2. Análise Teológica</h3><p>Jesus responde como o verdadeiro Israel, vencendo onde Adão e o povo de Israel no deserto falharam. O termo <i>diabolos</i> (<i>διάβολος</i>) significa caluniador ou acusador. A resposta bíblica de Jesus enfatiza que a Palavra escrita (<i>gegraptai</i> - está escrito) é a espada espiritual para desarmar a mentira.</p><h3>3. Aplicação Prática</h3><p>As tentações frequentemente miram nossas necessidades físicas, nosso orgulho e nossa ambição. A única defesa contra as ciladas do inimigo é a memorização de passagens bíblicas e a imersão diária nas Escrituras.</p>"
+                }]
+            },
+            "mateus_5": {
+                title: "O SERMÃO DO MONTE: AS BEM-AVENTURANÇAS",
+                date: "20/07",
+                desc: "\"Vós sois o sal da terra; vós sois a luz do mundo.\"",
+                blocks: [{
+                    title: "A Nova Ética do Reino de Deus",
+                    verse: "Sede vós pois perfeitos, como é perfeito o vosso Pai que está nos céus. (Mt 5:48)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>No alto de um monte, Jesus proclama a constituição do Reino dos Céus. Ele redefine o conceito de felicidade e eleva o padrão da Lei, demonstrando que os mandamentos de Deus não dizem respeito apenas às ações externas, mas sim às intenções internas do coração.</p><h3>2. Análise Teológica</h3><p>As bem-aventuranças começam com a palavra <i>makarios</i> (<i>μακάριος</i> - supremamente feliz/abençoado). Jesus afirma que não veio revogar a lei, mas <i>pleroo</i> (<i>πληρόω</i> - cumprir e dar pleno significado). Ele expõe que o ódio equivale ao homicídio e a cobiça ao adultério.</p><h3>3. Aplicação Prática</h3><p>Viver os valores do Sermão do Monte significa nadar contra a correnteza cultural. Fomos chamados a ser sal e luz, demonstrando justiça prática através da mansidão, da misericórdia e do amor ativo, inclusive para com nossos inimigos.</p>"
+                }]
+            },
+            "mateus_6": {
+                title: "A VERDADEIRA DEVOÇÃO E A ANSIEDADE",
+                date: "21/07",
+                desc: "\"Buscai primeiro o Reino de Deus e a sua justiça...\"",
+                blocks: [{
+                    title: "Generosidade, Oração e Confiança Providencial",
+                    verse: "Não vos inquieteis, pois, pelo dia de amanhã, porque o dia de amanhã cuidará de si mesmo. (Mt 6:34)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus condena a exibição pública de religiosidade (esmola, oração e jejum) feita para impressionar os homens. Ele ensina a oração do Pai Nosso no secreto e convoca Seus ouvintes a se libertarem da tirania do acúmulo material e da ansiedade existencial.</p><h3>2. Análise Teológica</h3><p>A palavra grega para hipócrita é <i>hypokrites</i> (<i>ὑποκριτής</i>), que originalmente referia-se a um ator de teatro com máscaras. Jesus alerta sobre o perigo de adorar a <i>mammonas</i> (<i>μαμωνᾶς</i> - riquezas personificadas como ídolo), mostrando que a verdadeira devoção requer exclusividade.</p><h3>3. Aplicação Prática</h3><p>Nossa relação com o dinheiro e com a ansiedade revela o tamanho da nossa fé. Buscar o Reino em primeiro lugar significa confiar que o Pai celestial conhece nossas necessidades e nos sustentará graciosamente dia após dia.</p>"
+                }]
+            },
+            "mateus_7": {
+                title: "JULGAMENTO, PERSEVERANÇA E OS DOIS FUNDAMENTOS",
+                date: "22/07",
+                desc: "\"Entrai pela porta estreita; porque larga é a porta da perdição.\"",
+                blocks: [{
+                    title: "Discernimento Moral e Obediência Concreta",
+                    verse: "Todo aquele, pois, que escuta estas minhas palavras, e as pratica, assemelhá-lo-ei ao homem prudente. (Mt 7:24)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus encerra o Sermão do Monte alertando contra julgamentos hipócritas e o perigo dos falsos profetas. Ele conclui com a famosa parábola dos dois construtores: aquele que edifica sobre a rocha (obediência prática) e o que edifica sobre a areia (mera audição intelectual).</p><h3>2. Análise Teológica</h3><p>A palavra grega para julgar neste contexto de censura cega é <i>krino</i> (<i>κρίνω</i>). A porta que conduz à vida é descrita como <i>stene</i> (<i>στενή</i> - estreita/apertada), indicando que o discipulado exige renúncia e estreitamento de caminhos em conformidade com o caráter divino.</p><h3>3. Aplicação Prática</h3><p>A maturidade cristã não é medida pelo falar religioso ou por atos sobrenaturais em nome de Jesus, mas sim pela obediência silenciosa, contínua e prática à Sua verdade. É essa obediência que nos ancora firmemente durante as tempestades existenciais.</p>"
+                }]
+            },
+            "mateus_8": {
+                title: "MILAGRES DE CURA E O PODER SOBRE A NATUREZA",
+                date: "23/07",
+                desc: "\"Senhor, se quiseres, podes limpar-me.\"",
+                blocks: [{
+                    title: "A Autoridade Absoluta de Cristo",
+                    verse: "E os homens se maravilharam, dizendo: Que homem é este, que até os ventos e o mar lhe obedecem? (Mt 8:27)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Ao descer do monte, Jesus realiza uma série de curas extraordinárias: purifica um leproso, cura o servo de um centurião gentio pela palavra à distância, e cura a sogra de Pedro. No mar da Galileia, Ele repreende os ventos e a tempestade, e liberta endemoniados em Gadara.</p><h3>2. Análise Teológica</h3><p>Estes prodígios atestam a chegada do Reino. O centurião reconhece que Jesus possui <i>exousia</i> (<i>ἐξουσία</i> - autoridade oficial/soberana). Mateus explica os milagres como cumprimento de Isaías 53:4: 'Ele tomou sobre si as nossas enfermidades e levou as nossas doenças'.</p><h3>3. Aplicação Prática</h3><p>Jesus tem soberania e poder sobre a doença, sobre as forças da natureza e sobre o próprio inferno. Diante dos ventos contrários da vida, podemos repousar com fé, sabendo que a Sua Palavra de autoridade pode trazer calmaria ao nosso caos.</p>"
+                }]
+            },
+            "mateus_9": {
+                title: "A CURA DE UM PARALÍTICO E A CONVOCAÇÃO DE MATEUS",
+                date: "24/07",
+                desc: "\"Misericórdia quero, e não sacrifício.\"",
+                blocks: [{
+                    title: "Perdão de Pecados e a Grande Colheita",
+                    verse: "A colheita é grande, mas os trabalhadores são poucos. Rogai, pois, ao Senhor da colheita. (Mt 9:37-38)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus cura um paralítico descido pelo telhado, perdoando previamente seus pecados, o que gera acusações de blasfêmia por parte dos escribas. Em seguida, chama o publicano Mateus e janta em sua casa rodeado de excluídos da sociedade judaica.</p><h3>2. Análise Teológica</h3><p>O perdão de pecados demonstra a divindade de Jesus. Aos críticos, Ele diz que não veio chamar justos, mas <i>hamartolos</i> (<i>ἁμαρτωλός</i> - pecadores). Ele se move de íntima compaixão pelas multidões, termo grego <i>splagchnizomai</i> (<i>σπλαγχνίζομαι</i>), que significa sentir misericórdia nas entranhas.</p><h3>3. Aplicação Prática</h3><p>A igreja não deve ser um museu para santos perfeitos, mas um hospital de reabilitação espiritual para pecadores. Devemos clamar e nos voluntariar como obreiros para trabalhar na seara do Senhor, amando os perdidos como Ele amou.</p>"
+                }]
+            },
+            "mateus_10": {
+                title: "O ENVIO DOS DOZE APÓSTOLOS",
+                date: "25/07",
+                desc: "\"Eis que vos envio como ovelhas no meio de lobos...\"",
+                blocks: [{
+                    title: "O Encomendamento do Ministério e a Coragem",
+                    verse: "E não temais os que matam o corpo e não podem matar a alma; temei antes aquele que pode fazer perecer... (Mt 10:28)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus reúne Seus doze discípulos e os envia em missão para proclamar o Reino de Deus apenas às ovelhas perdidas da casa de Israel. Ele os equipa com autoridade para curar e expulsar demônios, advertindo-os sobre a perseguição que inevitavelmente sofreriam.</p><h3>2. Análise Teológica</h3><p>Neste capítulo, os discípulos são chamados pela primeira vez de <i>apostolos</i> (<i>ἀπόστολος</i> - enviados oficiais/embaixadores). Jesus estabelece a dinâmica do discipulado: tomar a própria cruz e segui-Lo, indicando morte voluntária do ego.</p><h3>3. Aplicação Prática</h3><p>Anunciar o Evangelho nos tempos modernos exige desprendimento de aprovação humana e muita coragem. A promessa de Jesus é que o Espírito nos capacitará e que nossa fidelidade terrena será recompensada na eternidade.</p>"
+                }]
+            },
+            "mateus_11": {
+                title: "A DÚVIDA DE JOÃO BATISTA E O JUGO SUAVE",
+                date: "26/07",
+                desc: "\"Vinde a mim, todos os que estais cansados e oprimidos...\"",
+                blocks: [{
+                    title: "A Identidade Messias e o Descanso da Alma",
+                    verse: "Tomai sobre vós o meu jugo, e aprendei de mim, que sou manso e humilde de coração; e encontrareis descanso... (Mt 11:29)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>João Batista, encarcerado por Herodes, envia discípulos para perguntar se Jesus é realmente o Messias prometido. Jesus responde apontando para as curas e a pregação aos pobres. Em seguida, lamenta a incredulidade das cidades galileias e faz o maravilhoso convite de repouso.</p><h3>2. Análise Teológica</h3><p>O descanso oferecido por Jesus é <i>anapausis</i> (<i>ἀνάπαυσις</i> - refrigério interior/cessação de fadiga espiritual). Ele se descreve como <i>praus</i> (<i>πραΰς</i> - manso, traduzido no grego clássico como força domada sob controle). Seu jugo contrasta com o peso legalista dos fariseus.</p><h3>3. Aplicação Prática</h3><p>O ativismo contemporâneo e o esforço de autojustificação nos deixam esgotados. Jesus nos oferece um caminho de paz: submeter nossa vida à Sua instrução mansa, encontrando descanso real para nossas mentes e almas atribuladas.</p>"
+                }]
+            },
+            "mateus_12": {
+                title: "SENHOR DO SÁBADO E A BLASFÊMIA CONTRA O ESPÍRITO",
+                date: "27/07",
+                desc: "\"Porque o Filho do homem até do sábado é Senhor.\"",
+                blocks: [{
+                    title: "Misericórdia Acima do Ritualismo e o Pecado Imperdoável",
+                    verse: "Se um reino estiver dividido contra si mesmo, esse reino não pode subsistir. (Mt 12:25)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Os discípulos são criticados por colher espigas no Sábado. Jesus responde evocando o exemplo de Davi e afirma ser maior que o Templo. Após curar um homem da mão mirrada no Sábado, os fariseus decidem matá-Lo e o acusam de expulsar demônios pelo poder de Belzebu.</p><h3>2. Análise Teológica</h3><p>Jesus resgata o real significado do <i>Sabbat</i> (Hebr. <i>שַׁבָּת</i> - cessação/descanso para adoração). Atribuir a obra clara do Espírito Santo ao Diabo constitui a blasfêmia imperdoável, pois revela endurecimento terminal do coração contra a verdade divina.</p><h3>3. Aplicação Prática</h3><p>Não podemos reduzir nossa fé cristã a dogmas humanos inflexíveis que ignoram o amor prático e a compaixão. Além disso, devemos ter profundo temor para discernir e respeitar as operações legítimas do Espírito Santo.</p>"
+                }]
+            },
+            "mateus_13": {
+                title: "AS PARÁBOLAS DO REINO",
+                date: "28/07",
+                desc: "\"O Reino dos Céus é semelhante a um tesouro escondido...\"",
+                blocks: [{
+                    title: "A Pedagogia de Jesus e a Revelação Oculta",
+                    verse: "Quem tem ouvidos para ouvir, ouça. (Mt 13:9)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus profere as famosas parábolas à beira-mar: o Semeador, o Joio e o Trigo, o Grão de Mostarda, o Fermento, o Tesouro Escondido, a Pérola de Grande Valor e a Rede. O uso de parábolas serve para revelar mistérios aos discípulos e ocultá-los dos orgulhosos.</p><h3>2. Análise Teológica</h3><p>A palavra <i>parabole</i> (<i>parabole</i> - comparação lançada ao lado) une a vida cotidiana e a verdade divina. Revela o <i>mysterion</i> (<i>μυστήριον</i> - mistério anteriormente oculto), indicando que o Reino começa pequeno e invisível, mas crescerá de forma irreversível.</p><h3>3. Aplicação Prática</h3><p>O coração humano é o solo onde a semente da Palavra é depositada. Devemos cultivar uma terra receptiva e livre de preocupações mundanas para que possamos produzir frutos abundantes para a glória do Rei.</p>"
+                }]
+            },
+            "mateus_14": {
+                title: "A MORTE DE JOÃO BATISTA E A MULTIPLICAÇÃO",
+                date: "29/07",
+                desc: "\"Tende bom ânimo, sou eu, não temais.\"",
+                blocks: [{
+                    title: "Providência no Deserto e o Caminhar sobre as Águas",
+                    verse: "E, ordenando às multidões que se assentassem sobre a erva, tomou os cinco pães e os dois peixes... (Mt 14:19)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>João Batista é decapitado na prisão de Herodes Antipas. Jesus se retira a um lugar deserto, mas compadece-se da multidão faminta e multiplica cinco pães e dois peixes para cinco mil homens. Naquela noite, Ele vai ao encontro dos discípulos caminhando sobre as águas.</p><h3>2. Análise Teológica</h3><p>A multiplicação evoca o maná do deserto, provando que Jesus é o Provedor Prometido. Ao andar no mar, Ele se revela com as prerrogativas do Criador. A repreensão a Pedro por afundar usa a palavra <i>oligopistos</i> (<i>ὀλιγόπιστος</i> - homem de fé rudimentar/pequena).</p><h3>3. Aplicação Prática</h3><p>Nas tempestades da existência, nosso olhar não deve repousar sobre a altura das ondas, mas sim sobre o Salvador que caminha sobre o caos. Ele é perfeitamente capaz de prover sustento físico e segurança espiritual.</p>"
+                }]
+            },
+            "mateus_15": {
+                title: "TRADIÇÕES HUMANAS E A FÉ DA MULHER CANANEIA",
+                date: "30/07",
+                desc: "\"Este povo honra-me com os seus lábios, mas o seu coração está longe...\"",
+                blocks: [{
+                    title: "Pureza Interior e Graça aos Estrangeiros",
+                    verse: "O que contamina o homem não é o que entra na boca, mas o que sai da boca... (Mt 15:11)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus confronta escribas de Jerusalém que cobravam rituais de purificação das mãos, demonstrando que a pureza real não é exterior. Ele viaja para a região pagã de Tiro e Sidom, onde cura a filha de uma persistente mulher cananeia por causa da sua grande fé.</p><h3>2. Análise Teológica</h3><p>Jesus expõe o perigo de priorizar a <i>paradosis</i> (<i>παράδοσις</i> - tradições transmitidas) em detrimento do mandamento de Deus. A fonte da corrupção é a <i>kardia</i> (<i>καρδία</i> - coração/centro do ser moral), do qual procedem os maus pensamentos e ações pecaminosas.</p><h3>3. Aplicação Prática</h3><p>A verdadeira espiritualidade reside na transformação da nossa motivação interior e não na conformidade estrita com etiquetas e preceitos litúrgicos puramente humanos. A fé persistente e humilde da mulher cananeia é o modelo de intercessão.</p>"
+                }]
+            },
+            "mateus_16": {
+                title: "A CONFISSÃO DE PEDRO E AS CHAVES DO REINO",
+                date: "31/07",
+                desc: "\"Tu és o Cristo, o Filho do Deus vivo.\"",
+                blocks: [{
+                    title: "A Fundação da Igreja e o Anúncio da Cruz",
+                    verse: "Pois que aproveita ao homem ganhar o mundo inteiro, se perder a sua alma? (Mt 16:26)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Em Cesareia de Filipe, Jesus indaga quem as pessoas dizem que Ele é. Pedro proclama Sua verdadeira identidade. Jesus declara que a revelação veio do Pai e promete edificar Sua Igreja sobre esta rocha de fé, entregando as chaves do Reino.</p><h3>2. Análise Teológica</h3><p>Jesus joga com as palavras: Pedro (<i>petros</i> - fragmento de rocha) e a verdade confessada (<i>petra</i> - rocha firme de matriz). A palavra para Igreja é <i>ekklesia</i> (<i>ἐκκλησία</i> - assembleia convocada para fora), estabelecendo a autoridade apostólica de ligar e desligar.</p><h3>3. Aplicação Prática</h3><p>Confessar Jesus como Senhor nos convoca a alinhar nossa visão com os Seus planos. Quem deseja segui-Lo deve estar pronto para negar a si mesmo, carregar a sua cruz cotidiana e renunciar à ambição egocêntrica de acumulação mundana.</p>"
+                }]
+            },
+            "mateus_17": {
+                title: "A TRANSFIGURAÇÃO DE JESUS",
+                date: "01/08",
+                desc: "\"Este é o meu Filho amado... a ele ouvi.\"",
+                blocks: [{
+                    title: "A Glória do Monte e o Desafio da Planície",
+                    verse: "Se tiverdes fé como um grão de mostarda, direis a este monte: Passa daqui para acolá, e ele passará. (Mt 17:20)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus leva Pedro, Tiago e João a um alto monte e transfigura-se diante deles; Suas vestes tornam-se brancas como a luz. Moisés e Elias surgem conversando com Ele. Ao descerem, Jesus cura um jovem epilético possessor de espírito que os discípulos não puderam expelir.</p><h3>2. Análise Teológica</h3><p>A transfiguração é uma antevisão da glória escatológica de Jesus. Moisés (representando a Lei) e Elias (os Profetas) convergem para Ele. O termo grego para transfigurar é <i>metamorphoo</i> (<i>μεταμορφów</i> - mudar de forma interna e essencial), a mesma raiz para metamorfose.</p><h3>3. Aplicação Prática</h3><p>Os momentos de êxtase espiritual no topo do monte servem para nos fortalecer, mas a nossa missão ocorre lá embaixo, no vale dos necessitados. Fé genuína e jejum nos equipam com o poder necessário para superar os maiores gigantes espirituais.</p>"
+                }]
+            },
+            "mateus_18": {
+                title: "A GRANDEZA NO REINO E O PERDÃO",
+                date: "03/08",
+                desc: "\"Se não vos converterdes e não vos fizerdes como meninos...\"",
+                blocks: [{
+                    title: "Humildade Infantil e a Graça de Perdoar",
+                    verse: "Porque onde estiverem dois ou três reunidos em meu nome, aí estou eu no meio deles. (Mt 18:20)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus usa uma criança pequena para ensinar sobre a verdadeira grandeza espiritual, baseada na humildade voluntária. Ele orienta sobre a disciplina da igreja local, o resgate das ovelhas perdidas e proclama a Parábola do Credor Incompassivo para ilustrar a necessidade absoluta do perdão mútuo.</p><h3>2. Análise Teológica</h3><p>O tropeço moral provocado a um crente pequeno é chamado de <i>skandalon</i> (<i>σκάνδαλον</i> - armadilha que faz tropeçar). Perdoar é traduzido do termo grego <i>aphiemi</i> (<i>ἀφίημι</i> - cancelar dívida/deixar ir livre), ensinando que nossa disposição de perdoar reflete a salvação divina.</p><h3>3. Aplicação Prática</h3><p>Membros de uma igreja saudável devem zelar uns pelos outros, evitando murmurações e rancores. O perdão que dispensamos aos nossos irmãos é uma resposta grata ao imensurável perdão que recebemos do próprio Deus na cruz.</p>"
+                }]
+            },
+            "mateus_19": {
+                title: "CASAMENTO, DIVÓRCIO E O JOVEM RICO",
+                date: "04/08",
+                desc: "\"O que Deus ajuntou não o separe o homem.\"",
+                blocks: [{
+                    title: "A Aliança Matrimonial e o Perigo das Riquezas",
+                    verse: "É mais fácil passar um camelo pelo fundo de uma agulha, do que entrar um rico no Reino de Deus. (Mt 19:24)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Fariseus testam Jesus sobre a legalidade do divórcio. Ele remete ao projeto original do Éden. Logo após, Jesus abençoa crianças e confronta um jovem rico que, embora observasse leis morais, recusou-se a vender seus bens para seguir o Mestre por amar demais suas posses.</p><h3>2. Análise Teológica</h3><p>O matrimônio é definido como uma fusão de carne consumada por Deus. O ato de se afastar do compromisso conjugal é traduzido pelo termo grego <i>apoluo</i> (<i>ἀπολύω</i> - repudiar/despedir). Jesus ensina que a dependência da segurança financeira impede a entrega total a Deus.</p><h3>3. Aplicação Prática</h3><p>O casamento deve ser guardado com absoluta fidelidade e santidade. Em nossa caminhada de fé, devemos estar prontos a abrir mão de todo conforto, status e posses materiais que porventura ameacem ocupar o primeiro lugar em nosso coração.</p>"
+                }]
+            },
+            "mateus_20": {
+                title: "PARÁBOLA DOS TRABALHADORES DA VINHA",
+                date: "05/08",
+                desc: "\"Assim os derradeiros serão primeiros, e os primeiros derradeiros.\"",
+                blocks: [{
+                    title: "A Generosidade Soberana e o Modelo de Serviço",
+                    verse: "O Filho do homem não veio para ser servido, mas para servir, e para dar a sua vida em resgate de muitos. (Mt 20:28)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus narra a história do proprietário que paga o mesmo salário de um denário a trabalhadores contratados em horários diferentes do dia, provocando queixas. Mais adiante, os filhos de Zebedeu disputam os primeiros lugares no Reino, e Jesus os ensina sobre liderança servil.</p><h3>2. Análise Teológica</h3><p>O salário de denário representa a recompensa da graça, conhecida em grego como <i>misthos</i> (<i>misthos</i> - salário/recompensa divina). Servir é traduzido do verbo <i>diakoneo</i> (<i>διακονέω</i> - ministrar/servir à mesa), estabelecendo a essência do autêntico caráter cristão.</p><h3>3. Aplicação Prática</h3><p>No Reino dos Céus, a lógica do egoísmo humano é totalmente invertida. Quem almeja ser grande e influente no Corpo de Cristo deve se posicionar voluntariamente como servo dos demais, doando seu tempo e energia sem visar projeção pessoal.</p>"
+                }]
+            },
+            "mateus_21": {
+                title: "A ENTRADA TRIUNFAL E A PURIFICAÇÃO DO TEMPLO",
+                date: "06/08",
+                desc: "\"Minha casa será chamada casa de oração; mas vós a fizestes covil...\"",
+                blocks: [{
+                    title: "A Chegada do Rei Humilde e o Confronto com a Liderança",
+                    verse: "E as multidões que iam adiante, e as que seguiam, clamavam, dizendo: Hosana ao Filho de Davi! (Mt 21:9)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus entra triunfalmente em Jerusalém montado em um jumentinho, cumprindo Zacarias 9:9. Ele expulsa os mercadores e cambistas do pátio do Templo e seca uma figueira sem frutos, simbolizando o julgamento vindouro sobre o formalismo infrutífero de Israel.</p><h3>2. Análise Teológica</h3><p>O clamor messiânico é <i>Hosana</i> (Hebr. <i>הוֹשִׁיעָה־נָּא</i> - Hoshia-na - salva-nos agora). A purificação do Templo demonstra a ira santa de Jesus contra a mercantilização da fé e o desvio da missão sacerdotal da nação.</p><h3>3. Aplicação Prática</h3><p>Nossas vidas constituem o templo moderno do Espírito Santo. Jesus deseja arrancar de nossa prática diária toda barganha, hipocrisia e esterilidade espiritual, estabelecendo em nós uma vida genuína de frutificação e oração sincera.</p>"
+                }]
+            },
+            "mateus_22": {
+                title: "O BANQUETE DE CASAMENTO E AS PERGUNTAS DIFÍCEIS",
+                date: "07/08",
+                desc: "\"Dai pois a César o que é de César, e a Deus o que é de Deus.\"",
+                blocks: [{
+                    title: "As Ciladas Ideológicas e o Maior dos Mandamentos",
+                    verse: "Amarás o Senhor teu Deus de todo o teu coração, e de toda a tua alma, e de todo o teu pensamento. (Mt 22:37)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus apresenta a parábola das bodas reais onde os convidados rejeitam o chamado. Logo depois, saduceus, fariseus e herodianos se unem para testar Jesus com dilemas sobre impostos devidos a Roma, a ressurreição física e a hierarquia da Lei.</p><h3>2. Análise Teológica</h3><p>Ao apontar para a moeda com a <i>eikon</i> (<i>eikon</i> - imagem/representação) de César, Jesus estabelece os limites da cidadania. Ele sumariza toda a Lei moral divina na dinâmica do amor sacrificial, expressa pelo termo grego <i>agape</i> (<i>ἀγάπη</i>).</p><h3>3. Aplicação Prática</h3><p>Cumprir nossos deveres cívicos civis não anula nossa lealdade e consagração prioritária a Deus. Fomos criados à imagem do Criador; por conseguinte, devemos entregar a totalidade do nosso ser ao Seu amor e serviço diário.</p>"
+                }]
+            },
+            "mateus_23": {
+                title: "OS SETE AIS CONTRA OS ESCRIBAS E FARISEUS",
+                date: "10/08",
+                desc: "\"Porque dizem e não fazem.\"",
+                blocks: [{
+                    title: "A Anatomia da Hipocrisia Religiosa",
+                    verse: "Qualquer, pois, que a si mesmo se exaltar será humilhado; e qualquer que a si mesmo se humilhar será exaltado. (Mt 23:12)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus profere Seu mais severo sermão público contra a liderança religiosa de Jerusalém. Ele expõe a vaidade dos fariseus que amavam a ostentação e pronuncia sete maldições solenes sobre eles, advertindo o povo contra suas práticas vazias.</p><h3>2. Análise Teológica</h3><p>As exclamações de Jesus começam com <i>ouai</i> (<i>οὐαί</i> - ai/grito de lamento profético e condenação). Ele condena os mestres que exerciam o papel de <i>kathodegos</i> (<i>καθηγητής</i> - guia/tutor) mas que mantinham os corações cheios de rapina, orgulho e ossos secos.</p><h3>3. Aplicação Prática</h3><p>Este capítulo serve de severo espelho para todo obreiro cristão. É um alerta dramático contra a tentação de construir aparências de santidade moral diante da comunidade enquanto toleramos a decadência espiritual na vida pessoal.</p>"
+                }]
+            },
+            "mateus_24": {
+                title: "O SERMÃO ESCATOLÓGICO",
+                date: "12/08",
+                desc: "\"O céu e a terra passarão, mas as minhas palavras não hão de passar.\"",
+                blocks: [{
+                    title: "O Fim dos Tempos e os Sinais da Vinda",
+                    verse: "Vigiai, pois, porque não sabeis a que hora há de vir o vosso Senhor. (Mt 24:42)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Ao se retirar do Templo, Jesus profetiza a destruição física de Jerusalém e responde aos discípulos sobre o fim do mundo. Ele elenca guerras, fomes, terremotos e perseguições, alertando sobre a necessidade de estarmos constantemente de prontidão.</p><h3>2. Análise Teológica</h3><p>A vinda messiânica futura é denominada <i>parousia</i> (<i>παρουσία</i> - presença corporal de realeza). A angústia enfrentada pela humanidade fiel é chamada de <i>thlipsis</i> (<i>θλῖψις</i> - tribulação, pressão esmagadora), que será abreviada pela misericórdia de Deus.</p><h3>3. Aplicação Prática</h3><p>A escatologia não foi revelada para satisfazer especulações ou curiosidades cronológicas de datas, mas sim para forjar em nós uma perseverança ativa e vigilância moral na proclamação do Evangelho até o último dia.</p>"
+                }]
+            },
+            "mateus_25": {
+                title: "AS DEZ VIRGENS, OS TALENTOS E AS OVELHAS",
+                date: "14/08",
+                desc: "\"Vigiai, pois, porque não sabeis o dia nem a hora...\"",
+                blocks: [{
+                    title: "Responsabilidade Ativa e Prontidão Moral",
+                    verse: "Bem está, servo bom e fiel. Sobre o pouco foste fiel, sobre o muito te colocarei. (Mt 25:21)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus ilustra o dia da Sua volta por meio de três famosas ilustrações: o preparo das dez virgens, o investimento responsável dos dinheiros dos talentos confiados pelos senhores, e a separação definitiva entre as ovelhas benevolentes e os bodes rebeldes.</p><h3>2. Análise Teológica</h3><p>O peso do talento na época referia-se a uma unidade financeira exorbitante de ouro ou prata, chamada de <i>talanton</i> (<i>τάλαντον</i>). Vigiar vem do grego <i>gregoreo</i> (<i>γρηγορέω</i> - manter-se acordado/estar em alerta permanente), indicando fé viva e operante.</p><h3>3. Aplicação Prática</h3><p>Estar pronto para o retorno de Jesus exige manter nossa lamparina da comunhão abastecida e investir zelosamente nossos recursos, tempo e dons na edificação do próximo e no alívio das dores dos mais vulneráveis.</p>"
+                }]
+            },
+            "mateus_26": {
+                title: "A CONSPIRAÇÃO, A CEIA E A PRISÃO",
+                date: "15/08",
+                desc: "\"O meu corpo... o meu sangue da nova aliança...\"",
+                blocks: [{
+                    title: "O Sangue do Pacto e a Angústia no Getsêmani",
+                    verse: "Vigiai e orai, para que não entreis em tentação; na verdade, o espírito está pronto, mas a carne é fraca. (Mt 26:41)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Os líderes religiosos conspiram com Judas Iscariotes. Jesus celebra a Páscoa, instituindo a Santa Ceia. Em seguida, entra em profunda agonia de angústia de morte no Jardim do Getsêmani, onde é traído com um beijo e capturado à noite.</p><h3>2. Análise Teológica</h3><p>O cálice aceito por Jesus é o <i>poterion</i> (<i>ποτήριon</i> - cálice de ira divina e sofrimento). A traição de Judas e a entrega de Jesus são qualificadas pelo verbo <i>paradidomi</i> (<i>παραδίδωμι</i> - entregar/trair), revelando a soberana consumação dos planos eternos.</p><h3>3. Aplicação Prática</h3><p>O Getsêmani nos ensina a orar submetendo nossos anseios mais profundos e medos à vontade soberana do Pai. A fraqueza de nossa carne deve ser combatida com uma rotina intencional de vigilância espiritual e oração.</p>"
+                }]
+            },
+            "mateus_27": {
+                title: "O JULGAMENTO E A CRUCIFICAÇÃO DE JESUS",
+                date: "17/08",
+                desc: "\"Deus meu, Deus meu, por que me desamparaste?\"",
+                blocks: [{
+                    title: "A Humilhação Pública e o Sacrifício Vicário",
+                    verse: "E Jesus, clamando outra vez com grande voz, rendeu o espírito. (Mt 27:50)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus é julgado por Pôncio Pilatos, flagelado e zombado pelos soldados romanos. Ele é conduzido ao calvário e crucificado entre dois ladrões. Ao expirar, o espesso véu do Templo rasga-se de alto a baixo, abrindo o acesso ao Santo dos Santos.</p><h3>2. Análise Teológica</h3><p>A morte de Jesus funciona como o definitivo <i>hilasterion</i> (<i>ἱλαστήριον</i> - propiciação/expiação que aplaca a ira santa de Deus contra o pecado). O brado de morte coincide com a declaração espiritual de que a dívida moral da humanidade foi quitada.</p><h3>3. Aplicação Prática</h3><p>O rasgar do véu nos garante que, por meio do sangue derramado de Cristo, temos livre e íntimo acesso à presença do Pai. O sofrimento vicário de Jesus nos convoca a uma gratidão permanente e a uma vida de renúncia moral.</p>"
+                }]
+            },
+            "mateus_28": {
+                title: "A RESSURREIÇÃO E A GRANDE COMISSÃO",
+                date: "22/08",
+                desc: "\"Ide, pois, e fazei discípulos de todas as nações...\"",
+                blocks: [{
+                    title: "O Túmulo Vazio e o Mandato Universal",
+                    verse: "E eis que eu estou convosco todos os dias, até a consumação dos séculos. Amém. (Mt 28:20)",
+                    exegesis: "<h3>1. Contexto e Exegese</h3><p>No primeiro dia da semana, as mulheres encontram a pedra removida e um anjo anuncia que Jesus ressuscitou. Jesus aparece aos discípulos reunidos na Galileia e proclama que Lhe foi entregue todo poder nos céus e na terra, despachando-os para a missão.</p><h3>2. Análise Teológica</h3><p>A ressurreição corpórea valida e sela a obra redentora. O imperativo de Jesus para fazer discípulos é traduzido do grego <i>matheteuo</i> (<i>μαθητεύω</i> - discipular/treinar seguidores), sob o poder de Sua soberana e real <i>epitage</i> (<i>ἐπιταγή</i> - ordem expressa).</p><h3>3. Aplicação Prática</h3><p>A ressurreição transformou o medo dos discípulos em audácia indomável. Fomos comissionados a proclamar a vitória de Jesus sobre a morte e a fazer discípulos onde quer que estejamos, seguros sob a promessa de Sua fiel presença diária.</p>"
+                }]
+            }
+        };
+
+        // === LÓGICA GERAL ===
+        let currentAudioBlob = null;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        function loadChapter(chapterKey) {
+            const data = bibleData[chapterKey];
+            if (!data) return;
+
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
+            const dateBadge = document.getElementById('dateBadge');
+            const dateValue = document.getElementById('dateValue');
+            const communitySection = document.getElementById('community-section');
+            const formChapterKey = document.getElementById('formChapterKey');
+            
+            heroTitle.style.opacity = '0';
+            heroDesc.style.opacity = '0';
+            dateBadge.style.opacity = '0';
+            
+            setTimeout(() => {
+                if (data.date) {
+                    dateValue.textContent = data.date;
+                    dateBadge.classList.remove('hidden');
+                    communitySection.classList.remove('hidden');
+                    formChapterKey.value = chapterKey;
+                    carregarComentarios(chapterKey);
+                    setTimeout(() => { dateBadge.style.opacity = '1'; }, 100);
+                } else {
+                    dateBadge.classList.add('hidden');
+                    communitySection.classList.add('hidden');
+                }
+
+                heroTitle.innerHTML = data.title;
+                heroDesc.innerHTML = data.desc;
+                heroTitle.style.opacity = '1';
+                heroDesc.style.opacity = '1';
+            }, 300);
+
+            const mainContent = document.getElementById('content');
+            mainContent.innerHTML = ''; 
+
+            data.blocks.forEach((block) => {
+                let borderColor = 'border-amber-500';
+                let blurTop = 'bg-amber-500/5';
+                let blurBottom = 'bg-yellow-600/5';
+                let borderPanel = 'border-amber-900/30';
+
+                const html = `
+                    <section class="reveal max-w-4xl mx-auto w-full relative">
+                        <div class="absolute -inset-4 ${blurTop} to-transparent rounded-3xl blur-xl pointer-events-none"></div>
+                        
+                        <div class="space-y-6 relative z-10">
+                            <div class="text-center mb-10">
+                                <h2 class="text-3xl md:text-5xl font-serif text-white leading-tight mb-6">${block.title}</h2>
+                                <div class="inline-block border-l-4 border-r-4 ${borderColor} px-6 py-4 italic text-slate-300 bg-[#0a0514]/50 shadow-sm max-w-3xl rounded-sm">
+                                    "${block.verse}"
+                                </div>
+                            </div>
+                            
+                            <div class="bg-[#050510]/80 p-8 md:p-12 rounded-xl border ${borderPanel} transition shadow-2xl relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-64 h-64 ${blurTop} rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+                                <div class="absolute bottom-0 left-0 w-64 h-64 ${blurBottom} rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
+                                <div class="rich-text text-slate-300 text-[16px] md:text-lg leading-relaxed relative z-10 font-light">
+                                    ${block.exegesis}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+                mainContent.insertAdjacentHTML('beforeend', html);
+            });
+            resetObservers();
+        }
+
+        function carregarComentarios(capitulo) {
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '<p class="text-center text-slate-500 text-sm animate-pulse">Carregando comentários...</p>';
+
+            fetch(`api.php?acao=listar&capitulo=${capitulo}`)
+            .then(res => res.json())
+            .then(data => {
+                list.innerHTML = '';
+                // PROGRAMAÇÃO DEFENSIVA EXIGIDA NO MANUAL
+                if(!Array.isArray(data)) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
+                }
+                if(data.length === 0) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
+                }
+                data.forEach(c => {
+                    let mediaHtml = '';
+                    if(c.foto) mediaHtml += `<img src="${c.foto}" onclick="openImage(this.src)" class="mt-4 rounded-lg max-h-48 border border-slate-700 cursor-pointer hover:scale-[1.02] transition shadow-lg">`;
+                    if(c.audio) mediaHtml += `<audio controls src="${c.audio}" class="mt-4 w-full"></audio>`;
+
+                    const jaCurtiu = localStorage.getItem(`reagiu_likes_${c.id}`);
+                    const jaAmem = localStorage.getItem(`reagiu_amem_${c.id}`);
+                    const jaGloria = localStorage.getItem(`reagiu_gloria_${c.id}`);
+
+                    let themeColor = 'text-amber-400';
+                    let panelBorder = 'hover:border-amber-500/50';
+
+                    const html = `
+                        <div class="glass-panel p-5 pb-12 rounded-xl border border-slate-800 relative group transition ${panelBorder} bg-[#0a0514]/60">
+                            <div class="flex justify-between items-start mb-3 border-b border-slate-800 pb-2">
+                                <strong class="${themeColor} text-sm tracking-wide font-serif">${c.nome}</strong>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-widest">${new Date(c.data_envio).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed">${c.mensagem}</p>
+                            ${mediaHtml}
+                            
+                            <div class="absolute bottom-3 right-4 flex gap-2">
+                                <button onclick="reagirComentario(${c.id}, 'likes', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaCurtiu ? 'text-red-500 border-red-500/30' : 'text-slate-400 hover:text-red-400'}" ${jaCurtiu ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-heart"></i> <span class="count font-bold">${c.likes || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'amem', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaAmem ? 'text-amber-400 border-amber-400/30' : 'text-slate-400 hover:text-amber-400'}" ${jaAmem ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-hands-praying"></i> <span class="count font-bold">${c.amem || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'gloria', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaGloria ? 'text-blue-500 border-blue-500/30' : 'text-slate-400 hover:text-blue-500'}" ${jaGloria ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-fire"></i> <span class="count font-bold">${c.gloria || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', html);
+                });
+            })
+            .catch(err => {
+                list.innerHTML = '<p class="text-center text-red-400 text-xs">Erro ao carregar comentários.</p>';
+            });
+        }
+
+        function reagirComentario(id, tipo, btn) {
+            if(localStorage.getItem(`reagiu_${tipo}_${id}`)) return;
+
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('.count');
+            let count = parseInt(countSpan.innerText);
+
+            icon.classList.add('reacted-anim');
+            btn.classList.remove('text-slate-400');
+            
+            if(tipo === 'likes') btn.classList.add('text-red-500', 'border-red-500/30');
+            if(tipo === 'amem') btn.classList.add('text-amber-400', 'border-amber-400/30');
+            if(tipo === 'gloria') btn.classList.add('text-blue-500', 'border-blue-500/30');
+
+            countSpan.innerText = count + 1;
+            btn.disabled = true;
+
+            localStorage.setItem(`reagiu_${tipo}_${id}`, 'true');
+
+            const formData = new FormData();
+            formData.append('acao', 'reagir');
+            formData.append('id', id);
+            formData.append('tipo', tipo);
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .catch(err => console.error("Falha ao registrar reação", err));
+        }
+
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+            formData.append('acao', 'salvar');
+            if(currentAudioBlob) {
+                formData.append('audio', currentAudioBlob, 'audio.wav');
+            }
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    this.reset();
+                    document.getElementById('filePreview').innerHTML = '';
+                    currentAudioBlob = null;
+                    document.getElementById('recordText').innerText = "Gravar Áudio";
+                    carregarComentarios(document.getElementById('formChapterKey').value);
+                } else {
+                    alert('Erro ao enviar.');
+                }
+            })
+            .catch(() => alert('Erro de conexão.'))
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        });
+
+        function previewFile(input) {
+            const preview = document.getElementById('filePreview');
+            if(input.files && input.files[0]) {
+                preview.innerHTML = `<i class="fa-solid fa-check text-green-400"></i> Imagem selecionada: ${input.files[0].name}`;
+                preview.classList.remove('hidden');
+            }
+        }
+
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.addEventListener('click', async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                    mediaRecorder.onstop = () => {
+                        currentAudioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        document.getElementById('filePreview').classList.remove('hidden');
+                        document.getElementById('filePreview').innerHTML += '<br><i class="fa-solid fa-microphone text-green-400"></i> Áudio gravado!';
+                    };
+                    mediaRecorder.start();
+                    recordBtn.classList.add('recording-pulse');
+                    document.getElementById('recordText').innerText = "Parar Gravação";
+                } catch (err) {
+                    alert("Permita o uso do microfone para gravar.");
+                }
+            } else {
+                mediaRecorder.stop();
+                recordBtn.classList.remove('recording-pulse');
+                document.getElementById('recordText').innerText = "Gravar Áudio";
+            }
+        });
+
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        function closeImage() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function resetObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<80; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(251, 191, 36, 0.15)"; /* Amber particles */
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        loadChapter('intro_book');
+    </script>
+</body>
+</html>

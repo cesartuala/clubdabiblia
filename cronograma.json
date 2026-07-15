@@ -142,7 +142,7 @@
       "periodo_leitura": "15/07",
       "data_quiz": "15/07",
       "status": "concluido",
-      "quiz_ativo": false
+      "quiz_ativo": true
     },
     {
       "data_criacao": "2026-07-15",
@@ -150,7 +150,7 @@
       "capitulos": 28,
       "periodo_leitura": "16/07 a 22/08",
       "data_quiz": "22/08",
-      "status": "pendente",
+      "status": "concluido",
       "quiz_ativo": false
     },
     {

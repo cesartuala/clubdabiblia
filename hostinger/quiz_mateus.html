@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Mateus | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        .glass-card { background: rgba(15, 15, 35, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(251, 191, 36, 0.2); transition: all 0.4s ease; }
+        .amber-glow { text-shadow: 0 0 15px rgba(251, 191, 36, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); background-color: rgba(251, 191, 36, 0.15); border-color: #fbbf24; }
+        .option-correct { background-color: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+        .option-wrong { background-color: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #f87171 !important; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="w-full z-50 p-6 flex justify-between items-center relative">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0a0a1a] border border-amber-500/50 text-amber-400 hover:bg-amber-500 hover:text-black transition-all">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-money-bill-1 text-amber-500 text-xl"></i>
+            <span class="font-serif text-white text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl w-full flex flex-col relative overflow-hidden shadow-[0_0_40px_rgba(251,191,36,0.15)]">
+            <div class="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-300" id="progressBar"></div>
+            
+            <div class="p-6 md:p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b border-amber-500/20 pb-4">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white amber-glow">Quiz: Mateus</h1>
+                    <span id="questionCounter" class="bg-amber-950/50 text-amber-300 px-3 py-1 rounded-full text-xs font-bold tracking-widest border border-amber-500/30">1 / 10</span>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="questionText" class="text-lg md:text-xl text-slate-200 mb-6 font-light leading-relaxed"></div>
+                    <div id="optionsContainer" class="space-y-3"></div>
+                    <div id="feedbackContainer" class="mt-6 p-4 rounded-lg hidden text-sm leading-relaxed border"></div>
+
+                    <button id="nextBtn" class="mt-8 w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 rounded-lg transition uppercase tracking-widest hidden shadow-lg shadow-amber-900/50">
+                        Próxima Pergunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-col items-center text-center py-8">
+                    <i class="fa-solid fa-crown text-6xl text-amber-400 mb-4 drop-shadow-[0_0_15px_rgba(251,191,36,0.6)]"></i>
+                    <h2 class="font-serif text-3xl text-white mb-2">Vitória do Reino!</h2>
+                    <p class="text-slate-300 text-lg mb-6">Você acertou <span id="finalScore" class="text-amber-400 font-bold text-2xl">0</span> de 10 perguntas.</p>
+                    
+                    <div class="w-full max-w-sm bg-slate-900/80 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xs uppercase tracking-widest text-amber-400 mb-4 font-bold">Salvar no Ranking</h3>
+                        <form id="rankingForm" class="space-y-4">
+                            <input type="hidden" name="acao" value="salvar_quiz_mateus">
+                            <input type="hidden" name="pontos" id="inputPontos" value="0">
+                            <input type="hidden" name="acertos" id="inputAcertos" value="0">
+                            <input type="text" name="nome" required placeholder="Seu Nome..." class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white focus:border-amber-500 focus:outline-none transition text-sm">
+                            <button type="submit" class="w-full bg-gradient-to-r from-amber-600 to-yellow-500 text-white font-bold py-2 rounded transition uppercase tracking-widest text-xs shadow-lg">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                q: "Qual é o principal objetivo teológico de Mateus ao abrir sua genealogia em Mateus 1:1?",
+                options: [
+                    { t: "Destacar a origem sacerdotal levítica de Jesus.", c: false, r: "Mateus foca na linhagem real, não na sacerdotal judaica tradicional de Levi." },
+                    { t: "Provar que Jesus é o Filho de Davi e de Abraão, o herdeiro legal do trono messiânico.", c: true, r: "Ao conectar Jesus a Davi e Abraão, Mateus legitima o Seu direito real de governar e de cumprir a aliança com Abraão." },
+                    { t: "Evidenciar que a história de Israel não possuía nenhum valor moral real.", c: false, r: "Mateus valoriza e conclui a história de Israel em Jesus Cristo." },
+                    { t: "Explicar a origem histórica dos sumos sacerdotes no período de Herodes.", c: false, r: "Este assunto não é o tema abordado na genealogia régia do capítulo um." }
+                ]
+            },
+            {
+                q: "O que significam os presentes trazidos pelos Magos do Oriente em Mateus 2?",
+                options: [
+                    { t: "Apenas provisões básicas de viagem para a fuga para o Egito.", c: false, r: "Eles tinham um profundo e elevado significado profético e teológico real." },
+                    { t: "Ouro para realeza, incenso para divindade/sacerdócio e mirra para sacrifício/sepultamento.", c: true, r: "Os itens reconhecem Jesus em Seus ofícios cruciais de Rei, Sacerdote e Vítima sacrificial vicária." },
+                    { t: "Apenas símbolos da herança ancestral da família de José.", c: false, r: "Os magos eram estrangeiros e trouxeram os pertences como ofertas de adoração." },
+                    { t: "Armas secretas contra os exércitos imperiais romanos.", c: false, r: "Os presentes eram riquezas simbólicas e devocionais antigas de valor sagrado." }
+                ]
+            },
+            {
+                q: "Qual é o termo grego usado por Mateus no capítulo 3 para descrever o 'arrependimento radical'?",
+                options: [
+                    { t: "Hamartolos", c: false, r: "Hamartolos significa 'pecador'." },
+                    { t: "Metanoia", c: true, r: "Metanoia designa uma transformação profunda e duradoura da mente humana." },
+                    { t: "Baptizo", c: false, r: "Baptizo refere-se ao ato de submersão e purificação nas águas." },
+                    { t: "Proskuneo", c: false, r: "Proskuneo refere-se à atitude corporal de inclinar-se ou prostrar-se para adorar." }
+                ]
+            },
+            {
+                q: "Onde Jesus estava fisicamente posicionado quando proclamou as Bem-aventuranças em Mateus 5?",
+                options: [
+                    { t: "No pátio interno do Templo de Jerusalém.", c: false, r: "Jesus foi para o monte para escapar temporariamente da compressão das multidões." },
+                    { t: "No alto de um monte, assemelhando-se a Moisés no Sinai como o Novo Legislador.", c: true, r: "Mateus retrata estruturalmente Jesus em cima do monte proclamando a definitiva justiça divina." },
+                    { t: "A bordo de um barco pesqueiro ancorado em alto mar.", c: false, r: "O sermão à beira-mar de barco ocorre mais adiante nas parábolas de Mateus 13." },
+                    { t: "No deserto da Judeia, após jejuar por quarenta dias.", c: false, r: "O deserto foi a locação das tentações morais de Mateus 4." }
+                ]
+            },
+            {
+                q: "Qual destas é a advertência contra o acúmulo financeiro e de riquezas materiais em Mateus 6?",
+                options: [
+                    { t: "Não servir ao deus 'Mamom'.", c: true, r: "Jesus personifica o dinheiro como um falso deus rival, Mamom." },
+                    { t: "Evitar qualquer associação comercial com os publicanos herodianos.", c: false, r: "Jesus jantava com publicanos e chamou Mateus, que exercia esse ofício." },
+                    { t: "Vender o templo de Herodes para doar aos miseráveis da Galileia.", c: false, r: "Ele purificou o templo das vendas, mas não sugeriu vendê-lo fisicamente." },
+                    { t: "Obrigatoriamente viver sem roupas e calçados no deserto.", c: false, r: "Jesus nos adverte apenas sobre a ansiedade com vestes, não nos proíbe de usá-las." }
+                ]
+            },
+            {
+                q: "Qual é a base da Parábola dos Dois Construtores em Mateus 7?",
+                options: [
+                    { t: "Quem constrói rápido versus quem constrói devagar.", c: false, r: "O critério definitivo do desfecho foca unicamente na solidez da fundação oculta." },
+                    { t: "Ouvir e praticar as palavras de Jesus versus apenas ouvir sem agir.", c: true, r: "A rocha inabalável simboliza a obediência real ativa aos mandamentos divinos proferidos." },
+                    { t: "Utilizar pedreiros pagãos contra obreiros consagrados de Israel.", c: false, r: "Jesus aborda unicamente a postura individual de quem escuta Suas pregações." },
+                    { t: "A escolha das ferramentas metálicas corretas para escavações geológicas.", c: false, r: "A parábola foca em ética teológica prática espiritual e obediência, não em engenharia secular." }
+                ]
+            },
+            {
+                q: "Quem reconhece a soberana autoridade ('exousia') de Jesus à distância em Mateus 8?",
+                options: [
+                    { t: "O rei Herodes Antipas.", c: false, r: "Herodes zombou e desprezou Jesus futuramente no julgamento." },
+                    { t: "Um centurião romano gentio.", c: true, r: "O militar compreendia o conceito de autoridade delegada e declarou que bastava uma palavra de Jesus." },
+                    { t: "O sumo sacerdote Caifás.", c: false, r: "Caifás rejeitou ativamente a divindade de Jesus até o fim." },
+                    { t: "Os escribas vindos de Jerusalém.", c: false, r: "Os escribas acusavam Jesus de blasfemar quando curava e perdoava pecadores." }
+                ]
+            },
+            {
+                q: "Qual é a declaração de Jesus aos fariseus quando criticado por comer com publicanos em Mateus 9?",
+                options: [
+                    { t: "'Os sãos não necessitam de médico, mas sim os doentes. Misericórdia quero, e não sacrifício.'", c: true, r: "Jesus revela o Seu propósito redentor de curar espiritualmente os marginalizados e impuros." },
+                    { t: "'Os publicanos são infinitamente mais santos do que os rabinos do Templo.'", c: false, r: "Jesus não defende a santidade moral dos publicanos, mas sim o direito de resgatá-los." },
+                    { t: "'A lei ritual mosaica foi completamente abolida na refeição de hoje.'", c: false, r: "Ele defende o amor real que cumpre a lei moral e não a quebra pura e simples da ética." },
+                    { t: "'O dinheiro dos impostos deve permanecer retido na coletoria da Galileia.'", c: false, r: "Esse assunto fiscal polêmico será abordado no episódio de César em Mateus 22." }
+                ]
+            },
+            {
+                q: "Em Mateus 10, de que forma os apóstolos são enviados por Cristo ao campo de trabalho?",
+                options: [
+                    { t: "Equipados com espadas de ferro para autodefesa física contra bandidos.", c: false, r: "Eles deveriam ir desarmados e dependentes da hospitalidade local." },
+                    { t: "Como ovelhas no meio de lobos, devendo ser prudentes como as serpentes e símplices como as pombas.", c: true, r: "Jesus os prepara para a oposição violenta exigindo sabedoria pacífica indomável." },
+                    { t: "Montados em carruagens imperiais de luxo fornecidas secretamente.", c: false, r: "O desprendimento de bens materiais e status era a regra absoluta do envio." },
+                    { t: "Disguisados de sacerdotes gregos para infiltrar a Ásia Menor.", c: false, r: "Eles foram direcionados exclusivamente para as ovelhas perdidas da nação de Israel." }
+                ]
+            },
+            {
+                q: "Como Jesus se descreve pessoalmente ao convidar os cansados ao Seu jugo em Mateus 11?",
+                options: [
+                    { t: "Soberbo de espírito e implacável para com as falhas.", c: false, r: "Ele se declara inteiramente acessível e mansa fonte de cura espiritual." },
+                    { t: "Manso e humilde de coração.", c: true, r: "A mansidão ('praus') de Jesus é o refrigério perfeito contra o peso das regras legalistas." },
+                    { t: "Um juiz impiedoso que veio apenas assolar as cidades rebeldes.", c: false, r: "Embora lamente o julgamento das cidades impenitentes, Seu coração oferece refúgio aos que sofrem." },
+                    { t: "Um mestre acadêmico focado apenas em debates intelectuais abstratos.", c: false, r: "Jesus prega uma vida simples prática e com jugo espiritual acessível e restaurador." }
+                ]
+            },
+            {
+                q: "O que constitui a blasfêmia contra o Espírito Santo em Mateus 12?",
+                options: [
+                    { t: "Esquecer de jejuar nos feriados sagrados de Israel.", c: false, r: "Isso é quebra de ritualismo moral tradicional, não pecado terminal de blasfêmia." },
+                    { t: "Atribuir deliberadamente e de coração endurecido a obra óbvia do Espírito ao poder de Satanás.", c: true, r: "Os fariseus declararam que a libertação operada por Jesus procedia de Belzebu, fechando os olhos à luz divina." },
+                    { t: "Negar verbalmente a genealogia régia do rei Davi.", c: false, r: "Trata-se de uma falha de compreensão histórica, não o pecado contra o Espírito." },
+                    { t: "Fazer transações bancárias com moedas romanas no Sábado.", c: false, r: "Isso era considerado quebra de sábado rabínica comum, combatida por Jesus." }
+                ]
+            },
+            {
+                q: "Qual parábola de Mateus 13 ilustra a coexistência de convertidos e falsos crentes na terra até o julgamento final?",
+                options: [
+                    { t: "A Parábola da Pérola de Grande Valor.", c: false, r: "Esta parábola exibe o valor incomparável de se adquirir o Reino." },
+                    { t: "A Parábola do Joio e do Trigo.", c: true, r: "O joio e o trigo crescem juntos no campo até a ceifa, quando os anjos efetuarão a separação eterna definitiva." },
+                    { t: "A Parábola da Semente de Mostarda.", c: false, r: "Esta foca no crescimento orgânico fenomenal a partir de origens minúsculas." },
+                    { t: "A Parábola do Tesouro Oculto.", c: false, r: "Esta ilustra o desprendimento alegre de quem descobre a salvação do Reino." }
+                ]
+            },
+            {
+                q: "Qual é o nome da revelada e definitiva 'assembleia' que Jesus promete edificar em Mateus 16?",
+                options: [
+                    { t: "Sanhedrin (Sinédrio)", c: false, r: "O Sinédrio era a corte oficial suprema dos líderes judeus que o condenaram." },
+                    { t: "Ekklesia (Igreja)", c: true, r: "Jesus afirma: 'Edificarei a minha Ekklesia', a congregação daqueles chamados para fora do mundo." },
+                    { t: "Synagoge (Sinagoga)", c: false, r: "Sinagogas eram locais de cultos e estudos locais de Israel herdados do exílio." },
+                    { t: "Amphitheatron", c: false, r: "Amortização grega mundana para espetáculos de atores e jogos teatrais." }
+                ]
+            },
+            {
+                q: "Qual é o limite prático do perdão estipulado por Jesus a Pedro em Mateus 18?",
+                options: [
+                    { t: "Apenas sete vezes por dia.", c: false, r: "Sete vezes era o limite proposto por Pedro que parecia generoso no pensamento rabínico." },
+                    { t: "Até setenta vezes sete (sem limites práticos).", c: true, r: "Jesus amplia a resposta multiplicando o perdão para indicar uma atitude ilimitada e permanente do coração." },
+                    { t: "Apenas para membros batizados da mesma família de sangue.", c: false, r: "O perdão deve alcançar o irmão de fé e todo ser que nos ofende." },
+                    { t: "Nenhum perdão é possível após o segundo erro reincidente.", c: false, r: "Isto contradiz diretamente a doutrina de misericórdia revelada pelo Salvador na cruz." }
+                ]
+            },
+            {
+                q: "Qual é o principal mandamento ético deixado por Jesus na Grande Comissão em Mateus 28?",
+                options: [
+                    { t: "Permanecer trancados no templo de Jerusalém até o fim.", c: false, r: "Eles deveriam sair e expandir as fronteiras da verdade geográfica." },
+                    { t: "Fazer discípulos de todas as nações, batizando-os e ensinando-os a guardar tudo o que Ele ordenou.", c: true, r: "A ordem ('matheteuo') foca na formação de verdadeiros imitadores e seguidores em amor." },
+                    { t: "Erguer grandes palácios de ouro para honrar a memória dos apóstolos.", c: false, r: "A comissão espiritual exige focar em vidas humanas redimidas e não em edifícios materiais." },
+                    { t: "Combater militarmente o Império Romano com exércitos terrestres.", c: false, r: "O Reino de Jesus não é deste mundo físico, e avança através da mensagem da cruz." }
+                ]
+            }
+        ];
+
+        let selectedQuestions = [];
+        let currentQ = 0; let score = 0; let answered = false;
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        // EMBALHAR E SELECIONAR APENAS 10 QUESTÕES DAS 15 DISPONÍVEIS
+        function initQuiz() {
+            const shuffled = [...quizData].sort(() => 0.5 - Math.random());
+            selectedQuestions = shuffled.slice(0, 10);
+            currentQ = 0;
+            score = 0;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false; 
+            feedbackContainer.classList.add('hidden'); 
+            nextBtn.classList.add('hidden');
+            
+            const qData = selectedQuestions[currentQ];
+            document.getElementById('questionCounter').innerText = `${currentQ + 1} / 10`;
+            questionText.innerText = qData.q;
+            optionsContainer.innerHTML = '';
+            
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-lg bg-slate-800/80 border border-slate-600 text-slate-300 text-sm md:text-base';
+                btn.innerText = opt.t;
+                btn.onclick = () => selectOption(btn, opt);
+                optionsContainer.appendChild(btn);
+            });
+            progressBar.style.width = `${(currentQ / 10) * 100}%`;
+        }
+
+        function selectOption(btn, opt) {
+            if (answered) return; 
+            answered = true;
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedbackContainer.classList.remove('hidden', 'bg-red-900/30', 'border-red-500/50', 'bg-green-900/30', 'border-green-500/50');
+            if (opt.c) {
+                score += 10; 
+                btn.classList.add('option-correct');
+                feedbackContainer.classList.add('bg-green-900/30', 'border-green-500/50', 'text-green-200');
+                feedbackContainer.innerHTML = `<strong>Correto!</strong> ${opt.r}`;
+            } else {
+                btn.classList.add('option-wrong');
+                feedbackContainer.classList.add('bg-red-900/30', 'border-red-500/50', 'text-red-200');
+                feedbackContainer.innerHTML = `<strong>Incorreto.</strong> ${opt.r}`;
+                buttons.forEach((b, i) => { 
+                    if(selectedQuestions[currentQ].options[i].c) b.classList.add('option-correct'); 
+                });
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.onclick = () => {
+            currentQ++;
+            if (currentQ < 10) loadQuestion();
+            else showResults();
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            document.getElementById('quizContainer').classList.add('hidden');
+            const res = document.getElementById('resultContainer');
+            res.classList.remove('hidden'); 
+            res.classList.add('flex');
+            
+            document.getElementById('finalScore').innerText = score/10;
+            document.getElementById('inputPontos').value = score;
+            document.getElementById('inputAcertos').value = score/10;
+        }
+
+        document.getElementById('rankingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button'); 
+            btn.disabled = true; 
+            btn.innerText = "Salvando...";
+            fetch('api.php', { method: 'POST', body: new FormData(this) })
+            .then(() => window.location.href = 'index.html')
+            .catch(() => {
+                alert("Erro ao salvar no banco. Retornando ao início.");
+                window.location.href = 'index.html';
+            });
+        };
+
+        // Particles
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, sx: Math.random()*0.5-0.25, sy: Math.random()*0.5-0.25 });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); 
+            ctx.fillStyle = "rgba(251, 191, 36, 0.2)"; /* Amber particles matching book theme */
+            particles.forEach(p => { p.x+=p.sx; p.y+=p.sy; if(p.x<0||p.x>canvas.width)p.sx*=-1; if(p.y<0||p.y>canvas.height)p.sy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        initQuiz();
+    </script>
+</body>
+</html>
