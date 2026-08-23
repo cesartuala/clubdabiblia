@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcos | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] },
+                    colors: { 
+                        divine: { 400: '#f59e0b' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        
+        .glass-panel { background: rgba(10, 5, 25, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(245, 158, 11, 0.2); }
+        .amber-glow { text-shadow: 0 0 15px rgba(245, 158, 11, 0.5); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .rich-text strong { color: #fde047; font-weight: 700; }
+        .rich-text .ref { color: #f59e0b; font-size: 0.9em; font-family: monospace; background: rgba(245, 158, 11, 0.15); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .rich-text h3 { color: #d97706; font-weight: bold; margin-top: 2rem; margin-bottom: 0.75rem; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.15em; border-bottom: 1px solid rgba(245, 158, 11, 0.3); padding-bottom: 6px; }
+        .rich-text ul { list-style-type: none; padding-left: 0; margin-top: 15px; margin-bottom: 20px; }
+        .rich-text li { margin-bottom: 15px; line-height: 1.8; text-align: justify; border-left: 3px solid #f59e0b; padding-left: 20px; background: linear-gradient(to right, rgba(245,158,11,0.05), transparent); padding-top: 5px; padding-bottom: 5px; }
+        .rich-text p { margin-bottom: 20px; line-height: 2; text-align: justify; font-size: 1.05rem; color: #cbd5e1; }
+        .rich-text blockquote { border-left: 4px solid #f59e0b; padding-left: 20px; margin: 20px 0; font-style: italic; color: #fde047; background: rgba(245, 158, 11, 0.05); padding: 15px; border-radius: 0 8px 8px 0; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050510; }
+        ::-webkit-scrollbar-thumb { background: #2d1a04; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
+
+        .recording-pulse { animation: recPulse 1.5s infinite; background-color: #ef4444; border-color: #ef4444; color: white; }
+        @keyframes recPulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @keyframes pop { 50% { transform: scale(1.4); } }
+        .reacted-anim { animation: pop 0.3s ease-out; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="fixed top-0 w-full z-50 p-4 md:p-6 flex flex-col md:flex-row justify-between items-center bg-gradient-to-b from-[#050510]/95 to-[#050510]/80 backdrop-blur-md border-b border-amber-950/40 transition-all">
+        <div class="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto justify-between md:justify-start">
+            <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0f0a02] border border-amber-500/50 text-amber-400 hover:bg-amber-500 hover:text-black transition-all shadow-[0_0_15px_rgba(245,158,11,0.1)]">
+                <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+                <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-bolt-lightning text-amber-500 text-xl md:text-2xl"></i>
+                <span class="font-serif text-white text-lg md:text-xl tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto justify-end">
+            <span class="hidden md:inline text-xs text-slate-400 uppercase tracking-widest">Navegar:</span>
+            <select id="chapterSelect" onchange="loadChapter(this.value)" class="w-full md:w-auto bg-[#0f0a02] text-amber-400 border border-amber-500/40 rounded px-4 py-2 text-sm uppercase tracking-widest focus:outline-none focus:border-amber-500 cursor-pointer">
+                <option value="intro_book">★ Sobre o Livro</option>
+                <option value="intro_author">✎ Sobre o Autor</option>
+                <option disabled>──────────</option>
+                <option value="marcos_1">Capítulo 01</option>
+                <option value="marcos_2">Capítulo 02</option>
+                <option value="marcos_3">Capítulo 03</option>
+                <option value="marcos_4">Capítulo 04</option>
+                <option value="marcos_5">Capítulo 05</option>
+                <option value="marcos_6">Capítulo 06</option>
+                <option value="marcos_7">Capítulo 07</option>
+                <option value="marcos_8">Capítulo 08</option>
+                <option value="marcos_9">Capítulo 09</option>
+                <option value="marcos_10">Capítulo 10</option>
+                <option value="marcos_11">Capítulo 11</option>
+                <option value="marcos_12">Capítulo 12</option>
+                <option value="marcos_13">Capítulo 13</option>
+                <option value="marcos_14">Capítulo 14</option>
+                <option value="marcos_15">Capítulo 15</option>
+                <option value="marcos_16">Capítulo 16</option>
+            </select>
+        </div>
+    </nav>
+
+    <header class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-32 md:pt-20">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#050510] via-[#050510]/80 to-transparent"></div>
+        
+        <div class="z-10 reveal active space-y-4 max-w-5xl w-full">
+            <h2 class="text-amber-500 tracking-[0.5em] text-[10px] md:text-sm uppercase animate-pulse mb-4 font-bold">Clube da Bíblia Apresenta</h2>
+            
+            <div id="dateBadge" class="hidden inline-flex items-center gap-2 border border-amber-500/50 rounded-full px-4 py-1 mb-4 bg-amber-500/10 backdrop-blur-sm transition-all duration-700 opacity-0">
+                <i class="fa-regular fa-calendar text-amber-400 text-xs"></i>
+                <span class="text-amber-300 text-xs tracking-widest uppercase font-bold">Leitura: <span id="dateValue" class="text-white"></span></span>
+            </div>
+
+            <h1 id="heroTitle" class="font-serif text-4xl md:text-7xl text-white mb-2 amber-glow transition-all duration-700 uppercase leading-tight px-2"></h1>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 text-slate-400 mt-8 pt-8 border-t border-amber-900/40 w-full max-w-3xl mx-auto">
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Idealizado por</p>
+                    <strong class="text-amber-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-amber-300 transition">Fellipe Gomes Andrade</strong>
+                </div>
+                <span class="hidden md:block h-8 w-[1px] bg-gradient-to-b from-transparent via-amber-900 to-transparent"></span>
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Desenvolvido por</p>
+                    <strong class="text-amber-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-amber-300 transition">Cesar Tuala</strong>
+                </div>
+            </div>
+
+            <p id="heroDesc" class="text-sm md:text-xl text-slate-300 max-w-2xl mx-auto pt-8 font-light italic transition-all duration-700 px-4"></p>
+            
+            <div class="pt-10">
+                <button onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" class="animate-bounce text-amber-500 text-2xl">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="content" class="max-w-4xl mx-auto px-4 py-10 md:py-20 space-y-20 md:space-y-32 min-h-screen"></main>
+
+    <section id="community-section" class="w-full bg-[#070302] border-t-4 border-amber-600 py-16 mb-0 relative shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <h3 class="font-serif text-3xl md:text-4xl text-amber-500 mb-2 uppercase tracking-widest amber-glow">
+                    <i class="fa-solid fa-users-line mr-3"></i>Comunidade
+                </h3>
+                <p class="text-slate-400 text-sm italic">"Compartilhe o que Deus falou ao seu coração"</p>
+                <div class="h-1 w-24 bg-gradient-to-r from-transparent via-amber-600 to-transparent mx-auto mt-4"></div>
+            </div>
+
+            <div class="glass-panel p-6 md:p-8 rounded-xl mb-12 border border-slate-800 shadow-2xl bg-[#0a0502]/80">
+                <form id="commentForm" class="space-y-5">
+                    <input type="hidden" id="formChapterKey" name="capitulo">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="col-span-1">
+                            <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Nome</label>
+                            <input type="text" name="nome" required class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-amber-500 focus:outline-none transition">
+                        </div>
+                        <div class="flex gap-3 col-span-1 md:col-span-2 items-end">
+                            <label class="flex-1 cursor-pointer bg-black/50 border border-slate-700 hover:border-amber-500 hover:bg-[#140b02] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-camera group-hover:text-amber-400"></i> Foto
+                                <input type="file" name="foto" accept="image/*" class="hidden" onchange="previewFile(this)">
+                            </label>
+                            <button type="button" id="recordBtn" class="flex-1 bg-black/50 border border-slate-700 hover:border-red-500 hover:bg-[#140b02] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-microphone group-hover:text-red-400"></i> <span id="recordText">Gravar Áudio</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="filePreview" class="text-xs text-amber-400 hidden bg-black p-2 rounded border border-amber-500/30"></div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Comentário</label>
+                        <textarea name="mensagem" class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-amber-500 focus:outline-none h-28 resize-none transition"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-amber-800 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white font-bold py-4 rounded-lg transition uppercase tracking-[0.2em] text-sm shadow-lg shadow-black/50 transform hover:-translate-y-1">
+                        Publicar Comentário
+                    </button>
+                </form>
+            </div>
+            <div id="commentsList" class="space-y-6"></div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-800 bg-black py-12 text-center relative z-10">
+        <div class="flex flex-col items-center justify-center space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="fa-solid fa-bolt-lightning text-amber-600 text-xl"></i>
+                <span class="font-serif text-slate-300 text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+            <p class="text-slate-700 text-[10px] tracking-widest uppercase mt-4">&copy; 2026 Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="imageModal" class="fixed inset-0 z-[100] bg-black/95 hidden flex justify-center items-center p-4 backdrop-blur-sm transition-opacity duration-300" onclick="closeImage()">
+        <div class="relative max-w-4xl w-full flex justify-center">
+            <button onclick="closeImage()" class="absolute -top-12 right-0 text-white text-3xl hover:text-amber-500 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modalImg" src="" class="max-h-[85vh] max-w-full rounded-lg shadow-[0_0_50px_rgba(245,158,11,0.3)] border-2 border-amber-500/20 object-contain">
+        </div>
+    </div>
+
+    <script>
+        const bibleData = {
+            "intro_book": {
+                title: "O EVANGELHO DE MARCOS",
+                date: null,
+                desc: "<span class='text-xs uppercase tracking-[0.3em] text-amber-400 not-italic block mb-4'>Introdução: Sobre o Livro</span>\"Eis o Servo de Deus em ação imediata e incansável.\"",
+                blocks: [
+                    {
+                        title: "O Evangelho do Servo Sofredor",
+                        verse: "Pois o próprio Filho do Homem não veio para ser servido, mas para servir e dar a sua vida em resgate por muitos. (Mc 10:45)",
+                        exegesis: "<h3>1. O Evangelho da Ação Dinâmica</h3><p>O Evangelho segundo Marcos é o mais curto, o mais rápido e o mais focado na ação de toda a narrativa bíblica. Escrito com foco principal nos cristãos gentios em Roma, o livro de Marcos retrata Jesus como o Servo Sofredor de Deus. Não há genealogias complexas aqui, pois para um servo não se exige genealogia; o que importa é a sua atividade e eficácia. Marcos nos apresenta um Salvador ativo, compassivo, que se move incansavelmente para restaurar a criação decaída.</p><h3>2. O Uso de 'Euthys' (Imediatamente)</h3><ul><li>Marcos usa a palavra grega <em>εὐθύς</em> (euthys - imediatamente) mais de 40 vezes no livro.</li><li>Tudo acontece com urgência divina. Jesus corre para curar, pregar, libertar e cumprir o plano de redenção estabelecido antes dos tempos eternos.</li><li>O livro se move com a velocidade de um guerreiro em combate, demonstrando a urgência do Evangelho cósmico.</li></ul><h3>3. O Segredo Messiânico</h3><p>Ao longo da obra, Jesus frequentemente ordena àqueles que são curados e aos demônios que não publiquem a Sua verdadeira identidade. Na exegese teológica, isso é conhecido como o 'Segredo Messiânico'. Jesus queria evitar que as multidões interpretassem mal o Seu messianado como um movimento puramente político ou militar. A verdadeira realeza de Cristo só seria revelada em toda a sua glória na Cruz, onde o Servo derramou o Seu sangue em resgate de muitos.</p>"
+                    }
+                ]
+            },
+            "intro_author": {
+                title: "SOBRE O AUTOR",
+                date: null,
+                desc: "\"João Marcos, filho espiritual de Pedro e cooperador de Paulo.\"",
+                blocks: [
+                    {
+                        title: "De Desertor a Instrumento Útil",
+                        verse: "Toma contigo a Marcos e traze-o, pois me é útil para o ministério. (2Tm 4:11)",
+                        exegesis: "<h3>1. O Jovem de Jerusalém</h3><p>O autor deste evangelho é João Marcos, filho de uma mulher influente na igreja primitiva de Jerusalém em cuja casa os discípulos se reuniam (Atos 12:12). Ele era também primo de Barnabé. Marcos conheceu de perto os primeiros passos do cristianismo apostólico, respirando a atmosfera de oração e poder que cercava os apóstolos originais.</p><h3>2. O Desentendimento e a Restauração</h3><ul><li>Marcos acompanhou Paulo e Barnabé em sua primeira viagem missionária, mas acabou desertando em Panfília, retornando a Jerusalém.</li><li>Isso gerou uma severa divisão entre Paulo e Barnabé. No entanto, Barnabé não desistiu do jovem Marcos e continuou a discipulá-lo.</li><li>Anos mais tarde, vemos a restauração completa de Marcos. O próprio apóstolo Paulo, no fim de sua vida em Roma, reconhece o valor dele, ordenando que Timóteo o traga por sua grande utilidade no ministério prático.</li></ul><h3>3. O Intérprete de Pedro</h3><p>A tradição cristã primitiva (comprovada por Papias de Hierápolis no século II) relata de forma unânime que Marcos escreveu o seu evangelho com base nas memórias e sermões diretos do apóstolo Pedro. O Evangelho de Marcos é, essencialmente, a pregação de Pedro registrada por escrito. A linguagem viva, cheia de detalhes oculares e descrições realistas reflete o testemunho apaixonado e vigoroso do apóstolo pescador sob a inspiração do Espírito Santo.</p>"
+                    }
+                ]
+            },
+            "marcos_1": {
+                title: "O PREPARO DO CAMINHO",
+                date: "24/08 (Segunda)",
+                desc: "\"Princípio do evangelho de Jesus Cristo, Filho de Deus.\"",
+                blocks: [
+                    {
+                        title: "A Voz no Deserto e o Início da Batalha",
+                        verse: "E, saindo logo da água, viu os céus abertos e o Espírito, que, como pomba, descia sobre ele. (Mc 1:10)",
+                        exegesis: "<h3>1. A Voz Profética de Clamor</h3><p>Marcos inicia o seu evangelho sem rodeios, aplicando diretamente as profecias de Isaías e Malaquias sobre o mensageiro que prepararia o caminho do Senhor. O termo <em>Εὐαγγέλιον</em> (*Euangelion* - Boas Novas) serve como título programático. A mensagem de João Batista no deserto exige arrependimento radical como condição para receber o Messias.</p><h3>2. O Batismo e a Unção Régia</h3><ul><li>O batismo de Jesus não foi para remissão de pecados dEle, mas para se identificar com a humanidade pecadora e inaugurar publicamente o Seu ministério oficial.</li><li>A descida do Espírito e a voz do Pai confirmam Jesus como o Filho amado, o Rei-Sacerdote ungido para a grande obra.</li><li>O termo grego <em>σχίζω</em> (*Schizo* - rasgar) descreve o céu se abrindo, o mesmo verbo usado para o véu do templo rasgando na Sua morte.</li></ul><h3>3. A Urgência do Reino</h3><p>Imediatamente (usando *euthys*), Jesus é empurrado pelo Espírito ao deserto para enfrentar as tentações de Satanás. Ao voltar, Ele proclama que o tempo está cumprido e o Reino de Deus está próximo. Jesus chama Seus primeiros discípulos à beira do mar, demonstrando que o convite para ser pescador de homens exige resposta imediata.</p>"
+                    }
+                ]
+            },
+            "marcos_2": {
+                title: "O PODER DE PERDOAR",
+                date: "25/08 (Terça)",
+                desc: "\"Para que saibais que o Filho do Homem tem na terra poder para perdoar pecados.\"",
+                blocks: [
+                    {
+                        title: "A Cura do Paralítico e o Conflito Religioso",
+                        verse: "Ora, para que saibais que o Filho do Homem tem na terra poder para perdoar pecados (disse ao paralítico): A ti te digo: Levanta-te, toma o teu leito e vai para tua casa. (Mc 2:10-11)",
+                        exegesis: "<h3>1. A Autoridade sobre o Invisível</h3><p>Em Cafarnaum, quatro homens abrem o teto para descer um *Παράλυτος* (*Paralytos* - paralisado) diante de Jesus. Ao ver a fé deles, Jesus profere: 'Filho, perdoados estão os teus pecados'. Os escribas acusam-no de blasfêmia, sabendo que apenas Deus perdoa pecados. Jesus cura o corpo físico para provar de forma visível que possui a autoridade invisible (*exousia*) para perdoar a alma rebelde.</p><h3>2. O Médico de Almas e o Jejum</h3><ul><li>O chamado de Levi (Mateus), um cobrador de impostos marginalizado, e a ceia com pecadores chocam as autoridades legalistas da época.</li><li>Jesus responde com uma analogia cirúrgica: os sãos não precisam de médico, mas sim os doentes. Ele veio para chamar pecadores ao arrependimento, não justos auto-suficientes.</li><li>Jesus Se autodenomina o Noivo, justificando que a presença física dEle anula temporariamente a necessidade do jejum de luto para Seus discípulos.</li></ul><h3>3. O Senhor do Sábado</h3><p>Ao ser questionado sobre os discípulos colherem espigas no sábado, Jesus redefine o entendimento da lei mosaica. Ele declara que o sábado foi feito por causa do homem, e não o homem por causa do sábado. Como Filho do Homem, Ele possui *ἐξουσία* (*Exousia* - autoridade soberana) sobre o próprio Sábado criado por Deus.</p>"
+                    }
+                ]
+            },
+            "marcos_3": {
+                title: "A CONSTITUIÇÃO DO GRUPO",
+                date: "26/08 (Quarta)",
+                desc: "\"E nomeou doze para que estivessem com ele e os enviasse a pregar.\"",
+                blocks: [
+                    {
+                        title: "A Escolha dos Doze e a Acusação de Belzebu",
+                        verse: "E estabeleceu doze para que estivessem com ele e os enviasse a pregar, e para que tivessem o poder de curar as enfermidades e expulsar os demônios. (Mc 3:14-15)",
+                        exegesis: "<h3>1. O Novo Israel de Deus</h3><p>Jesus sobe ao monte e chama para si aqueles que Ele mesmo quis. Ele estabelece os doze discípulos, mimetizando a estrutura das doze tribos de Israel. O termo grego *Ἀπόστολος* (*Apostolos* - enviado com autoridade delegada) define a missão deles: estar com Jesus (discipulado íntimo) para depois serem enviados para pregar e exercer autoridade sobre demônios.</p><h3>2. O Conflito com os Escribas</h3><ul><li>Os escribas de Jerusalém, temendo o crescimento espiritual de Jesus, tentam minar a Sua influência acusando-O de expulsar demônios pelo poder de Belzebu.</li><li>Jesus destrói a lógica deles com uma parábola sobre o reino dividido: se Satanás expulsa a Satanás, seu reino ruiu.</li><li>Ele introduz a verdade sobre 'amarrar o valente': para saquear a casa do diabo (libertar as almas escravizadas), Jesus primeiro precisa amarrá-lo através do poder divino.</li></ul><h3>3. A Verdadeira Família de Cristo</h3><p>Quando a mãe e os irmãos de Jesus chegam para falar com Ele, a multidão o avisa. Jesus aproveita a oportunidade para redefinir as relações de parentesco sob a ótica da eternidade. Aquele que faz a vontade de Deus, este é o Seu verdadeiro irmão, irmã e mãe, consolidando a união do Reino.</p>"
+                    }
+                ]
+            },
+            "marcos_4": {
+                title: "OS MISTÉRIOS DO REINO",
+                date: "27/08 (Quinta)",
+                desc: "\"A vós vos é dado saber o mistério do reino de Deus.\"",
+                blocks: [
+                    {
+                        title: "As Parábolas da Semeadura e a Tempestade Acalmada",
+                        verse: "E disse-lhes: Por que sois tão tímidos? Ainda não tendes fé? E sentiram um grande temor, e diziam uns aos aos: Mas quem é este, que até o vento e o mar lhe obedecem? (Mc 4:40-41)",
+                        exegesis: "<h3>1. A Pedagogia das Parábolas</h3><p>Jesus ensina à beira-mar usando *Παραβολή* (*Parabole* - colocação ao lado, comparação). A parábola do semeador revela que a eficácia da Palavra de Deus depende do solo do coração que a recebe. O mistério (*mysterion*) do Reino é que ele começa pequeno, quase invisível como a semente de mostarda, mas crescerá até se tornar a maior de todas as hortaliças cósmicas.</p><h3>2. O Crescimento Soberano</h3><ul><li>A parábola da semente que cresce secretamente mostra que o crescimento do Reino é obra divina e misteriosa, independente do controle humano.</li><li>A terra produz por si mesma (*automate*), revelando que o poder está na própria semente da Palavra de Deus implantada no coração.</li><li>A fé genuína acolhe a palavra e produz frutos de forma abundante e duradoura.</li></ul><h3>3. O Senhor da Criação</h3><p>À noite, uma violenta tempestade atinge o barco. Enquanto os discípulos entram em pânico, Jesus dorme em paz. Ao ser acordado, Ele repreende o vento e ordena ao mar: *Σιωπάω* (*Siopao* - cala-te, emudece). A calmaria instantânea revela que Aquele que está no barco é o próprio Criador que governa as forças da natureza.</p>"
+                    }
+                ]
+            },
+            "marcos_5": {
+                title: "PODER SOBRE A MORTE E O MAL",
+                date: "28/08 (Sexta)",
+                desc: "\"E disse-lhe: Talita cumi; que, traduzido, é: Menina, a ti te digo, levanta-te.\"",
+                blocks: [
+                    {
+                        title: "O Gadareno, a Mulher Doente e a Filha de Jairo",
+                        verse: "E, tomando a mão da menina, disse-lhe: Talitha koum; que, traduzido, é: Menina, a ti te digo, levanta-te. (Mc 5:41)",
+                        exegesis: "<h3>1. A Libertação Cósmica</h3><p>Jesus cruza o mar e entra em território gentio para libertar um homem possuído por uma *Λεγεών* (*Legeon* - legião de demônios, divisão militar romana de 6.000 soldados). Nenhuma força humana conseguia segurar o homem atormentado, mas a presença e a palavra de Jesus anulam completamente o poder das trevas, enviando os demônios para os porcos e restaurando a mente daquele homem.</p><h3>2. O Toque de Fé Curador</h3><ul><li>No caminho para a casa do líder da sinagoga Jairo, uma mulher que sofria de fluxo de sangue há doze anos toca na orla do manto de Jesus.</li><li>Ela havia gasto tudo o que tinha com médicos e só piorara. Ao tocar nEle com fé, a virtude curadora sai de Jesus.</li><li>Jesus a chama de 'Filha' e afirma que a fé dela a salvou, restaurando sua dignidade civil e religiosa.</li></ul><h3>3. A Vitória Total sobre a Morte</h3><p>A notícia de que a filha de Jairo morreu chega aos ouvidos deles. Jesus diz a Jairo: 'Não temas, crê somente'. Ao entrar no quarto, Ele pega a mão da menina e profere em aramaico: *Ταλιθὰ κοῦμι* (*Talitha koum* - menina, levanta-te). A ressurreição imediata da menina prova que a morte física não passa de um sono diante do Senhor da Vida.</p>"
+                    }
+                ]
+            },
+            "marcos_6": {
+                title: "A REJEIÇÃO E A MULTIPLICAÇÃO",
+                date: "29/08 (Sábado)",
+                desc: "\"Não há profeta sem honra, senão na sua pátria, entre os seus parentes e na sua casa.\"",
+                blocks: [
+                    {
+                        title: "A Rejeição em Nazaré e o Alimento no Deserto",
+                        verse: "E, tomando os cinco pães e os dois peixes, levantou os olhos ao céu, abençoou e partiu os pães, e deu-os aos seus discípulos para que os pusessem diante deles. (Mc 6:41)",
+                        exegesis: "<h3>1. A Incredulidade que Limita</h3><p>Jesus retorna à Sua terra natal, Nazaré, mas é rejeitado pelos Seus próprios conterrâneos que O viam apenas como o carpinteiro humano. Marcos observa que Jesus não pôde fazer ali nenhum milagre (*dynamis*) extraordinário por causa da incredulidade deliberada deles, mostrando que a fé é o canal necessário para a manifestação do poder divino.</p><h3>2. A Missão dos Doze e o Martírio</h3><ul><li>Jesus envia os doze de dois em dois, instruindo-os a depender totalmente da provisão de Deus em sua jornada.</li><li>Nesse contexto, Marcos insere a narrativa trágica da decapitação de João Batista por ordem de Herodes, prefigurando o destino sofrido que aguarda os fiéis servos da verdade.</li><li>O martírio de João mostra que pregar o Reino envolve oposição frontal dos poderes mundanos corruptos.</li></ul><h3>3. O Banquete Messiânico</h3><p>Jesus vê uma grande multidão faminta e move-se de íntima compaixão por vê-los como ovelhas sem pastor. No deserto, Ele multiplica cinco pães e dois peixes para alimentar cinco mil homens. O povo sente um profundo assombro espiritual, caracterizado pelo termo grego *ἔκστασις* (*ekstasis* - espanto, reverência), ao testemunhar a provisão divina.</p>"
+                    }
+                ]
+            },
+            "marcos_7": {
+                title: "A VERDADEIRA PUREZA",
+                date: "31/08 (Segunda)",
+                desc: "\"Porque do coração dos homens saem os maus pensamentos, os adultérios, as prostituições, os homicídios...\"",
+                blocks: [
+                    {
+                        title: "Tradições Humanas contra Mandamentos Divinos",
+                        verse: "E dizia-lhes: Bem invalidais o mandamento de Deus para guardardes a vossa tradição. (Mc 7:9)",
+                        exegesis: "<h3>1. O Combate ao Legalismo Externo</h3><p>Fariseus de Jerusalém questionam Jesus sobre Seus discípulos não lavarem as mãos de forma ritual antes de comer. Jesus os chama de hipócritas e expõe que eles usam o preceito do *Κορβᾶν* (*Korban* - oferta dada ao templo dedicada a Deus) para anular o mandamento básico de honrar e prover financeiramente para os pais necessitados.</p><h3>2. A Fonte do Pecado</h3><ul><li>Jesus explica à multidão que a contaminação espiritual não vem de fora para dentro, mas de dentro do próprio coração decaído do homem.</li><li>Do interior do coração humano procedem os maus pensamentos, a malícia, a inveja, a soberba e a loucura moral.</li><li>Sendo assim, rituais externos de lavagem de mãos são incapazes de purificar a alma manchada pela rebelião.</li></ul><h3>3. O Poder de Abrir os Ouvidos</h3><p>Em Decápolis, trazem a Jesus um homem surdo e gago. Jesus o afasta da multidão, toca nos seus ouvidos e língua, e suspirando para o céu profere: *Ἐφφαθά* (*Ephphatha* - abre-te). O milagre imediato demonstra que o Messias veio para desfazer a maldição do pecado e restaurar a comunicação de Sua criação.</p>"
+                    }
+                ]
+            },
+            "marcos_8": {
+                title: "A REVELAÇÃO DA CRUZ",
+                date: "01/09 (Terça)",
+                desc: "\"Se alguém quiser vir após mim, negue-se a si mesmo, tome a sua cruz e siga-me.\"",
+                blocks: [
+                    {
+                        title: "A Confissão de Pedro e o Primeiro Anúncio da Morte",
+                        verse: "E perguntou-lhes: Mas vós, quem dizeis que eu sou? E, respondendo Pedro, lhe disse: Tu és o Cristo. (Mc 8:29)",
+                        exegesis: "<h3>1. A Compaixão que Prova</h3><p>Jesus opera a segunda multiplicação de pães, alimentando quatro mil pessoas de origem gentia, demonstrando que a compaixão divina transcende as fronteiras de Israel. A expressão grega *Σπλαγχνίζομαι* (*Splanchnizomai* - compaixão visceral profunda) descreve a dor interna que Jesus sente pela dor e necessidade da humanidade desamparada.</p><h3>2. A Declaração Teológica</h3><ul><li>Em Cesareia de Filipe, Jesus questiona Seus discípulos sobre quem a opinião pública diz que Ele é.</li><li>Pedro responde com precisão teológica: 'Tu és o Cristo (o Messias)'. Jesus ordena silêncio temporário para redefinir o messianado na cruz.</li><li>Imediatamente, Jesus começa a ensinar que o Filho do Homem deve sofrer muito, ser rejeitado e ser morto para ressuscitar ao terceiro dia.</li></ul><h3>3. A Repreensão a Pedro</h3><p>Pedro tenta desviar Jesus desse destino de sofrimento. Jesus o repreende severamente com as palavras: 'Para trás (*opiso*) de mim, Satanás!', revelando que qualquer tentativa de evitar o sacrifício vicário da cruz procede diretamente do reino das trevas.</p>"
+                    }
+                ]
+            },
+            "marcos_9": {
+                title: "A VISÃO DA GLÓRIA",
+                date: "02/09 (Quarta)",
+                desc: "\"Este é o meu Filho amado; a ele ouvi.\"",
+                blocks: [
+                    {
+                        title: "A Transfiguração e a Cura do Jovem Possesso",
+                        verse: "E transfigurou-se diante deles; e as suas vestes tornaram-se resplandecentes, extremamente brancas como a neve. (Mc 9:2-3)",
+                        exegesis: "<h3>1. O Vlumbre da Divindade</h3><p>Jesus leva Pedro, Tiago e João a um alto monte particular e transfigura-se diante deles. O termo grego *Μεταμορφώομαι* (*Metamorphoomai* - mudar de forma, transfigurar-se) indica que a glória interna de Sua divindade rasgou o véu da carne humana. A presença de Moisés e Elias confirma que a Lei e os Profetas apontam para a Sua missão.</p><h3>2. A Insuficiência da Fé dos Discípulos</h3><ul><li>Ao descer do monte, Jesus depara-se com Seus discípulos fracassando em expulsar um demônio de um jovem mudo e epilético.</li><li>Jesus exclama sobre a geração incrédula e liberta o jovem, ensinando que certas castas de opressão maligna só saem por meio de oração constante.</li><li>Ele reitera o mistério de Sua morte iminente, mas os discípulos permanecem cegos, discutindo sobre quem seria o maior entre eles.</li></ul><h3>3. O Alerta Solene da Geena</h3><p>Jesus exorta os discípulos sobre a gravidade do pecado de tropeço para os pequeninos. Ele usa a terrível imagem da *Γέεννα* (*Geenna* - Geena, o lixão de Jerusalém onde o fogo nunca se apagava) para alertar que é melhor perder membros físicos do que entrar no inferno eterno.</p>"
+                    }
+                ]
+            },
+            "marcos_10": {
+                title: "O PADRÃO DO SERVO",
+                date: "03/09 (Quinta)",
+                desc: "\"Porque o Filho do Homem também não veio para ser servido, mas para servir.\"",
+                blocks: [
+                    {
+                        title: "O Casamento, o Jovem Rico e a Cura de Bartimeu",
+                        verse: "Pois o próprio Filho do Homem não veio para ser servido, mas para servir e dar a sua vida em resgate por muitos. (Mc 10:45)",
+                        exegesis: "<h3>1. A Aliança Matrimonial Inviolável</h3><p>Os fariseus tentam testar Jesus questionando sobre o divórcio. Jesus eleva o padrão civil à intenção original da criação, proibindo o divórcio leviano sob o conceito grego de *Μοίχεια* (*Moicheia* - adultério). O casamento é uma união sagrada selada pelo próprio Deus que o homem não tem autoridade para dissolver.</p><h3>2. O Perigo da Idolatria da Riqueza</h3><ul><li>O jovem rico corre até Jesus buscando saber como herdar a vida eterna, mas vai embora triste ao ser ordenado a vender seus bens.</li><li>Jesus ensina que é extremamente difícil para aqueles que confiam nas riquezas entrarem no Reino dos Céus.</li><li>Ele proclama a essência do Seu ministério na terra no versículo 45, mostrando que o *Λύτρον* (*Lytron* - preço pago para libertar um escravo, resgate) seria pago com a Sua própria vida na cruz.</li></ul><h3>3. O Grito do Cego de Jericó</h3><p>À saída de Jericó, o cego Bartimeu grita por misericórdia ao Filho de Davi. Apesar de repreendido pela multidão, ele clama ainda mais alto. Jesus para, chama-o e cura sua cegueira, elogiando sua fé persistente.</p>"
+                    }
+                ]
+            },
+            "marcos_11": {
+                title: "A ENTRADA EM JERUSALÉM",
+                date: "04/09 (Sexta)",
+                desc: "\"Hosana! Bendito o que vem em nome do Senhor!\"",
+                blocks: [
+                    {
+                        title: "A Entrada Triunfal e a Purificação do Templo",
+                        verse: "E os que iam adiante, e os que seguiam, clamavam, dizendo: Hosana! Bendito o que vem em nome do Senhor! (Mc 11:9)",
+                        exegesis: "<h3>1. A Realeza Humilde e Profética</h3><p>Jesus entra em Jerusalém montado em um jumentinho, cumprindo a profecia de Zacarias. A multidão estende seus mantos e ramos pelo caminho, clamando: *Ὡσαννά* (*Hosanna* - Salva-nos agora, oração de apelo à salvação). Essa aclamação messiânica acende o alerta máximo entre os líderes sacerdotais no templo.</p><h3>2. O Julgamento da Figueira Estéril</h3><ul><li>No dia seguinte, com fome, Jesus aproxima-se de uma figueira, mas encontra apenas folhas. Ele a amaldiçoa profeticamente.</li><li>Isso serve como uma parábola viva do julgamento divino sobre Israel, uma nação que possuía aparência externa de religiosidade (folhas), mas nenhum fruto espiritual de justiça.</li><li>O julgamento de Deus sobre a esterilidade é implacável e serve de alerta para todas as eras.</li></ul><h3>3. A Purificação da Casa de Oração</h3><p>Jesus entra no templo e expulsa os cambistas e mercadores, derrubando suas mesas. Ele cita a Escritura dizendo que Sua casa seria chamada de casa de *Προσευχή* (*Proseuches* - oração íntima e reverente) para todas as nações, mas os líderes a transformaram em um covil de salteadores.</p>"
+                    }
+                ]
+            },
+            "marcos_12": {
+                title: "O CONFLITO FINAL",
+                date: "05/09 (Sábado)",
+                desc: "\"Dai, pois, a César o que é de César, e a Deus o que é de Deus.\"",
+                blocks: [
+                    {
+                        title: "Os Lavradores Maus e as Perguntas Capciosas",
+                        verse: "Amarás, pois, ao Senhor teu Deus de todo o teu coração, e de toda a tua alma, e de todo o teu entendimento, e de todas as tuas forças; este é o primeiro mandamento. (Mc 12:30)",
+                        exegesis: "<h3>1. A Parábola da Vinha de Israel</h3><p>Jesus profere a parábola dos lavradores maus que espancam os servos do proprietário e matam o seu próprio filho amado. Os líderes religiosos percebem que a parábola é contra eles, sabendo que Jesus Se identifica como a Pedra Angular rejeitada pelos construtores humanos que viria a esmagar o orgulho rebelde.</p><h3>2. A Questão do Imposto Romano</h3><ul><li>Fariseus tentam apanhar Jesus em alguma contradição civil perguntando se é lícito pagar tributo ao imperador romano César.</li><li>Mostrando um *Δηνάριον* (*Denarion* - denário, moeda de prata com a efígie imperial), Jesus profere a resposta mestre: 'Dai a César o que é de César, e a Deus o que é de Deus'.</li><li>Com isso, Ele estabelece a distinção cósmica entre os reinos terrenos e a soberania eterna do Criador sobre a alma humana.</li></ul><h3>3. O Maior de Todos os Mandamentos</h3><p>Um escriba pergunta qual é o principal mandamento da lei divina. Jesus responde apontando para a necessidade de amar a Deus com todo o *Σύνεσις* (*Synesis* - entendimento, faculdade mental de compreender a verdade) e ao próximo como a si mesmo.</p>"
+                    }
+                ]
+            },
+            "marcos_13": {
+                title: "O SERMÃO PROFÉTICO",
+                date: "07/09 (Segunda)",
+                desc: "\"Olhai, vigiai e orai; porque não sabeis quando chegará o tempo.\"",
+                blocks: [
+                    {
+                        title: "A Destruição do Templo e os Sinais do Fim",
+                        verse: "O céu e a terra passarão, mas as minhas palavras não passarão. (Mc 13:31)",
+                        exegesis: "<h3>1. A Ruína da Glória Terrena</h3><p>Ao saírem do templo, os discípulos admiram a imponência das grandes pedras da estrutura. Jesus profetiza de forma chocante que não ficará ali pedra sobre pedra que não seja derrubada. Isso desencadeia o grande sermão escatológico de Jesus no Monte das Oliveiras sobre o destino de Jerusalém e o fim do mundo.</p><h3>2. A Grande Tribulação e a Perseverança</h3><ul><li>Jesus alerta sobre o surgimento de falsos cristos, guerras, terremotos e perseguições severas aos discípulos de todas as eras.</li><li>Ele descreve a vinda de uma terrível e dolorosa *Θλίψις* (*Thlipsis* - tribulação, pressão esmagadora) sobre a terra antes da manifestação gloriosa do Filho do Homem.</li><li>Os eleitos devem permanecer firmes até o fim, sabendo que as Suas promessas e palavras são eternamente invioláveis.</li></ul><h3>3. O Mandamento da Vigilância</h3><p>Ninguém sabe o dia nem a hora do fim da história humana, nem mesmo os anjos do céu, mas apenas o Pai. Jesus ordena de forma categórica: *Γρηγορέω* (*Gregoreo* - vigiar, estar em alerta máximo espiritual), comparando o discípulo a um servo fiel que aguarda o retorno surpresa do seu senhor.</p>"
+                    }
+                ]
+            },
+            "marcos_14": {
+                title: "A HORA DO SACRIFÍCIO",
+                date: "08/09 (Terça)",
+                desc: "\"E dizia: Aba, Pai, todas as coisas te são possíveis; afasta de mim este cálice.\"",
+                blocks: [
+                    {
+                        title: "A Última Páscoa e a Agonia no Getsêmani",
+                        verse: "E dizia: Abba, Pai, todas as coisas te são possíveis; afasta de mim este cálice; não seja, porém, o que eu quero, mas o que tu queres. (Mc 14:36)",
+                        exegesis: "<h3>1. A Ceia da Nova Aliança</h3><p>Jesus celebra a festa do *Πάσχα* (*Pascha* - Páscoa, libertação do Egito) com Seus discípulos no cenáculo. Ao partir o pão e oferecer o cálice, Ele institui a Nova Aliança definitiva em Seu sangue derramado. Ele profetiza a traição de Judas Iscariotes e a dispersão covarde de todos os discípulos diante das autoridades armadas.</p><h3>2. A Agonia de Alma no Jardim</h3><ul><li>No Getsêmani, Jesus afasta-Se para orar, sentindo profunda tristeza de morte ao assumir o peso do pecado humano sobre Si.</li><li>Ele clama usando o termo aramaico íntimo *Ἀββᾶ* (*Abba* - pai amado), pedindo que, se possível, passasse dEle o cálice da ira divina contra o pecado.</li><li>Contudo, Ele submete a Sua vontade humana à vontade soberana do Pai, aceitando a cruz.</li></ul><h3>3. A Prisão e a Negação de Pedro</h3><p>Judas trai Jesus com um beijo e Ele é levado preso diante do conselho do Sinédrio. Enquanto Jesus confessa corajosamente ser o Messias sob juramento, Pedro nega-O três vezes no pátio inferior antes que o galo cantasse duas vezes, cumprindo a profecia dolorosa.</p>"
+                    }
+                ]
+            },
+            "marcos_15": {
+                title: "A MORTE DO SERVO",
+                date: "10/09 (Quinta)",
+                desc: "\"E, à hora nona, Jesus clamou com grande voz, dizendo: Eloí, Eloí, lama sabactâni?\"",
+                blocks: [
+                    {
+                        title: "O Julgamento de Pilatos e o Sacrifício no Calvário",
+                        verse: "E o centurião, que estava defronte dele, vendo que assim clamando expirara, disse: Verdadeiramente este homem era o Filho de Deus. (Mc 15:39)",
+                        exegesis: "<h3>1. O Julgamento Perante o Império</h3><p>Jesus é entregue ao governador romano Pôncio Pilatos. A multidão, manipulada pelos sacerdotes, clama pela libertação do assassino Barrabás e exige a execução de Jesus na cruz. Jesus é açoitado, zombado pelos soldados com manto de púrpura e coroa de espinhos, e levado ao Calvário carregando o Seu *Σταυρός* (*Stauros* - cruz, instrumento de tortura).</p><h3>2. O Clamor do Abandono Cósmico</h3><ul><li>Pregado na cruz entre dois ladrões sob a zombaria da liderança civil e religiosa, a escuridão cobre a terra por três horas.</li><li>À hora nona, Jesus dá o grande e terrível clamor de abandono vicário: *Ἐλωΐ, Ἐλωΐ, λαμὰ σαβαχθανί* (*Eloi, Eloi, lama sabachthani* - Meu Deus, meu Deus, por que me desamparaste?).</li><li>Ele bebeu até a última gota do cálice da ira de Deus para prover redenção definitiva.</li></ul><h3>3. O Véu Rasgado e a Confissão do Gentio</h3><p>Ao expirar, o véu do templo rasga-se de alto a baixo, simbolizando o acesso direto ao Pai. O centurião romano que vigiava a cruz confessa de forma inspirada: 'Verdadeiramente este homem era o Filho de Deus', revelando a identidade de Cristo aos gentios.</p>"
+                    }
+                ]
+            },
+            "marcos_16": {
+                title: "A RESSURREIÇÃO E O ENVIO",
+                date: "12/09 (Sábado)",
+                desc: "\"Mas ele disse-lhes: Não vos assusteis; buscais a Jesus Nazareno, que foi crucificado; ressurgiu; não está aqui.\"",
+                blocks: [
+                    {
+                        title: "O Túmulo Vazio e a Grande Comissão Universal",
+                        verse: "E disse-lhes: Ide por todo o mundo, pregai o evangelho a toda criatura. (Mc 16:15)",
+                        exegesis: "<h3>1. O Triunfo sobre a Sepultura</h3><p>No primeiro dia da semana, as mulheres vão ao túmulo para ungir o corpo, mas encontram a grande pedra removida. Um jovem vestido de branco anuncia a triunfante *Ἀνάστασις* (*Anastasis* - ressurreição, levantar-se dos mortos) de Jesus. Ele não está mais preso ao sepulcro; Ele venceu a morte física de forma definitiva.</p><h3>2. O Envio dos Servos Reconstrutores</h3><ul><li>Jesus aparece primeiro a Maria Madalena e depois aos onze discípulos à mesa, repreendendo a incredulidade inicial deles.</li><li>Ele ordena o proclama universal da mensagem: 'Ide por todo o mundo e pregai o evangelho a toda criatura'.</li><li>O termo grego *Κήρυγμα* (*Kerygma* - conteúdo proclamado, proclamação oficial) define o conteúdo que deve ser anunciado com ousadia.</li></ul><h3>3. A Ascensão e a Cooperação Divina</h3><p>Após instruir os discípulos sobre os sinais que acompanhariam os crentes, o Senhor Jesus é recebido no céu e assenta-se à direita do Trono de Deus. Os apóstolos partem para pregar por toda parte, cooperando o Senhor com eles e confirmando a palavra por meio de milagres.</p>"
+                    }
+                ]
+            }
+        };
+
+        // === LÓGICA GERAL ===
+        let currentAudioBlob = null;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        function loadChapter(chapterKey) {
+            const data = bibleData[chapterKey];
+            if (!data) return;
+
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
+            const dateBadge = document.getElementById('dateBadge');
+            const dateValue = document.getElementById('dateValue');
+            const communitySection = document.getElementById('community-section');
+            const formChapterKey = document.getElementById('formChapterKey');
+            
+            heroTitle.style.opacity = '0';
+            heroDesc.style.opacity = '0';
+            dateBadge.style.opacity = '0';
+            
+            setTimeout(() => {
+                if (data.date) {
+                    dateValue.textContent = data.date;
+                    dateBadge.classList.remove('hidden');
+                    communitySection.classList.remove('hidden');
+                    formChapterKey.value = chapterKey;
+                    carregarComentarios(chapterKey);
+                    setTimeout(() => { dateBadge.style.opacity = '1'; }, 100);
+                } else {
+                    dateBadge.classList.add('hidden');
+                    communitySection.classList.add('hidden');
+                }
+
+                heroTitle.innerHTML = data.title;
+                heroDesc.innerHTML = data.desc;
+                heroTitle.style.opacity = '1';
+                heroDesc.style.opacity = '1';
+            }, 300);
+
+            const mainContent = document.getElementById('content');
+            mainContent.innerHTML = ''; 
+
+            data.blocks.forEach((block) => {
+                let borderColor = 'border-amber-600';
+                let blurTop = 'bg-amber-600/5';
+                let blurBottom = 'bg-amber-850/5';
+                let borderPanel = 'border-amber-900/30';
+
+                const html = `
+                    <section class="reveal max-w-4xl mx-auto w-full relative">
+                        <div class="absolute -inset-4 ${blurTop} to-transparent rounded-3xl blur-xl pointer-events-none"></div>
+                        
+                        <div class="space-y-6 relative z-10">
+                            <div class="text-center mb-10">
+                                <h2 class="text-3xl md:text-5xl font-serif text-white leading-tight mb-6">${block.title}</h2>
+                                <div class="inline-block border-l-4 border-r-4 ${borderColor} px-6 py-4 italic text-slate-300 bg-[#0a0502]/50 shadow-sm max-w-3xl rounded-sm">
+                                    "${block.verse}"
+                                </div>
+                            </div>
+                            
+                            <div class="bg-[#050510]/80 p-8 md:p-12 rounded-xl border ${borderPanel} transition shadow-2xl relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-64 h-64 ${blurTop} rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+                                <div class="absolute bottom-0 left-0 w-64 h-64 ${blurBottom} rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
+                                <div class="rich-text text-slate-300 text-[16px] md:text-lg leading-relaxed relative z-10 font-light font-sans">
+                                    ${block.exegesis}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+                mainContent.insertAdjacentHTML('beforeend', html);
+            });
+            resetObservers();
+        }
+
+        function carregarComentarios(capitulo) {
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '<p class="text-center text-slate-500 text-sm animate-pulse">Carregando comentários...</p>';
+
+            fetch(`api.php?acao=listar&capitulo=${capitulo}`)
+            .then(res => res.json())
+            .then(data => {
+                list.innerHTML = '';
+                if(!Array.isArray(data)) return;
+                if(data.length === 0) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
+                }
+                data.forEach(c => {
+                    let mediaHtml = '';
+                    if(c.foto) mediaHtml += `<img src="${c.foto}" onclick="openImage(this.src)" class="mt-4 rounded-lg max-h-48 border border-slate-700 cursor-pointer hover:scale-[1.02] transition shadow-lg">`;
+                    if(c.audio) mediaHtml += `<audio controls src="${c.audio}" class="mt-4 w-full"></audio>`;
+
+                    const jaCurtiu = localStorage.getItem(`reagiu_likes_${c.id}`);
+                    const jaAmem = localStorage.getItem(`reagiu_amem_${c.id}`);
+                    const jaGloria = localStorage.getItem(`reagiu_gloria_${c.id}`);
+
+                    let themeColor = 'text-amber-400';
+                    let panelBorder = 'hover:border-amber-500/50';
+
+                    const html = `
+                        <div class="glass-panel p-5 pb-12 rounded-xl border border-slate-800 relative group transition ${panelBorder} bg-[#0a0502]/60">
+                            <div class="flex justify-between items-start mb-3 border-b border-slate-800 pb-2">
+                                <strong class="${themeColor} text-sm tracking-wide font-serif">${c.nome}</strong>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-widest">${new Date(c.data_envio).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed">${c.mensagem}</p>
+                            ${mediaHtml}
+                            
+                            <div class="absolute bottom-3 right-4 flex gap-2">
+                                <button onclick="reagirComentario(${c.id}, 'likes', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaCurtiu ? 'text-red-500 border-red-500/30' : 'text-slate-400 hover:text-red-400'}" ${jaCurtiu ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-heart"></i> <span class="count font-bold">${c.likes || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'amem', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaAmem ? 'text-amber-400 border-amber-400/30' : 'text-slate-400 hover:text-amber-400'}" ${jaAmem ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-hands-praying"></i> <span class="count font-bold">${c.amem || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'gloria', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaGloria ? 'text-amber-500 border-amber-500/30' : 'text-slate-400 hover:text-amber-500'}" ${jaGloria ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-fire"></i> <span class="count font-bold">${c.gloria || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', html);
+                });
+            })
+            .catch(err => {
+                list.innerHTML = '<p class="text-center text-red-400 text-xs">Erro ao carregar comentários.</p>';
+            });
+        }
+
+        function reagirComentario(id, tipo, btn) {
+            if(localStorage.getItem(`reagiu_${tipo}_${id}`)) return;
+
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('.count');
+            let count = parseInt(countSpan.innerText);
+
+            icon.classList.add('reacted-anim');
+            btn.classList.remove('text-slate-400');
+            
+            if(tipo === 'likes') btn.classList.add('text-red-500', 'border-red-500/30');
+            if(tipo === 'amem') btn.classList.add('text-amber-400', 'border-amber-400/30');
+            if(tipo === 'gloria') btn.classList.add('text-amber-500', 'border-amber-500/30');
+
+            countSpan.innerText = count + 1;
+            btn.disabled = true;
+
+            localStorage.setItem(`reagiu_${tipo}_${id}`, 'true');
+
+            const formData = new FormData();
+            formData.append('acao', 'reagir');
+            formData.append('id', id);
+            formData.append('tipo', tipo);
+
+            fetch('api.php', { method: 'POST', body: formData });
+        }
+
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+            formData.append('acao', 'salvar');
+            if(currentAudioBlob) {
+                formData.append('audio', currentAudioBlob, 'audio.wav');
+            }
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    this.reset();
+                    document.getElementById('filePreview').innerHTML = '';
+                    currentAudioBlob = null;
+                    document.getElementById('recordText').innerText = "Gravar Áudio";
+                    carregarComentarios(document.getElementById('formChapterKey').value);
+                } else {
+                    alert('Erro ao enviar.');
+                }
+            })
+            .catch(() => alert('Erro de conexão.'))
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        });
+
+        function previewFile(input) {
+            const preview = document.getElementById('filePreview');
+            if(input.files && input.files[0]) {
+                preview.innerHTML = `<i class="fa-solid fa-check text-green-400"></i> Imagem selecionada: ${input.files[0].name}`;
+                preview.classList.remove('hidden');
+            }
+        }
+
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.addEventListener('click', async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                    mediaRecorder.onstop = () => {
+                        currentAudioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        document.getElementById('filePreview').classList.remove('hidden');
+                        document.getElementById('filePreview').innerHTML += '<br><i class="fa-solid fa-microphone text-green-400"></i> Áudio gravado!';
+                    };
+                    mediaRecorder.start();
+                    recordBtn.classList.add('recording-pulse');
+                    document.getElementById('recordText').innerText = "Parar Gravação";
+                } catch (err) {
+                    alert("Permita o uso do microfone para gravar.");
+                }
+            } else {
+                mediaRecorder.stop();
+                recordBtn.classList.remove('recording-pulse');
+                document.getElementById('recordText').innerText = "Gravar Áudio";
+            }
+        });
+
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        function closeImage() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function resetObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<80; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(245, 158, 11, 0.15)";
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        loadChapter('intro_book');
+    </script>
+</body>
+</html>

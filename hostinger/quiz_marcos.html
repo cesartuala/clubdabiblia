@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Marcos | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        .glass-card { background: rgba(15, 12, 5, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(245, 158, 11, 0.2); transition: all 0.4s ease; }
+        .amber-glow { text-shadow: 0 0 15px rgba(245, 158, 11, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); background-color: rgba(245, 158, 11, 0.15); border-color: #f59e0b; }
+        .option-correct { background-color: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+        .option-wrong { background-color: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #f87171 !important; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="w-full z-50 p-6 flex justify-between items-center relative">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0a0601] border border-amber-500/50 text-amber-400 hover:bg-amber-500 hover:text-black transition-all">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-bolt-lightning text-amber-500 text-xl"></i>
+            <span class="font-serif text-white text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl w-full flex flex-col relative overflow-hidden shadow-[0_0_40px_rgba(245,158,11,0.15)]">
+            <div class="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-400" id="progressBar"></div>
+            
+            <div class="p-6 md:p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b border-amber-500/20 pb-4">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white amber-glow">Quiz: Marcos</h1>
+                    <span id="questionCounter" class="bg-amber-950/50 text-amber-300 px-3 py-1 rounded-full text-xs font-bold tracking-widest border border-amber-500/30">1 / 10</span>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="questionText" class="text-lg md:text-xl text-slate-200 mb-6 font-light leading-relaxed"></div>
+                    <div id="optionsContainer" class="space-y-3"></div>
+                    <div id="feedbackContainer" class="mt-6 p-4 rounded-lg hidden text-sm leading-relaxed border"></div>
+
+                    <button id="nextBtn" class="mt-8 w-full bg-amber-650 hover:bg-amber-500 text-white font-bold py-3 rounded-lg transition uppercase tracking-widest hidden shadow-lg shadow-amber-900/50">
+                        Próxima Pergunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-col items-center text-center py-8">
+                    <i class="fa-solid fa-crown text-6xl text-amber-400 mb-4 drop-shadow-[0_0_15px_rgba(245,158,11,0.6)]"></i>
+                    <h2 class="font-serif text-3xl text-white mb-2">Vitória em Cristo!</h2>
+                    <p class="text-slate-300 text-lg mb-6">Você acertou <span id="finalScore" class="text-amber-400 font-bold text-2xl">0</span> de 10 perguntas.</p>
+                    
+                    <div class="w-full max-w-sm bg-slate-900/80 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xs uppercase tracking-widest text-amber-400 mb-4 font-bold">Salvar no Ranking</h3>
+                        <form id="rankingForm" class="space-y-4">
+                            <input type="hidden" name="acao" value="salvar_quiz_marcos">
+                            <input type="hidden" name="pontos" id="inputPontos" value="0">
+                            <input type="hidden" name="acertos" id="inputAcertos" value="0">
+                            <input type="text" name="nome" required placeholder="Seu Nome..." class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white focus:border-amber-500 focus:outline-none transition text-sm">
+                            <button type="submit" class="w-full bg-gradient-to-r from-amber-600 to-yellow-500 text-white font-bold py-2 rounded transition uppercase tracking-widest text-xs shadow-lg">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizDataAll = [
+            {
+                q: "Qual era o principal público-alvo dos escritos do Evangelho de Marcos?",
+                options: [
+                    { t: "Os judeus de Jerusalém.", c: false, r: "Mateus foi escrito prioritariamente para judeus, Marcos foca nos romanos." },
+                    { t: "Os cristãos gentios em Roma.", c: true, r: "Marcos traduz termos aramaicos e explica costumes judeus para os romanos." },
+                    { t: "Os filósofos de Atenas.", c: false, r: "A mensagem é de ação e servidão prática, não retórica grega." },
+                    { t: "As tribos dispersas na Ásia.", c: false, r: "Roma era a localidade destinatária original primária." }
+                ]
+            },
+            {
+                q: "Qual palavra grega é repetida dezenas de vezes em Marcos para expressar pressa e imediatismo?",
+                options: [
+                    { t: "Euthys (Imediatamente).", c: true, r: "O termo 'euthys' é usado mais de 40 vezes para retratar o serviço ágil de Jesus." },
+                    { t: "Kerygma (Mensagem).", c: false, r: "Kerygma denota proclamação, não pressa." },
+                    { t: "Metanoia (Arrependimento).", c: false, r: "Metanoia significa mudança de mente." },
+                    { t: "Dynamis (Milagre).", c: false, r: "Dynamis refere-se ao poder divino dos milagres." }
+                ]
+            },
+            {
+                q: "No capítulo 2, como os amigos conseguem colocar o paralítico diante de Jesus?",
+                options: [
+                    { t: "Empurrando os escribas na entrada.", c: false, r: "A multidão barrava qualquer tentativa de entrada terrestre." },
+                    { t: "Disfarçando-o de soldado romano.", c: false, r: "Não houve uso de disfarces na cura do paralítico." },
+                    { t: "Abrindo uma passagem pelo teto de argila.", c: true, r: "Eles removeram o teto da casa para descer o leito do enfermo." },
+                    { t: "Aguardando Jesus sair para a praia.", c: false, r: "A cura foi realizada no interior da casa cheia de gente." }
+                ]
+            },
+            {
+                q: "O que significa a expressão em aramaico 'Talitha koum' dita por Jesus em Marcos 5?",
+                options: [
+                    { t: "Efésios, abram-se as portas.", c: false, r: "Abre-te é a tradução de Ephphatha." },
+                    { t: "Menina, a ti te digo, levanta-te.", c: true, r: "É o comando terno de ressurreição em aramaico dado à filha de Jairo." },
+                    { t: "Deus meu, por que me desamparaste?", c: false, r: "Essa frase é Eli, Eli, lama sabachthani." },
+                    { t: "Oferta santa dedicada exclusivamente ao Templo.", c: false, r: "O termo para oferta dedicada é Corbã." }
+                ]
+            },
+            {
+                q: "No capítulo 5, como se identificou a legião de demônios que habitava o geraseno?",
+                options: [
+                    { t: "Belzebu.", c: false, r: "Este era o governante dos demônios de acordo com os escribas." },
+                    { t: "Legião, porque somos muitos.", c: true, r: "A legião identificou-se pela sua pluralidade de opositores." },
+                    { t: "Mamom.", c: false, r: "Mamom representa o ídolo das riquezas materiais." },
+                    { t: "Satanás.", c: false, r: "Satanás é o príncipe deste mundo e do mal." }
+                ]
+            },
+            {
+                q: "O que o termo 'Corbã' em Marcos 7 significava para os fariseus?",
+                options: [
+                    { t: "Uma lavagem ritual purificadora de mãos.", c: false, r: "Lavar as mãos era apenas um preceito tradicional." },
+                    { t: "O dízimo do cominho e do hortelã.", c: false, r: "Esse dízimo era focado em dízimos de ervas cotidianas." },
+                    { t: "Uma oferta dedicada inteiramente a Deus.", c: true, r: "Corbã era o juramento de bens dedicados ao templo, burlado para evitar apoiar os pais." },
+                    { t: "O imposto devido à máquina de César.", c: false, r: "Isso era o denário de tributo imperial civil." }
+                ]
+            },
+            {
+                q: "Qual dos milagres abaixo é exclusivo de Marcos e ocorre de forma gradual?",
+                options: [
+                    { t: "A ressurreição de Lázaro de Betânia.", c: false, r: "Este relato só se encontra no Evangelho de João." },
+                    { t: "A cura do cego de Betsaida que vê homens como árvores.", c: true, r: "Jesus toca nele duas vezes até que sua visão seja totalmente restabelecida." },
+                    { t: "A cura do centurião de Cafarnaum.", c: false, r: "Esse milagre se encontra em Mateus e Lucas." },
+                    { t: "A multiplicação para quatro mil pessoas.", c: false, r: "A multiplicação também é compartilhada com Mateus." }
+                ]
+            },
+            {
+                q: "Quem é o profeta do deserto que preparou o caminho do Senhor em Marcos 1?",
+                options: [
+                    { t: "Elias, o tisbita.", c: false, r: "Elias foi um profeta do Antigo Testamento." },
+                    { t: "João Batista.", c: true, r: "Ele clamou no deserto arrependimento e batismo antes de Jesus." },
+                    { t: "Isaías, o messiânico.", c: false, r: "Isaías profetizou sobre a voz, mas não era a voz." },
+                    { t: "Malaquias, o último.", c: false, r: "Ele encerrou as escrituras do antigo testamento." }
+                ]
+            },
+            {
+                q: "Quem Jesus repreendeu severamente dizendo: 'Para trás de mim, Satanás!' em Cesareia de Filipe?",
+                options: [
+                    { t: "Judas Iscariotes por sua ganância.", c: false, r: "Judas foi chamado de traidor, mas não nessa cena." },
+                    { t: "Pedro por rejeitar a necessidade do sofrimento da cruz.", c: true, r: "Pedro tentou dissuadir Jesus do sacrifício e foi repreendido publicamente." },
+                    { t: "O jovem rico que idolatrava moedas.", c: false, r: "Jesus sentiu compaixão e tristeza pelo jovem." },
+                    { t: "Pôncio Pilatos por zombaria secular.", c: false, r: "Pilatos dialogou em silêncio de autoridade com Jesus." }
+                ]
+            },
+            {
+                q: "Qual era o nome do cego de Jericó curado no final do capítulo 10?",
+                options: [
+                    { t: "Bartimeu, o filho de Timeu.", c: true, r: "Ele clamava obstinadamente por compaixão ao Filho de Davi." },
+                    { t: "Zaqueu, o publicano.", c: false, r: "Zaqueu era o cobrador de impostos de Jericó." },
+                    { t: "Simão, o leproso.", c: false, r: "Simão hospedou Jesus em Betânia." },
+                    { t: "Malco, o servo romano.", c: false, r: "Malco teve sua orelha cortada por Pedro no Getsêmani." }
+                ]
+            },
+            {
+                q: "O que Jesus veio fazer segundo o lema do Seu messianado em Marcos 10:45?",
+                options: [
+                    { t: "Ser coroado rei físico e militar dos judeus.", c: false, r: "Jesus evitou realeza política secular." },
+                    { t: "Para servir e dar a sua vida em resgate por muitos.", c: true, r: "Este é o núcleo teológico: Jesus como Servo Sofredor (Lytron)." },
+                    { t: "Condenar os pecadores gentios de Roma.", c: false, r: "Ele veio salvar a criação, não condená-la diretamente." },
+                    { t: "Expulsar à força o exército de Pilatos.", c: false, r: "Sua luta era espiritual contra principados e trevas." }
+                ]
+            },
+            {
+                q: "Qual árvore infrutífera foi amaldiçoada por Jesus antes da purificação do Templo?",
+                options: [
+                    { t: "A oliveira do horto.", c: false, r: "As oliveiras não foram amaldiçoadas." },
+                    { t: "A figueira estéril.", c: true, r: "Representando o Israel religioso que possuía ritos mas nenhum fruto." },
+                    { t: "A videira de uvas de espinhos.", c: false, r: "Jesus usou a videira em parábolas de adoração." },
+                    { t: "O carvalho de Basã.", c: false, r: "O carvalho representa altivez e soberba geral." }
+                ]
+            },
+            {
+                q: "Quem ajudou Jesus a carregar a cruz (Stauros) em direção ao Gólgota em Marcos 15?",
+                options: [
+                    { t: "João, o discípulo amado.", c: false, r: "João acompanhou de longe o caminho sacrificial." },
+                    { t: "Simão Cireneu.", c: true, r: "Os soldados romanos o forçaram a levar a estaca da cruz de Jesus." },
+                    { t: "José de Arimateia.", c: false, r: "José cedeu o seu próprio túmulo novo após o óbito." },
+                    { t: "Nicodemos, o príncipe dos fariseus.", c: false, r: "Nicodemos ajudou no sepultamento com perfumes." }
+                ]
+            },
+            {
+                q: "Quem exclamou ao ver o sopro final de Jesus na cruz: 'Verdadeiramente este homem era o Filho de Deus'?",
+                options: [
+                    { t: "O sumo sacerdote Caifás.", c: false, r: "Caifás zombou e condenou Jesus de blasfêmia." },
+                    { t: "O centurião romano de guarda.", c: true, r: "A declaração confessional do gentio marca o sucesso do evangelho no mundo." },
+                    { t: "Pedro, chorando arrependido.", c: false, r: "Pedro não estava presente diante do Gólgota na hora do óbito." },
+                    { t: "Herodes Antipas de surpresa.", c: false, r: "Herodes retornou a Jerusalém antes do julgamento final." }
+                ]
+            },
+            {
+                q: "Quantas vezes o galo cantou após a terceira negação de Pedro, conforme profetizado em Marcos 14?",
+                options: [
+                    { t: "Apenas uma vez.", c: false, r: "Outros evangelhos simplificam, mas Marcos detalha dois cantos." },
+                    { t: "Duas vezes.", c: true, r: "Marcos relata com precisão testemunhal de Pedro: 'antes que o galo cante duas vezes, me negarás três'." },
+                    { t: "Três vezes.", c: false, r: "Três foram as negações do apóstolo." },
+                    { t: "Quatro vezes ao amanhecer.", c: false, r: "Apenas dois cantos foram profetizados." }
+                ]
+            }
+        ];
+
+        // Shuffle quiz and pick exactly 10 questions
+        const quizData = quizDataAll.sort(() => Math.random() - 0.5).slice(0, 10);
+
+        let currentQ = 0; let score = 0; let answered = false;
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        function loadQuestion() {
+            answered = false; feedbackContainer.classList.add('hidden'); nextBtn.classList.add('hidden');
+            const qData = quizData[currentQ];
+            document.getElementById('questionCounter').innerText = `${currentQ + 1} / ${quizData.length}`;
+            questionText.innerText = qData.q;
+            optionsContainer.innerHTML = '';
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-lg bg-slate-800/80 border border-slate-600 text-slate-300 text-sm md:text-base';
+                btn.innerText = opt.t;
+                btn.onclick = () => selectOption(btn, opt);
+                optionsContainer.appendChild(btn);
+            });
+            progressBar.style.width = `${(currentQ / quizData.length) * 100}%`;
+        }
+
+        function selectOption(btn, opt) {
+            if (answered) return; answered = true;
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedbackContainer.classList.remove('hidden', 'bg-red-900/30', 'border-red-500/50', 'bg-green-900/30', 'border-green-500/50');
+            if (opt.c) {
+                score += 10; btn.classList.add('option-correct');
+                feedbackContainer.classList.add('bg-green-900/30', 'border-green-500/50', 'text-green-200');
+                feedbackContainer.innerHTML = `<strong>Correto!</strong> ${opt.r}`;
+            } else {
+                btn.classList.add('option-wrong');
+                feedbackContainer.classList.add('bg-red-900/30', 'border-red-500/50', 'text-red-200');
+                feedbackContainer.innerHTML = `<strong>Incorreto.</strong> ${opt.r}`;
+                buttons.forEach((b, i) => { if(quizData[currentQ].options[i].c) b.classList.add('option-correct'); });
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.onclick = () => {
+            currentQ++;
+            if (currentQ < quizData.length) loadQuestion();
+            else showResults();
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            document.getElementById('quizContainer').classList.add('hidden');
+            const res = document.getElementById('resultContainer');
+            res.classList.remove('hidden'); res.classList.add('flex');
+            document.getElementById('finalScore').innerText = score/10;
+            document.getElementById('inputPontos').value = score;
+            document.getElementById('inputAcertos').value = score/10;
+        }
+
+        document.getElementById('rankingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button'); btn.disabled = true; btn.innerText = "Salvando...";
+            fetch('api.php', { method: 'POST', body: new FormData(this) })
+            .then(() => window.location.href = 'index.html');
+        };
+
+        // Particles
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, sx: Math.random()*0.5-0.25, sy: Math.random()*0.5-0.25 });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(245, 158, 11, 0.2)";
+            particles.forEach(p => { p.x+=p.sx; p.y+=p.sy; if(p.x<0||p.x>canvas.width)p.sx*=-1; if(p.y<0||p.y>canvas.height)p.sy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        loadQuestion();
+    </script>
+</body>
+</html>
