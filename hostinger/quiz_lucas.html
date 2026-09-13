@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Lucas | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        .glass-card { background: rgba(15, 15, 35, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(217, 119, 6, 0.2); transition: all 0.4s ease; }
+        .amber-glow { text-shadow: 0 0 15px rgba(217, 119, 6, 0.5); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(5px); background-color: rgba(217, 119, 6, 0.15); border-color: #d97706; }
+        .option-correct { background-color: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+        .option-wrong { background-color: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #f87171 !important; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="w-full z-50 p-6 flex justify-between items-center relative">
+        <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0a0a1a] border border-amber-500/50 text-amber-400 hover:bg-amber-500 hover:text-black transition-all">
+            <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+            <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-stethoscope text-amber-500 text-xl"></i>
+            <span class="font-serif text-white text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl w-full flex flex-col relative overflow-hidden shadow-[0_0_40px_rgba(217,119,6,0.15)]">
+            <div class="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-700" id="progressBar"></div>
+            
+            <div class="p-6 md:p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b border-amber-500/20 pb-4">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white amber-glow">Quiz: Lucas</h1>
+                    <span id="questionCounter" class="bg-amber-900/50 text-amber-300 px-3 py-1 rounded-full text-xs font-bold tracking-widest border border-amber-500/30">1 / 10</span>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="questionText" class="text-lg md:text-xl text-slate-200 mb-6 font-light leading-relaxed"></div>
+                    <div id="optionsContainer" class="space-y-3"></div>
+                    <div id="feedbackContainer" class="mt-6 p-4 rounded-lg hidden text-sm leading-relaxed border"></div>
+
+                    <button id="nextBtn" class="mt-8 w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 rounded-lg transition uppercase tracking-widest hidden shadow-lg shadow-amber-900/50">
+                        Próxima Pergunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-col items-center text-center py-8">
+                    <i class="fa-solid fa-crown text-6xl text-amber-400 mb-4 drop-shadow-[0_0_15px_rgba(217,119,6,0.6)]"></i>
+                    <h2 class="font-serif text-3xl text-white mb-2">Vitória em Cristo!</h2>
+                    <p class="text-slate-300 text-lg mb-6">Você acertou <span id="finalScore" class="text-amber-400 font-bold text-2xl">0</span> de 10 perguntas.</p>
+                    
+                    <div class="w-full max-w-sm bg-slate-900/80 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xs uppercase tracking-widest text-amber-400 mb-4 font-bold">Salvar no Ranking</h3>
+                        <form id="rankingForm" class="space-y-4">
+                            <input type="hidden" name="acao" value="salvar_quiz_lucas">
+                            <input type="hidden" name="pontos" id="inputPontos" value="0">
+                            <input type="hidden" name="acertos" id="inputAcertos" value="0">
+                            <input type="text" name="nome" required placeholder="Seu Nome..." class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white focus:border-amber-500 focus:outline-none transition text-sm">
+                            <button type="submit" class="w-full bg-gradient-to-r from-amber-600 to-yellow-500 text-white font-bold py-2 rounded transition uppercase tracking-widest text-xs shadow-lg">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const allQuestions = [
+            {
+                q: "Quem foi o destinatário explícito do Evangelho de Lucas e do livro de Atos?",
+                options: [
+                    { t: "César Augusto", c: false, r: "César Augusto era o imperador de Roma." },
+                    { t: "Teófilo", c: true, r: "Lucas dedica explicitamente o Evangelho e o livro de Atos a Teófilo." },
+                    { t: "O Apóstolo Paulo", c: false, r: "Paulo era companheiro de viagens de Lucas, não o destinatário do livro." },
+                    { t: "Simão Pedro", c: false, r: "Pedro é um dos personagens centrais da narrativa." }
+                ]
+            },
+            {
+                q: "Qual das seguintes parábolas é totalmente exclusiva do Evangelho de Lucas?",
+                options: [
+                    { t: "A Parábola do Semeador", c: false, r: "Essa parábola está presente também em Mateus e Marcos." },
+                    { t: "A Parábola do Grão de Mostarda", c: false, r: "Também está registrada nos outros evangelhos sinóticos." },
+                    { t: "A Parábola do Bom Samaritano", c: true, r: "A história do Bom Samaritano é relatada apenas por Lucas, no capítulo 10." },
+                    { t: "A Parábola da Rede", c: false, r: "Esta é exclusiva do Evangelho de Mateus." }
+                ]
+            },
+            {
+                q: "Qual profissão é tradicionalmente atribuída a Lucas pelo Novo Testamento?",
+                options: [
+                    { t: "Pescador", c: false, r: "Pedro, Tiago e João eram pescadores." },
+                    { t: "Cobrador de Impostos", c: false, r: "Mateus (Levi) era cobrador de impostos." },
+                    { t: "Médico", c: true, r: "Paulo o chama de 'médico amado' na Epístola aos Colossenses." },
+                    { t: "Carpinteiro", c: false, r: "Essa era a ocupação terrena de José e Jesus." }
+                ]
+            },
+            {
+                q: "Qual imperador romano decretou o recenseamento que levou José e Maria a Belém?",
+                options: [
+                    { t: "César Augusto", c: true, r: "Lucas 2:1 registra que o recenseamento foi ordenado por César Augusto." },
+                    { t: "Tiberório César", c: false, r: "Tibério reinou durante o ministério público de Jesus." },
+                    { t: "Nero", c: false, r: "Nero governou décadas após o nascimento de Cristo." },
+                    { t: "Cláudio", c: false, r: "Cláudio governou mais tarde na era apostólica." }
+                ]
+            },
+            {
+                q: "Em Lucas 15, na Parábola do Filho Pródigo, qual é a atitude do pai ao ver o filho retornando?",
+                options: [
+                    { t: "Exige uma compensação financeira antes de aceitá-lo.", c: false, r: "O pai perdoa de forma inteiramente gratuita." },
+                    { t: "Manda que ele coma com os porcos do pasto.", c: false, r: "Esse foi o fundo do poço do filho antes de decidir voltar." },
+                    { t: "Corre ao seu encontro, o abraça e o beija calorosamente.", c: true, r: "O pai demonstra compaixão extravagante, correndo para recebê-lo ainda longe." },
+                    { t: "Ignora o filho e o faz esperar no portão.", c: false, r: "O pai o reintegra imediatamente como filho legítimo." }
+                ]
+            },
+            {
+                q: "O que diz o cântico de Maria (Magnificat) sobre os soberbos e humildes?",
+                options: [
+                    { t: "Que todos serão tratados de forma igualitária na terra.", c: false, r: "O texto fala de uma inversão espiritual profunda." },
+                    { t: "Que Deus exalta os orgulhosos e humilha os fracos.", c: false, r: "Essa é a lógica oposta à do Reino de Deus." },
+                    { t: "Que dispersou os soberbos e exaltou os humildes.", c: true, r: "Lucas 1 mostra a inversão divina, destronando poderosos e erguendo os pequeninos." },
+                    { t: "Que os ricos receberão mais riquezas espirituais.", c: false, r: "Maria canta que Deus despediu vazios os ricos." }
+                ]
+            },
+            {
+                q: "Quem subiu em um sicômoro em Jericó para conseguir enxergar Jesus?",
+                options: [
+                    { t: "Nicodemos", c: false, r: "Nicodemos encontrou-se com Jesus à noite em João." },
+                    { t: "Bartimeu", c: false, r: "Bartimeu era o cego que clamava à beira do caminho." },
+                    { t: "Zaqueu", c: true, r: "Sendo de pequena estatura, Zaqueu subiu na árvore para ver a passagem de Cristo." },
+                    { t: "Mateus", c: false, r: "Mateus foi chamado em sua coletoria." }
+                ]
+            },
+            {
+                q: "Quantos leprosos foram curados por Jesus em Lucas 17, e quantos voltaram para agradecer?",
+                options: [
+                    { t: "Doze curados, nenhum voltou.", c: false, r: "Pelo menos um voltou agradecendo." },
+                    { t: "Dez curados, e apenas um voltou (um samaritano).", c: true, r: "Dos dez curados de lepra, apenas um estrangeiro retornou para render glórias a Deus." },
+                    { t: "Cinco curados, todos voltaram.", c: false, r: "Eram dez leprosos no total." },
+                    { t: "Dez curados, nove voltaram.", c: false, r: "A grande maioria (nove) seguiu seu caminho sem agradecer." }
+                ]
+            },
+            {
+                q: "No caminho para qual aldeia dois discípulos reconheceram Jesus ressuscitado ao partir do pão?",
+                options: [
+                    { t: "Betânia", c: false, r: "Betânia era a vila de Lázaro, Marta e Maria." },
+                    { t: "Nazaré", c: false, r: "Nazaré foi a cidade onde Jesus cresceu." },
+                    { t: "Emaús", c: true, r: "Lucas 24 narra a aparição de Jesus aos discípulos no caminho de Emaús." },
+                    { t: "Cafarnaum", c: false, r: "Cafarnaum era a base galileia de Jesus." }
+                ]
+            },
+            {
+                q: "O que Jesus disse ao criminoso arrependido na cruz, segundo Lucas 23?",
+                options: [
+                    { t: "A tua fé não pôde te salvar hoje.", c: false, r: "O homem foi perdoado e salvo imediatamente." },
+                    { t: "Em verdade te digo que hoje estarás comigo no Paraíso.", c: true, r: "Esta é uma das frases mais belas de Jesus na cruz, exclusiva de Lucas." },
+                    { t: "Amanhã ressuscitarás comigo dentre os mortos.", c: false, r: "A promessa de comunhão espiritual foi para aquele exato dia ('hoje')." },
+                    { t: "Volta para as tuas boas obras se quiseres salvação.", c: false, r: "Ele foi salvo exclusivamente pela graça através da fé em Jesus." }
+                ]
+            },
+            {
+                q: "Qual parábola exclusiva de Lucas descreve o contraste de destino entre um homem abastado e um mendigo cheio de chagas?",
+                options: [
+                    { t: "O Trigo e o Joio", c: false, r: "Esta parábola fala sobre o juízo final em Mateus." },
+                    { t: "O Rico e Lázaro", c: true, r: "Narrada em Lucas 16, mostra Lázaro no seio de Abraão e o rico no Hades." },
+                    { t: "O Credor Incompassivo", c: false, r: "Trata sobre o perdão e está em Mateus." },
+                    { t: "O Administrador Astuto", c: false, r: "Esta ensina sobre fidelidade financeira, mas não cita Lázaro." }
+                ]
+            },
+            {
+                q: "Em Lucas 22, o que acontece com o suor de Jesus no Getsêmani?",
+                options: [
+                    { t: "Caiu como chuva sobre as flores.", c: false, r: "Não há menção poética a flores no texto." },
+                    { t: "Tornou-se em grandes gotas de sangue que corriam até o chão.", c: true, r: "Lucas descreve a hematidrose de Jesus durante Sua agonia extrema." },
+                    { t: "Tornou-se brilhante como a luz da manhã.", c: false, r: "O brilho ocorreu na transfiguração, não no Getsêmani." },
+                    { t: "Secou instantaneamente pelo calor do deserto.", c: false, r: " getsêmani fica no monte das Oliveiras, não no deserto." }
+                ]
+            },
+            {
+                q: "O que significa o termo grego 'metanoia', chave no anúncio do evangelho?",
+                options: [
+                    { t: "Fazer sacrifício físico.", c: false, r: "A salvação não é conquistada por autoflagelação." },
+                    { t: "Mudança radical de mente e atitude.", c: true, r: "Metanoia implica redirecionamento completo de vida voltando-se para Deus." },
+                    { t: "Medo irracional do castigo de Deus.", c: false, r: "Isso é fobia religiosa, não arrependimento salvífico." },
+                    { t: "Esquecimento total do passado.", c: false, r: "Implica em mudança presente de conduta moral." }
+                ]
+            },
+            {
+                q: "Qual destas pessoas NÃO visitou o menino Jesus em Lucas, diferentemente de Mateus?",
+                options: [
+                    { t: "Os Reis Magos", c: true, r: "Os magos do Oriente constam apenas em Mateus; Lucas relata a visita dos pastores." },
+                    { t: "Os Pastores de Ovelhas", c: false, r: "Os pastores são os visitantes centrais no Natal de Lucas." },
+                    { t: "Simeão", c: false, r: "Simeão profetizou ao segurar o bebê no templo." },
+                    { t: "Ana, a profetisa", c: false, r: "Ana também se alegrou no templo ao ver o menino." }
+                ]
+            },
+            {
+                q: "Qual palavra grega é usada no fim de Lucas para definir o papel dos discípulos no mundo?",
+                options: [
+                    { t: "Iatros", c: false, r: "Iatros significa médico." },
+                    { t: "Martus", c: true, r: "Martus significa testemunhas, de onde provém a palavra mártir." },
+                    { t: "Sophia", c: false, r: "Sophia significa sabedoria grega." },
+                    { t: "Sabbaton", c: false, r: "Sabbaton significa sábado." }
+                ]
+            }
+        ];
+
+        // Embaralha e seleciona 10 questões
+        const quizData = allQuestions.sort(() => Math.random() - 0.5).slice(0, 10);
+
+        let currentQ = 0; let score = 0; let answered = false;
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        function loadQuestion() {
+            answered = false; feedbackContainer.classList.add('hidden'); nextBtn.classList.add('hidden');
+            const qData = quizData[currentQ];
+            document.getElementById('questionCounter').innerText = `${currentQ + 1} / ${quizData.length}`;
+            questionText.innerText = qData.q;
+            optionsContainer.innerHTML = '';
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 rounded-lg bg-slate-800/80 border border-slate-600 text-slate-300 text-sm md:text-base';
+                btn.innerText = opt.t;
+                btn.onclick = () => selectOption(btn, opt);
+                optionsContainer.appendChild(btn);
+            });
+            progressBar.style.width = `${(currentQ / quizData.length) * 100}%`;
+        }
+
+        function selectOption(btn, opt) {
+            if (answered) return; answered = true;
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            feedbackContainer.classList.remove('hidden', 'bg-red-900/30', 'border-red-500/50', 'bg-green-900/30', 'border-green-500/50');
+            if (opt.c) {
+                score += 10; btn.classList.add('option-correct');
+                feedbackContainer.classList.add('bg-green-900/30', 'border-green-500/50', 'text-green-200');
+                feedbackContainer.innerHTML = `<strong>Correto!</strong> ${opt.r}`;
+            } else {
+                btn.classList.add('option-wrong');
+                feedbackContainer.classList.add('bg-red-900/30', 'border-red-500/50', 'text-red-200');
+                feedbackContainer.innerHTML = `<strong>Incorreto.</strong> ${opt.r}`;
+                buttons.forEach((b, i) => { if(quizData[currentQ].options[i].c) b.classList.add('option-correct'); });
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.onclick = () => {
+            currentQ++;
+            if (currentQ < quizData.length) loadQuestion();
+            else showResults();
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            document.getElementById('quizContainer').classList.add('hidden');
+            const res = document.getElementById('resultContainer');
+            res.classList.remove('hidden'); res.classList.add('flex');
+            document.getElementById('finalScore').innerText = score/10;
+            document.getElementById('inputPontos').value = score;
+            document.getElementById('inputAcertos').value = score/10;
+        }
+
+        document.getElementById('rankingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button'); btn.disabled = true; btn.innerText = "Salvando...";
+            fetch('api.php', { method: 'POST', body: new FormData(this) })
+            .then(() => window.location.href = 'index.html');
+        };
+
+        // Particles
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, sx: Math.random()*0.5-0.25, sy: Math.random()*0.5-0.25 });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(217, 119, 6, 0.2)";
+            particles.forEach(p => { p.x+=p.sx; p.y+=p.sy; if(p.x<0||p.x>canvas.width)p.sx*=-1; if(p.y<0||p.y>canvas.height)p.sy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        loadQuestion();
+    </script>
+</body>
+</html>

@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucas | Clube da Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] },
+                    colors: { 
+                        divine: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #050510; color: #e2e8f0; overflow-x: hidden; }
+        
+        .glass-panel { background: rgba(10, 5, 25, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(217, 119, 6, 0.2); }
+        .amber-glow { text-shadow: 0 0 15px rgba(217, 119, 6, 0.5); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .rich-text strong { color: #fcd34d; font-weight: 700; }
+        .rich-text .ref { color: #f59e0b; font-size: 0.9em; font-family: monospace; background: rgba(217, 119, 6, 0.15); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(217, 119, 6, 0.3); }
+        .rich-text h3 { color: #d97706; font-weight: bold; margin-top: 2rem; margin-bottom: 0.75rem; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.15em; border-bottom: 1px solid rgba(217, 119, 6, 0.3); padding-bottom: 6px; }
+        .rich-text ul { list-style-type: none; padding-left: 0; margin-top: 15px; margin-bottom: 20px; }
+        .rich-text li { margin-bottom: 15px; line-height: 1.8; text-align: justify; border-left: 3px solid #d97706; padding-left: 20px; background: linear-gradient(to right, rgba(217, 119, 6, 0.05), transparent); padding-top: 5px; padding-bottom: 5px; }
+        .rich-text p { margin-bottom: 20px; line-height: 2; text-align: justify; font-size: 1.05rem; color: #cbd5e1; }
+        .rich-text blockquote { border-left: 4px solid #d97706; padding-left: 20px; margin: 20px 0; font-style: italic; color: #fcd34d; background: rgba(217, 119, 6, 0.05); padding: 15px; border-radius: 0 8px 8px 0; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050510; }
+        ::-webkit-scrollbar-thumb { background: #292524; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d97706; }
+
+        .recording-pulse { animation: recPulse 1.5s infinite; background-color: #ef4444; border-color: #ef4444; color: white; }
+        @keyframes recPulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @keyframes pop { 50% { transform: scale(1.4); } }
+        .reacted-anim { animation: pop 0.3s ease-out; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <canvas id="particles-js"></canvas>
+
+    <nav class="fixed top-0 w-full z-50 p-4 md:p-6 flex flex-col md:flex-row justify-between items-center bg-gradient-to-b from-[#050510]/95 to-[#050510]/80 backdrop-blur-md border-b border-amber-900/40 transition-all">
+        <div class="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto justify-between md:justify-start">
+            <a href="index.html" class="group flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0f0a1a] border border-amber-500/50 text-amber-400 hover:bg-amber-500 hover:text-black transition-all shadow-[0_0_15px_rgba(217,119,6,0.1)]">
+                <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+                <span class="hidden md:inline text-xs uppercase tracking-widest font-bold">Voltar ao Início</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-stethoscope text-amber-500 text-xl md:text-2xl"></i>
+                <span class="font-serif text-white text-lg md:text-xl tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto justify-end">
+            <span class="hidden md:inline text-xs text-slate-400 uppercase tracking-widest">Navegar:</span>
+            <select id="chapterSelect" onchange="loadChapter(this.value)" class="w-full md:w-auto bg-[#0f0a1a] text-amber-400 border border-amber-500/40 rounded px-4 py-2 text-sm uppercase tracking-widest focus:outline-none focus:border-amber-500 cursor-pointer">
+                <option value="intro_book">★ Sobre o Livro</option>
+                <option value="intro_author">✎ Sobre o Autor</option>
+                <option disabled>──────────</option>
+                <option value="lucas_1">Capítulo 01</option>
+                <option value="lucas_2">Capítulo 02</option>
+                <option value="lucas_3">Capítulo 03</option>
+                <option value="lucas_4">Capítulo 04</option>
+                <option value="lucas_5">Capítulo 05</option>
+                <option value="lucas_6">Capítulo 06</option>
+                <option value="lucas_7">Capítulo 07</option>
+                <option value="lucas_8">Capítulo 08</option>
+                <option value="lucas_9">Capítulo 09</option>
+                <option value="lucas_10">Capítulo 10</option>
+                <option value="lucas_11">Capítulo 11</option>
+                <option value="lucas_12">Capítulo 12</option>
+                <option value="lucas_13">Capítulo 13</option>
+                <option value="lucas_14">Capítulo 14</option>
+                <option value="lucas_15">Capítulo 15</option>
+                <option value="lucas_16">Capítulo 16</option>
+                <option value="lucas_17">Capítulo 17</option>
+                <option value="lucas_18">Capítulo 18</option>
+                <option value="lucas_19">Capítulo 19</option>
+                <option value="lucas_20">Capítulo 20</option>
+                <option value="lucas_21">Capítulo 21</option>
+                <option value="lucas_22">Capítulo 22</option>
+                <option value="lucas_23">Capítulo 23</option>
+                <option value="lucas_24">Capítulo 24</option>
+            </select>
+        </div>
+    </nav>
+
+    <header class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-32 md:pt-20">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#050510] via-[#050510]/80 to-transparent"></div>
+        
+        <div class="z-10 reveal active space-y-4 max-w-5xl w-full">
+            <h2 class="text-amber-400 tracking-[0.5em] text-[10px] md:text-sm uppercase animate-pulse mb-4 font-bold">Clube da Bíblia Apresenta</h2>
+            
+            <div id="dateBadge" class="hidden inline-flex items-center gap-2 border border-amber-500/50 rounded-full px-4 py-1 mb-4 bg-amber-500/10 backdrop-blur-sm transition-all duration-700 opacity-0">
+                <i class="fa-regular fa-calendar text-amber-400 text-xs"></i>
+                <span class="text-amber-300 text-xs tracking-widest uppercase font-bold">Leitura: <span id="dateValue" class="text-white"></span></span>
+            </div>
+
+            <h1 id="heroTitle" class="font-serif text-4xl md:text-7xl text-white mb-2 amber-glow transition-all duration-700 uppercase leading-tight px-2"></h1>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 text-slate-400 mt-8 pt-8 border-t border-amber-900/40 w-full max-w-3xl mx-auto">
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Idealizado por</p>
+                    <strong class="text-amber-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-amber-300 transition">Fellipe Gomes Andrade</strong>
+                </div>
+                <span class="hidden md:block h-8 w-[1px] bg-gradient-to-b from-transparent via-amber-900 to-transparent"></span>
+                <div class="flex flex-col items-center group">
+                    <p class="text-[9px] uppercase tracking-[0.3em] font-light text-slate-500 mb-1">Desenvolvido por</p>
+                    <strong class="text-amber-400 text-sm md:text-lg font-serif tracking-widest group-hover:text-amber-300 transition">Cesar Tuala</strong>
+                </div>
+            </div>
+
+            <p id="heroDesc" class="text-sm md:text-xl text-slate-300 max-w-2xl mx-auto pt-8 font-light italic transition-all duration-700 px-4"></p>
+            
+            <div class="pt-10">
+                <button onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" class="animate-bounce text-amber-500 text-2xl">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="content" class="max-w-4xl mx-auto px-4 py-10 md:py-20 space-y-20 md:space-y-32 min-h-screen"></main>
+
+    <section id="community-section" class="w-full bg-[#07030f] border-t-4 border-amber-600 py-16 mb-0 relative shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <h3 class="font-serif text-3xl md:text-4xl text-amber-500 mb-2 uppercase tracking-widest amber-glow">
+                    <i class="fa-solid fa-users-line mr-3"></i>Comunidade
+                </h3>
+                <p class="text-slate-400 text-sm italic">"Compartilhe o que Deus falou ao seu coração"</p>
+                <div class="h-1 w-24 bg-gradient-to-r from-transparent via-amber-600 to-transparent mx-auto mt-4"></div>
+            </div>
+
+            <div class="glass-panel p-6 md:p-8 rounded-xl mb-12 border border-slate-800 shadow-2xl bg-[#0a0514]/80">
+                <form id="commentForm" class="space-y-5">
+                    <input type="hidden" id="formChapterKey" name="capitulo">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="col-span-1">
+                            <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Nome</label>
+                            <input type="text" name="nome" required class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-amber-500 focus:outline-none transition">
+                        </div>
+                        <div class="flex gap-3 col-span-1 md:col-span-2 items-end">
+                            <label class="flex-1 cursor-pointer bg-black/50 border border-slate-700 hover:border-amber-500 hover:bg-[#110a24] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-camera group-hover:text-amber-400"></i> Foto
+                                <input type="file" name="foto" accept="image/*" class="hidden" onchange="previewFile(this)">
+                            </label>
+                            <button type="button" id="recordBtn" class="flex-1 bg-black/50 border border-slate-700 hover:border-red-500 hover:bg-[#110a24] rounded h-[50px] flex items-center justify-center gap-2 text-sm text-slate-300 transition group">
+                                <i class="fa-solid fa-microphone group-hover:text-red-400"></i> <span id="recordText">Gravar Áudio</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="filePreview" class="text-xs text-amber-400 hidden bg-black p-2 rounded border border-amber-500/30"></div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-slate-400 mb-1 block">Seu Comentário</label>
+                        <textarea name="mensagem" class="w-full bg-black/80 border border-slate-700 rounded px-4 py-3 text-white focus:border-amber-500 focus:outline-none h-28 resize-none transition"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-amber-800 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white font-bold py-4 rounded-lg transition uppercase tracking-[0.2em] text-sm shadow-lg shadow-black/50 transform hover:-translate-y-1">
+                        Publicar Comentário
+                    </button>
+                </form>
+            </div>
+            <div id="commentsList" class="space-y-6"></div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-800 bg-black py-12 text-center relative z-10">
+        <div class="flex flex-col items-center justify-center space-y-6">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="fa-solid fa-stethoscope text-amber-600 text-xl"></i>
+                <span class="font-serif text-slate-300 text-lg tracking-widest font-bold">CLUBE DA BÍBLIA</span>
+            </div>
+            <p class="text-slate-700 text-[10px] tracking-widest uppercase mt-4">&copy; 2026 Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="imageModal" class="fixed inset-0 z-[100] bg-black/95 hidden flex justify-center items-center p-4 backdrop-blur-sm transition-opacity duration-300" onclick="closeImage()">
+        <div class="relative max-w-4xl w-full flex justify-center">
+            <button onclick="closeImage()" class="absolute -top-12 right-0 text-white text-3xl hover:text-amber-500 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modalImg" src="" class="max-h-[85vh] max-w-full rounded-lg shadow-[0_0_50px_rgba(217,119,6,0.3)] border-2 border-amber-500/20 object-contain">
+        </div>
+    </div>
+
+    <script>
+        const bibleData = {
+            "intro_book": {
+                title: "O EVANGELHO SEGUNDO LUCAS",
+                date: null,
+                desc: "<span class='text-xs uppercase tracking-[0.3em] text-amber-400 not-italic block mb-4'>Introdução: Sobre o Livro</span>\"A narrativa exata da misericórdia que veio buscar e salvar o perdido.\"",
+                blocks: [
+                    {
+                        title: "O Evangelho da Humanidade Perfeita",
+                        verse: "Pareceu-me também a mim conveniente escrevê-los a ti por ordem, ó excelente Teófilo, para que conheças a certeza das coisas de que já foste instruído. (Lc 1:3-4)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Lucas, o médico gentio e companheiro de viagens do Apóstolo Paulo, escreveu uma obra magistral em duas partes (Lucas e Atos). Seu público-alvo primário é o mundo grego, representado por Teófilo. O livro destaca o caráter compassivo e inclusivo do ministério de Jesus Cristo, enfatizando os desfavorecidos, os samaritanos, as mulheres e os pecadores arrependidos.</p><h3>2. Análise Teológica</h3><p>A teologia de Lucas foca na universalidade da salvação. O evangelho apresenta Jesus como o Filho do Homem perfeito, cuja linhagem remonta não apenas a Abraão (como em Mateus), mas a Adão, conectando o Messias a toda a raça humana. Lucas introduz profundamente o conceito de <i>σωτήρ</i> (Soter - Salvador) e a obra soberana do Espírito Santo.</p><h3>3. Aplicação Prática</h3><p>Lucas nos desafia a exercer compaixão ativa pelos marginalizados. A fé cristã apresentada por ele não se isola em rituais vazios, mas penetra as dores e as necessidades do nosso próximo, restaurando a dignidade humana sob a luz do Reino de Deus."
+                    }
+                ]
+            },
+            "intro_author": {
+                title: "SOBRE O AUTOR",
+                date: null,
+                desc: "\"Lucas, o médico amado, e Demas vos saúdam.\"",
+                blocks: [
+                    {
+                        title: "O Historiador e Cientista da Fé",
+                        verse: "Lucas é o único que está comigo. (2 Tm 4:11)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Ao contrário dos outros evangelistas judeus, Lucas era um gentio de cultura helenística apurada. Sua escrita exibe o grego mais refinado do Novo Testamento. Utilizando métodos de investigação quase científicos, ele entrevistou testemunhas oculares para compor seu relato minucioso.</p><h3>2. Análise Teológica</h3><p>Como médico, Lucas possuía uma sensibilidade única para a dor humana e o milagre físico. O termo grego <i>ἰατρός</i> (iatros - médico) reverbera em suas descrições detalhadas de enfermidades e na forma como Jesus, o Grande Médico, aplica a cura integral. O autor mostra que a fé e o intelecto andam juntos na consolidação da história sagrada.</p><h3>3. Aplicação Prática</h3><p>A exemplo de Lucas, que colocou suas habilidades profissionais, culturais e científicas à disposição do Reino de Deus, somos instados a consagrar nossas vocações seculares para a proclamação do Evangelho e para o serviço amoroso à Igreja de Cristo."
+                    }
+                ]
+            },
+            "lucas_1": {
+                title: "O ANÚNCIO DOS NASCIMENTOS",
+                date: "14/09 (Segunda)",
+                desc: "\"Graça e poder revelados aos corações humildes.\"",
+                blocks: [
+                    {
+                        title: "A Promessa do Amanhecer da Redenção",
+                        verse: "Disse-lhe, pois, o anjo: Maria, não temas, porque achaste graça diante de Deus. (Lc 1:30)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Lucas abre sua narrativa histórica contrastando o templo majestoso em Jerusalém com a humilde vila de Nazaré. Zacarias recebe o anúncio do nascimento do precursor João Batista, enquanto Maria recebe a revelação da encarnação divina. Através do termo grego <i>χάρις</i> (charis - graça, favor imerecido), o texto sinaliza que a intervenção salvífica de Deus é inteiramente baseada em Sua soberana e gratuita condescendência.</p><h3>2. Análise Teológica</h3><p>A concepção de Jesus destaca a soberania criativa de Deus. O termo grego <i>πνεῦμα</i> (pneuma - espírito, sopro de vida) é central para indicar que o Espírito Santo gerará o Filho de Deus no ventre da virgem. O Magnificat de Maria estabelece a inversão escatológica dos valores mundanos: Deus exalta os humildes e dispersa os soberbos.</p><h3>3. Aplicação Prática</h3><p>Zacarias duvidou e ficou mudo; Maria creu e adorou. Diante das aparentes impossibilidades da vida, a fé obediente de Maria nos convida a descansar na soberana promessa divina, cientes de que nada é impossível para o Senhor."
+                    }
+                ]
+            },
+            "lucas_2": {
+                title: "O NASCIMENTO DE JESUS",
+                date: "15/09 (Terça)",
+                desc: "\"Glória a Deus nas alturas, e paz na terra entre os homens.\"",
+                blocks: [
+                    {
+                        title: "A Encarnação na Simplicidade da Manjedoura",
+                        verse: "Pois, na cidade de Davi, vos nasceu hoje o Salvador, que é Cristo, o Senhor. (Lc 2:11)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>O nascimento de Cristo ocorre no pano de fundo do Império Romano sob César Augusto. Lucas contrasta a corte imperial com uma estrebaria fria em Belém. O anúncio do nascimento do <i>σωτήρ</i> (soter - salvador) é feito primeiramente a pastores de ovelhas, a classe mais marginalizada da sociedade agrária judaica.</p><h3>2. Análise Teológica</h3><p>A glória de Deus se revela de forma paradoxal. O termo grego <i>δόξα</i> (doxa - glória, esplendor brilhante) enche o céu noturno, mas a manifestação terrena dessa glória reside em um bebê envolto em faixas numa manjedoura de animais. O cântico de Simeão (Nunc Dimittis) profetiza que Jesus será luz para revelação aos gentios e glória para Israel.</p><h3>3. Aplicação Prática</h3><p>O Natal nos ensina que o Salvador não busca palácios de arrogância, mas corações simples. Devemos rejeitar o consumismo mundano e abraçar a humilde paz de Cristo, tornando-nos propagadores da mensagem de reconciliação a todos os povos."
+                    }
+                ]
+            },
+            "lucas_3": {
+                title: "A VOZ NO DESERTO E A GENEALOGIA",
+                date: "16/09 (Quarta)",
+                desc: "\"Preparai o caminho do Senhor; endireitai as suas veredas.\"",
+                blocks: [
+                    {
+                        title: "Arrependimento e a Linhagem Humana do Messias",
+                        verse: "Produzi, pois, frutos dignos de arrependimento... (Lc 3:8)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Lucas contextualiza historicamente o ministério de João Batista citando os governantes políticos e religiosos da época. João clama no deserto, exigindo <i>μετάνοια</i> (metanoia - mudança radical de mente e direção) expressa em justiça social e partilha de bens, em vez de mera confiança na descendência de Abraão.</p><h3>2. Análise Teológica</h3><p>O batismo de Jesus marca Sua consagração messiânica com o testemunho trinitário do Pai e do Espírito Santo. A seguir, Lucas apresenta a <i>γενεαλογία</i> (genealogia - registro de descendência) que remonta a Adão, o filho de Deus, enfatizando a missão universal e inclusiva de Jesus para redimir toda a raça adâmica decaída.</p><h3>3. Aplicação Prática</h3><p>O verdadeiro arrependimento produz frutos práticos visíveis. Não basta pertencer a uma religião; é necessário alinhar nossa conduta ética diária, economia e justiça pessoal ao padrão estabelecido pelo Espírito Santo."
+                    }
+                ]
+            },
+            "lucas_4": {
+                title: "TENTAÇÃO E O MANIFESTO DE NAZARÉ",
+                date: "17/09 (Quinta)",
+                desc: "\"O Espírito do Senhor está sobre mim, pelo que me ungiu...\"",
+                blocks: [
+                    {
+                        title: "Vitória no Deserto e a Libertação dos Oprimidos",
+                        verse: "Mas Jesus lhe respondeu, dizendo: Está escrito que nem só de pão viverá o homem, mas de toda a palavra de Deus. (Lc 4:4)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus, cheio do Espírito, é conduzido ao deserto para ser tentado pelo <i>διάβολος</i> (diabolos - acusador, caluniador). Ele vence o adversário utilizando exclusivamente a autoridade da <i>γραφή</i> (graphe - escritura escrita), demonstrando total dependência e obediência à Palavra do Pai.</p><h3>2. Análise Teológica</h3><p>Em Nazaré, Jesus lê o rolo de Isaías e proclama o Ano Aceitável do Senhor (o Jubileu messiânico). Ele se apresenta como o Ungido que veio trazer libertação holística: boas-novas aos pobres, cura aos quebrantados, liberdade aos cativos e restauração de vista aos cegos, inaugurando oficialmente o Reino de Deus na terra.</p><h3>3. Aplicação Prática</h3><p>A vitória contra as ciladas espirituais depende do nosso conhecimento e aplicação prática das Escrituras. Além disso, como igreja de Cristo, devemos continuar o manifesto de Jesus, agindo como agentes ativos de libertação espiritual e alívio social."
+                    }
+                ]
+            },
+            "lucas_5": {
+                title: "PESCA MARAVILHOSA E O CHAMADO",
+                date: "18/09 (Sexta)",
+                desc: "\"Não temas; de agora em diante serás pescador de homens.\"",
+                blocks: [
+                    {
+                        title: "A Graça que Atrai os Pecadores",
+                        verse: "E, respondendo Jesus, disse-lhes: Não necessitam de médico os que estão sãos, mas, sim, os que estão enfermos. (Lc 5:31)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Após a pesca milagrosa que desafia as leis da natureza, Pedro reconhece sua indignidade, chamando-se <i>ἁμαρτωλός</i> (hamartolos - pecador, aquele que erra o alvo divino). Jesus, contudo, o chama para o discipulado. O capítulo prossegue com o chamado de Levi (Mateus) e a polêmica ceia com publicanos.</p><h3>2. Análise Teológica</h3><p>A cura do paralítico demonstra a autoridade salvífica integral de Jesus. Lucas enfatiza que o Filho do Homem tem poder na terra para perdoar pecados. A resposta necessária a esse poder é a <i>πίστις</i> (pistis - fé, confiança inabalável), que move o crente a abandonar tudo para seguir o Messias.</p><h3>3. Aplicação Prática</h3><p>Muitas vezes nos sentimos desqualificados por nossas falhas, mas Jesus veio justamente para os doentes espirituais. Devemos estar prontos a estender a mesma graça compassiva àqueles que o mundo e a religião hipócrita consideram perdidos."
+                    }
+                ]
+            },
+            "lucas_6": {
+                title: "SENHOR DO SÁBADO E AS BEM-AVENTURANÇAS",
+                date: "19/09 (Sábado)",
+                desc: "\"O Filho do Homem é Senhor até do sábado.\"",
+                blocks: [
+                    {
+                        title: "A Ética Invertida do Reino de Deus",
+                        verse: "Mas a vós, que ouvis, digo: Amai a vossos inimigos, fazei bem aos que vos odeiam. (Lc 6:27)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus confronta o legalismo dos fariseus ao declarar-Se Senhor do Sábado, priorizando a vida e o bem em detrimento de regras estéreis. No Sermão do Monte (versão da Planície), Ele proclama o <i>μακάριος</i> (makarios - bem-aventurado, supremamente feliz) aos necessitados e adverte os ricos autossuficientes.</p><h3>2. Análise Teológica</h3><p>O fundamento ético do Reino de Deus é o <i>ἀγάπη</i> (agape - amor incondicional e sacrificial). Jesus exige de Seus discípulos uma moralidade superior: amar os inimigos, abençoar os caluniadores e emprestar sem esperar retorno, imitando a misericórdia perfeita e ativa do Pai Celestial.</p><h3>3. Aplicação Prática</h3><p>Construir a vida sobre a rocha significa praticar os mandamentos de Jesus, não apenas ouvi-los com aprovação intelectual. Devemos avaliar se nossas vidas estão baseadas no amor sacrificial ou nas aparências religiosas de julgamento alheio."
+                    }
+                ]
+            },
+            "lucas_7": {
+                title: "FÉ E COMPAIXÃO",
+                date: "20/09 (Domingo)",
+                desc: "\"Perdoados lhe são os seus muitos pecados, porque ela muito amou.\"",
+                blocks: [
+                    {
+                        title: "O Toque que Restaura e o Perdão que Liberta",
+                        verse: "E, vendo-a, o Senhor moveu-se de íntima compaixão para com ela e disse-lhe: Não chores. (Lc 7:13)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus elogia a fé de um centurião gentio, cuja compreensão de <i>ἐξουσία</i> (exousia - autoridade delegada) supera a de todo o Israel. Logo após, ao se deparar com o cortejo fúnebre do filho único de uma viúva em Naim, Ele manifesta a plenitude da misericórdia divina.</p><h3>2. Análise Teológica</h3><p>A ressurreição do jovem em Naim é impulsionada pela atitude de Jesus, que se <i>σπλαγχνίζομαι</i> (splagchnizomai - move de íntima compaixão, revolvimento das entranhas). No banquete de Simão, o fariseu, a mulher pecadora demonstra amor extravagante como resposta ao perdão generoso que já recebera de Cristo.</p><h3>3. Aplicação Prática</h3><p>A adoração verdadeira nasce da consciência de quão grande foi a dívida de pecado perdoada por Deus em nossas vidas. Quem pouco compreende a graça, pouco ama; mas quem reconhece sua miséria e o perdão de Cristo, transborda em devoção sacrificial."
+                    }
+                ]
+            },
+            "lucas_8": {
+                title: "O SEMEADOR E O PODER DE DEUS",
+                date: "21/09 (Segunda)",
+                desc: "\"Quem tem ouvidos para ouvir, ouça.\"",
+                blocks: [
+                    {
+                        title: "A Palavra Germinadora e o Senhor sobre a Natureza",
+                        verse: "E os que receberam a semente em boa terra são os que, ouvindo a palavra com coração honesto e bom, a retêm e dão fruto com perseverança. (Lc 8:15)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus ensina a multidão por meio de <i>παραβολή</i> (parabole - comparação, narrativa metafórica para ilustrar verdades espirituais). A parábola do semeador enfatiza que o destino da semente depende do estado receptivo do coração humano ao ouvir a mensagem do Reino.</p><h3>2. Análise Teológica</h3><p>A semente é descrita por Jesus como o <i>λόγος</i> (logos - palavra divina, manifestação viva da verdade). A divindade de Cristo é posteriormente comprovada em atos de poder supremo: Ele acalma a tempestade furiosa, expulsa a legião de demônios, cura a mulher hemorrágica e ressuscita a filha de Jairo.</p><h3>3. Aplicação Prática</h3><p>Devemos examinar constantemente o solo do nosso coração para que os cuidados do mundo, a ilusão das riquezas e os prazeres da vida não sufoquem a Palavra de Deus. Em tempos de tempestade existencial, a nossa fé deve repousar no absoluto controle do Senhor da vida."
+                    }
+                ]
+            },
+            "lucas_9": {
+                title: "A MISSÃO DOS DOZE E A GLÓRIA",
+                date: "22/09 (Terça)",
+                desc: "\"Se alguém quer vir após mim, negue-se a si mesmo...\"",
+                blocks: [
+                    {
+                        title: "O Custo do Discipulado e o Vislumbre da Eternidade",
+                        verse: "Porque qualquer que quiser salvar a sua vida perdê-la-á; mas qualquer que, por amor de mim, perder a sua vida, a salvará. (Lc 9:24)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus envia os doze apóstolos outorgando-lhes <i>δύναμις</i> (dunamis - poder inerente, força milagrosa) e autoridade para curar e pregar. No clímax do Seu ministério na Galileia, Ele se transfigura no monte diante de Pedro, Tiago e João, conversando com Moisés e Elias sobre Seu êxodo em Jerusalém.</p><h3>2. Análise Teológica</h3><p>A revelação da glória de Jesus aponta para a consumação do plano redentor através do Seu sofrimento na cruz. O estabelecimento do Reino de Deus (<i>βασιλεία</i> - basileia) exige a renúncia total do ego. O verdadeiro discípulo é aquele que toma a sua cruz diariamente e segue o Messias sofredor.</p><h3>3. Aplicação Prática</h3><p>Seguir a Cristo não é uma busca por prosperidade pessoal ou glória terrena, mas um caminho de cruz e abnegação. Devemos estar dispostos a perder nossa vida segundo os padrões deste mundo para ganhá-la na eternidade com o Senhor."
+                    }
+                ]
+            },
+            "lucas_10": {
+                title: "OS SETENTA E O BOM SAMARITANO",
+                date: "23/09 (Quarta)",
+                desc: "\"Vai e faze tu o mesmo.\"",
+                blocks: [
+                    {
+                        title: "A Expansão Missionária e o Verdadeiro Amor ao Próximo",
+                        verse: "Mas o que quer que façais, alegrai-vos, não porque os espíritos se vos submetem, mas alegrai-vos antes por estarem os vossos nomes escritos nos céus. (Lc 10:20)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus designa setenta discípulos para o trabalho missionário pioneiro, simbolizando que a mensagem deve ir a todas as nações. Diante de um intérprete da Lei, Ele profere a Parábola do Bom Samaritano, expandindo a definição de <i>πλησίον</i> (plesion - vizinho, próximo) para além das barreiras étnicas e religiosas.</p><h3>2. Análise Teológica</h3><p>A missão é caracterizada pela urgência escatológica de <i>ἀποστέλλω</i> (apostello - enviar com autoridade e propósito). Lucas mostra que a religião institucionalizada (representada pelo sacerdote e pelo levita) é impotente se carecer de misericórdia. O samaritano personifica o amor ativo que supre a dor do ferido.</p><h3>3. Aplicação Prática</h3><p>Nossa maior alegria não deve residir nos sucessos ministeriais ou profissionais, mas na certeza da nossa salvação eterna. Além disso, somos desafiados a quebrar barreiras sociais para socorrer quem sofre, demonstrando o amor prático de Cristo."
+                    }
+                ]
+            },
+            "lucas_11": {
+                title: "A ORAÇÃO E A LUZ INTERIOR",
+                date: "24/09 (Quinta)",
+                desc: "\"Pedis, e dar-se-vos-á; buscai, e achareis; batei, e abrir-se-vos-á.\"",
+                blocks: [
+                    {
+                        title: "A Intimidade com o Pai e a Resistência à Hipocrisia",
+                        verse: "Pois, se vós, sendo maus, sabeis dar boas dádivas aos vossos filhos, quanto mais dará o Pai celestial o Espírito Santo àqueles que lho pedirem? (Lc 11:13)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Os discípulos pedem que Jesus os ensine a <i>προσεύχομαι</i> (proseuchomai - orar, comunicar-se intimamente com Deus). Ele entrega a oração modelo (Pai Nosso) e ilustra a necessidade de perseverança na oração por meio da parábola do amigo importuno, destacando a audácia santa na busca pelo Pai.</p><h3>2. Análise Teológica</h3><p>A oração eficaz baseia-se na generosidade de Deus, que concede o Espírito Santo aos Seus filhos. Jesus confronta a oposição dos fariseus demonstrando a vinda do Reino através da expulsão de demônios e condena a <i>ἀναιδεία</i> (anaideia - persistência sem vergonha, insistência firme) daqueles que buscam apenas sinais exteriores.</p><h3>3. Aplicação Prática</h3><p>A nossa vida de oração deve refletir intimidade e persistência confiante, sabendo que Deus ouve Seus filhos. Devemos também vigiar para que nossa religiosidade não seja apenas externa, mas que a luz do Espírito ilumine todo o nosso ser."
+                    }
+                ]
+            },
+            "lucas_12": {
+                title: "O PERIGO DA COBIÇA e A PRONTIDÃO",
+                date: "25/09 (Sexta)",
+                desc: "\"Buscai, antes, o reino de Deus, e todas estas coisas vos serão acrescentadas.\"",
+                blocks: [
+                    {
+                        title: "Tesouros Celestiais e a Vigilância do Servo",
+                        verse: "Porque, onde estiver o vosso tesouro, ali estará também o vosso coração. (Lc 12:34)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Diante de uma disputa de herança, Jesus adverte contra a avareza e profere a parábola do rico insensato, cuja ilusão de segurança financeira é subitamente interrompida pela morte física. Ele ensina que a verdadeira <i>ζωή</i> (zoe - vida eterna e abundante) não consiste na abundância de bens materiais.</p><h3>2. Análise Teológica</h3><p>A ansiedade é um sinal de falta de fé na providência paternal de Deus. Lucas enfatiza o valor da <i>ψυχή</i> (psuche - alma, essência da vida humana), exortando os discípulos a buscarem o Reino com prioridade absoluta. O crente deve viver em estado de constante prontidão escatológica para a volta do Senhor.</p><h3>3. Aplicação Prática</h3><p>Somos desafiados a nos libertar do consumismo e da preocupação excessiva com o sustento terreno. Nossa segurança deve repousar no cuidado de Deus, o qual veste os lírios do campo. Devemos acumular tesouros no céu por meio da generosidade prática neste mundo."
+                    }
+                ]
+            },
+            "lucas_13": {
+                title: "ARREPENDIMENTO E A PORTA ESTREITA",
+                date: "26/09 (Sábado)",
+                desc: "\"Se não vos arrependerdes, todos de igual modo perecereis.\"",
+                blocks: [
+                    {
+                        title: "Justiça Divina, Cura no Sábado e a Entrada do Reino",
+                        verse: "Esforçai-vos por entrar pela porta estreita; porque eu vos digo que muitos procurarão entrar, e não poderão. (Lc 13:24)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus refuta a teologia da retribuição simples ao comentar sobre tragédias locais, alertando que todos necessitam de arrependimento espiritual. Ao curar a mulher encurvada, Ele expõe a hipocrisia do chefe da sinagoga que idolatrava o ritual do <i>σαββάτον</i> (sabbaton - descanso, sábado) em detrimento da libertação humana.</p><h3>2. Análise Teológica</h3><p>Jesus qualifica o líder religioso legalista como <i>ὑποκριτής</i> (hupokrites - ator, hipócrita que usa máscara). A expansão do Reino de Deus é comparada à semente de mostarda e ao fermento, silenciosa mas irresistível. No entanto, a entrada no Reino exige esforço e autonegação através da porta estreita.</p><h3>3. Aplicação Prática</h3><p>A paciência de Deus (ilustrada pela figueira estéril que recebe uma última chance) tem limite. Não podemos adiar a decisão de nos reconciliar com Deus e alinhar nossa vida com a Sua verdade. A verdadeira religião remove fardos e restaura vidas oprimidas."
+                    }
+                ]
+            },
+            "lucas_14": {
+                title: "HUMILDADE E O CUSTO DO DISCIPULADO",
+                date: "27/09 (Domingo)",
+                desc: "\"Qualquer de vós que não renuncia a tudo quanto tem, não pode ser meu discípulo.\"",
+                blocks: [
+                    {
+                        title: "O Convite ao Grande Banquete e a Autoexclusão",
+                        verse: "Porque qualquer que a si mesmo se exalta será humilhado, e qualquer que a si mesmo se humilha será exaltado. (Lc 14:11)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Em um banquete na casa de um fariseu proeminente, Jesus observa a disputa pelos primeiros lugares e ensina o princípio de <i>ταπεινόω</i> (tapeinoo - rebaixar, humilhar a si mesmo). Ele exorta os anfitriões a convidarem os incapacitados, que não possuem meios terrestres para retribuir o favor.</p><h3>2. Análise Teológica</h3><p>A parábola do grande <i>δεῖπνον</i> (deipnon - banquete, ceia solene) revela que os convidados originais se excluíram do Reino devido aos seus apegos terrenos. Lucas enfatiza que o discipulado autêntico exige amor supremo a Cristo, superando os laços familiares e exigindo que se carregue a própria cruz até o fim.</p><h3>3. Aplicação Prática</h3><p>A liderança no Reino de Deus é exercida de baixo para cima, por meio do serviço humilde. Devemos calcular o custo de seguir a Jesus, estando prontos a abrir mão de direitos, reputações e posses para honrar o privilégio do Seu chamado gracioso."
+                    }
+                ]
+            },
+            "lucas_15": {
+                title: "A ALEGRIA DE ENCONTRAR O PERDIDO",
+                date: "28/09 (Segunda)",
+                desc: "\"Alegrai-vos comigo, porque achei a minha ovelha perdida.\"",
+                blocks: [
+                    {
+                        title: "A Trilogia da Redenção e o Abraço do Pai Celestial",
+                        verse: "Digo-vos que assim haverá alegria no céu por um pecador que se arrepende, mais do que por noventa e nove justos que não necessitam de arrependimento. (Lc 15:7)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Em resposta às críticas dos fariseus sobre Sua associação com pecadores, Jesus narra três parábolas clássicas: a ovelha perdida, a dracma perdida e os dois filhos perdidos. O termo grego <i>ἀπόλλυμι</i> (apollumi - perder, arruinar, destruir) descreve a trágica condição de alienação do ser humano longe de Deus.</p><h3>2. Análise Teológica</h3><p>A essência do caráter de Deus é revelada no pai amoroso que corre ao encontro do pródigo arrependido. O texto usa o verbo grego <i>εὐφραίνω</i> (euphraino - celebrar, alegrar-se intensamente) para mostrar que a salvação culmina em uma festa comunitária cósmica. O filho mais velho personifica a trágica cegueira do farisaísmo legalista.</p><h3>3. Aplicação Prática</h3><p>Não há pecado tão profundo que o amor do Pai não possa perdoar e restaurar. Somos chamados a abandonar a autocomplacência do filho mais velho e a compartilhar ativamente da alegria de Deus na reconciliação e restauração de vidas desviadas."
+                    }
+                ]
+            },
+            "lucas_16": {
+                title: "O ADMINISTRADOR E O ALÉM",
+                date: "29/09 (Terça)",
+                desc: "\"Não podeis servir a Deus e a mamon.\"",
+                blocks: [
+                    {
+                        title: "misericórdia Social, Riquezas e o Destino Eterno",
+                        verse: "Se, pois, nas riquezas injustas não fostes fiéis, quem vos confiará as verdadeiras? (Lc 16:11)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus narra a intrigante parábola do administrador astuto para ensinar Seus discípulos a utilizarem os recursos temporais com sabedoria eterna. Ele adverte que o acúmulo egoísta de <i>μαμωνᾶς</i> (mamonas - riquezas personificadas, dinheiro) escraviza o coração humano, impedindo a comunhão com Deus.</p><h3>2. Análise Teológica</h3><p>A revelação sobre o Rico e Lázaro descortina o pós-morte. Lázaro é levado ao seio de Abraão, enquanto o rico impiedoso sofre no <i>ᾅδης</i> (hades - habitação invisível dos mortos). O abismo eterno intransponível é reflexo da indiferença social demonstrada na vida terrena, confirmando a imutabilidade das Escrituras.</p><h3>3. Aplicação Prática</h3><p>O dinheiro é um excelente servo, mas um péssimo mestre. Devemos administrar nossos recursos com generosidade e justiça, sabendo que seremos cobrados de nossa mordomia diante de Deus. A eternidade começa na maneira como tratamos os necessitados à nossa porta."
+                    }
+                ]
+            },
+            "lucas_17": {
+                title: "O DEVER DO SERVO E A GRATIDÃO",
+                date: "30/09 (Quarta)",
+                desc: "\"Porque, eis que o reino de Deus está entre vós.\"",
+                blocks: [
+                    {
+                        title: "Fidelidade Sem Exigências e a Gratidão de um Samaritano",
+                        verse: "E um deles, vendo que estava são, voltou glorificando a Deus em alta voz; e caiu aos seus pés, com o rosto em terra, dando-lhe graças; e este era samaritano. (Lc 17:15-16)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus cura dez leprosos no caminho para Jerusalém, mas apenas um volta para <i>εὐχαριστέω</i> (eucharisteo - agradecer, render graças). Sendo este um estrangeiro samaritano, o fato evidencia a falta de sensibilidade espiritual do povo da aliança diante dos favores divinos.</p><h3>2. Análise Teológica</h3><p>Jesus ensina sobre a simplicidade do dever por meio da parábola do servo inútil, mostrando que a obediência não gera mérito diante de Deus. O Reino está presente na pessoa do Messias. O poder da fé reside em sua autenticidade, mesmo que minúscula como um <i>κόκκος</i> (kokkos - grão, semente pequena) de mostarda.</p><h3>3. Aplicação Prática</h3><p>Não devemos obedecer a Deus esperando favores ou recompensas, pois somos Seus servos e tudo o que fazemos é nosso dever. Devemos cultivar uma atitude contínua de gratidão diária, reconhecendo e testemunhando publicamente as bênçãos e livramentos que recebemos do Senhor."
+                    }
+                ]
+            },
+            "lucas_18": {
+                title: "ORANÇA PERSISTENTE E JUSTIFICAÇÃO",
+                date: "01/10 (Quinta)",
+                desc: "\"O que é impossível aos homens é possível a Deus.\"",
+                blocks: [
+                    {
+                        title: "A Viúva Clamante, o Fariseu Orgulhoso e a Humildade das Crianças",
+                        verse: "Digo-vos que este desceu justificado para sua casa, e não aquele; porque qualquer que a si mesmo se exalta será humilhado, e qualquer que a si mesmo se humilha será exaltado. (Lc 18:14)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus utiliza parábolas para incentivar a persistência na oração (o juiz injusto) e a postura correta diante de Deus (o fariseu e o publicano). O publicano suplica <i>ἐλεέω</i> (eleeo - ter misericórdia, compadecer-se), reconhecendo sua ruína moral antes de receber a bênção divina.</p><h3>2. Análise Teológica</h3><p>A justificação através do arrependimento é expressa no verbo grego <i>δικαιόω</i> (dikaioo - declarar justo, absolver da culpa). Jesus enfatiza que o Reino pertence aos humildes de espírito que se assemelham a crianças. O encontro com o jovem rico demonstra o perigo das posses materiais como barreira para a salvação.</p><h3>3. Aplicação Prática</h3><p>Nossas orações não devem ser monólogos de autoexaltação moralista, mas gritos de humilde dependência da graça de Deus. Devemos rejeitar toda autossuficiência e nos achegar ao trono da graça com a simplicidade e a confiança total de uma criança sincera."
+                    }
+                ]
+            },
+            "lucas_19": {
+                title: "ZAQUEU E A ENTRADA TRIUNFAL",
+                date: "02/10 (Sexta)",
+                desc: "\"Porque o Filho do Homem veio buscar e salvar o que se havia perdido.\"",
+                blocks: [
+                    {
+                        title: "A Salvação na Casa Pública e o Choro sobre a Cidade Imperial",
+                        verse: "E disse-lhe Jesus: Hoje veio a salvação a esta casa, porquanto também este é filho de Abraão. (Lc 19:9)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus atravessa Jericó e encontra Zaqueu, o chefe dos publicanos. A salvação invade a intimidade daquela habitação, o <i>οἶκος</i> (oikos - casa, lar, ambiente familiar), transformando a ganância do publicano em restituição generosa. Na descida do monte das Oliveiras, ocorre a entrada triunfal de Jesus em Jerusalém.</p><h3>2. Análise Teológica</h3><p>A missão do Messias é sintetizada no resgate do perdido. Ao contemplar Jerusalém, Jesus começa a <i>θρηνέω</i> (threneo - lamentar profundamente, chorar em pranto alto) por causa do julgamento iminente que aguardava a cidade que rejeitaria a Sua paz celestial, cegando-se para o tempo da sua visitação divina.</p><h3>3. Aplicação Prática</h3><p>A verdadeira conversão gera transformações econômicas e relacionais concretas na vida do crente. Devemos receber Jesus com a mesma alegria que motivou Zaqueu e chorar com o Senhor pelas almas que caminham desavisadamente para a perdição eterna."
+                    }
+                ]
+            },
+            "lucas_20": {
+                title: "A AUTORIDADE QUESTIONADA",
+                date: "03/10 (Sábado)",
+                desc: "\"Dai, pois, a César o que é de César, e a Deus o que é de Deus.\"",
+                blocks: [
+                    {
+                        title: "O Confronto com os Lavradores e o Tributo Político",
+                        verse: "Mas ele, olhando para eles, disse: Que é isto, pois, que está escrito: A pedra que os edificadores rejeitaram, essa foi posta por cabeça de esquina? (Lc 20:17)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Em Jerusalém, as autoridades religiosas questionam as credenciais de Jesus. Ele responde com a contundente parábola dos lavradores maus, prevendo Sua própria rejeição pela elite de Israel. Diante da armadilha do imposto romano, Ele aponta para a <i>εἰκών</i> (eikon - imagem, representação gravada) na moeda.</p><h3>2. Análise Teológica</h3><p>Ao proclamar que a moeda pertence a César porque traz sua imagem, Jesus estabelece que o homem deve dar a Deus o seu ser inteiro, pois foi criado à imagem divina. Lucas o exalta como o soberano <i>διδάσκαλος</i> (didaskalos - mestre da verdade), cujos argumentos confundem e calam os saduceus sobre a ressurreição.</p><h3>3. Aplicação Prática</h3><p>Devemos viver com integridade e fidelidade cívica, cumprindo nossas obrigações sociais terrenas, mas nossa lealdade espiritual suprema pertence exclusivamente a Deus, cuja assinatura e imagem estão impressas em nossa alma resgatada.</p>"
+                    }
+                ]
+            },
+            "lucas_21": {
+                title: "A OFERTA E O DISCURSO FINAL",
+                date: "04/10 (Domingo)",
+                desc: "\"Na vossa paciência, possuí as vossas almas.\"",
+                blocks: [
+                    {
+                        title: "As Moedas da Viúva e a Esperança na Vinda do Senhor",
+                        verse: "E disse: Em verdade vos digo que lançou mais do que todos esta pobre viúva. (Lc 21:3)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus observa o gazofilácio e declara que as duas pequenas moedas da viúva pobre valem mais do que as grandes fortunas dos ricos, pois ela deu tudo o que possuía. Ele profere então o discurso escatológico, exortando Seus discípulos a desenvolverem a <i>ὑπομονή</i> (hupomone - perseverança paciente, firmeza espiritual).</p><h3>2. Análise Teológica</h3><p>Lucas enfatiza a destruição histórica de Jerusalém e o retorno glorioso de Jesus. O tempo atual dos gentios é um <i>καιρός</i> (kairos - tempo oportuno de Deus, época divinamente delimitada). A vinda do Filho do Homem em poder e glória exige vigilância ativa e oração contínua para escapar do juízo vindouro.</p><h3>3. Aplicação Prática</h3><p>O que Deus valoriza não é a quantidade do nosso serviço ou oferta, mas a generosidade do nosso coração. Diante dos caos sociais, guerras e crises mundiais que antecipam o fim, devemos manter nossa esperança firme, pois a nossa redenção se aproxima."
+                    }
+                ]
+            },
+            "lucas_22": {
+                title: "A CEIA, A TRAIÇÃO E O SUOR DE SANGUE",
+                date: "05/10 (Segunda)",
+                desc: "\"Isto é o meu corpo, que por vós é dado; fazei isto em memória de mim.\"",
+                blocks: [
+                    {
+                        title: "A Nova Aliança de Sangue e a Agonia Cósmica no Getsêmani",
+                        verse: "E, posto em agonia, orava mais intensamente. E o seu suor tornou-se em grandes gotas de sangue que corriam até ao chão. (Lc 22:44)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus celebra a refeição da <i>πάσχα</i> (pascha - páscoa, libertação histórica) com os apóstolos, transformando-a na instituição da Ceia do Senhor. Ele sela a nova <i>διαθήκη</i> (diatheke - aliança, testamento definitivo de Deus) no Seu próprio sangue e logo após entra em intensa agonia no Monte das Oliveiras.</p><h3>2. Análise Teológica</h3><p>Lucas registra o fenômeno do suor de sangue (hematidrose), destacando o peso emocional e espiritual do cálice da ira divina assumido por Jesus. O silêncio e a submissão filial (\"não se faça a minha vontade, mas a tua\") contrastam com a deserção dos discípulos e a tríplice negação de Pedro.</p><h3>3. Aplicação Prática</h3><p>A comunhão na mesa de Cristo deve nos recordar o preço infinito pago na cruz por nossa redenção. Diante das aflições espirituais, devemos seguir o exemplo de Jesus no Getsêmani, buscando consolo e direção na oração intensa e na submissão soberana ao Pai."
+                    }
+                ]
+            },
+            "lucas_23": {
+                title: "A CRUCIFICAÇÃO",
+                date: "06/10 (Terça)",
+                desc: "\"Pai, nas tuas mãos entrego o meu espírito.\"",
+                blocks: [
+                    {
+                        title: "O Julgamento Injusto, a Morte Silenciosa e a Promessa de Paraíso",
+                        verse: "E disse-lhe Jesus: Em verdade te digo que hoje estarás comigo no Paraíso. (Lc 23:43)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>Jesus é arrastado diante de Pilatos, Herodes e da multidão enraivecida. Mesmo sendo declarado <i>ἀθῷος</i> (athoos - inocente, sem culpa alguma) três vezes por Pilatos, Ele é condenado à morte de cruz. No Calvário, Jesus ora pedindo perdão para Seus executores e salva o criminoso arrependido.</p><h3>2. Análise Teológica</h3><p>A crucificação revela Jesus como o Justo que sofre no lugar dos injustos. A promessa ao criminoso garante que a comunhão espiritual imediata após a morte ocorre no <i>παράδεισος</i> (paradeisos - jardim de delícias, paraíso de comunhão divina). A escuridão física e o rasgar do véu marcam a abertura do caminho a Deus.</p><h3>3. Aplicação Prática</h3><p>O perdão incondicional demonstrado por Jesus na cruz nos constrange a abandonar todo o ressentimento e amargura contra nossos ofensores. A resposta de fé do ladrão na hora final prova que a graça salvadora está sempre disponível para quem se arrepende genuinamente.</p>"
+                    }
+                ]
+            },
+            "lucas_24": {
+                title: "A RESSURREIÇÃO E EMAÚS",
+                date: "07/10 (Quarta)",
+                desc: "\"Por que buscais o vivente entre os mortos? Ele não está aqui, mas ressuscitou.\"",
+                blocks: [
+                    {
+                        title: "O Caminho do Esclarecimento e a Missão das Testemunhas",
+                        verse: "E disseram um ao outro: Porventura não ardia em nós o nosso coração quando, pelo caminho, nos falava, e quando nos abria as Escrituras? (Lc 24:32)",
+                        exegesis: "<h3>1. Contexto e Exegese</h3><p>No primeiro dia da semana, as mulheres descobrem que o sepulcro está vazio, testemunhando a <i>ἀνάστασις</i> (anastasis - ressurreição, ato de levantar-se dentre os mortos). No caminho para Emaús, Jesus ressuscitado caminha incógnito com dois discípulos desanimados, abrindo-lhes o sentido das Escrituras.</p><h3>2. Análise Teológica</h3><p>A ressurreição corporal de Cristo é a chave hermenêutica de toda a revelação bíblica. Jesus se faz reconhecer no partir do pão, reacendendo a chama da fé nos discípulos. Ele os comissiona como <i>μάρτυς</i> (martus - testemunhas oficiais) de Sua vitória cósmica, enviando-os para pregar a todas as nações sob a promessa do poder do Espírito.</p><h3>3. Aplicação Prática</h3><p>Nossas desilusões e cansaços existenciais são dissipados quando deixamos que Jesus nos revele as Escrituras e inflame nosso coração. Como testemunhas vivas da ressurreição, nossa missão é anunciar o Evangelho de arrependimento e remissão de pecados, guiados pelo Espírito."
+                    }
+                ]
+            }
+        };
+
+        // === LÓGICA GERAL ===
+        let currentAudioBlob = null;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        function loadChapter(chapterKey) {
+            const data = bibleData[chapterKey];
+            if (!data) return;
+
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
+            const dateBadge = document.getElementById('dateBadge');
+            const dateValue = document.getElementById('dateValue');
+            const communitySection = document.getElementById('community-section');
+            const formChapterKey = document.getElementById('formChapterKey');
+            
+            heroTitle.style.opacity = '0';
+            heroDesc.style.opacity = '0';
+            dateBadge.style.opacity = '0';
+            
+            setTimeout(() => {
+                if (data.date) {
+                    dateValue.textContent = data.date;
+                    dateBadge.classList.remove('hidden');
+                    communitySection.classList.remove('hidden');
+                    formChapterKey.value = chapterKey;
+                    carregarComentarios(chapterKey);
+                    setTimeout(() => { dateBadge.style.opacity = '1'; }, 100);
+                } else {
+                    dateBadge.classList.add('hidden');
+                    communitySection.classList.add('hidden');
+                }
+
+                heroTitle.innerHTML = data.title;
+                heroDesc.innerHTML = data.desc;
+                heroTitle.style.opacity = '1';
+                heroDesc.style.opacity = '1';
+            }, 300);
+
+            const mainContent = document.getElementById('content');
+            mainContent.innerHTML = ''; 
+
+            data.blocks.forEach((block) => {
+                let borderColor = 'border-amber-600';
+                let blurTop = 'bg-amber-600/5';
+                let blurBottom = 'bg-amber-800/5';
+                let borderPanel = 'border-amber-900/30';
+
+                const html = `
+                    <section class="reveal max-w-4xl mx-auto w-full relative">
+                        <div class="absolute -inset-4 ${blurTop} to-transparent rounded-3xl blur-xl pointer-events-none"></div>
+                        
+                        <div class="space-y-6 relative z-10">
+                            <div class="text-center mb-10">
+                                <h2 class="text-3xl md:text-5xl font-serif text-white leading-tight mb-6">${block.title}</h2>
+                                <div class="inline-block border-l-4 border-r-4 ${borderColor} px-6 py-4 italic text-slate-300 bg-[#0a0514]/50 shadow-sm max-w-3xl rounded-sm">
+                                    "${block.verse}"
+                                </div>
+                            </div>
+                            
+                            <div class="bg-[#050510]/80 p-8 md:p-12 rounded-xl border ${borderPanel} transition shadow-2xl relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-64 h-64 ${blurTop} rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+                                <div class="absolute bottom-0 left-0 w-64 h-64 ${blurBottom} rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
+                                <div class="rich-text text-slate-300 text-[16px] md:text-lg leading-relaxed relative z-10 font-light">
+                                    ${block.exegesis}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+                mainContent.insertAdjacentHTML('beforeend', html);
+            });
+            resetObservers();
+        }
+
+        function carregarComentarios(capitulo) {
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '<p class="text-center text-slate-500 text-sm animate-pulse">Carregando comentários...</p>';
+
+            fetch(`api.php?acao=listar&capitulo=${capitulo}`)
+            .then(res => res.json())
+            .then(data => {
+                list.innerHTML = '';
+                if(!Array.isArray(data)) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
+                }
+                if(data.length === 0) {
+                    list.innerHTML = '<p class="text-center text-slate-500 text-sm">Seja o primeiro a comentar!</p>';
+                    return;
+                }
+                data.forEach(c => {
+                    let mediaHtml = '';
+                    if(c.foto) mediaHtml += `<img src="${c.foto}" onclick="openImage(this.src)" class="mt-4 rounded-lg max-h-48 border border-slate-700 cursor-pointer hover:scale-[1.02] transition shadow-lg">`;
+                    if(c.audio) mediaHtml += `<audio controls src="${c.audio}" class="mt-4 w-full"></audio>`;
+
+                    const jaCurtiu = localStorage.getItem(`reagiu_likes_${c.id}`);
+                    const jaAmem = localStorage.getItem(`reagiu_amem_${c.id}`);
+                    const jaGloria = localStorage.getItem(`reagiu_gloria_${c.id}`);
+
+                    let themeColor = 'text-amber-400';
+                    let panelBorder = 'hover:border-amber-500/50';
+
+                    const html = `
+                        <div class="glass-panel p-5 pb-12 rounded-xl border border-slate-800 relative group transition ${panelBorder} bg-[#0a0514]/60">
+                            <div class="flex justify-between items-start mb-3 border-b border-slate-800 pb-2">
+                                <strong class="${themeColor} text-sm tracking-wide font-serif">${c.nome}</strong>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-widest">${new Date(c.data_envio).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed">${c.mensagem}</p>
+                            ${mediaHtml}
+                            
+                            <div class="absolute bottom-3 right-4 flex gap-2">
+                                <button onclick="reagirComentario(${c.id}, 'likes', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaCurtiu ? 'text-red-500 border-red-500/30' : 'text-slate-400 hover:text-red-400'}" ${jaCurtiu ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-heart"></i> <span class="count font-bold">${c.likes || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'amem', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaAmem ? 'text-amber-400 border-amber-400/30' : 'text-slate-400 hover:text-amber-400'}" ${jaAmem ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-hands-praying"></i> <span class="count font-bold">${c.amem || 0}</span>
+                                </button>
+                                <button onclick="reagirComentario(${c.id}, 'gloria', this)" class="text-xs transition flex items-center gap-1 bg-black/80 px-2 py-1 rounded-full border border-slate-700 ${jaGloria ? 'text-yellow-500 border-yellow-500/30' : 'text-slate-400 hover:text-yellow-500'}" ${jaGloria ? 'disabled' : ''}>
+                                    <i class="fa-solid fa-fire"></i> <span class="count font-bold">${c.gloria || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', html);
+                });
+            })
+            .catch(err => {
+                list.innerHTML = '<p class="text-center text-red-400 text-xs">Erro ao carregar comentários.</p>';
+            });
+        }
+
+        function reagirComentario(id, tipo, btn) {
+            if(localStorage.getItem(`reagiu_${tipo}_${id}`)) return;
+
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('.count');
+            let count = parseInt(countSpan.innerText);
+
+            icon.classList.add('reacted-anim');
+            btn.classList.remove('text-slate-400');
+            
+            if(tipo === 'likes') btn.classList.add('text-red-500', 'border-red-500/30');
+            if(tipo === 'amem') btn.classList.add('text-amber-400', 'border-amber-400/30');
+            if(tipo === 'gloria') btn.classList.add('text-yellow-500', 'border-yellow-500/30');
+
+            countSpan.innerText = count + 1;
+            btn.disabled = true;
+
+            localStorage.setItem(`reagiu_${tipo}_${id}`, 'true');
+
+            const formData = new FormData();
+            formData.append('acao', 'reagir');
+            formData.append('id', id);
+            formData.append('tipo', tipo);
+
+            fetch('api.php', { method: 'POST', body: formData });
+        }
+
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+            formData.append('acao', 'salvar');
+            if(currentAudioBlob) {
+                formData.append('audio', currentAudioBlob, 'audio.wav');
+            }
+
+            fetch('api.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    this.reset();
+                    document.getElementById('filePreview').innerHTML = '';
+                    currentAudioBlob = null;
+                    document.getElementById('recordText').innerText = "Gravar Áudio";
+                    carregarComentarios(document.getElementById('formChapterKey').value);
+                } else {
+                    alert('Erro ao enviar.');
+                }
+            })
+            .catch(() => alert('Erro de conexão.'))
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        });
+
+        function previewFile(input) {
+            const preview = document.getElementById('filePreview');
+            if(input.files && input.files[0]) {
+                preview.innerHTML = `<i class="fa-solid fa-check text-green-400"></i> Imagem selecionada: ${input.files[0].name}`;
+                preview.classList.remove('hidden');
+            }
+        }
+
+        const recordBtn = document.getElementById('recordBtn');
+        recordBtn.addEventListener('click', async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                    mediaRecorder.onstop = () => {
+                        currentAudioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        document.getElementById('filePreview').classList.remove('hidden');
+                        document.getElementById('filePreview').innerHTML += '<br><i class="fa-solid fa-microphone text-green-400"></i> Áudio gravado!';
+                    };
+                    mediaRecorder.start();
+                    recordBtn.classList.add('recording-pulse');
+                    document.getElementById('recordText').innerText = "Parar Gravação";
+                } catch (err) {
+                    alert("Permita o uso do microfone para gravar.");
+                }
+            } else {
+                mediaRecorder.stop();
+                recordBtn.classList.remove('recording-pulse');
+                document.getElementById('recordText').innerText = "Gravar Áudio";
+            }
+        });
+
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        function closeImage() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function resetObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.05 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        const canvas = document.getElementById("particles-js");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        for(let i=0; i<80; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, spcX: Math.random()*0.5-0.25, spcY: Math.random()*0.5-0.25 });
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(217, 119, 6, 0.15)";
+            particles.forEach(p => { p.x += p.spcX; p.y += p.spcY; if(p.x<0||p.x>canvas.width) p.spcX*=-1; if(p.y<0||p.y>canvas.height) p.spcY*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        loadChapter('intro_book');
+    </script>
+</body>
+</html>
